@@ -1,0 +1,12 @@
+{
+  "SecuritySettings": {
+    "JwtSettingOptions": {
+      "Default": {
+        "Key": "",
+        "RefreshKey": "",
+        "AccessTokenExpirationInMinutes": 10080,
+        "RefreshTokenExpirationInDays": 90
+      }
+    }
+  }
+}

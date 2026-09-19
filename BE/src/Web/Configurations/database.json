@@ -1,0 +1,11 @@
+{
+  "DatabaseSettings": {
+    "SqlSettings": {
+      "UseAutoMigration": true,
+      "DbProvider": "PostgreSql",
+      "ConnectionStrings": {
+        "DefaultConnection": ""
+      }
+    }
+  }
+}

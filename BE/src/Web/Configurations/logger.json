@@ -1,0 +1,22 @@
+{
+  "LoggerSettings": {
+    "MinimumLogLevel": "Information",
+    "WriteToConsole": {
+      "StructuredConsoleLogging": false,
+      "Tag": ""
+    },
+    "WriteToElasticsearch": {
+      "ServerUrl": "",
+      "Credentials": {
+        "Username": "",
+        "Password": ""
+      },
+      "BaseFolder": "./Files/logs",
+      "BufferRelativePath": "",
+      "FallbackRelativePath": "",
+      "BufferFileSizeLimitBytes": 5242880,
+      "BufferFileCountLimit": 31,
+      "RetainedFileCountLimit": 31
+    }
+  }
+}

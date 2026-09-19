@@ -37,6 +37,7 @@ blob-report/
 .env.*
 !.env.example
 appsettings.Development.json
+BE/src/Web/Configurations/*Development*
 appsettings.Local.json
 *.pfx
 *.key

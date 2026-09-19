@@ -1,0 +1,52 @@
+﻿using HuyHieuDang.Infrastructure.Facades.Common.Extensions;
+using System.ComponentModel.DataAnnotations;
+
+namespace HuyHieuDang.Infrastructure.Facades.Persistence;
+
+public class DatabaseSettings
+{
+    public SqlSettings SqlSettings { get; set; } = new();
+}
+
+public class SqlSettings : IValidatableObject
+{
+    public bool UseAutoMigration { get; set; }
+
+    public string DbProvider { get; set; } = string.Empty;
+
+    public ConnectionStrings ConnectionStrings { get; set; } = new();
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrEmpty(DbProvider))
+        {
+            yield return new ValidationResult(
+                $"{nameof(DatabaseSettings)}.{nameof(SqlSettings)}.{nameof(DbProvider)} is not configured.",
+                new[] { nameof(DbProvider) });
+        }
+    }
+}
+
+public class ConnectionStrings : IValidatableObject
+{
+    public string DefaultConnection { get; set; } = string.Empty;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrEmpty(DefaultConnection))
+        {
+            yield return new ValidationResult(
+                $"{nameof(DatabaseSettings)}.{nameof(SqlSettings)}.{nameof(ConnectionStrings)}.{nameof(DefaultConnection)} is not configured.",
+                new[] { nameof(DefaultConnection) });
+        }
+    }
+
+    public void OverrideConnection()
+    {
+        const string applicationNameKey = "ApplicationName";
+        if (!DefaultConnection.Contains(applicationNameKey, StringComparison.OrdinalIgnoreCase))
+        {
+            DefaultConnection += $"{applicationNameKey}={Environment.MachineName};";
+        }
+    }
+}
