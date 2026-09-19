@@ -5,6 +5,7 @@ using HuyHieuDang.Infrastructure.Facades.Persistence.Initialization;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Repositories;
 using HuyHieuDang.Infrastructure.Modules.Users.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using BC = BCrypt.Net.BCrypt;
 
@@ -12,13 +13,25 @@ namespace HuyHieuDang.Infrastructure.Modules.Users.Seeders;
 
 public class AdminUserSeeder : IDataSeedContributor
 {
+    /// <summary>
+    /// Tên biến môi trường chứa mật khẩu của tài khoản admin seed sẵn.
+    /// </summary>
+    public const string AdminPasswordVariable = "ADMIN_PASSWORD";
+
+    /// <summary>
+    /// Mật khẩu dùng khi biến môi trường không được đặt. Chỉ hợp lệ cho môi trường phát triển.
+    /// </summary>
+    public const string DefaultAdminPassword = "Admin@123";
+
     private readonly IRepositoryWrapper repositoryWrapper;
     private readonly IMapper mapper;
+    private readonly IConfiguration configuration;
 
-    public AdminUserSeeder(IRepositoryWrapper repositoryWrapper, IMapper mapper)
+    public AdminUserSeeder(IRepositoryWrapper repositoryWrapper, IMapper mapper, IConfiguration configuration)
     {
         this.repositoryWrapper = repositoryWrapper;
         this.mapper = mapper;
+        this.configuration = configuration;
     }
 
     public async Task SeedAsync(CancellationToken cancellationToken)
@@ -64,7 +77,7 @@ public class AdminUserSeeder : IDataSeedContributor
             Id = Guid.Parse(EntityBuiderConstants.AdminUserId),
             Username = "admin",
             Email = "admin@huyhieudang.local",
-            Password = BC.HashPassword("Admin@123"),
+            Password = BC.HashPassword(AdminPassword),
             Name = "Administrator",
             RoleId = Guid.Parse(EntityBuiderConstants.AdminRoleId),
         };
@@ -93,6 +106,16 @@ public class AdminUserSeeder : IDataSeedContributor
               },
               cancellationToken
             );
+        }
+    }
+
+    private string AdminPassword
+    {
+        get
+        {
+            string? configured = configuration[AdminPasswordVariable];
+
+            return string.IsNullOrWhiteSpace(configured) ? DefaultAdminPassword : configured;
         }
     }
 
