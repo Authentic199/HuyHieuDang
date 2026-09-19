@@ -1,3 +1,4 @@
+using HuyHieuDang.Core.Common.Exceptions;
 using HuyHieuDang.Core.PartyBadges;
 using HuyHieuDang.Core.UnitTests.Fixtures;
 
@@ -73,6 +74,53 @@ public sealed class Qt6PeriodWarningTests
 
         // Assert
         gaps[0].To.ShouldBe(new DateOnly(2028, 2, 28));
+    }
+
+    [Fact]
+    public void GetGaps_WhenThereIsNoPeriod_LabelsTheWholeYearAsAfterTheLastPeriod()
+    {
+        // Act — QC-02: nhãn phải khớp expected.json của QC, không phải "Trước đợt đầu tiên".
+        IReadOnlyList<DateGap> gaps = sut.GetGaps([], 2026);
+
+        // Assert
+        gaps[0].Kind.ShouldBe(GapKind.AfterLastPeriod);
+        gaps[0].Label.ShouldBe("Sau đợt cuối cùng");
+    }
+
+    [Fact]
+    public void BindToYear_WhenTheFromDateIsAfterTheToDate_ThrowsBadRequest()
+    {
+        // Act — QC-01: đợt vắt qua 31/12 bị QT6 cấm.
+        Action act = () => sut.BindToYear(new AwardPeriod("Đợt vắt năm", 7, 11, 1, 10), 2026);
+
+        // Assert
+        act.ShouldThrow<BadRequestException>();
+    }
+
+    [Theory]
+    [InlineData(31, 2)]
+    [InlineData(30, 2)]
+    [InlineData(32, 1)]
+    [InlineData(31, 4)]
+    [InlineData(1, 13)]
+    [InlineData(0, 1)]
+    public void BindToYear_WhenTheDayOrMonthDoesNotExist_ThrowsBadRequest(int day, int month)
+    {
+        // Act — QC-01: trước đây lọt ArgumentOutOfRangeException, tức lỗi kỹ thuật 500.
+        Action act = () => sut.BindToYear(new AwardPeriod("Đợt sai ngày", day, month, 5, 12), 2026);
+
+        // Assert
+        act.ShouldThrow<BadRequestException>();
+    }
+
+    [Fact]
+    public void BindToYear_WhenThePeriodStartsOn29February_IsStillAccepted()
+    {
+        // Act — 29/02 là ngày có thật ở năm nhuận nên không được coi là ngày sai.
+        PeriodOccurrence occurrence = sut.BindToYear(new AwardPeriod("Đợt nhuận 29/02", 29, 2, 5, 3), 2026);
+
+        // Assert
+        occurrence.From.ShouldBe(new DateOnly(2026, 2, 28));
     }
 
     [Fact]

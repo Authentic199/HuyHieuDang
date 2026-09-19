@@ -47,7 +47,8 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.Import.Invalid.FileSize': 'File vượt quá 10 MB',
   'Mes.Import.Invalid.Columns':
     'File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức',
-  'Mes.Import.Invalid.Empty': 'File không có dòng dữ liệu nào',
+  'Mes.Import.Invalid.Empty': 'File rỗng, không đọc được dữ liệu',
+  'Mes.Import.Invalid.NoDataRows': 'File không có dòng dữ liệu nào',
 
   // Khác
   'Mes.Dashboard.NotFound.UpcomingPeriod': 'Chưa cài đợt trao huy hiệu',
@@ -61,6 +62,10 @@ export const FALLBACK_MESSAGE = 'Thao tác không thực hiện được';
 export const NETWORK_MESSAGE =
   'Không kết nối được tới máy chủ. Kiểm tra lại đường truyền rồi thử lại.';
 export const SERVER_MESSAGE = 'Hệ thống gặp sự cố, vui lòng thử lại';
+
+/** Câu báo khi phiên làm việc 8 giờ hết hạn giữa chừng (mục 1.2). */
+export const SESSION_EXPIRED_MESSAGE =
+  'Phiên làm việc đã hết hạn. Mời bác đăng nhập lại để dùng tiếp.';
 
 /** Tra chữ hiển thị của một khóa. */
 export function messageText(key: string | null | undefined, fallback = FALLBACK_MESSAGE): string {

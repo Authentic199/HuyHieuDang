@@ -5,6 +5,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { BrandMark } from '../../components/BrandMark';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../auth/useAuth';
+import { FALLBACK_MESSAGE, messageText } from '../../api/messages';
 import { paths } from '../../routes/paths';
 import { ApiError } from '../../types/api';
 import './LoginPage.css';
@@ -12,6 +13,26 @@ import './LoginPage.css';
 interface LoginFormValues {
   username: string;
   password: string;
+}
+
+/** Dấu chấm than trong vòng tròn — đúng hình trong artboard 1. */
+function ErrorIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 8v5M12 16v.5" />
+    </svg>
+  );
 }
 
 /** Màn 1 — Đăng nhập (UC-00). */
@@ -31,6 +52,8 @@ export default function LoginPage() {
   const redirectTo = (location.state as { from?: string } | null)?.from ?? paths.dashboard;
 
   async function handleSubmit(values: LoginFormValues) {
+    // Bấm Đăng nhập hai lần, hoặc gõ Enter khi đang gửi, không gửi thêm lần nữa.
+    if (submitting) return;
     setSubmitting(true);
     setErrorMessage(null);
     try {
@@ -38,11 +61,8 @@ export default function LoginPage() {
       navigate(redirectTo, { replace: true });
     } catch (error) {
       // Sai tài khoản hay sai mật khẩu đều báo chung một câu, không chỉ rõ ô nào sai.
-      // Lớp HTTP đã dịch khóa Mes.User.Login.Failed thành "Sai tài khoản hoặc mật khẩu".
-      setErrorMessage(
-        error instanceof ApiError ? error.message : 'Không đăng nhập được. Vui lòng thử lại.',
-      );
-    } finally {
+      // Câu chữ do src/api/messages.ts giữ (khóa Mes.User.Login.Failed), không viết lại ở đây.
+      setErrorMessage(error instanceof ApiError ? error.message : FALLBACK_MESSAGE);
       setSubmitting(false);
     }
   }
@@ -53,10 +73,10 @@ export default function LoginPage() {
         <div className="hhd-login__watermark">
           <Logo size={560} decorative />
         </div>
-        <div style={{ position: 'relative' }}>
+        <div className="hhd-login__brand-row">
           <BrandMark logoSize={36} fontSize={20} />
         </div>
-        <div style={{ position: 'relative' }}>
+        <div className="hhd-login__brand-row">
           <div className="hhd-login__headline">Hệ thống hỗ trợ xét trao Huy hiệu Đảng</div>
           <div className="hhd-login__subline">
             Tự động tính đảng viên tròn mốc tuổi Đảng theo từng đợt, xuất Excel làm tờ trình.
@@ -72,34 +92,43 @@ export default function LoginPage() {
 
           {errorMessage ? (
             <Alert
+              className="hhd-login__error"
               type="error"
+              icon={<ErrorIcon />}
               showIcon
               message={errorMessage}
-              style={{ marginTop: 24 }}
               data-testid="login-error"
             />
           ) : null}
 
           <Form<LoginFormValues>
+            className="hhd-login__form"
             layout="vertical"
             requiredMark={false}
             onFinish={handleSubmit}
-            style={{ marginTop: 20 }}
             autoComplete="on"
           >
             <Form.Item
               name="username"
               label="Tài khoản"
-              rules={[{ required: true, message: 'Vui lòng nhập tài khoản.' }]}
+              rules={[{ required: true, message: messageText('Mes.User.Required.Username') }]}
             >
-              <Input size="large" autoFocus autoComplete="username" />
+              <Input size="large" autoFocus autoComplete="username" disabled={submitting} />
             </Form.Item>
             <Form.Item
               name="password"
               label="Mật khẩu"
-              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu.' }]}
+              rules={[{ required: true, message: messageText('Mes.User.Required.Password') }]}
             >
-              <Input.Password size="large" autoComplete="current-password" />
+              <Input.Password
+                size="large"
+                autoComplete="current-password"
+                disabled={submitting}
+                // Artboard 1 hiện chữ "Hiện" chứ không phải hình con mắt.
+                iconRender={(visible) => (
+                  <span className="hhd-login__reveal">{visible ? 'Ẩn' : 'Hiện'}</span>
+                )}
+              />
             </Form.Item>
             <Button
               className="hhd-login__submit"
@@ -107,8 +136,9 @@ export default function LoginPage() {
               htmlType="submit"
               block
               loading={submitting}
+              disabled={submitting}
             >
-              Đăng nhập
+              {submitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
             </Button>
           </Form>
         </div>

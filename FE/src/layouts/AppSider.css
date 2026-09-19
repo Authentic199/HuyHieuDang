@@ -78,6 +78,12 @@
   text-align: center;
 }
 
+/* Thu gọn: chỉ còn biểu tượng, chữ nhường chỗ cho bảng bên phải. */
+.hhd-sider--collapsed .hhd-sider__item {
+  min-height: 48px;
+  padding: 8px 4px;
+}
+
 .hhd-sider__collapse {
   margin-top: auto;
   display: grid;

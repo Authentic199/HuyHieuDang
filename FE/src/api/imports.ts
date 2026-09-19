@@ -11,7 +11,7 @@ export interface ImportValidRow {
   officialAdmissionDate: IsoDate;
 }
 
-/** Mã lý do của dòng bị loại. Mỗi dòng chỉ có một lý do. */
+/** Mã lý do của dòng bị loại. Một dòng có thể có nhiều lý do (OQ-2). */
 export type ImportErrorCode =
   | 'MissingFullName'
   | 'MissingOfficialAdmissionDate'
@@ -19,6 +19,15 @@ export type ImportErrorCode =
   | 'FutureOfficialAdmissionDate'
   | 'InvalidGender'
   | 'BirthDateAfterAdmissionDate';
+
+/** Tên cột gây lỗi, dùng để tô đỏ đúng ô trong bảng dòng lỗi. */
+export type ImportErrorField = 'FullName' | 'DateOfBirth' | 'Gender' | 'OfficialAdmissionDate';
+
+/** Một lý do của dòng lỗi. */
+export interface ImportRowError {
+  errorCode: ImportErrorCode;
+  field: ImportErrorField;
+}
 
 /**
  * Một dòng bị loại. Mọi trường giữ nguyên chữ thô đọc từ ô Excel — chính chúng
@@ -30,9 +39,8 @@ export interface ImportErrorRow {
   dateOfBirth: string;
   gender: string;
   officialAdmissionDate: string;
-  errorCode: ImportErrorCode;
-  /** Cột gây lỗi, dùng để tô đỏ đúng ô */
-  field: string;
+  /** Luôn có ít nhất một phần tử, sắp theo thứ tự bảng mã lỗi (OQ-2) */
+  errors: ImportRowError[];
 }
 
 /** Chữ hiển thị ở cột "Lý do" của bảng dòng lỗi. */
@@ -44,6 +52,16 @@ export const IMPORT_ERROR_TEXTS: Record<ImportErrorCode, string> = {
   InvalidGender: 'Giới tính chỉ nhận Nam hoặc Nữ',
   BirthDateAfterAdmissionDate: 'Ngày sinh phải trước ngày vào Đảng chính thức',
 };
+
+/** Ghép mọi lý do của một dòng thành chữ cho cột "Lý do", ngăn bằng "; ". */
+export function importErrorText(row: ImportErrorRow): string {
+  return row.errors.map((item) => IMPORT_ERROR_TEXTS[item.errorCode]).join('; ');
+}
+
+/** Những cột bị tô đỏ của một dòng lỗi. */
+export function importErrorFields(row: ImportErrorRow): ImportErrorField[] {
+  return Array.from(new Set(row.errors.map((item) => item.field)));
+}
 
 export interface ImportPreview {
   fileName: string;

@@ -26,9 +26,11 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
         }
 
         List<int> milestones = new();
-        for (int milestone = settings.StartYears; milestone <= settings.EndYears; milestone += settings.StepYears)
+
+        // Cộng bằng long để Bước rất lớn không quay vòng kiểu int thành mốc âm.
+        for (long milestone = settings.StartYears; milestone <= settings.EndYears; milestone += settings.StepYears)
         {
-            milestones.Add(milestone);
+            milestones.Add((int)milestone);
         }
 
         return milestones;
@@ -81,6 +83,17 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
     public PeriodOccurrence BindToYear(AwardPeriod period, int year)
     {
         ArgumentNullException.ThrowIfNull(period);
+
+        ThrowIfDayMonthDoesNotExist(period.FromDay, period.FromMonth, "Từ ngày", period.Name);
+        ThrowIfDayMonthDoesNotExist(period.ToDay, period.ToMonth, "Đến ngày", period.Name);
+
+        // QT6 — đợt nằm trọn trong một năm dương lịch, không vắt qua 31/12 sang 01/01.
+        if (period.FromMonth > period.ToMonth
+            || (period.FromMonth == period.ToMonth && period.FromDay > period.ToDay))
+        {
+            throw new BadRequestException(
+                $"Đợt {period.Name} có Từ ngày lớn hơn Đến ngày; đợt phải nằm trọn trong một năm.");
+        }
 
         return new PeriodOccurrence(
             period,
@@ -139,10 +152,7 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
     {
         ArgumentNullException.ThrowIfNull(periods);
 
-        List<PeriodOccurrence> ordered = periods
-            .Select(x => BindToYear(x, year))
-            .OrderBy(x => x.From)
-            .ToList();
+        List<PeriodOccurrence> ordered = OrderDeterministically(periods.Select(x => BindToYear(x, year)));
 
         List<DateGap> gaps = new();
         DateOnly cursor = new(year, 1, 1);
@@ -171,6 +181,8 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
 
         if (cursor <= lastDayOfYear)
         {
+            // Chưa cài đợt nào thì cả năm là khoảng trống nằm trước đợt đầu tiên, không phải
+            // sau đợt cuối cùng — hợp đồng API mục 1.10 chốt `type = "BeforeFirst"`.
             gaps.Add(new DateGap(
                 cursor,
                 lastDayOfYear,
@@ -186,10 +198,7 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
     {
         ArgumentNullException.ThrowIfNull(periods);
 
-        List<PeriodOccurrence> ordered = periods
-            .Select(x => BindToYear(x, year))
-            .OrderBy(x => x.From)
-            .ToList();
+        List<PeriodOccurrence> ordered = OrderDeterministically(periods.Select(x => BindToYear(x, year)));
 
         List<PeriodOverlap> overlaps = new();
 
@@ -258,6 +267,27 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
         month == 2 && day == 29 && !DateTime.IsLeapYear(year)
             ? new DateOnly(year, 2, 28)
             : new DateOnly(year, month, day);
+
+    /// <summary>
+    /// Sắp đợt theo Từ ngày, rồi Đến ngày, rồi Tên để kết quả không phụ thuộc thứ tự nạp danh sách.
+    /// </summary>
+    private static List<PeriodOccurrence> OrderDeterministically(IEnumerable<PeriodOccurrence> occurrences) =>
+        occurrences
+            .OrderBy(x => x.From)
+            .ThenBy(x => x.To)
+            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
+            .ToList();
+
+    /// <summary>QT6 — ngày/tháng của đợt phải là một ngày có thật (29/02 hợp lệ vì năm nhuận có).</summary>
+    private static void ThrowIfDayMonthDoesNotExist(int day, int month, string field, string periodName)
+    {
+        const int LeapYear = 2028;
+
+        if (month is < 1 or > 12 || day < 1 || day > DateTime.DaysInMonth(LeapYear, month))
+        {
+            throw new BadRequestException($"{field} {day:00}/{month:00} của đợt {periodName} không tồn tại.");
+        }
+    }
 
     private static bool IsWithin(DateOnly date, PeriodOccurrence occurrence) =>
         date >= occurrence.From && date <= occurrence.To;
