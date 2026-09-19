@@ -1,0 +1,102 @@
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+
+import { authApi, uncoveredApi, UNAUTHORIZED_EVENT } from '../api';
+import type { SessionInfo } from '../api/auth';
+import { clearToken, readToken, writeToken } from '../api/token';
+import { AuthContext, type AuthContextValue } from './AuthContext';
+
+/**
+ * Giữ trạng thái đăng nhập cho toàn ứng dụng.
+ * Không gọi axios trực tiếp — mọi lời gọi đi qua src/api.
+ */
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [session, setSession] = useState<SessionInfo | null>(null);
+  const [uncoveredCount, setUncoveredCount] = useState(0);
+
+  const clearSession = useCallback(() => {
+    clearToken();
+    setSession(null);
+    setUncoveredCount(0);
+  }, []);
+
+  /** Badge trên menu trái; lỗi thì giữ số cũ chứ không làm hỏng màn đang xem. */
+  const refreshUncoveredCount = useCallback(async () => {
+    try {
+      const { count } = await uncoveredApi.getUnassignedCount();
+      setUncoveredCount(count);
+    } catch {
+      /* Không làm gì — badge không phải thông tin bắt buộc để dùng tiếp. */
+    }
+  }, []);
+
+  const logout = useCallback(() => {
+    // Máy chủ không huỷ token được (JWT không trạng thái) nên lỗi ở đây
+    // cũng không ngăn việc đăng xuất phía người dùng.
+    void authApi.logout().catch(() => undefined);
+    clearSession();
+  }, [clearSession]);
+
+  // Thẻ hết hạn giữa chừng thì đẩy người dùng về trang Đăng nhập.
+  useEffect(() => {
+    window.addEventListener(UNAUTHORIZED_EVENT, clearSession);
+    return () => window.removeEventListener(UNAUTHORIZED_EVENT, clearSession);
+  }, [clearSession]);
+
+  // Mở lại trình duyệt mà thẻ còn hạn thì vào thẳng, khỏi đăng nhập lại.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function restoreSession() {
+      if (!readToken()) {
+        if (!cancelled) setIsInitializing(false);
+        return;
+      }
+      try {
+        const current = await authApi.getSession();
+        if (cancelled) return;
+        setSession(current);
+        void refreshUncoveredCount();
+      } catch {
+        clearToken();
+      } finally {
+        if (!cancelled) setIsInitializing(false);
+      }
+    }
+
+    void restoreSession();
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshUncoveredCount]);
+
+  const login = useCallback(
+    async (username: string, password: string) => {
+      const { accessToken, ...info } = await authApi.login({ username, password });
+      writeToken(accessToken);
+      setSession(info);
+      void refreshUncoveredCount();
+    },
+    [refreshUncoveredCount],
+  );
+
+  const setUnitName = useCallback((unitName: string | null) => {
+    setSession((current) => (current ? { ...current, unitName } : current));
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      isInitializing,
+      isAuthenticated: session !== null,
+      session,
+      uncoveredCount,
+      login,
+      logout,
+      refreshUncoveredCount,
+      setUnitName,
+    }),
+    [isInitializing, session, uncoveredCount, login, logout, refreshUncoveredCount, setUnitName],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}

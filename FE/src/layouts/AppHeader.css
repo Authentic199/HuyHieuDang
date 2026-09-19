@@ -1,0 +1,52 @@
+.hhd-header {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  background: var(--hhd-gradient-header);
+  box-shadow: var(--hhd-shadow-shell);
+  border-radius: var(--hhd-radius-shell);
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-lg);
+  padding: 0 20px;
+  color: var(--hhd-white);
+}
+
+/* Tên đơn vị đứng cạnh tên hệ thống, ngăn bằng một vạch mờ. */
+.hhd-header__unit {
+  font: 500 14px/20px var(--hhd-font-sans);
+  color: #f7d9d8;
+}
+
+.hhd-header__meta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-lg);
+  font-size: 13px;
+}
+
+.hhd-header__today {
+  color: #f2c4c2;
+}
+
+.hhd-header__divider {
+  width: 1px;
+  height: 20px;
+  background: #83191c;
+}
+
+.hhd-header__logout.ant-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #f2c4c2;
+  background: transparent;
+  color: var(--hhd-white);
+  font: 600 13px var(--hhd-font-sans);
+  box-shadow: none;
+}
+
+.hhd-header__logout.ant-btn:hover {
+  border-color: var(--hhd-white);
+  background: #ffffff1f;
+  color: var(--hhd-white);
+}

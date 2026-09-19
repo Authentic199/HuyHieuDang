@@ -1,0 +1,21 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+# Biến môi trường thật của máy; .env.example được commit
+.env
+.env.*
+!.env.example
+
+# Playwright
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.cache/
+
+# Ảnh chụp dùng cho báo cáo task
+/screenshots/
+
+.DS_Store
+*.log

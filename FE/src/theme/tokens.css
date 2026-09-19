@@ -1,0 +1,59 @@
+/* Biến CSS sinh từ src/theme/tokens.ts — dùng cho phần không đi qua Ant Design.
+   Giữ hai nơi khớp nhau: sửa token thì sửa cả tokens.ts. */
+
+:root {
+  --hhd-red-deep: #6c0f12;
+  --hhd-red: #991a14;
+  --hhd-red-bright: #bd2a1c;
+  --hhd-red-link: #a3161b;
+  --hhd-gold: #ffcd00;
+  --hhd-gold-soft: #fdf5d8;
+  --hhd-tag-gold: #8a6a1e;
+  --hhd-tag-fill: #2a2b2f;
+  --hhd-ink: #1c1c1e;
+  --hhd-canvas: #f7f8fa;
+  --hhd-success: #1f6b4a;
+  --hhd-warning: #9a6b1f;
+  --hhd-danger: #8e1d3a;
+  --hhd-info: #2f4f7a;
+
+  --hhd-text-secondary: #55575c;
+  --hhd-text-tertiary: #6b6d73;
+  --hhd-text-disabled: #a1a3a8;
+  --hhd-border: #e6e8ec;
+  --hhd-border-input: #8a8e96;
+  --hhd-fill: #f5f6f8;
+  --hhd-white: #ffffff;
+
+  --hhd-font-serif: 'Noto Serif', Georgia, serif;
+  --hhd-font-sans: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --hhd-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --hhd-radius-control: 6px;
+  --hhd-radius-card: 10px;
+  --hhd-radius-shell: 12px;
+  --hhd-radius-panel: 14px;
+  --hhd-radius-pill: 9999px;
+
+  --hhd-space-xs: 4px;
+  --hhd-space-sm: 8px;
+  --hhd-space-md: 12px;
+  --hhd-space-lg: 16px;
+  --hhd-space-xl: 24px;
+  --hhd-space-xxl: 40px;
+
+  --hhd-header-height: 56px;
+  --hhd-sider-width: 104px;
+  --hhd-shell-padding: 16px;
+
+  --hhd-gradient-header: linear-gradient(135deg, #8f1619 0%, #6c0f12 55%, #530b0e 100%);
+  --hhd-gradient-sider: linear-gradient(160deg, #86141a 0%, #6c0f12 45%, #560c0f 100%);
+  --hhd-gradient-sider-active: linear-gradient(180deg, #9d2220 0%, #7d1517 100%);
+  --hhd-gradient-primary: linear-gradient(135deg, #bd2a1c 0%, #991a14 50%, #6c0f12 100%);
+
+  --hhd-shadow-shell: inset 0 1px 0 #ffffff33, 0 2px 8px -3px #6c0f1259;
+  --hhd-shadow-sider: inset 0 1px 0 #ffffff2e, 0 2px 8px -3px #6c0f1259;
+  --hhd-shadow-sider-active: inset 0 1px 0 #ffffff40;
+  --hhd-shadow-primary: inset 0 1px 0 #ffffff4d, 0 2px 6px -2px #6c0f1259;
+  --hhd-shadow-card: 0 1px 2px #1c1c1e0a;
+}

@@ -1,0 +1,96 @@
+.hhd-login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Nửa trái: nền đỏ gradient, logo mờ lớn ở góc dưới phải. */
+.hhd-login__brand {
+  background: var(--hhd-gradient-header);
+  color: var(--hhd-white);
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.hhd-login__watermark {
+  position: absolute;
+  right: -150px;
+  bottom: -130px;
+  width: 560px;
+  height: 560px;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.hhd-login__headline {
+  position: relative;
+  font: 700 42px/50px var(--hhd-font-serif);
+  letter-spacing: -0.01em;
+  max-width: 520px;
+  text-wrap: pretty;
+}
+
+.hhd-login__subline {
+  margin-top: 20px;
+  color: #f2c4c2;
+  max-width: 440px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.hhd-login__version {
+  font: 12px/16px var(--hhd-font-mono);
+  color: #f2c4c2;
+  position: relative;
+}
+
+/* Nửa phải: hộp đăng nhập trên nền xám nhạt. */
+.hhd-login__form-side {
+  background: var(--hhd-canvas);
+  display: grid;
+  place-items: center;
+  padding: 64px;
+}
+
+.hhd-login__card {
+  width: 420px;
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-panel);
+  padding: 32px;
+}
+
+.hhd-login__title {
+  font: 700 22px/30px var(--hhd-font-serif);
+}
+
+.hhd-login__hint {
+  color: var(--hhd-text-secondary);
+  margin-top: 4px;
+}
+
+/* Ô nhập và nút cao 48px cho dễ bấm. */
+.hhd-login__card .ant-input-affix-wrapper,
+.hhd-login__card .ant-input {
+  height: 48px;
+  font-size: 16px;
+}
+
+.hhd-login__submit.ant-btn {
+  height: 48px;
+  font-size: 16px;
+}
+
+@media (max-width: 1024px) {
+  .hhd-login {
+    grid-template-columns: 1fr;
+  }
+
+  .hhd-login__brand {
+    display: none;
+  }
+}

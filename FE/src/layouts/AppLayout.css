@@ -1,0 +1,26 @@
+/* Khung 1440x900 của artboard: header trên cùng trải hết bề ngang,
+   sider 104px bên trái, nội dung bên phải, khe 16px. */
+.hhd-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--hhd-sider-width) 1fr;
+  grid-template-rows: var(--hhd-header-height) 1fr;
+  gap: var(--hhd-shell-padding);
+  padding: var(--hhd-shell-padding);
+  background: var(--hhd-canvas);
+}
+
+.hhd-main {
+  grid-row: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hhd-space-xl);
+}
+
+.hhd-shell__loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--hhd-canvas);
+}

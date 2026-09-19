@@ -1,0 +1,118 @@
+@import './tokens.css';
+@import '@fontsource/noto-sans/latin-400.css';
+@import '@fontsource/noto-sans/latin-500.css';
+@import '@fontsource/noto-sans/latin-600.css';
+@import '@fontsource/noto-sans/latin-700.css';
+@import '@fontsource/noto-sans/vietnamese-400.css';
+@import '@fontsource/noto-sans/vietnamese-500.css';
+@import '@fontsource/noto-sans/vietnamese-600.css';
+@import '@fontsource/noto-sans/vietnamese-700.css';
+@import '@fontsource/noto-serif/latin-700.css';
+@import '@fontsource/noto-serif/vietnamese-700.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/vietnamese-400.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--hhd-canvas);
+  color: var(--hhd-ink);
+  font-family: var(--hhd-font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tiêu đề dùng chữ có chân theo thiết kế */
+h1,
+h2,
+h3,
+h4,
+.ant-typography h1,
+.ant-typography h2,
+.ant-typography h3,
+.ant-modal-title,
+.ant-statistic-content {
+  font-family: var(--hhd-font-serif);
+}
+
+/* Số liệu xếp thẳng cột cho dễ đối chiếu */
+.ant-table,
+.ant-statistic-content,
+.hhd-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+code,
+kbd,
+.hhd-mono {
+  font-family: var(--hhd-font-mono);
+}
+
+/* Nhãn chữ nhỏ in hoa dùng ở đầu mỗi khối */
+.hhd-overline {
+  font: 600 11px/16px var(--hhd-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hhd-text-secondary);
+}
+
+/* Ô trống trong bảng hiển thị dấu gạch ngang mờ */
+.hhd-empty-cell {
+  color: var(--hhd-text-disabled);
+}
+
+/* Nút chính dùng gradient đỏ của thiết kế thay vì màu phẳng */
+.ant-btn-primary:not(:disabled):not(.ant-btn-dangerous) {
+  background: var(--hhd-gradient-primary);
+  box-shadow: var(--hhd-shadow-primary);
+  border: 0;
+}
+
+.ant-btn-default:not(:disabled) {
+  box-shadow: var(--hhd-shadow-card);
+}
+
+/* Alert theo thiết kế: nền trắng, viền xám nhạt, chỉ biểu tượng mang màu.
+   Bốn loại khác nhau ở màu biểu tượng, không đổi màu nền. */
+.ant-alert {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  padding: 14px 20px;
+  gap: var(--hhd-space-md);
+}
+
+.ant-alert .ant-alert-message {
+  font-weight: 700;
+  color: var(--hhd-ink);
+}
+
+.ant-alert .ant-alert-description {
+  color: var(--hhd-text-secondary);
+}
+
+.ant-alert-error .ant-alert-icon {
+  color: var(--hhd-danger);
+}
+
+.ant-alert-warning .ant-alert-icon {
+  color: #7d5414;
+}
+
+.ant-alert-success .ant-alert-icon {
+  color: #1a5f40;
+}
+
+.ant-alert-info .ant-alert-icon {
+  color: #2b466b;
+}
