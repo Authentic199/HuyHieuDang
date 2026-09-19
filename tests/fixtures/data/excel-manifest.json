@@ -1,0 +1,86 @@
+[
+  {
+    "file": "mau-dang-vien.xlsx",
+    "validRows": 2,
+    "errorRows": 0,
+    "purpose": "UC-25 - đối chiếu file mẫu do hệ thống tạo ra (đúng 4 cột, đúng thứ tự, ngày dd/MM/yyyy)",
+    "note": ""
+  },
+  {
+    "file": "core-hop-le.xlsx",
+    "validRows": 32,
+    "errorRows": 0,
+    "purpose": "Bộ lõi 31 ca biên, ngày ghi dạng CHUỖI dd/MM/yyyy. File chính cho E2E-1.",
+    "note": ""
+  },
+  {
+    "file": "core-hop-le-ngay-kieu-date.xlsx",
+    "validRows": 32,
+    "errorRows": 0,
+    "purpose": "Cùng dữ liệu nhưng ô ngày là KIỂU NGÀY của Excel (số serial), không phải chuỗi. Trình đọc phải nhận cả hai kiểu.",
+    "note": ""
+  },
+  {
+    "file": "bulk-1200.xlsx",
+    "validRows": 1200,
+    "errorRows": 0,
+    "purpose": "Phân trang / tìm kiếm / hiệu năng. Ngày chính thức 2015-2020 nên KHÔNG ảnh hưởng con số đủ điều kiện của bộ lõi ở các năm 2025-2030.",
+    "note": ""
+  },
+  {
+    "file": "loi-4-dong.xlsx",
+    "validRows": 6,
+    "errorRows": 4,
+    "purpose": "E2E-2 - xem trước phải báo 'Sẽ thêm 6 người mới · 4 dòng lỗi bị bỏ qua'. Dòng lỗi ở các dòng Excel 8, 9, 10, 11.",
+    "note": ""
+  },
+  {
+    "file": "loi-moi-loai-mot-dong.xlsx",
+    "validRows": 2,
+    "errorRows": 8,
+    "purpose": "QT9 - mỗi loại lỗi cấp dòng một dòng, kèm 2 dòng hợp lệ (dòng cuối là biên 'Ngày chính thức đúng bằng hôm nay'). Bảng lỗi phải nêu đúng số dòng Excel và lý do.",
+    "note": ""
+  },
+  {
+    "file": "bien-chuan-hoa.xlsx",
+    "validRows": 0,
+    "errorRows": 0,
+    "purpose": "Các dòng mà tài liệu CHƯA quy định (OQ-4 trim họ tên, OQ-5 hoa/thường giới tính, OQ-6 ngày d/M/yyyy). Kết quả mong đợi chỉ chốt sau khi CEO trả lời.",
+    "note": ""
+  },
+  {
+    "file": "loi-sai-cot.xlsx",
+    "validRows": 0,
+    "errorRows": 0,
+    "purpose": "QT9 lỗi cấp file - 5 cột, sai thứ tự. Phải bị chặn ngay ở bước 1, không sang xem trước.",
+    "note": ""
+  },
+  {
+    "file": "loi-rong.xlsx",
+    "validRows": 0,
+    "errorRows": 0,
+    "purpose": "QT9 lỗi cấp file - sheet hoàn toàn rỗng, không có cả tiêu đề.",
+    "note": ""
+  },
+  {
+    "file": "loi-chi-co-tieu-de.xlsx",
+    "validRows": 0,
+    "errorRows": 0,
+    "purpose": "QT9 lỗi cấp file - đúng tiêu đề nhưng 0 dòng dữ liệu. Thông báo phải khác thông báo của file rỗng hoàn toàn (OQ-7).",
+    "note": ""
+  },
+  {
+    "file": "loi-khong-phai-xlsx.xlsx",
+    "validRows": 0,
+    "errorRows": 0,
+    "purpose": "QT9 lỗi cấp file - không phải tệp zip/xlsx. Phải trả 400 với thông báo tiếng Việt, không phải 500.",
+    "note": ""
+  },
+  {
+    "file": "loi-dinh-dang-csv.csv",
+    "validRows": 0,
+    "errorRows": 0,
+    "purpose": "QT9 lỗi cấp file - .csv phải bị từ chối vì chỉ nhận .xlsx.",
+    "note": ""
+  }
+]

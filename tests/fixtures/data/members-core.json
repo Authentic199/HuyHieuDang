@@ -1,0 +1,258 @@
+[
+  {
+    "code": "B01",
+    "fullName": "Nguyễn Văn An",
+    "dateOfBirth": "1974-03-12",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-10-01",
+    "intent": "QT4 biên dưới: tròn 30 đúng Từ ngày Đợt 7/11 (01/10/2026)"
+  },
+  {
+    "code": "B02",
+    "fullName": "Trần Thị Bình",
+    "dateOfBirth": "1973-07-05",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-11-07",
+    "intent": "QT4 biên trên: tròn 30 đúng Đến ngày Đợt 7/11 (07/11/2026)"
+  },
+  {
+    "code": "B03",
+    "fullName": "Lê Văn Cường",
+    "dateOfBirth": "1972-11-21",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-09-30",
+    "intent": "QT4/QT7: lệch 1 ngày TRƯỚC Từ ngày Đợt 7/11 -> khoảng trống giữa Đợt 2/9 và Đợt 7/11"
+  },
+  {
+    "code": "B04",
+    "fullName": "Phạm Thị Dung",
+    "dateOfBirth": "1975-02-09",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-11-08",
+    "intent": "QT4/QT7: lệch 1 ngày SAU Đến ngày Đợt 7/11 -> khoảng trống sau đợt cuối cùng"
+  },
+  {
+    "code": "B05",
+    "fullName": "Hoàng Văn Em",
+    "dateOfBirth": "1971-06-30",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-01-15",
+    "intent": "QT4 biên dưới: tròn 30 đúng Từ ngày Đợt 3/2 (15/01/2026)"
+  },
+  {
+    "code": "B06",
+    "fullName": "Vũ Thị Giang",
+    "dateOfBirth": "1972-09-14",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-03-05",
+    "intent": "QT4 biên trên: tròn 30 đúng Đến ngày Đợt 3/2 (05/03/2026)"
+  },
+  {
+    "code": "B07",
+    "fullName": "Đỗ Văn Hải",
+    "dateOfBirth": "1970-03-03",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-01-14",
+    "intent": "QT7: lệch 1 ngày trước Đợt 3/2 -> khoảng trống trước đợt đầu tiên"
+  },
+  {
+    "code": "B08",
+    "fullName": "Bùi Thị Hoa",
+    "dateOfBirth": "1973-12-28",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-03-06",
+    "intent": "QT7: lệch 1 ngày sau Đợt 3/2 -> khoảng trống giữa Đợt 3/2 và Đợt 19/5"
+  },
+  {
+    "code": "B09",
+    "fullName": "Đinh Văn Khoa",
+    "dateOfBirth": "1970-04-17",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-05-01",
+    "intent": "QT4 biên dưới Đợt 19/5 (01/05/2026)"
+  },
+  {
+    "code": "B10",
+    "fullName": "Hà Thị Liên",
+    "dateOfBirth": "1971-08-02",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-05-31",
+    "intent": "QT4 biên trên Đợt 19/5 (31/05/2026)"
+  },
+  {
+    "code": "B11",
+    "fullName": "Chu Văn Mạnh",
+    "dateOfBirth": "1969-09-19",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-08-15",
+    "intent": "QT4 biên dưới Đợt 2/9 (15/08/2026)"
+  },
+  {
+    "code": "B12",
+    "fullName": "Trương Thị Nhàn",
+    "dateOfBirth": "1974-10-25",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-09-10",
+    "intent": "QT4 biên trên Đợt 2/9 (10/09/2026)"
+  },
+  {
+    "code": "L01",
+    "fullName": "Ngô Văn Khánh",
+    "dateOfBirth": "1976-02-29",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-02-29",
+    "intent": "QT2 năm đích KHÔNG nhuận: 29/02/1996 + 30 -> 28/02/2026, nằm trong Đợt 3/2"
+  },
+  {
+    "code": "L02",
+    "fullName": "Dương Thị Lan",
+    "dateOfBirth": "1966-06-11",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1988-02-29",
+    "intent": "QT2 năm đích NHUẬN: 29/02/1988 + 40 -> 29/02/2028 (giữ nguyên 29/02). Năm 2026 không có mốc nào -> không xuất hiện ở bất kỳ danh sách nào của 2026"
+  },
+  {
+    "code": "L03",
+    "fullName": "Lâm Văn Lộc",
+    "dateOfBirth": "1968-02-29",
+    "gender": "Nam",
+    "officialAdmissionDate": "1991-05-20",
+    "intent": "Ngày sinh 29/02 (hiển thị), tròn 35 ngày 20/05/2026 trong Đợt 19/5; mốc 35 biến mất khi Bước = 10"
+  },
+  {
+    "code": "M01",
+    "fullName": "Trịnh Văn Minh",
+    "dateOfBirth": "1917-01-01",
+    "gender": "Nam",
+    "officialAdmissionDate": "1935-05-01",
+    "intent": "QT3a: tuổi đảng 91 > mốc lớn nhất -> Mốc kế tiếp và Ngày tròn mốc kế tiếp đều là '—'; không có mốc nào trong 2026"
+  },
+  {
+    "code": "M02",
+    "fullName": "Lý Thị Nga",
+    "dateOfBirth": "1918-03-20",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1936-05-01",
+    "intent": "QT3a + QT4: tuổi đảng đúng 90 -> Mốc kế tiếp '—', đồng thời tròn mốc 90 ngày 01/05/2026 nên vẫn đủ điều kiện Đợt 19/5"
+  },
+  {
+    "code": "M03",
+    "fullName": "Phan Văn Phúc",
+    "dateOfBirth": "1918-08-08",
+    "gender": "Nam",
+    "officialAdmissionDate": "1936-06-10",
+    "intent": "QT3a + QT7: tròn mốc 90 ngày 10/06/2026 rơi vào khoảng trống giữa Đợt 19/5 và Đợt 2/9"
+  },
+  {
+    "code": "N01",
+    "fullName": "Đặng Thị Quỳnh",
+    "dateOfBirth": "1978-02-14",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1997-10-01",
+    "intent": "Tuổi đảng 28, chưa tới mốc 30. Tròn 30 ngày 01/10/2027 -> chỉ đủ điều kiện ở NĂM SAU, dùng cho bộ chọn năm của UC-34"
+  },
+  {
+    "code": "N02",
+    "fullName": "Tạ Văn Sơn",
+    "dateOfBirth": "1980-05-06",
+    "gender": "Nam",
+    "officialAdmissionDate": "2000-01-15",
+    "intent": "Tuổi đảng 26, mốc kế tiếp 30 vào 15/01/2030 -> không xuất hiện ở 2025/2026/2027"
+  },
+  {
+    "code": "E01",
+    "fullName": "Cao Thị Thu",
+    "dateOfBirth": null,
+    "gender": null,
+    "officialAdmissionDate": "1996-05-20",
+    "intent": "Ngày sinh trống + Giới tính trống, đủ điều kiện Đợt 19/5 mốc 30"
+  },
+  {
+    "code": "E02",
+    "fullName": "Mai Văn Tuấn",
+    "dateOfBirth": null,
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-08-25",
+    "intent": "Ngày sinh trống, đủ điều kiện Đợt 2/9 mốc 30"
+  },
+  {
+    "code": "E03",
+    "fullName": "Võ Thị Út",
+    "dateOfBirth": "1975-07-07",
+    "gender": null,
+    "officialAdmissionDate": "1996-08-22",
+    "intent": "Giới tính trống, đủ điều kiện Đợt 2/9 mốc 30"
+  },
+  {
+    "code": "S01",
+    "fullName": "Hồ Thị Vân",
+    "dateOfBirth": "1969-01-19",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1991-10-05",
+    "intent": "Mốc 35 ngày 05/10/2026 trong Đợt 7/11 -> BIẾN MẤT khi Bước = 10"
+  },
+  {
+    "code": "S02",
+    "fullName": "Nguyễn Văn Xuân",
+    "dateOfBirth": "1962-04-23",
+    "gender": "Nam",
+    "officialAdmissionDate": "1986-10-20",
+    "intent": "Mốc 40 ngày 20/10/2026 trong Đợt 7/11 -> GIỮ NGUYÊN khi Bước = 10 (ca đối chứng)"
+  },
+  {
+    "code": "S03",
+    "fullName": "Trần Thị Yến",
+    "dateOfBirth": "1957-11-16",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1981-11-03",
+    "intent": "Mốc 45 ngày 03/11/2026 trong Đợt 7/11 -> BIẾN MẤT khi Bước = 10"
+  },
+  {
+    "code": "S04",
+    "fullName": "Ngô Thị Cẩm",
+    "dateOfBirth": "1966-03-08",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1991-07-15",
+    "intent": "Mốc 35 ngày 15/07/2026 rơi vào khoảng trống -> khi Bước = 10 thì rời luôn khỏi màn Chưa thuộc đợt nào, badge trên menu giảm. Ca đối chứng cho E2E-3"
+  },
+  {
+    "code": "G05",
+    "fullName": "Phùng Văn Bảo",
+    "dateOfBirth": "1970-12-12",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-07-01",
+    "intent": "QT7: tròn 30 ngày 01/07/2026 -> khoảng trống giữa Đợt 19/5 và Đợt 2/9"
+  },
+  {
+    "code": "C01",
+    "fullName": "Đào Văn Ân",
+    "dateOfBirth": "1975-01-01",
+    "gender": "Nam",
+    "officialAdmissionDate": "1996-10-03",
+    "intent": "Mốc 30 ngày 03/10/2026 trong Đợt 7/11. Chữ Đ phải sắp TRƯỚC N và T theo thứ tự tiếng Việt, nhưng SAU theo thứ tự mã Unicode -> phân biệt collation"
+  },
+  {
+    "code": "X01",
+    "fullName": "Nguyễn Thị Ánh",
+    "dateOfBirth": "1971-02-02",
+    "gender": "Nữ",
+    "officialAdmissionDate": "1996-02-10",
+    "intent": "Mốc 30 ngày 10/02/2026, nằm giữa lòng Đợt 3/2 (không phải biên)"
+  },
+  {
+    "code": "X02",
+    "fullName": "Nguyễn Văn Ẩn",
+    "dateOfBirth": "1968-09-09",
+    "gender": "Nam",
+    "officialAdmissionDate": "1991-02-20",
+    "intent": "Mốc 35 ngày 20/02/2026 trong Đợt 3/2; tên khác X01 chỉ ở dấu -> kiểm tra sắp xếp và tìm kiếm"
+  },
+  {
+    "code": "V01",
+    "fullName": "Lưu Thị Diễm",
+    "dateOfBirth": "2000-04-04",
+    "gender": "Nữ",
+    "officialAdmissionDate": "2026-09-19",
+    "intent": "Ngày chính thức ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
+  }
+]

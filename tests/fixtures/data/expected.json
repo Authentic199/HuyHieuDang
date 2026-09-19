@@ -1,0 +1,5704 @@
+{
+  "meta": {
+    "generatedBy": "tests/fixtures/generate.py",
+    "source": "docs/2026-09-17-huyhieudang-business-design.md v1.1, mục 3 và 4",
+    "warning": "Tệp sinh tự động. Sửa dataset.py/qt_reference.py rồi chạy lại generate.py."
+  },
+  "fixedDates": {
+    "T0": "2026-09-19",
+    "T1": "2026-10-15",
+    "T2": "2026-12-01",
+    "timezone": "Asia/Ho_Chi_Minh"
+  },
+  "counts": {
+    "core": 32,
+    "bulk": 1200,
+    "total": 1232,
+    "coreGenderNam": 16,
+    "coreGenderNu": 14,
+    "coreGenderTrong": 2,
+    "totalGenderNam": 592,
+    "totalGenderNu": 590,
+    "totalGenderTrong": 50,
+    "totalDobTrong": 62
+  },
+  "pagination": {
+    "totalRows": 1232,
+    "pages": {
+      "10": 124,
+      "20": 62,
+      "50": 25,
+      "100": 13
+    },
+    "lastPageRows": {
+      "10": 2,
+      "20": 12,
+      "50": 32,
+      "100": 32
+    }
+  },
+  "search": {
+    "note": "Đếm trên bộ lõi + bộ lớn đã nạp cùng nhau. Phân biệt hoa/thường: xem OQ-8.",
+    "Nguyễn": 79,
+    "nguyễn (viết thường)": 79,
+    "Đào Văn Ân": 1,
+    "Nguyễn Thị Ánh": 1,
+    "Không Tồn Tại": 0
+  },
+  "periods": {
+    "main": [
+      {
+        "code": "P1",
+        "name": "Đợt 3/2",
+        "fromDay": 15,
+        "fromMonth": 1,
+        "toDay": 5,
+        "toMonth": 3,
+        "label": "15/01 – 05/03"
+      },
+      {
+        "code": "P2",
+        "name": "Đợt 19/5",
+        "fromDay": 1,
+        "fromMonth": 5,
+        "toDay": 31,
+        "toMonth": 5,
+        "label": "01/05 – 31/05"
+      },
+      {
+        "code": "P3",
+        "name": "Đợt 2/9",
+        "fromDay": 15,
+        "fromMonth": 8,
+        "toDay": 10,
+        "toMonth": 9,
+        "label": "15/08 – 10/09"
+      },
+      {
+        "code": "P4",
+        "name": "Đợt 7/11",
+        "fromDay": 1,
+        "fromMonth": 10,
+        "toDay": 7,
+        "toMonth": 11,
+        "label": "01/10 – 07/11"
+      }
+    ],
+    "leapEdge": [
+      {
+        "code": "PL1",
+        "name": "Đợt nhuận 29/02",
+        "fromDay": 29,
+        "fromMonth": 2,
+        "toDay": 5,
+        "toMonth": 3,
+        "label": "29/02 – 05/03"
+      }
+    ]
+  },
+  "exportFileNames": {
+    "Đợt 7/11 năm 2026": "DuDieuKien_Dot7-11_2026.xlsx",
+    "Đợt 3/2 năm 2026": "DuDieuKien_Dot3-2_2026.xlsx",
+    "Đợt 19/5 năm 2026": "DuDieuKien_Dot19-5_2026.xlsx",
+    "Đợt 2/9 năm 2026": "DuDieuKien_Dot2-9_2026.xlsx",
+    "Chưa thuộc đợt nào năm 2026": "ChuaThuocDot_2026.xlsx"
+  },
+  "memberList": {
+    "T0_default": [
+      {
+        "code": "B01",
+        "fullName": "Nguyễn Văn An",
+        "dateOfBirth": "1974-03-12",
+        "dateOfBirthDisplay": "12/03/1974",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-10-01",
+        "officialAdmissionDateDisplay": "01/10/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-10-01",
+        "nextAnniversaryDisplay": "01/10/2026",
+        "intent": "QT4 biên dưới: tròn 30 đúng Từ ngày Đợt 7/11 (01/10/2026)"
+      },
+      {
+        "code": "B02",
+        "fullName": "Trần Thị Bình",
+        "dateOfBirth": "1973-07-05",
+        "dateOfBirthDisplay": "05/07/1973",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-11-07",
+        "officialAdmissionDateDisplay": "07/11/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-11-07",
+        "nextAnniversaryDisplay": "07/11/2026",
+        "intent": "QT4 biên trên: tròn 30 đúng Đến ngày Đợt 7/11 (07/11/2026)"
+      },
+      {
+        "code": "B03",
+        "fullName": "Lê Văn Cường",
+        "dateOfBirth": "1972-11-21",
+        "dateOfBirthDisplay": "21/11/1972",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-09-30",
+        "officialAdmissionDateDisplay": "30/09/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-09-30",
+        "nextAnniversaryDisplay": "30/09/2026",
+        "intent": "QT4/QT7: lệch 1 ngày TRƯỚC Từ ngày Đợt 7/11 -> khoảng trống giữa Đợt 2/9 và Đợt 7/11"
+      },
+      {
+        "code": "B04",
+        "fullName": "Phạm Thị Dung",
+        "dateOfBirth": "1975-02-09",
+        "dateOfBirthDisplay": "09/02/1975",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-11-08",
+        "officialAdmissionDateDisplay": "08/11/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-11-08",
+        "nextAnniversaryDisplay": "08/11/2026",
+        "intent": "QT4/QT7: lệch 1 ngày SAU Đến ngày Đợt 7/11 -> khoảng trống sau đợt cuối cùng"
+      },
+      {
+        "code": "B05",
+        "fullName": "Hoàng Văn Em",
+        "dateOfBirth": "1971-06-30",
+        "dateOfBirthDisplay": "30/06/1971",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-01-15",
+        "officialAdmissionDateDisplay": "15/01/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-01-15",
+        "nextAnniversaryDisplay": "15/01/2031",
+        "intent": "QT4 biên dưới: tròn 30 đúng Từ ngày Đợt 3/2 (15/01/2026)"
+      },
+      {
+        "code": "B06",
+        "fullName": "Vũ Thị Giang",
+        "dateOfBirth": "1972-09-14",
+        "dateOfBirthDisplay": "14/09/1972",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-03-05",
+        "officialAdmissionDateDisplay": "05/03/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-03-05",
+        "nextAnniversaryDisplay": "05/03/2031",
+        "intent": "QT4 biên trên: tròn 30 đúng Đến ngày Đợt 3/2 (05/03/2026)"
+      },
+      {
+        "code": "B07",
+        "fullName": "Đỗ Văn Hải",
+        "dateOfBirth": "1970-03-03",
+        "dateOfBirthDisplay": "03/03/1970",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-01-14",
+        "officialAdmissionDateDisplay": "14/01/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-01-14",
+        "nextAnniversaryDisplay": "14/01/2031",
+        "intent": "QT7: lệch 1 ngày trước Đợt 3/2 -> khoảng trống trước đợt đầu tiên"
+      },
+      {
+        "code": "B08",
+        "fullName": "Bùi Thị Hoa",
+        "dateOfBirth": "1973-12-28",
+        "dateOfBirthDisplay": "28/12/1973",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-03-06",
+        "officialAdmissionDateDisplay": "06/03/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-03-06",
+        "nextAnniversaryDisplay": "06/03/2031",
+        "intent": "QT7: lệch 1 ngày sau Đợt 3/2 -> khoảng trống giữa Đợt 3/2 và Đợt 19/5"
+      },
+      {
+        "code": "B09",
+        "fullName": "Đinh Văn Khoa",
+        "dateOfBirth": "1970-04-17",
+        "dateOfBirthDisplay": "17/04/1970",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-05-01",
+        "officialAdmissionDateDisplay": "01/05/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-05-01",
+        "nextAnniversaryDisplay": "01/05/2031",
+        "intent": "QT4 biên dưới Đợt 19/5 (01/05/2026)"
+      },
+      {
+        "code": "B10",
+        "fullName": "Hà Thị Liên",
+        "dateOfBirth": "1971-08-02",
+        "dateOfBirthDisplay": "02/08/1971",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-05-31",
+        "officialAdmissionDateDisplay": "31/05/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-05-31",
+        "nextAnniversaryDisplay": "31/05/2031",
+        "intent": "QT4 biên trên Đợt 19/5 (31/05/2026)"
+      },
+      {
+        "code": "B11",
+        "fullName": "Chu Văn Mạnh",
+        "dateOfBirth": "1969-09-19",
+        "dateOfBirthDisplay": "19/09/1969",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-08-15",
+        "officialAdmissionDateDisplay": "15/08/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-08-15",
+        "nextAnniversaryDisplay": "15/08/2031",
+        "intent": "QT4 biên dưới Đợt 2/9 (15/08/2026)"
+      },
+      {
+        "code": "B12",
+        "fullName": "Trương Thị Nhàn",
+        "dateOfBirth": "1974-10-25",
+        "dateOfBirthDisplay": "25/10/1974",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-09-10",
+        "officialAdmissionDateDisplay": "10/09/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-09-10",
+        "nextAnniversaryDisplay": "10/09/2031",
+        "intent": "QT4 biên trên Đợt 2/9 (10/09/2026)"
+      },
+      {
+        "code": "L01",
+        "fullName": "Ngô Văn Khánh",
+        "dateOfBirth": "1976-02-29",
+        "dateOfBirthDisplay": "29/02/1976",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-02-29",
+        "officialAdmissionDateDisplay": "29/02/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-02-28",
+        "nextAnniversaryDisplay": "28/02/2031",
+        "intent": "QT2 năm đích KHÔNG nhuận: 29/02/1996 + 30 -> 28/02/2026, nằm trong Đợt 3/2"
+      },
+      {
+        "code": "L02",
+        "fullName": "Dương Thị Lan",
+        "dateOfBirth": "1966-06-11",
+        "dateOfBirthDisplay": "11/06/1966",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1988-02-29",
+        "officialAdmissionDateDisplay": "29/02/1988",
+        "partyAge": 38,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2028-02-29",
+        "nextAnniversaryDisplay": "29/02/2028",
+        "intent": "QT2 năm đích NHUẬN: 29/02/1988 + 40 -> 29/02/2028 (giữ nguyên 29/02). Năm 2026 không có mốc nào -> không xuất hiện ở bất kỳ danh sách nào của 2026"
+      },
+      {
+        "code": "L03",
+        "fullName": "Lâm Văn Lộc",
+        "dateOfBirth": "1968-02-29",
+        "dateOfBirthDisplay": "29/02/1968",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1991-05-20",
+        "officialAdmissionDateDisplay": "20/05/1991",
+        "partyAge": 35,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-05-20",
+        "nextAnniversaryDisplay": "20/05/2031",
+        "intent": "Ngày sinh 29/02 (hiển thị), tròn 35 ngày 20/05/2026 trong Đợt 19/5; mốc 35 biến mất khi Bước = 10"
+      },
+      {
+        "code": "M01",
+        "fullName": "Trịnh Văn Minh",
+        "dateOfBirth": "1917-01-01",
+        "dateOfBirthDisplay": "01/01/1917",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1935-05-01",
+        "officialAdmissionDateDisplay": "01/05/1935",
+        "partyAge": 91,
+        "nextMilestone": null,
+        "nextMilestoneDisplay": "—",
+        "nextAnniversary": null,
+        "nextAnniversaryDisplay": "—",
+        "intent": "QT3a: tuổi đảng 91 > mốc lớn nhất -> Mốc kế tiếp và Ngày tròn mốc kế tiếp đều là '—'; không có mốc nào trong 2026"
+      },
+      {
+        "code": "M02",
+        "fullName": "Lý Thị Nga",
+        "dateOfBirth": "1918-03-20",
+        "dateOfBirthDisplay": "20/03/1918",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1936-05-01",
+        "officialAdmissionDateDisplay": "01/05/1936",
+        "partyAge": 90,
+        "nextMilestone": null,
+        "nextMilestoneDisplay": "—",
+        "nextAnniversary": null,
+        "nextAnniversaryDisplay": "—",
+        "intent": "QT3a + QT4: tuổi đảng đúng 90 -> Mốc kế tiếp '—', đồng thời tròn mốc 90 ngày 01/05/2026 nên vẫn đủ điều kiện Đợt 19/5"
+      },
+      {
+        "code": "M03",
+        "fullName": "Phan Văn Phúc",
+        "dateOfBirth": "1918-08-08",
+        "dateOfBirthDisplay": "08/08/1918",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1936-06-10",
+        "officialAdmissionDateDisplay": "10/06/1936",
+        "partyAge": 90,
+        "nextMilestone": null,
+        "nextMilestoneDisplay": "—",
+        "nextAnniversary": null,
+        "nextAnniversaryDisplay": "—",
+        "intent": "QT3a + QT7: tròn mốc 90 ngày 10/06/2026 rơi vào khoảng trống giữa Đợt 19/5 và Đợt 2/9"
+      },
+      {
+        "code": "N01",
+        "fullName": "Đặng Thị Quỳnh",
+        "dateOfBirth": "1978-02-14",
+        "dateOfBirthDisplay": "14/02/1978",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1997-10-01",
+        "officialAdmissionDateDisplay": "01/10/1997",
+        "partyAge": 28,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2027-10-01",
+        "nextAnniversaryDisplay": "01/10/2027",
+        "intent": "Tuổi đảng 28, chưa tới mốc 30. Tròn 30 ngày 01/10/2027 -> chỉ đủ điều kiện ở NĂM SAU, dùng cho bộ chọn năm của UC-34"
+      },
+      {
+        "code": "N02",
+        "fullName": "Tạ Văn Sơn",
+        "dateOfBirth": "1980-05-06",
+        "dateOfBirthDisplay": "06/05/1980",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "2000-01-15",
+        "officialAdmissionDateDisplay": "15/01/2000",
+        "partyAge": 26,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2030-01-15",
+        "nextAnniversaryDisplay": "15/01/2030",
+        "intent": "Tuổi đảng 26, mốc kế tiếp 30 vào 15/01/2030 -> không xuất hiện ở 2025/2026/2027"
+      },
+      {
+        "code": "E01",
+        "fullName": "Cao Thị Thu",
+        "dateOfBirth": null,
+        "dateOfBirthDisplay": "—",
+        "gender": null,
+        "genderDisplay": "—",
+        "officialAdmissionDate": "1996-05-20",
+        "officialAdmissionDateDisplay": "20/05/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-05-20",
+        "nextAnniversaryDisplay": "20/05/2031",
+        "intent": "Ngày sinh trống + Giới tính trống, đủ điều kiện Đợt 19/5 mốc 30"
+      },
+      {
+        "code": "E02",
+        "fullName": "Mai Văn Tuấn",
+        "dateOfBirth": null,
+        "dateOfBirthDisplay": "—",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-08-25",
+        "officialAdmissionDateDisplay": "25/08/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-08-25",
+        "nextAnniversaryDisplay": "25/08/2031",
+        "intent": "Ngày sinh trống, đủ điều kiện Đợt 2/9 mốc 30"
+      },
+      {
+        "code": "E03",
+        "fullName": "Võ Thị Út",
+        "dateOfBirth": "1975-07-07",
+        "dateOfBirthDisplay": "07/07/1975",
+        "gender": null,
+        "genderDisplay": "—",
+        "officialAdmissionDate": "1996-08-22",
+        "officialAdmissionDateDisplay": "22/08/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-08-22",
+        "nextAnniversaryDisplay": "22/08/2031",
+        "intent": "Giới tính trống, đủ điều kiện Đợt 2/9 mốc 30"
+      },
+      {
+        "code": "S01",
+        "fullName": "Hồ Thị Vân",
+        "dateOfBirth": "1969-01-19",
+        "dateOfBirthDisplay": "19/01/1969",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1991-10-05",
+        "officialAdmissionDateDisplay": "05/10/1991",
+        "partyAge": 34,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2026-10-05",
+        "nextAnniversaryDisplay": "05/10/2026",
+        "intent": "Mốc 35 ngày 05/10/2026 trong Đợt 7/11 -> BIẾN MẤT khi Bước = 10"
+      },
+      {
+        "code": "S02",
+        "fullName": "Nguyễn Văn Xuân",
+        "dateOfBirth": "1962-04-23",
+        "dateOfBirthDisplay": "23/04/1962",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1986-10-20",
+        "officialAdmissionDateDisplay": "20/10/1986",
+        "partyAge": 39,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2026-10-20",
+        "nextAnniversaryDisplay": "20/10/2026",
+        "intent": "Mốc 40 ngày 20/10/2026 trong Đợt 7/11 -> GIỮ NGUYÊN khi Bước = 10 (ca đối chứng)"
+      },
+      {
+        "code": "S03",
+        "fullName": "Trần Thị Yến",
+        "dateOfBirth": "1957-11-16",
+        "dateOfBirthDisplay": "16/11/1957",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1981-11-03",
+        "officialAdmissionDateDisplay": "03/11/1981",
+        "partyAge": 44,
+        "nextMilestone": 45,
+        "nextMilestoneDisplay": "45",
+        "nextAnniversary": "2026-11-03",
+        "nextAnniversaryDisplay": "03/11/2026",
+        "intent": "Mốc 45 ngày 03/11/2026 trong Đợt 7/11 -> BIẾN MẤT khi Bước = 10"
+      },
+      {
+        "code": "S04",
+        "fullName": "Ngô Thị Cẩm",
+        "dateOfBirth": "1966-03-08",
+        "dateOfBirthDisplay": "08/03/1966",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1991-07-15",
+        "officialAdmissionDateDisplay": "15/07/1991",
+        "partyAge": 35,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-07-15",
+        "nextAnniversaryDisplay": "15/07/2031",
+        "intent": "Mốc 35 ngày 15/07/2026 rơi vào khoảng trống -> khi Bước = 10 thì rời luôn khỏi màn Chưa thuộc đợt nào, badge trên menu giảm. Ca đối chứng cho E2E-3"
+      },
+      {
+        "code": "G05",
+        "fullName": "Phùng Văn Bảo",
+        "dateOfBirth": "1970-12-12",
+        "dateOfBirthDisplay": "12/12/1970",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-07-01",
+        "officialAdmissionDateDisplay": "01/07/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-07-01",
+        "nextAnniversaryDisplay": "01/07/2031",
+        "intent": "QT7: tròn 30 ngày 01/07/2026 -> khoảng trống giữa Đợt 19/5 và Đợt 2/9"
+      },
+      {
+        "code": "C01",
+        "fullName": "Đào Văn Ân",
+        "dateOfBirth": "1975-01-01",
+        "dateOfBirthDisplay": "01/01/1975",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-10-03",
+        "officialAdmissionDateDisplay": "03/10/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-10-03",
+        "nextAnniversaryDisplay": "03/10/2026",
+        "intent": "Mốc 30 ngày 03/10/2026 trong Đợt 7/11. Chữ Đ phải sắp TRƯỚC N và T theo thứ tự tiếng Việt, nhưng SAU theo thứ tự mã Unicode -> phân biệt collation"
+      },
+      {
+        "code": "X01",
+        "fullName": "Nguyễn Thị Ánh",
+        "dateOfBirth": "1971-02-02",
+        "dateOfBirthDisplay": "02/02/1971",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-02-10",
+        "officialAdmissionDateDisplay": "10/02/1996",
+        "partyAge": 30,
+        "nextMilestone": 35,
+        "nextMilestoneDisplay": "35",
+        "nextAnniversary": "2031-02-10",
+        "nextAnniversaryDisplay": "10/02/2031",
+        "intent": "Mốc 30 ngày 10/02/2026, nằm giữa lòng Đợt 3/2 (không phải biên)"
+      },
+      {
+        "code": "X02",
+        "fullName": "Nguyễn Văn Ẩn",
+        "dateOfBirth": "1968-09-09",
+        "dateOfBirthDisplay": "09/09/1968",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1991-02-20",
+        "officialAdmissionDateDisplay": "20/02/1991",
+        "partyAge": 35,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-02-20",
+        "nextAnniversaryDisplay": "20/02/2031",
+        "intent": "Mốc 35 ngày 20/02/2026 trong Đợt 3/2; tên khác X01 chỉ ở dấu -> kiểm tra sắp xếp và tìm kiếm"
+      },
+      {
+        "code": "V01",
+        "fullName": "Lưu Thị Diễm",
+        "dateOfBirth": "2000-04-04",
+        "dateOfBirthDisplay": "04/04/2000",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "2026-09-19",
+        "officialAdmissionDateDisplay": "19/09/2026",
+        "partyAge": 0,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2056-09-19",
+        "nextAnniversaryDisplay": "19/09/2056",
+        "intent": "Ngày chính thức ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
+      }
+    ],
+    "T0_step10": [
+      {
+        "code": "B01",
+        "fullName": "Nguyễn Văn An",
+        "dateOfBirth": "1974-03-12",
+        "dateOfBirthDisplay": "12/03/1974",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-10-01",
+        "officialAdmissionDateDisplay": "01/10/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-10-01",
+        "nextAnniversaryDisplay": "01/10/2026",
+        "intent": "QT4 biên dưới: tròn 30 đúng Từ ngày Đợt 7/11 (01/10/2026)"
+      },
+      {
+        "code": "B02",
+        "fullName": "Trần Thị Bình",
+        "dateOfBirth": "1973-07-05",
+        "dateOfBirthDisplay": "05/07/1973",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-11-07",
+        "officialAdmissionDateDisplay": "07/11/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-11-07",
+        "nextAnniversaryDisplay": "07/11/2026",
+        "intent": "QT4 biên trên: tròn 30 đúng Đến ngày Đợt 7/11 (07/11/2026)"
+      },
+      {
+        "code": "B03",
+        "fullName": "Lê Văn Cường",
+        "dateOfBirth": "1972-11-21",
+        "dateOfBirthDisplay": "21/11/1972",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-09-30",
+        "officialAdmissionDateDisplay": "30/09/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-09-30",
+        "nextAnniversaryDisplay": "30/09/2026",
+        "intent": "QT4/QT7: lệch 1 ngày TRƯỚC Từ ngày Đợt 7/11 -> khoảng trống giữa Đợt 2/9 và Đợt 7/11"
+      },
+      {
+        "code": "B04",
+        "fullName": "Phạm Thị Dung",
+        "dateOfBirth": "1975-02-09",
+        "dateOfBirthDisplay": "09/02/1975",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-11-08",
+        "officialAdmissionDateDisplay": "08/11/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-11-08",
+        "nextAnniversaryDisplay": "08/11/2026",
+        "intent": "QT4/QT7: lệch 1 ngày SAU Đến ngày Đợt 7/11 -> khoảng trống sau đợt cuối cùng"
+      },
+      {
+        "code": "B05",
+        "fullName": "Hoàng Văn Em",
+        "dateOfBirth": "1971-06-30",
+        "dateOfBirthDisplay": "30/06/1971",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-01-15",
+        "officialAdmissionDateDisplay": "15/01/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-01-15",
+        "nextAnniversaryDisplay": "15/01/2036",
+        "intent": "QT4 biên dưới: tròn 30 đúng Từ ngày Đợt 3/2 (15/01/2026)"
+      },
+      {
+        "code": "B06",
+        "fullName": "Vũ Thị Giang",
+        "dateOfBirth": "1972-09-14",
+        "dateOfBirthDisplay": "14/09/1972",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-03-05",
+        "officialAdmissionDateDisplay": "05/03/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-03-05",
+        "nextAnniversaryDisplay": "05/03/2036",
+        "intent": "QT4 biên trên: tròn 30 đúng Đến ngày Đợt 3/2 (05/03/2026)"
+      },
+      {
+        "code": "B07",
+        "fullName": "Đỗ Văn Hải",
+        "dateOfBirth": "1970-03-03",
+        "dateOfBirthDisplay": "03/03/1970",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-01-14",
+        "officialAdmissionDateDisplay": "14/01/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-01-14",
+        "nextAnniversaryDisplay": "14/01/2036",
+        "intent": "QT7: lệch 1 ngày trước Đợt 3/2 -> khoảng trống trước đợt đầu tiên"
+      },
+      {
+        "code": "B08",
+        "fullName": "Bùi Thị Hoa",
+        "dateOfBirth": "1973-12-28",
+        "dateOfBirthDisplay": "28/12/1973",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-03-06",
+        "officialAdmissionDateDisplay": "06/03/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-03-06",
+        "nextAnniversaryDisplay": "06/03/2036",
+        "intent": "QT7: lệch 1 ngày sau Đợt 3/2 -> khoảng trống giữa Đợt 3/2 và Đợt 19/5"
+      },
+      {
+        "code": "B09",
+        "fullName": "Đinh Văn Khoa",
+        "dateOfBirth": "1970-04-17",
+        "dateOfBirthDisplay": "17/04/1970",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-05-01",
+        "officialAdmissionDateDisplay": "01/05/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-05-01",
+        "nextAnniversaryDisplay": "01/05/2036",
+        "intent": "QT4 biên dưới Đợt 19/5 (01/05/2026)"
+      },
+      {
+        "code": "B10",
+        "fullName": "Hà Thị Liên",
+        "dateOfBirth": "1971-08-02",
+        "dateOfBirthDisplay": "02/08/1971",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-05-31",
+        "officialAdmissionDateDisplay": "31/05/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-05-31",
+        "nextAnniversaryDisplay": "31/05/2036",
+        "intent": "QT4 biên trên Đợt 19/5 (31/05/2026)"
+      },
+      {
+        "code": "B11",
+        "fullName": "Chu Văn Mạnh",
+        "dateOfBirth": "1969-09-19",
+        "dateOfBirthDisplay": "19/09/1969",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-08-15",
+        "officialAdmissionDateDisplay": "15/08/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-08-15",
+        "nextAnniversaryDisplay": "15/08/2036",
+        "intent": "QT4 biên dưới Đợt 2/9 (15/08/2026)"
+      },
+      {
+        "code": "B12",
+        "fullName": "Trương Thị Nhàn",
+        "dateOfBirth": "1974-10-25",
+        "dateOfBirthDisplay": "25/10/1974",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-09-10",
+        "officialAdmissionDateDisplay": "10/09/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-09-10",
+        "nextAnniversaryDisplay": "10/09/2036",
+        "intent": "QT4 biên trên Đợt 2/9 (10/09/2026)"
+      },
+      {
+        "code": "L01",
+        "fullName": "Ngô Văn Khánh",
+        "dateOfBirth": "1976-02-29",
+        "dateOfBirthDisplay": "29/02/1976",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-02-29",
+        "officialAdmissionDateDisplay": "29/02/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-02-29",
+        "nextAnniversaryDisplay": "29/02/2036",
+        "intent": "QT2 năm đích KHÔNG nhuận: 29/02/1996 + 30 -> 28/02/2026, nằm trong Đợt 3/2"
+      },
+      {
+        "code": "L02",
+        "fullName": "Dương Thị Lan",
+        "dateOfBirth": "1966-06-11",
+        "dateOfBirthDisplay": "11/06/1966",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1988-02-29",
+        "officialAdmissionDateDisplay": "29/02/1988",
+        "partyAge": 38,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2028-02-29",
+        "nextAnniversaryDisplay": "29/02/2028",
+        "intent": "QT2 năm đích NHUẬN: 29/02/1988 + 40 -> 29/02/2028 (giữ nguyên 29/02). Năm 2026 không có mốc nào -> không xuất hiện ở bất kỳ danh sách nào của 2026"
+      },
+      {
+        "code": "L03",
+        "fullName": "Lâm Văn Lộc",
+        "dateOfBirth": "1968-02-29",
+        "dateOfBirthDisplay": "29/02/1968",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1991-05-20",
+        "officialAdmissionDateDisplay": "20/05/1991",
+        "partyAge": 35,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-05-20",
+        "nextAnniversaryDisplay": "20/05/2031",
+        "intent": "Ngày sinh 29/02 (hiển thị), tròn 35 ngày 20/05/2026 trong Đợt 19/5; mốc 35 biến mất khi Bước = 10"
+      },
+      {
+        "code": "M01",
+        "fullName": "Trịnh Văn Minh",
+        "dateOfBirth": "1917-01-01",
+        "dateOfBirthDisplay": "01/01/1917",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1935-05-01",
+        "officialAdmissionDateDisplay": "01/05/1935",
+        "partyAge": 91,
+        "nextMilestone": null,
+        "nextMilestoneDisplay": "—",
+        "nextAnniversary": null,
+        "nextAnniversaryDisplay": "—",
+        "intent": "QT3a: tuổi đảng 91 > mốc lớn nhất -> Mốc kế tiếp và Ngày tròn mốc kế tiếp đều là '—'; không có mốc nào trong 2026"
+      },
+      {
+        "code": "M02",
+        "fullName": "Lý Thị Nga",
+        "dateOfBirth": "1918-03-20",
+        "dateOfBirthDisplay": "20/03/1918",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1936-05-01",
+        "officialAdmissionDateDisplay": "01/05/1936",
+        "partyAge": 90,
+        "nextMilestone": null,
+        "nextMilestoneDisplay": "—",
+        "nextAnniversary": null,
+        "nextAnniversaryDisplay": "—",
+        "intent": "QT3a + QT4: tuổi đảng đúng 90 -> Mốc kế tiếp '—', đồng thời tròn mốc 90 ngày 01/05/2026 nên vẫn đủ điều kiện Đợt 19/5"
+      },
+      {
+        "code": "M03",
+        "fullName": "Phan Văn Phúc",
+        "dateOfBirth": "1918-08-08",
+        "dateOfBirthDisplay": "08/08/1918",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1936-06-10",
+        "officialAdmissionDateDisplay": "10/06/1936",
+        "partyAge": 90,
+        "nextMilestone": null,
+        "nextMilestoneDisplay": "—",
+        "nextAnniversary": null,
+        "nextAnniversaryDisplay": "—",
+        "intent": "QT3a + QT7: tròn mốc 90 ngày 10/06/2026 rơi vào khoảng trống giữa Đợt 19/5 và Đợt 2/9"
+      },
+      {
+        "code": "N01",
+        "fullName": "Đặng Thị Quỳnh",
+        "dateOfBirth": "1978-02-14",
+        "dateOfBirthDisplay": "14/02/1978",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1997-10-01",
+        "officialAdmissionDateDisplay": "01/10/1997",
+        "partyAge": 28,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2027-10-01",
+        "nextAnniversaryDisplay": "01/10/2027",
+        "intent": "Tuổi đảng 28, chưa tới mốc 30. Tròn 30 ngày 01/10/2027 -> chỉ đủ điều kiện ở NĂM SAU, dùng cho bộ chọn năm của UC-34"
+      },
+      {
+        "code": "N02",
+        "fullName": "Tạ Văn Sơn",
+        "dateOfBirth": "1980-05-06",
+        "dateOfBirthDisplay": "06/05/1980",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "2000-01-15",
+        "officialAdmissionDateDisplay": "15/01/2000",
+        "partyAge": 26,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2030-01-15",
+        "nextAnniversaryDisplay": "15/01/2030",
+        "intent": "Tuổi đảng 26, mốc kế tiếp 30 vào 15/01/2030 -> không xuất hiện ở 2025/2026/2027"
+      },
+      {
+        "code": "E01",
+        "fullName": "Cao Thị Thu",
+        "dateOfBirth": null,
+        "dateOfBirthDisplay": "—",
+        "gender": null,
+        "genderDisplay": "—",
+        "officialAdmissionDate": "1996-05-20",
+        "officialAdmissionDateDisplay": "20/05/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-05-20",
+        "nextAnniversaryDisplay": "20/05/2036",
+        "intent": "Ngày sinh trống + Giới tính trống, đủ điều kiện Đợt 19/5 mốc 30"
+      },
+      {
+        "code": "E02",
+        "fullName": "Mai Văn Tuấn",
+        "dateOfBirth": null,
+        "dateOfBirthDisplay": "—",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-08-25",
+        "officialAdmissionDateDisplay": "25/08/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-08-25",
+        "nextAnniversaryDisplay": "25/08/2036",
+        "intent": "Ngày sinh trống, đủ điều kiện Đợt 2/9 mốc 30"
+      },
+      {
+        "code": "E03",
+        "fullName": "Võ Thị Út",
+        "dateOfBirth": "1975-07-07",
+        "dateOfBirthDisplay": "07/07/1975",
+        "gender": null,
+        "genderDisplay": "—",
+        "officialAdmissionDate": "1996-08-22",
+        "officialAdmissionDateDisplay": "22/08/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-08-22",
+        "nextAnniversaryDisplay": "22/08/2036",
+        "intent": "Giới tính trống, đủ điều kiện Đợt 2/9 mốc 30"
+      },
+      {
+        "code": "S01",
+        "fullName": "Hồ Thị Vân",
+        "dateOfBirth": "1969-01-19",
+        "dateOfBirthDisplay": "19/01/1969",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1991-10-05",
+        "officialAdmissionDateDisplay": "05/10/1991",
+        "partyAge": 34,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-10-05",
+        "nextAnniversaryDisplay": "05/10/2031",
+        "intent": "Mốc 35 ngày 05/10/2026 trong Đợt 7/11 -> BIẾN MẤT khi Bước = 10"
+      },
+      {
+        "code": "S02",
+        "fullName": "Nguyễn Văn Xuân",
+        "dateOfBirth": "1962-04-23",
+        "dateOfBirthDisplay": "23/04/1962",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1986-10-20",
+        "officialAdmissionDateDisplay": "20/10/1986",
+        "partyAge": 39,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2026-10-20",
+        "nextAnniversaryDisplay": "20/10/2026",
+        "intent": "Mốc 40 ngày 20/10/2026 trong Đợt 7/11 -> GIỮ NGUYÊN khi Bước = 10 (ca đối chứng)"
+      },
+      {
+        "code": "S03",
+        "fullName": "Trần Thị Yến",
+        "dateOfBirth": "1957-11-16",
+        "dateOfBirthDisplay": "16/11/1957",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1981-11-03",
+        "officialAdmissionDateDisplay": "03/11/1981",
+        "partyAge": 44,
+        "nextMilestone": 50,
+        "nextMilestoneDisplay": "50",
+        "nextAnniversary": "2031-11-03",
+        "nextAnniversaryDisplay": "03/11/2031",
+        "intent": "Mốc 45 ngày 03/11/2026 trong Đợt 7/11 -> BIẾN MẤT khi Bước = 10"
+      },
+      {
+        "code": "S04",
+        "fullName": "Ngô Thị Cẩm",
+        "dateOfBirth": "1966-03-08",
+        "dateOfBirthDisplay": "08/03/1966",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1991-07-15",
+        "officialAdmissionDateDisplay": "15/07/1991",
+        "partyAge": 35,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-07-15",
+        "nextAnniversaryDisplay": "15/07/2031",
+        "intent": "Mốc 35 ngày 15/07/2026 rơi vào khoảng trống -> khi Bước = 10 thì rời luôn khỏi màn Chưa thuộc đợt nào, badge trên menu giảm. Ca đối chứng cho E2E-3"
+      },
+      {
+        "code": "G05",
+        "fullName": "Phùng Văn Bảo",
+        "dateOfBirth": "1970-12-12",
+        "dateOfBirthDisplay": "12/12/1970",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-07-01",
+        "officialAdmissionDateDisplay": "01/07/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-07-01",
+        "nextAnniversaryDisplay": "01/07/2036",
+        "intent": "QT7: tròn 30 ngày 01/07/2026 -> khoảng trống giữa Đợt 19/5 và Đợt 2/9"
+      },
+      {
+        "code": "C01",
+        "fullName": "Đào Văn Ân",
+        "dateOfBirth": "1975-01-01",
+        "dateOfBirthDisplay": "01/01/1975",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1996-10-03",
+        "officialAdmissionDateDisplay": "03/10/1996",
+        "partyAge": 29,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2026-10-03",
+        "nextAnniversaryDisplay": "03/10/2026",
+        "intent": "Mốc 30 ngày 03/10/2026 trong Đợt 7/11. Chữ Đ phải sắp TRƯỚC N và T theo thứ tự tiếng Việt, nhưng SAU theo thứ tự mã Unicode -> phân biệt collation"
+      },
+      {
+        "code": "X01",
+        "fullName": "Nguyễn Thị Ánh",
+        "dateOfBirth": "1971-02-02",
+        "dateOfBirthDisplay": "02/02/1971",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "1996-02-10",
+        "officialAdmissionDateDisplay": "10/02/1996",
+        "partyAge": 30,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2036-02-10",
+        "nextAnniversaryDisplay": "10/02/2036",
+        "intent": "Mốc 30 ngày 10/02/2026, nằm giữa lòng Đợt 3/2 (không phải biên)"
+      },
+      {
+        "code": "X02",
+        "fullName": "Nguyễn Văn Ẩn",
+        "dateOfBirth": "1968-09-09",
+        "dateOfBirthDisplay": "09/09/1968",
+        "gender": "Nam",
+        "genderDisplay": "Nam",
+        "officialAdmissionDate": "1991-02-20",
+        "officialAdmissionDateDisplay": "20/02/1991",
+        "partyAge": 35,
+        "nextMilestone": 40,
+        "nextMilestoneDisplay": "40",
+        "nextAnniversary": "2031-02-20",
+        "nextAnniversaryDisplay": "20/02/2031",
+        "intent": "Mốc 35 ngày 20/02/2026 trong Đợt 3/2; tên khác X01 chỉ ở dấu -> kiểm tra sắp xếp và tìm kiếm"
+      },
+      {
+        "code": "V01",
+        "fullName": "Lưu Thị Diễm",
+        "dateOfBirth": "2000-04-04",
+        "dateOfBirthDisplay": "04/04/2000",
+        "gender": "Nữ",
+        "genderDisplay": "Nữ",
+        "officialAdmissionDate": "2026-09-19",
+        "officialAdmissionDateDisplay": "19/09/2026",
+        "partyAge": 0,
+        "nextMilestone": 30,
+        "nextMilestoneDisplay": "30",
+        "nextAnniversary": "2056-09-19",
+        "nextAnniversaryDisplay": "19/09/2056",
+        "intent": "Ngày chính thức ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
+      }
+    ]
+  },
+  "scenarios": {
+    "core_default_T0": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "P4",
+        "name": "Đợt 7/11",
+        "year": 2026,
+        "boundFrom": "2026-10-01",
+        "boundTo": "2026-11-07",
+        "boundFromDisplay": "01/10/2026",
+        "boundToDisplay": "07/11/2026",
+        "status": "Sắp tới",
+        "daysLeft": 12
+      },
+      "periodStatuses": [
+        {
+          "code": "P1",
+          "name": "Đợt 3/2",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P2",
+          "name": "Đợt 19/5",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P3",
+          "name": "Đợt 2/9",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P4",
+          "name": "Đợt 7/11",
+          "status": "Sắp tới",
+          "daysLeft": 12
+        }
+      ],
+      "eligibleByPeriod": {
+        "P1": {
+          "name": "Đợt 3/2",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-01-15",
+              "boundTo": "2025-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-01-15",
+              "boundTo": "2026-03-05",
+              "total": 5,
+              "byMilestone": {
+                "30": 4,
+                "35": 1
+              },
+              "rows": [
+                {
+                  "code": "B05",
+                  "fullName": "Hoàng Văn Em",
+                  "milestone": 30,
+                  "anniversary": "2026-01-15",
+                  "anniversaryDisplay": "15/01/2026"
+                },
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "X01",
+                  "fullName": "Nguyễn Thị Ánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-10",
+                  "anniversaryDisplay": "10/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                },
+                {
+                  "code": "X02",
+                  "fullName": "Nguyễn Văn Ẩn",
+                  "milestone": 35,
+                  "anniversary": "2026-02-20",
+                  "anniversaryDisplay": "20/02/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-01-15",
+              "boundTo": "2027-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-01-15",
+              "boundTo": "2028-03-05",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        },
+        "P2": {
+          "name": "Đợt 19/5",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-05-01",
+              "boundTo": "2025-05-31",
+              "total": 1,
+              "byMilestone": {
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "M01",
+                  "fullName": "Trịnh Văn Minh",
+                  "milestone": 90,
+                  "anniversary": "2025-05-01",
+                  "anniversaryDisplay": "01/05/2025"
+                }
+              ]
+            },
+            "2026": {
+              "boundFrom": "2026-05-01",
+              "boundTo": "2026-05-31",
+              "total": 5,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "E01",
+                  "fullName": "Cao Thị Thu",
+                  "milestone": 30,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "B09",
+                  "fullName": "Đinh Văn Khoa",
+                  "milestone": 30,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "B10",
+                  "fullName": "Hà Thị Liên",
+                  "milestone": 30,
+                  "anniversary": "2026-05-31",
+                  "anniversaryDisplay": "31/05/2026"
+                },
+                {
+                  "code": "L03",
+                  "fullName": "Lâm Văn Lộc",
+                  "milestone": 35,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "M02",
+                  "fullName": "Lý Thị Nga",
+                  "milestone": 90,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-05-01",
+              "boundTo": "2027-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-05-01",
+              "boundTo": "2028-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P3": {
+          "name": "Đợt 2/9",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-08-15",
+              "boundTo": "2025-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-08-15",
+              "boundTo": "2026-09-10",
+              "total": 4,
+              "byMilestone": {
+                "30": 4
+              },
+              "rows": [
+                {
+                  "code": "B11",
+                  "fullName": "Chu Văn Mạnh",
+                  "milestone": 30,
+                  "anniversary": "2026-08-15",
+                  "anniversaryDisplay": "15/08/2026"
+                },
+                {
+                  "code": "E02",
+                  "fullName": "Mai Văn Tuấn",
+                  "milestone": 30,
+                  "anniversary": "2026-08-25",
+                  "anniversaryDisplay": "25/08/2026"
+                },
+                {
+                  "code": "B12",
+                  "fullName": "Trương Thị Nhàn",
+                  "milestone": 30,
+                  "anniversary": "2026-09-10",
+                  "anniversaryDisplay": "10/09/2026"
+                },
+                {
+                  "code": "E03",
+                  "fullName": "Võ Thị Út",
+                  "milestone": 30,
+                  "anniversary": "2026-08-22",
+                  "anniversaryDisplay": "22/08/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-08-15",
+              "boundTo": "2027-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-08-15",
+              "boundTo": "2028-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P4": {
+          "name": "Đợt 7/11",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-10-01",
+              "boundTo": "2025-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-10-01",
+              "boundTo": "2026-11-07",
+              "total": 6,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "40": 1,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S01",
+                  "fullName": "Hồ Thị Vân",
+                  "milestone": 35,
+                  "anniversary": "2026-10-05",
+                  "anniversaryDisplay": "05/10/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-10-01",
+              "boundTo": "2027-11-07",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-10-01",
+              "boundTo": "2028-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 0,
+          "rows": []
+        },
+        "2026": {
+          "total": 7,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Giữa Đợt 3/2 và Đợt 19/5"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Giữa Đợt 2/9 và Đợt 7/11"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            }
+          ]
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-01-14",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "14/01/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-03-06",
+            "to": "2025-04-30",
+            "fromDisplay": "06/03/2025",
+            "toDisplay": "30/04/2025",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2025-06-01",
+            "to": "2025-08-14",
+            "fromDisplay": "01/06/2025",
+            "toDisplay": "14/08/2025",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2025-09-11",
+            "to": "2025-09-30",
+            "fromDisplay": "11/09/2025",
+            "toDisplay": "30/09/2025",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2025-11-08",
+            "to": "2025-12-31",
+            "fromDisplay": "08/11/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-01-14",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "14/01/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-03-06",
+            "to": "2026-04-30",
+            "fromDisplay": "06/03/2026",
+            "toDisplay": "30/04/2026",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2026-06-01",
+            "to": "2026-08-14",
+            "fromDisplay": "01/06/2026",
+            "toDisplay": "14/08/2026",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2026-09-11",
+            "to": "2026-09-30",
+            "fromDisplay": "11/09/2026",
+            "toDisplay": "30/09/2026",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2026-11-08",
+            "to": "2026-12-31",
+            "fromDisplay": "08/11/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-01-14",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "14/01/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-03-06",
+            "to": "2027-04-30",
+            "fromDisplay": "06/03/2027",
+            "toDisplay": "30/04/2027",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2027-06-01",
+            "to": "2027-08-14",
+            "fromDisplay": "01/06/2027",
+            "toDisplay": "14/08/2027",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2027-09-11",
+            "to": "2027-09-30",
+            "fromDisplay": "11/09/2027",
+            "toDisplay": "30/09/2027",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2027-11-08",
+            "to": "2027-12-31",
+            "fromDisplay": "08/11/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-01-14",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "14/01/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-03-06",
+            "to": "2028-04-30",
+            "fromDisplay": "06/03/2028",
+            "toDisplay": "30/04/2028",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2028-06-01",
+            "to": "2028-08-14",
+            "fromDisplay": "01/06/2028",
+            "toDisplay": "14/08/2028",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2028-09-11",
+            "to": "2028-09-30",
+            "fromDisplay": "11/09/2028",
+            "toDisplay": "30/09/2028",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2028-11-08",
+            "to": "2028-12-31",
+            "fromDisplay": "08/11/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 7,
+      "overlapWarnings": []
+    },
+    "core_step10_T0": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 10,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "milestoneCount": 7,
+      "upcomingPeriod": {
+        "code": "P4",
+        "name": "Đợt 7/11",
+        "year": 2026,
+        "boundFrom": "2026-10-01",
+        "boundTo": "2026-11-07",
+        "boundFromDisplay": "01/10/2026",
+        "boundToDisplay": "07/11/2026",
+        "status": "Sắp tới",
+        "daysLeft": 12
+      },
+      "periodStatuses": [
+        {
+          "code": "P1",
+          "name": "Đợt 3/2",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P2",
+          "name": "Đợt 19/5",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P3",
+          "name": "Đợt 2/9",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P4",
+          "name": "Đợt 7/11",
+          "status": "Sắp tới",
+          "daysLeft": 12
+        }
+      ],
+      "eligibleByPeriod": {
+        "P1": {
+          "name": "Đợt 3/2",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-01-15",
+              "boundTo": "2025-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-01-15",
+              "boundTo": "2026-03-05",
+              "total": 4,
+              "byMilestone": {
+                "30": 4
+              },
+              "rows": [
+                {
+                  "code": "B05",
+                  "fullName": "Hoàng Văn Em",
+                  "milestone": 30,
+                  "anniversary": "2026-01-15",
+                  "anniversaryDisplay": "15/01/2026"
+                },
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "X01",
+                  "fullName": "Nguyễn Thị Ánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-10",
+                  "anniversaryDisplay": "10/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-01-15",
+              "boundTo": "2027-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-01-15",
+              "boundTo": "2028-03-05",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        },
+        "P2": {
+          "name": "Đợt 19/5",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-05-01",
+              "boundTo": "2025-05-31",
+              "total": 1,
+              "byMilestone": {
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "M01",
+                  "fullName": "Trịnh Văn Minh",
+                  "milestone": 90,
+                  "anniversary": "2025-05-01",
+                  "anniversaryDisplay": "01/05/2025"
+                }
+              ]
+            },
+            "2026": {
+              "boundFrom": "2026-05-01",
+              "boundTo": "2026-05-31",
+              "total": 4,
+              "byMilestone": {
+                "30": 3,
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "E01",
+                  "fullName": "Cao Thị Thu",
+                  "milestone": 30,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "B09",
+                  "fullName": "Đinh Văn Khoa",
+                  "milestone": 30,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "B10",
+                  "fullName": "Hà Thị Liên",
+                  "milestone": 30,
+                  "anniversary": "2026-05-31",
+                  "anniversaryDisplay": "31/05/2026"
+                },
+                {
+                  "code": "M02",
+                  "fullName": "Lý Thị Nga",
+                  "milestone": 90,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-05-01",
+              "boundTo": "2027-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-05-01",
+              "boundTo": "2028-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P3": {
+          "name": "Đợt 2/9",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-08-15",
+              "boundTo": "2025-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-08-15",
+              "boundTo": "2026-09-10",
+              "total": 4,
+              "byMilestone": {
+                "30": 4
+              },
+              "rows": [
+                {
+                  "code": "B11",
+                  "fullName": "Chu Văn Mạnh",
+                  "milestone": 30,
+                  "anniversary": "2026-08-15",
+                  "anniversaryDisplay": "15/08/2026"
+                },
+                {
+                  "code": "E02",
+                  "fullName": "Mai Văn Tuấn",
+                  "milestone": 30,
+                  "anniversary": "2026-08-25",
+                  "anniversaryDisplay": "25/08/2026"
+                },
+                {
+                  "code": "B12",
+                  "fullName": "Trương Thị Nhàn",
+                  "milestone": 30,
+                  "anniversary": "2026-09-10",
+                  "anniversaryDisplay": "10/09/2026"
+                },
+                {
+                  "code": "E03",
+                  "fullName": "Võ Thị Út",
+                  "milestone": 30,
+                  "anniversary": "2026-08-22",
+                  "anniversaryDisplay": "22/08/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-08-15",
+              "boundTo": "2027-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-08-15",
+              "boundTo": "2028-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P4": {
+          "name": "Đợt 7/11",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-10-01",
+              "boundTo": "2025-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-10-01",
+              "boundTo": "2026-11-07",
+              "total": 4,
+              "byMilestone": {
+                "30": 3,
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-10-01",
+              "boundTo": "2027-11-07",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-10-01",
+              "boundTo": "2028-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 0,
+          "rows": []
+        },
+        "2026": {
+          "total": 6,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Giữa Đợt 3/2 và Đợt 19/5"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Giữa Đợt 2/9 và Đợt 7/11"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            }
+          ]
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-01-14",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "14/01/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-03-06",
+            "to": "2025-04-30",
+            "fromDisplay": "06/03/2025",
+            "toDisplay": "30/04/2025",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2025-06-01",
+            "to": "2025-08-14",
+            "fromDisplay": "01/06/2025",
+            "toDisplay": "14/08/2025",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2025-09-11",
+            "to": "2025-09-30",
+            "fromDisplay": "11/09/2025",
+            "toDisplay": "30/09/2025",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2025-11-08",
+            "to": "2025-12-31",
+            "fromDisplay": "08/11/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-01-14",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "14/01/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-03-06",
+            "to": "2026-04-30",
+            "fromDisplay": "06/03/2026",
+            "toDisplay": "30/04/2026",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2026-06-01",
+            "to": "2026-08-14",
+            "fromDisplay": "01/06/2026",
+            "toDisplay": "14/08/2026",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2026-09-11",
+            "to": "2026-09-30",
+            "fromDisplay": "11/09/2026",
+            "toDisplay": "30/09/2026",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2026-11-08",
+            "to": "2026-12-31",
+            "fromDisplay": "08/11/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-01-14",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "14/01/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-03-06",
+            "to": "2027-04-30",
+            "fromDisplay": "06/03/2027",
+            "toDisplay": "30/04/2027",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2027-06-01",
+            "to": "2027-08-14",
+            "fromDisplay": "01/06/2027",
+            "toDisplay": "14/08/2027",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2027-09-11",
+            "to": "2027-09-30",
+            "fromDisplay": "11/09/2027",
+            "toDisplay": "30/09/2027",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2027-11-08",
+            "to": "2027-12-31",
+            "fromDisplay": "08/11/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-01-14",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "14/01/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-03-06",
+            "to": "2028-04-30",
+            "fromDisplay": "06/03/2028",
+            "toDisplay": "30/04/2028",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2028-06-01",
+            "to": "2028-08-14",
+            "fromDisplay": "01/06/2028",
+            "toDisplay": "14/08/2028",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2028-09-11",
+            "to": "2028-09-30",
+            "fromDisplay": "11/09/2028",
+            "toDisplay": "30/09/2028",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2028-11-08",
+            "to": "2028-12-31",
+            "fromDisplay": "08/11/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 6,
+      "overlapWarnings": []
+    },
+    "core_default_T1": {
+      "today": "2026-10-15",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "P4",
+        "name": "Đợt 7/11",
+        "year": 2026,
+        "boundFrom": "2026-10-01",
+        "boundTo": "2026-11-07",
+        "boundFromDisplay": "01/10/2026",
+        "boundToDisplay": "07/11/2026",
+        "status": "Đang diễn ra",
+        "daysLeft": null
+      },
+      "periodStatuses": [
+        {
+          "code": "P1",
+          "name": "Đợt 3/2",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P2",
+          "name": "Đợt 19/5",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P3",
+          "name": "Đợt 2/9",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P4",
+          "name": "Đợt 7/11",
+          "status": "Đang diễn ra",
+          "daysLeft": null
+        }
+      ],
+      "eligibleByPeriod": {
+        "P1": {
+          "name": "Đợt 3/2",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-01-15",
+              "boundTo": "2025-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-01-15",
+              "boundTo": "2026-03-05",
+              "total": 5,
+              "byMilestone": {
+                "30": 4,
+                "35": 1
+              },
+              "rows": [
+                {
+                  "code": "B05",
+                  "fullName": "Hoàng Văn Em",
+                  "milestone": 30,
+                  "anniversary": "2026-01-15",
+                  "anniversaryDisplay": "15/01/2026"
+                },
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "X01",
+                  "fullName": "Nguyễn Thị Ánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-10",
+                  "anniversaryDisplay": "10/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                },
+                {
+                  "code": "X02",
+                  "fullName": "Nguyễn Văn Ẩn",
+                  "milestone": 35,
+                  "anniversary": "2026-02-20",
+                  "anniversaryDisplay": "20/02/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-01-15",
+              "boundTo": "2027-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-01-15",
+              "boundTo": "2028-03-05",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        },
+        "P2": {
+          "name": "Đợt 19/5",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-05-01",
+              "boundTo": "2025-05-31",
+              "total": 1,
+              "byMilestone": {
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "M01",
+                  "fullName": "Trịnh Văn Minh",
+                  "milestone": 90,
+                  "anniversary": "2025-05-01",
+                  "anniversaryDisplay": "01/05/2025"
+                }
+              ]
+            },
+            "2026": {
+              "boundFrom": "2026-05-01",
+              "boundTo": "2026-05-31",
+              "total": 5,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "E01",
+                  "fullName": "Cao Thị Thu",
+                  "milestone": 30,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "B09",
+                  "fullName": "Đinh Văn Khoa",
+                  "milestone": 30,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "B10",
+                  "fullName": "Hà Thị Liên",
+                  "milestone": 30,
+                  "anniversary": "2026-05-31",
+                  "anniversaryDisplay": "31/05/2026"
+                },
+                {
+                  "code": "L03",
+                  "fullName": "Lâm Văn Lộc",
+                  "milestone": 35,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "M02",
+                  "fullName": "Lý Thị Nga",
+                  "milestone": 90,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-05-01",
+              "boundTo": "2027-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-05-01",
+              "boundTo": "2028-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P3": {
+          "name": "Đợt 2/9",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-08-15",
+              "boundTo": "2025-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-08-15",
+              "boundTo": "2026-09-10",
+              "total": 4,
+              "byMilestone": {
+                "30": 4
+              },
+              "rows": [
+                {
+                  "code": "B11",
+                  "fullName": "Chu Văn Mạnh",
+                  "milestone": 30,
+                  "anniversary": "2026-08-15",
+                  "anniversaryDisplay": "15/08/2026"
+                },
+                {
+                  "code": "E02",
+                  "fullName": "Mai Văn Tuấn",
+                  "milestone": 30,
+                  "anniversary": "2026-08-25",
+                  "anniversaryDisplay": "25/08/2026"
+                },
+                {
+                  "code": "B12",
+                  "fullName": "Trương Thị Nhàn",
+                  "milestone": 30,
+                  "anniversary": "2026-09-10",
+                  "anniversaryDisplay": "10/09/2026"
+                },
+                {
+                  "code": "E03",
+                  "fullName": "Võ Thị Út",
+                  "milestone": 30,
+                  "anniversary": "2026-08-22",
+                  "anniversaryDisplay": "22/08/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-08-15",
+              "boundTo": "2027-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-08-15",
+              "boundTo": "2028-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P4": {
+          "name": "Đợt 7/11",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-10-01",
+              "boundTo": "2025-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-10-01",
+              "boundTo": "2026-11-07",
+              "total": 6,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "40": 1,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S01",
+                  "fullName": "Hồ Thị Vân",
+                  "milestone": 35,
+                  "anniversary": "2026-10-05",
+                  "anniversaryDisplay": "05/10/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-10-01",
+              "boundTo": "2027-11-07",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-10-01",
+              "boundTo": "2028-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 0,
+          "rows": []
+        },
+        "2026": {
+          "total": 7,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Giữa Đợt 3/2 và Đợt 19/5"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Giữa Đợt 2/9 và Đợt 7/11"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            }
+          ]
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-01-14",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "14/01/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-03-06",
+            "to": "2025-04-30",
+            "fromDisplay": "06/03/2025",
+            "toDisplay": "30/04/2025",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2025-06-01",
+            "to": "2025-08-14",
+            "fromDisplay": "01/06/2025",
+            "toDisplay": "14/08/2025",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2025-09-11",
+            "to": "2025-09-30",
+            "fromDisplay": "11/09/2025",
+            "toDisplay": "30/09/2025",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2025-11-08",
+            "to": "2025-12-31",
+            "fromDisplay": "08/11/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-01-14",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "14/01/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-03-06",
+            "to": "2026-04-30",
+            "fromDisplay": "06/03/2026",
+            "toDisplay": "30/04/2026",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2026-06-01",
+            "to": "2026-08-14",
+            "fromDisplay": "01/06/2026",
+            "toDisplay": "14/08/2026",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2026-09-11",
+            "to": "2026-09-30",
+            "fromDisplay": "11/09/2026",
+            "toDisplay": "30/09/2026",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2026-11-08",
+            "to": "2026-12-31",
+            "fromDisplay": "08/11/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-01-14",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "14/01/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-03-06",
+            "to": "2027-04-30",
+            "fromDisplay": "06/03/2027",
+            "toDisplay": "30/04/2027",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2027-06-01",
+            "to": "2027-08-14",
+            "fromDisplay": "01/06/2027",
+            "toDisplay": "14/08/2027",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2027-09-11",
+            "to": "2027-09-30",
+            "fromDisplay": "11/09/2027",
+            "toDisplay": "30/09/2027",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2027-11-08",
+            "to": "2027-12-31",
+            "fromDisplay": "08/11/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-01-14",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "14/01/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-03-06",
+            "to": "2028-04-30",
+            "fromDisplay": "06/03/2028",
+            "toDisplay": "30/04/2028",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2028-06-01",
+            "to": "2028-08-14",
+            "fromDisplay": "01/06/2028",
+            "toDisplay": "14/08/2028",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2028-09-11",
+            "to": "2028-09-30",
+            "fromDisplay": "11/09/2028",
+            "toDisplay": "30/09/2028",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2028-11-08",
+            "to": "2028-12-31",
+            "fromDisplay": "08/11/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 7,
+      "overlapWarnings": []
+    },
+    "core_default_T2": {
+      "today": "2026-12-01",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "P1",
+        "name": "Đợt 3/2",
+        "year": 2027,
+        "boundFrom": "2027-01-15",
+        "boundTo": "2027-03-05",
+        "boundFromDisplay": "15/01/2027",
+        "boundToDisplay": "05/03/2027",
+        "status": "Sắp tới",
+        "daysLeft": 45
+      },
+      "periodStatuses": [
+        {
+          "code": "P1",
+          "name": "Đợt 3/2",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P2",
+          "name": "Đợt 19/5",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P3",
+          "name": "Đợt 2/9",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P4",
+          "name": "Đợt 7/11",
+          "status": "Đã qua",
+          "daysLeft": null
+        }
+      ],
+      "eligibleByPeriod": {
+        "P1": {
+          "name": "Đợt 3/2",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-01-15",
+              "boundTo": "2025-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-01-15",
+              "boundTo": "2026-03-05",
+              "total": 5,
+              "byMilestone": {
+                "30": 4,
+                "35": 1
+              },
+              "rows": [
+                {
+                  "code": "B05",
+                  "fullName": "Hoàng Văn Em",
+                  "milestone": 30,
+                  "anniversary": "2026-01-15",
+                  "anniversaryDisplay": "15/01/2026"
+                },
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "X01",
+                  "fullName": "Nguyễn Thị Ánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-10",
+                  "anniversaryDisplay": "10/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                },
+                {
+                  "code": "X02",
+                  "fullName": "Nguyễn Văn Ẩn",
+                  "milestone": 35,
+                  "anniversary": "2026-02-20",
+                  "anniversaryDisplay": "20/02/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-01-15",
+              "boundTo": "2027-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-01-15",
+              "boundTo": "2028-03-05",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        },
+        "P2": {
+          "name": "Đợt 19/5",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-05-01",
+              "boundTo": "2025-05-31",
+              "total": 1,
+              "byMilestone": {
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "M01",
+                  "fullName": "Trịnh Văn Minh",
+                  "milestone": 90,
+                  "anniversary": "2025-05-01",
+                  "anniversaryDisplay": "01/05/2025"
+                }
+              ]
+            },
+            "2026": {
+              "boundFrom": "2026-05-01",
+              "boundTo": "2026-05-31",
+              "total": 5,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "E01",
+                  "fullName": "Cao Thị Thu",
+                  "milestone": 30,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "B09",
+                  "fullName": "Đinh Văn Khoa",
+                  "milestone": 30,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "B10",
+                  "fullName": "Hà Thị Liên",
+                  "milestone": 30,
+                  "anniversary": "2026-05-31",
+                  "anniversaryDisplay": "31/05/2026"
+                },
+                {
+                  "code": "L03",
+                  "fullName": "Lâm Văn Lộc",
+                  "milestone": 35,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "M02",
+                  "fullName": "Lý Thị Nga",
+                  "milestone": 90,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-05-01",
+              "boundTo": "2027-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-05-01",
+              "boundTo": "2028-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P3": {
+          "name": "Đợt 2/9",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-08-15",
+              "boundTo": "2025-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-08-15",
+              "boundTo": "2026-09-10",
+              "total": 4,
+              "byMilestone": {
+                "30": 4
+              },
+              "rows": [
+                {
+                  "code": "B11",
+                  "fullName": "Chu Văn Mạnh",
+                  "milestone": 30,
+                  "anniversary": "2026-08-15",
+                  "anniversaryDisplay": "15/08/2026"
+                },
+                {
+                  "code": "E02",
+                  "fullName": "Mai Văn Tuấn",
+                  "milestone": 30,
+                  "anniversary": "2026-08-25",
+                  "anniversaryDisplay": "25/08/2026"
+                },
+                {
+                  "code": "B12",
+                  "fullName": "Trương Thị Nhàn",
+                  "milestone": 30,
+                  "anniversary": "2026-09-10",
+                  "anniversaryDisplay": "10/09/2026"
+                },
+                {
+                  "code": "E03",
+                  "fullName": "Võ Thị Út",
+                  "milestone": 30,
+                  "anniversary": "2026-08-22",
+                  "anniversaryDisplay": "22/08/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-08-15",
+              "boundTo": "2027-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-08-15",
+              "boundTo": "2028-09-10",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P4": {
+          "name": "Đợt 7/11",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-10-01",
+              "boundTo": "2025-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-10-01",
+              "boundTo": "2026-11-07",
+              "total": 6,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "40": 1,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S01",
+                  "fullName": "Hồ Thị Vân",
+                  "milestone": 35,
+                  "anniversary": "2026-10-05",
+                  "anniversaryDisplay": "05/10/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-10-01",
+              "boundTo": "2027-11-07",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-10-01",
+              "boundTo": "2028-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 0,
+          "rows": []
+        },
+        "2026": {
+          "total": 7,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Giữa Đợt 3/2 và Đợt 19/5"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Giữa Đợt 2/9 và Đợt 7/11"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            }
+          ]
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-01-14",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "14/01/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-03-06",
+            "to": "2025-04-30",
+            "fromDisplay": "06/03/2025",
+            "toDisplay": "30/04/2025",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2025-06-01",
+            "to": "2025-08-14",
+            "fromDisplay": "01/06/2025",
+            "toDisplay": "14/08/2025",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2025-09-11",
+            "to": "2025-09-30",
+            "fromDisplay": "11/09/2025",
+            "toDisplay": "30/09/2025",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2025-11-08",
+            "to": "2025-12-31",
+            "fromDisplay": "08/11/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-01-14",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "14/01/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-03-06",
+            "to": "2026-04-30",
+            "fromDisplay": "06/03/2026",
+            "toDisplay": "30/04/2026",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2026-06-01",
+            "to": "2026-08-14",
+            "fromDisplay": "01/06/2026",
+            "toDisplay": "14/08/2026",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2026-09-11",
+            "to": "2026-09-30",
+            "fromDisplay": "11/09/2026",
+            "toDisplay": "30/09/2026",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2026-11-08",
+            "to": "2026-12-31",
+            "fromDisplay": "08/11/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-01-14",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "14/01/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-03-06",
+            "to": "2027-04-30",
+            "fromDisplay": "06/03/2027",
+            "toDisplay": "30/04/2027",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2027-06-01",
+            "to": "2027-08-14",
+            "fromDisplay": "01/06/2027",
+            "toDisplay": "14/08/2027",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2027-09-11",
+            "to": "2027-09-30",
+            "fromDisplay": "11/09/2027",
+            "toDisplay": "30/09/2027",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2027-11-08",
+            "to": "2027-12-31",
+            "fromDisplay": "08/11/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-01-14",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "14/01/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-03-06",
+            "to": "2028-04-30",
+            "fromDisplay": "06/03/2028",
+            "toDisplay": "30/04/2028",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2028-06-01",
+            "to": "2028-08-14",
+            "fromDisplay": "01/06/2028",
+            "toDisplay": "14/08/2028",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2028-09-11",
+            "to": "2028-09-30",
+            "fromDisplay": "11/09/2028",
+            "toDisplay": "30/09/2028",
+            "label": "Giữa Đợt 2/9 và Đợt 7/11"
+          },
+          {
+            "from": "2028-11-08",
+            "to": "2028-12-31",
+            "fromDisplay": "08/11/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 7,
+      "overlapWarnings": []
+    },
+    "core_default_T0_leapEdgePeriod": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "PL1",
+        "name": "Đợt nhuận 29/02",
+        "year": 2027,
+        "boundFrom": "2027-02-28",
+        "boundTo": "2027-03-05",
+        "boundFromDisplay": "28/02/2027",
+        "boundToDisplay": "05/03/2027",
+        "status": "Sắp tới",
+        "daysLeft": 162
+      },
+      "periodStatuses": [
+        {
+          "code": "PL1",
+          "name": "Đợt nhuận 29/02",
+          "status": "Đã qua",
+          "daysLeft": null
+        }
+      ],
+      "eligibleByPeriod": {
+        "PL1": {
+          "name": "Đợt nhuận 29/02",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-02-28",
+              "boundTo": "2025-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-02-28",
+              "boundTo": "2026-03-05",
+              "total": 2,
+              "byMilestone": {
+                "30": 2
+              },
+              "rows": [
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-02-28",
+              "boundTo": "2027-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-02-29",
+              "boundTo": "2028-03-05",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "M01",
+              "fullName": "Trịnh Văn Minh",
+              "milestone": 90,
+              "anniversary": "2025-05-01",
+              "anniversaryDisplay": "01/05/2025",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        },
+        "2026": {
+          "total": 25,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "E01",
+              "fullName": "Cao Thị Thu",
+              "milestone": 30,
+              "anniversary": "2026-05-20",
+              "anniversaryDisplay": "20/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B11",
+              "fullName": "Chu Văn Mạnh",
+              "milestone": 30,
+              "anniversary": "2026-08-15",
+              "anniversaryDisplay": "15/08/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "C01",
+              "fullName": "Đào Văn Ân",
+              "milestone": 30,
+              "anniversary": "2026-10-03",
+              "anniversaryDisplay": "03/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B09",
+              "fullName": "Đinh Văn Khoa",
+              "milestone": 30,
+              "anniversary": "2026-05-01",
+              "anniversaryDisplay": "01/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B10",
+              "fullName": "Hà Thị Liên",
+              "milestone": 30,
+              "anniversary": "2026-05-31",
+              "anniversaryDisplay": "31/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B05",
+              "fullName": "Hoàng Văn Em",
+              "milestone": 30,
+              "anniversary": "2026-01-15",
+              "anniversaryDisplay": "15/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "E02",
+              "fullName": "Mai Văn Tuấn",
+              "milestone": 30,
+              "anniversary": "2026-08-25",
+              "anniversaryDisplay": "25/08/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "X01",
+              "fullName": "Nguyễn Thị Ánh",
+              "milestone": 30,
+              "anniversary": "2026-02-10",
+              "anniversaryDisplay": "10/02/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B01",
+              "fullName": "Nguyễn Văn An",
+              "milestone": 30,
+              "anniversary": "2026-10-01",
+              "anniversaryDisplay": "01/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B02",
+              "fullName": "Trần Thị Bình",
+              "milestone": 30,
+              "anniversary": "2026-11-07",
+              "anniversaryDisplay": "07/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B12",
+              "fullName": "Trương Thị Nhàn",
+              "milestone": 30,
+              "anniversary": "2026-09-10",
+              "anniversaryDisplay": "10/09/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "E03",
+              "fullName": "Võ Thị Út",
+              "milestone": 30,
+              "anniversary": "2026-08-22",
+              "anniversaryDisplay": "22/08/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S01",
+              "fullName": "Hồ Thị Vân",
+              "milestone": 35,
+              "anniversary": "2026-10-05",
+              "anniversaryDisplay": "05/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "L03",
+              "fullName": "Lâm Văn Lộc",
+              "milestone": 35,
+              "anniversary": "2026-05-20",
+              "anniversaryDisplay": "20/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "X02",
+              "fullName": "Nguyễn Văn Ẩn",
+              "milestone": 35,
+              "anniversary": "2026-02-20",
+              "anniversaryDisplay": "20/02/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "S02",
+              "fullName": "Nguyễn Văn Xuân",
+              "milestone": 40,
+              "anniversary": "2026-10-20",
+              "anniversaryDisplay": "20/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S03",
+              "fullName": "Trần Thị Yến",
+              "milestone": 45,
+              "anniversary": "2026-11-03",
+              "anniversaryDisplay": "03/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "M02",
+              "fullName": "Lý Thị Nga",
+              "milestone": 90,
+              "anniversary": "2026-05-01",
+              "anniversaryDisplay": "01/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        },
+        "2027": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "N01",
+              "fullName": "Đặng Thị Quỳnh",
+              "milestone": 30,
+              "anniversary": "2027-10-01",
+              "anniversaryDisplay": "01/10/2027",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-02-27",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "27/02/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-03-06",
+            "to": "2025-12-31",
+            "fromDisplay": "06/03/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-02-27",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "27/02/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-03-06",
+            "to": "2026-12-31",
+            "fromDisplay": "06/03/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-02-27",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "27/02/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-03-06",
+            "to": "2027-12-31",
+            "fromDisplay": "06/03/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-02-28",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "28/02/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-03-06",
+            "to": "2028-12-31",
+            "fromDisplay": "06/03/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 25,
+      "overlapWarnings": []
+    },
+    "core_default_T0_fullCover": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "PF2",
+        "name": "Nửa cuối năm",
+        "year": 2026,
+        "boundFrom": "2026-07-01",
+        "boundTo": "2026-12-31",
+        "boundFromDisplay": "01/07/2026",
+        "boundToDisplay": "31/12/2026",
+        "status": "Đang diễn ra",
+        "daysLeft": null
+      },
+      "periodStatuses": [
+        {
+          "code": "PF1",
+          "name": "Nửa đầu năm",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "PF2",
+          "name": "Nửa cuối năm",
+          "status": "Đang diễn ra",
+          "daysLeft": null
+        }
+      ],
+      "eligibleByPeriod": {
+        "PF1": {
+          "name": "Nửa đầu năm",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-01-01",
+              "boundTo": "2025-06-30",
+              "total": 1,
+              "byMilestone": {
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "M01",
+                  "fullName": "Trịnh Văn Minh",
+                  "milestone": 90,
+                  "anniversary": "2025-05-01",
+                  "anniversaryDisplay": "01/05/2025"
+                }
+              ]
+            },
+            "2026": {
+              "boundFrom": "2026-01-01",
+              "boundTo": "2026-06-30",
+              "total": 13,
+              "byMilestone": {
+                "30": 9,
+                "35": 2,
+                "90": 2
+              },
+              "rows": [
+                {
+                  "code": "B08",
+                  "fullName": "Bùi Thị Hoa",
+                  "milestone": 30,
+                  "anniversary": "2026-03-06",
+                  "anniversaryDisplay": "06/03/2026"
+                },
+                {
+                  "code": "E01",
+                  "fullName": "Cao Thị Thu",
+                  "milestone": 30,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "B09",
+                  "fullName": "Đinh Văn Khoa",
+                  "milestone": 30,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "B07",
+                  "fullName": "Đỗ Văn Hải",
+                  "milestone": 30,
+                  "anniversary": "2026-01-14",
+                  "anniversaryDisplay": "14/01/2026"
+                },
+                {
+                  "code": "B10",
+                  "fullName": "Hà Thị Liên",
+                  "milestone": 30,
+                  "anniversary": "2026-05-31",
+                  "anniversaryDisplay": "31/05/2026"
+                },
+                {
+                  "code": "B05",
+                  "fullName": "Hoàng Văn Em",
+                  "milestone": 30,
+                  "anniversary": "2026-01-15",
+                  "anniversaryDisplay": "15/01/2026"
+                },
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "X01",
+                  "fullName": "Nguyễn Thị Ánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-10",
+                  "anniversaryDisplay": "10/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                },
+                {
+                  "code": "L03",
+                  "fullName": "Lâm Văn Lộc",
+                  "milestone": 35,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "X02",
+                  "fullName": "Nguyễn Văn Ẩn",
+                  "milestone": 35,
+                  "anniversary": "2026-02-20",
+                  "anniversaryDisplay": "20/02/2026"
+                },
+                {
+                  "code": "M02",
+                  "fullName": "Lý Thị Nga",
+                  "milestone": 90,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "M03",
+                  "fullName": "Phan Văn Phúc",
+                  "milestone": 90,
+                  "anniversary": "2026-06-10",
+                  "anniversaryDisplay": "10/06/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-01-01",
+              "boundTo": "2027-06-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-01-01",
+              "boundTo": "2028-06-30",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        },
+        "PF2": {
+          "name": "Nửa cuối năm",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-07-01",
+              "boundTo": "2025-12-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-07-01",
+              "boundTo": "2026-12-31",
+              "total": 14,
+              "byMilestone": {
+                "30": 10,
+                "35": 2,
+                "40": 1,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "B11",
+                  "fullName": "Chu Văn Mạnh",
+                  "milestone": 30,
+                  "anniversary": "2026-08-15",
+                  "anniversaryDisplay": "15/08/2026"
+                },
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B03",
+                  "fullName": "Lê Văn Cường",
+                  "milestone": 30,
+                  "anniversary": "2026-09-30",
+                  "anniversaryDisplay": "30/09/2026"
+                },
+                {
+                  "code": "E02",
+                  "fullName": "Mai Văn Tuấn",
+                  "milestone": 30,
+                  "anniversary": "2026-08-25",
+                  "anniversaryDisplay": "25/08/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B04",
+                  "fullName": "Phạm Thị Dung",
+                  "milestone": 30,
+                  "anniversary": "2026-11-08",
+                  "anniversaryDisplay": "08/11/2026"
+                },
+                {
+                  "code": "G05",
+                  "fullName": "Phùng Văn Bảo",
+                  "milestone": 30,
+                  "anniversary": "2026-07-01",
+                  "anniversaryDisplay": "01/07/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "B12",
+                  "fullName": "Trương Thị Nhàn",
+                  "milestone": 30,
+                  "anniversary": "2026-09-10",
+                  "anniversaryDisplay": "10/09/2026"
+                },
+                {
+                  "code": "E03",
+                  "fullName": "Võ Thị Út",
+                  "milestone": 30,
+                  "anniversary": "2026-08-22",
+                  "anniversaryDisplay": "22/08/2026"
+                },
+                {
+                  "code": "S01",
+                  "fullName": "Hồ Thị Vân",
+                  "milestone": 35,
+                  "anniversary": "2026-10-05",
+                  "anniversaryDisplay": "05/10/2026"
+                },
+                {
+                  "code": "S04",
+                  "fullName": "Ngô Thị Cẩm",
+                  "milestone": 35,
+                  "anniversary": "2026-07-15",
+                  "anniversaryDisplay": "15/07/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-07-01",
+              "boundTo": "2027-12-31",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-07-01",
+              "boundTo": "2028-12-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 0,
+          "rows": []
+        },
+        "2026": {
+          "total": 0,
+          "rows": []
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [],
+        "2026": [],
+        "2027": [],
+        "2028": []
+      },
+      "badgeCurrentYear": 0,
+      "overlapWarnings": []
+    },
+    "core_default_T0_overlap": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "PO1",
+        "name": "Đợt A",
+        "year": 2026,
+        "boundFrom": "2026-10-01",
+        "boundTo": "2026-11-07",
+        "boundFromDisplay": "01/10/2026",
+        "boundToDisplay": "07/11/2026",
+        "status": "Sắp tới",
+        "daysLeft": 12
+      },
+      "periodStatuses": [
+        {
+          "code": "PO1",
+          "name": "Đợt A",
+          "status": "Sắp tới",
+          "daysLeft": 12
+        },
+        {
+          "code": "PO2",
+          "name": "Đợt B",
+          "status": "Sắp tới",
+          "daysLeft": 43
+        }
+      ],
+      "eligibleByPeriod": {
+        "PO1": {
+          "name": "Đợt A",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-10-01",
+              "boundTo": "2025-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-10-01",
+              "boundTo": "2026-11-07",
+              "total": 6,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "40": 1,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S01",
+                  "fullName": "Hồ Thị Vân",
+                  "milestone": 35,
+                  "anniversary": "2026-10-05",
+                  "anniversaryDisplay": "05/10/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-10-01",
+              "boundTo": "2027-11-07",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-10-01",
+              "boundTo": "2028-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "PO2": {
+          "name": "Đợt B",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-11-01",
+              "boundTo": "2025-11-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-11-01",
+              "boundTo": "2026-11-30",
+              "total": 3,
+              "byMilestone": {
+                "30": 2,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "B04",
+                  "fullName": "Phạm Thị Dung",
+                  "milestone": 30,
+                  "anniversary": "2026-11-08",
+                  "anniversaryDisplay": "08/11/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-11-01",
+              "boundTo": "2027-11-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-11-01",
+              "boundTo": "2028-11-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "M01",
+              "fullName": "Trịnh Văn Minh",
+              "milestone": 90,
+              "anniversary": "2025-05-01",
+              "anniversaryDisplay": "01/05/2025",
+              "gapLabel": "Trước đợt đầu tiên"
+            }
+          ]
+        },
+        "2026": {
+          "total": 20,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "E01",
+              "fullName": "Cao Thị Thu",
+              "milestone": 30,
+              "anniversary": "2026-05-20",
+              "anniversaryDisplay": "20/05/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B11",
+              "fullName": "Chu Văn Mạnh",
+              "milestone": 30,
+              "anniversary": "2026-08-15",
+              "anniversaryDisplay": "15/08/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B09",
+              "fullName": "Đinh Văn Khoa",
+              "milestone": 30,
+              "anniversary": "2026-05-01",
+              "anniversaryDisplay": "01/05/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B10",
+              "fullName": "Hà Thị Liên",
+              "milestone": 30,
+              "anniversary": "2026-05-31",
+              "anniversaryDisplay": "31/05/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B05",
+              "fullName": "Hoàng Văn Em",
+              "milestone": 30,
+              "anniversary": "2026-01-15",
+              "anniversaryDisplay": "15/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "E02",
+              "fullName": "Mai Văn Tuấn",
+              "milestone": 30,
+              "anniversary": "2026-08-25",
+              "anniversaryDisplay": "25/08/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "L01",
+              "fullName": "Ngô Văn Khánh",
+              "milestone": 30,
+              "anniversary": "2026-02-28",
+              "anniversaryDisplay": "28/02/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "X01",
+              "fullName": "Nguyễn Thị Ánh",
+              "milestone": 30,
+              "anniversary": "2026-02-10",
+              "anniversaryDisplay": "10/02/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B12",
+              "fullName": "Trương Thị Nhàn",
+              "milestone": 30,
+              "anniversary": "2026-09-10",
+              "anniversaryDisplay": "10/09/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "E03",
+              "fullName": "Võ Thị Út",
+              "milestone": 30,
+              "anniversary": "2026-08-22",
+              "anniversaryDisplay": "22/08/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B06",
+              "fullName": "Vũ Thị Giang",
+              "milestone": 30,
+              "anniversary": "2026-03-05",
+              "anniversaryDisplay": "05/03/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "L03",
+              "fullName": "Lâm Văn Lộc",
+              "milestone": 35,
+              "anniversary": "2026-05-20",
+              "anniversaryDisplay": "20/05/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "X02",
+              "fullName": "Nguyễn Văn Ẩn",
+              "milestone": 35,
+              "anniversary": "2026-02-20",
+              "anniversaryDisplay": "20/02/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "M02",
+              "fullName": "Lý Thị Nga",
+              "milestone": 90,
+              "anniversary": "2026-05-01",
+              "anniversaryDisplay": "01/05/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            }
+          ]
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "L02",
+              "fullName": "Dương Thị Lan",
+              "milestone": 40,
+              "anniversary": "2028-02-29",
+              "anniversaryDisplay": "29/02/2028",
+              "gapLabel": "Trước đợt đầu tiên"
+            }
+          ]
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-09-30",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "30/09/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-12-01",
+            "to": "2025-12-31",
+            "fromDisplay": "01/12/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-09-30",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "30/09/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-12-01",
+            "to": "2026-12-31",
+            "fromDisplay": "01/12/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-09-30",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "30/09/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-12-01",
+            "to": "2027-12-31",
+            "fromDisplay": "01/12/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-09-30",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "30/09/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-12-01",
+            "to": "2028-12-31",
+            "fromDisplay": "01/12/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 20,
+      "overlapWarnings": [
+        [
+          "Đợt A",
+          "Đợt B"
+        ]
+      ]
+    },
+    "core_default_T0_noPeriod": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": null,
+      "periodStatuses": [],
+      "eligibleByPeriod": {},
+      "missedByYear": {
+        "2025": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "M01",
+              "fullName": "Trịnh Văn Minh",
+              "milestone": 90,
+              "anniversary": "2025-05-01",
+              "anniversaryDisplay": "01/05/2025",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        },
+        "2026": {
+          "total": 27,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "E01",
+              "fullName": "Cao Thị Thu",
+              "milestone": 30,
+              "anniversary": "2026-05-20",
+              "anniversaryDisplay": "20/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B11",
+              "fullName": "Chu Văn Mạnh",
+              "milestone": 30,
+              "anniversary": "2026-08-15",
+              "anniversaryDisplay": "15/08/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "C01",
+              "fullName": "Đào Văn Ân",
+              "milestone": 30,
+              "anniversary": "2026-10-03",
+              "anniversaryDisplay": "03/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B09",
+              "fullName": "Đinh Văn Khoa",
+              "milestone": 30,
+              "anniversary": "2026-05-01",
+              "anniversaryDisplay": "01/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B10",
+              "fullName": "Hà Thị Liên",
+              "milestone": 30,
+              "anniversary": "2026-05-31",
+              "anniversaryDisplay": "31/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B05",
+              "fullName": "Hoàng Văn Em",
+              "milestone": 30,
+              "anniversary": "2026-01-15",
+              "anniversaryDisplay": "15/01/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B03",
+              "fullName": "Lê Văn Cường",
+              "milestone": 30,
+              "anniversary": "2026-09-30",
+              "anniversaryDisplay": "30/09/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "E02",
+              "fullName": "Mai Văn Tuấn",
+              "milestone": 30,
+              "anniversary": "2026-08-25",
+              "anniversaryDisplay": "25/08/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "L01",
+              "fullName": "Ngô Văn Khánh",
+              "milestone": 30,
+              "anniversary": "2026-02-28",
+              "anniversaryDisplay": "28/02/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "X01",
+              "fullName": "Nguyễn Thị Ánh",
+              "milestone": 30,
+              "anniversary": "2026-02-10",
+              "anniversaryDisplay": "10/02/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B01",
+              "fullName": "Nguyễn Văn An",
+              "milestone": 30,
+              "anniversary": "2026-10-01",
+              "anniversaryDisplay": "01/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B02",
+              "fullName": "Trần Thị Bình",
+              "milestone": 30,
+              "anniversary": "2026-11-07",
+              "anniversaryDisplay": "07/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B12",
+              "fullName": "Trương Thị Nhàn",
+              "milestone": 30,
+              "anniversary": "2026-09-10",
+              "anniversaryDisplay": "10/09/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "E03",
+              "fullName": "Võ Thị Út",
+              "milestone": 30,
+              "anniversary": "2026-08-22",
+              "anniversaryDisplay": "22/08/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "B06",
+              "fullName": "Vũ Thị Giang",
+              "milestone": 30,
+              "anniversary": "2026-03-05",
+              "anniversaryDisplay": "05/03/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S01",
+              "fullName": "Hồ Thị Vân",
+              "milestone": 35,
+              "anniversary": "2026-10-05",
+              "anniversaryDisplay": "05/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "L03",
+              "fullName": "Lâm Văn Lộc",
+              "milestone": 35,
+              "anniversary": "2026-05-20",
+              "anniversaryDisplay": "20/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "X02",
+              "fullName": "Nguyễn Văn Ẩn",
+              "milestone": 35,
+              "anniversary": "2026-02-20",
+              "anniversaryDisplay": "20/02/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S02",
+              "fullName": "Nguyễn Văn Xuân",
+              "milestone": 40,
+              "anniversary": "2026-10-20",
+              "anniversaryDisplay": "20/10/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "S03",
+              "fullName": "Trần Thị Yến",
+              "milestone": 45,
+              "anniversary": "2026-11-03",
+              "anniversaryDisplay": "03/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "M02",
+              "fullName": "Lý Thị Nga",
+              "milestone": 90,
+              "anniversary": "2026-05-01",
+              "anniversaryDisplay": "01/05/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        },
+        "2027": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "N01",
+              "fullName": "Đặng Thị Quỳnh",
+              "milestone": 30,
+              "anniversary": "2027-10-01",
+              "anniversaryDisplay": "01/10/2027",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        },
+        "2028": {
+          "total": 1,
+          "rows": [
+            {
+              "code": "L02",
+              "fullName": "Dương Thị Lan",
+              "milestone": 40,
+              "anniversary": "2028-02-29",
+              "anniversaryDisplay": "29/02/2028",
+              "gapLabel": "Sau đợt cuối cùng"
+            }
+          ]
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-12-31",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-12-31",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-12-31",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-12-31",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 27,
+      "overlapWarnings": []
+    },
+    "core_default_T0_widenedP3": {
+      "today": "2026-09-19",
+      "settings": {
+        "start_years": 30,
+        "end_years": 90,
+        "step_years": 5,
+        "unit_name": "Đảng ủy Phường Kiểm Thử"
+      },
+      "milestones": [
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90
+      ],
+      "milestoneCount": 13,
+      "upcomingPeriod": {
+        "code": "P3",
+        "name": "Đợt 2/9",
+        "year": 2026,
+        "boundFrom": "2026-08-15",
+        "boundTo": "2026-09-30",
+        "boundFromDisplay": "15/08/2026",
+        "boundToDisplay": "30/09/2026",
+        "status": "Đang diễn ra",
+        "daysLeft": null
+      },
+      "periodStatuses": [
+        {
+          "code": "P1",
+          "name": "Đợt 3/2",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P2",
+          "name": "Đợt 19/5",
+          "status": "Đã qua",
+          "daysLeft": null
+        },
+        {
+          "code": "P3",
+          "name": "Đợt 2/9",
+          "status": "Đang diễn ra",
+          "daysLeft": null
+        },
+        {
+          "code": "P4",
+          "name": "Đợt 7/11",
+          "status": "Sắp tới",
+          "daysLeft": 12
+        }
+      ],
+      "eligibleByPeriod": {
+        "P1": {
+          "name": "Đợt 3/2",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-01-15",
+              "boundTo": "2025-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-01-15",
+              "boundTo": "2026-03-05",
+              "total": 5,
+              "byMilestone": {
+                "30": 4,
+                "35": 1
+              },
+              "rows": [
+                {
+                  "code": "B05",
+                  "fullName": "Hoàng Văn Em",
+                  "milestone": 30,
+                  "anniversary": "2026-01-15",
+                  "anniversaryDisplay": "15/01/2026"
+                },
+                {
+                  "code": "L01",
+                  "fullName": "Ngô Văn Khánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-28",
+                  "anniversaryDisplay": "28/02/2026"
+                },
+                {
+                  "code": "X01",
+                  "fullName": "Nguyễn Thị Ánh",
+                  "milestone": 30,
+                  "anniversary": "2026-02-10",
+                  "anniversaryDisplay": "10/02/2026"
+                },
+                {
+                  "code": "B06",
+                  "fullName": "Vũ Thị Giang",
+                  "milestone": 30,
+                  "anniversary": "2026-03-05",
+                  "anniversaryDisplay": "05/03/2026"
+                },
+                {
+                  "code": "X02",
+                  "fullName": "Nguyễn Văn Ẩn",
+                  "milestone": 35,
+                  "anniversary": "2026-02-20",
+                  "anniversaryDisplay": "20/02/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-01-15",
+              "boundTo": "2027-03-05",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-01-15",
+              "boundTo": "2028-03-05",
+              "total": 1,
+              "byMilestone": {
+                "40": 1
+              },
+              "rows": [
+                {
+                  "code": "L02",
+                  "fullName": "Dương Thị Lan",
+                  "milestone": 40,
+                  "anniversary": "2028-02-29",
+                  "anniversaryDisplay": "29/02/2028"
+                }
+              ]
+            }
+          }
+        },
+        "P2": {
+          "name": "Đợt 19/5",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-05-01",
+              "boundTo": "2025-05-31",
+              "total": 1,
+              "byMilestone": {
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "M01",
+                  "fullName": "Trịnh Văn Minh",
+                  "milestone": 90,
+                  "anniversary": "2025-05-01",
+                  "anniversaryDisplay": "01/05/2025"
+                }
+              ]
+            },
+            "2026": {
+              "boundFrom": "2026-05-01",
+              "boundTo": "2026-05-31",
+              "total": 5,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "90": 1
+              },
+              "rows": [
+                {
+                  "code": "E01",
+                  "fullName": "Cao Thị Thu",
+                  "milestone": 30,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "B09",
+                  "fullName": "Đinh Văn Khoa",
+                  "milestone": 30,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                },
+                {
+                  "code": "B10",
+                  "fullName": "Hà Thị Liên",
+                  "milestone": 30,
+                  "anniversary": "2026-05-31",
+                  "anniversaryDisplay": "31/05/2026"
+                },
+                {
+                  "code": "L03",
+                  "fullName": "Lâm Văn Lộc",
+                  "milestone": 35,
+                  "anniversary": "2026-05-20",
+                  "anniversaryDisplay": "20/05/2026"
+                },
+                {
+                  "code": "M02",
+                  "fullName": "Lý Thị Nga",
+                  "milestone": 90,
+                  "anniversary": "2026-05-01",
+                  "anniversaryDisplay": "01/05/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-05-01",
+              "boundTo": "2027-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-05-01",
+              "boundTo": "2028-05-31",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P3": {
+          "name": "Đợt 2/9",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-08-15",
+              "boundTo": "2025-09-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-08-15",
+              "boundTo": "2026-09-30",
+              "total": 5,
+              "byMilestone": {
+                "30": 5
+              },
+              "rows": [
+                {
+                  "code": "B11",
+                  "fullName": "Chu Văn Mạnh",
+                  "milestone": 30,
+                  "anniversary": "2026-08-15",
+                  "anniversaryDisplay": "15/08/2026"
+                },
+                {
+                  "code": "B03",
+                  "fullName": "Lê Văn Cường",
+                  "milestone": 30,
+                  "anniversary": "2026-09-30",
+                  "anniversaryDisplay": "30/09/2026"
+                },
+                {
+                  "code": "E02",
+                  "fullName": "Mai Văn Tuấn",
+                  "milestone": 30,
+                  "anniversary": "2026-08-25",
+                  "anniversaryDisplay": "25/08/2026"
+                },
+                {
+                  "code": "B12",
+                  "fullName": "Trương Thị Nhàn",
+                  "milestone": 30,
+                  "anniversary": "2026-09-10",
+                  "anniversaryDisplay": "10/09/2026"
+                },
+                {
+                  "code": "E03",
+                  "fullName": "Võ Thị Út",
+                  "milestone": 30,
+                  "anniversary": "2026-08-22",
+                  "anniversaryDisplay": "22/08/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-08-15",
+              "boundTo": "2027-09-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2028": {
+              "boundFrom": "2028-08-15",
+              "boundTo": "2028-09-30",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        },
+        "P4": {
+          "name": "Đợt 7/11",
+          "byYear": {
+            "2025": {
+              "boundFrom": "2025-10-01",
+              "boundTo": "2025-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            },
+            "2026": {
+              "boundFrom": "2026-10-01",
+              "boundTo": "2026-11-07",
+              "total": 6,
+              "byMilestone": {
+                "30": 3,
+                "35": 1,
+                "40": 1,
+                "45": 1
+              },
+              "rows": [
+                {
+                  "code": "C01",
+                  "fullName": "Đào Văn Ân",
+                  "milestone": 30,
+                  "anniversary": "2026-10-03",
+                  "anniversaryDisplay": "03/10/2026"
+                },
+                {
+                  "code": "B01",
+                  "fullName": "Nguyễn Văn An",
+                  "milestone": 30,
+                  "anniversary": "2026-10-01",
+                  "anniversaryDisplay": "01/10/2026"
+                },
+                {
+                  "code": "B02",
+                  "fullName": "Trần Thị Bình",
+                  "milestone": 30,
+                  "anniversary": "2026-11-07",
+                  "anniversaryDisplay": "07/11/2026"
+                },
+                {
+                  "code": "S01",
+                  "fullName": "Hồ Thị Vân",
+                  "milestone": 35,
+                  "anniversary": "2026-10-05",
+                  "anniversaryDisplay": "05/10/2026"
+                },
+                {
+                  "code": "S02",
+                  "fullName": "Nguyễn Văn Xuân",
+                  "milestone": 40,
+                  "anniversary": "2026-10-20",
+                  "anniversaryDisplay": "20/10/2026"
+                },
+                {
+                  "code": "S03",
+                  "fullName": "Trần Thị Yến",
+                  "milestone": 45,
+                  "anniversary": "2026-11-03",
+                  "anniversaryDisplay": "03/11/2026"
+                }
+              ]
+            },
+            "2027": {
+              "boundFrom": "2027-10-01",
+              "boundTo": "2027-11-07",
+              "total": 1,
+              "byMilestone": {
+                "30": 1
+              },
+              "rows": [
+                {
+                  "code": "N01",
+                  "fullName": "Đặng Thị Quỳnh",
+                  "milestone": 30,
+                  "anniversary": "2027-10-01",
+                  "anniversaryDisplay": "01/10/2027"
+                }
+              ]
+            },
+            "2028": {
+              "boundFrom": "2028-10-01",
+              "boundTo": "2028-11-07",
+              "total": 0,
+              "byMilestone": {},
+              "rows": []
+            }
+          }
+        }
+      },
+      "missedByYear": {
+        "2025": {
+          "total": 0,
+          "rows": []
+        },
+        "2026": {
+          "total": 6,
+          "rows": [
+            {
+              "code": "B08",
+              "fullName": "Bùi Thị Hoa",
+              "milestone": 30,
+              "anniversary": "2026-03-06",
+              "anniversaryDisplay": "06/03/2026",
+              "gapLabel": "Giữa Đợt 3/2 và Đợt 19/5"
+            },
+            {
+              "code": "B07",
+              "fullName": "Đỗ Văn Hải",
+              "milestone": 30,
+              "anniversary": "2026-01-14",
+              "anniversaryDisplay": "14/01/2026",
+              "gapLabel": "Trước đợt đầu tiên"
+            },
+            {
+              "code": "B04",
+              "fullName": "Phạm Thị Dung",
+              "milestone": 30,
+              "anniversary": "2026-11-08",
+              "anniversaryDisplay": "08/11/2026",
+              "gapLabel": "Sau đợt cuối cùng"
+            },
+            {
+              "code": "G05",
+              "fullName": "Phùng Văn Bảo",
+              "milestone": 30,
+              "anniversary": "2026-07-01",
+              "anniversaryDisplay": "01/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "S04",
+              "fullName": "Ngô Thị Cẩm",
+              "milestone": 35,
+              "anniversary": "2026-07-15",
+              "anniversaryDisplay": "15/07/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            },
+            {
+              "code": "M03",
+              "fullName": "Phan Văn Phúc",
+              "milestone": 90,
+              "anniversary": "2026-06-10",
+              "anniversaryDisplay": "10/06/2026",
+              "gapLabel": "Giữa Đợt 19/5 và Đợt 2/9"
+            }
+          ]
+        },
+        "2027": {
+          "total": 0,
+          "rows": []
+        },
+        "2028": {
+          "total": 0,
+          "rows": []
+        }
+      },
+      "gapsByYear": {
+        "2025": [
+          {
+            "from": "2025-01-01",
+            "to": "2025-01-14",
+            "fromDisplay": "01/01/2025",
+            "toDisplay": "14/01/2025",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2025-03-06",
+            "to": "2025-04-30",
+            "fromDisplay": "06/03/2025",
+            "toDisplay": "30/04/2025",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2025-06-01",
+            "to": "2025-08-14",
+            "fromDisplay": "01/06/2025",
+            "toDisplay": "14/08/2025",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2025-11-08",
+            "to": "2025-12-31",
+            "fromDisplay": "08/11/2025",
+            "toDisplay": "31/12/2025",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2026": [
+          {
+            "from": "2026-01-01",
+            "to": "2026-01-14",
+            "fromDisplay": "01/01/2026",
+            "toDisplay": "14/01/2026",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2026-03-06",
+            "to": "2026-04-30",
+            "fromDisplay": "06/03/2026",
+            "toDisplay": "30/04/2026",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2026-06-01",
+            "to": "2026-08-14",
+            "fromDisplay": "01/06/2026",
+            "toDisplay": "14/08/2026",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2026-11-08",
+            "to": "2026-12-31",
+            "fromDisplay": "08/11/2026",
+            "toDisplay": "31/12/2026",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2027": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-01-14",
+            "fromDisplay": "01/01/2027",
+            "toDisplay": "14/01/2027",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2027-03-06",
+            "to": "2027-04-30",
+            "fromDisplay": "06/03/2027",
+            "toDisplay": "30/04/2027",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2027-06-01",
+            "to": "2027-08-14",
+            "fromDisplay": "01/06/2027",
+            "toDisplay": "14/08/2027",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2027-11-08",
+            "to": "2027-12-31",
+            "fromDisplay": "08/11/2027",
+            "toDisplay": "31/12/2027",
+            "label": "Sau đợt cuối cùng"
+          }
+        ],
+        "2028": [
+          {
+            "from": "2028-01-01",
+            "to": "2028-01-14",
+            "fromDisplay": "01/01/2028",
+            "toDisplay": "14/01/2028",
+            "label": "Trước đợt đầu tiên"
+          },
+          {
+            "from": "2028-03-06",
+            "to": "2028-04-30",
+            "fromDisplay": "06/03/2028",
+            "toDisplay": "30/04/2028",
+            "label": "Giữa Đợt 3/2 và Đợt 19/5"
+          },
+          {
+            "from": "2028-06-01",
+            "to": "2028-08-14",
+            "fromDisplay": "01/06/2028",
+            "toDisplay": "14/08/2028",
+            "label": "Giữa Đợt 19/5 và Đợt 2/9"
+          },
+          {
+            "from": "2028-11-08",
+            "to": "2028-12-31",
+            "fromDisplay": "08/11/2028",
+            "toDisplay": "31/12/2028",
+            "label": "Sau đợt cuối cùng"
+          }
+        ]
+      },
+      "badgeCurrentYear": 6,
+      "overlapWarnings": []
+    }
+  }
+}
