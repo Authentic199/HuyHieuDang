@@ -1,0 +1,1552 @@
+openapi: 3.0.3
+
+# Bản máy đọc của docs/api-contract.md (v1.0 — 19/09/2026).
+# Tài liệu markdown là bản chuẩn; file này phải được sửa cùng lúc mỗi khi contract đổi.
+
+info:
+  title: HuyHieuDang API
+  version: "1.0"
+  description: |
+    API của hệ thống hỗ trợ xét trao Huy hiệu Đảng.
+    Mọi phản hồi thành công bọc trong `{ message, data }`; phần mô tả dưới đây chỉ nói về `data`.
+    Ngày nghiệp vụ là chuỗi `yyyy-MM-dd`. Xem `docs/api-contract.md` để biết đầy đủ quy ước.
+
+servers:
+  - url: /api
+    description: Frontend gọi qua proxy (dev - Vite, chạy thật - nginx)
+  - url: http://localhost:5000/api
+    description: Backend chạy trực tiếp khi dev
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Đăng nhập, đăng xuất, thông tin phiên
+  - name: PartyMembers
+    description: Đảng viên
+  - name: Import
+    description: Import danh sách đảng viên từ Excel
+  - name: AwardPeriods
+    description: Đợt trao huy hiệu
+  - name: Calculation
+    description: Dashboard, đủ điều kiện, chưa thuộc đợt nào
+  - name: Settings
+    description: Cài đặt mốc tuổi đảng và tên đơn vị
+  - name: Exports
+    description: Xuất Excel
+
+paths:
+
+  /Auth/Login:
+    post:
+      tags: [Auth]
+      summary: Đăng nhập (UC-00)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          description: Sai tài khoản hoặc mật khẩu (Mes.User.Login.Failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
+  /Auth/Logout:
+    post:
+      tags: [Auth]
+      summary: Đăng xuất (UC-01)
+      responses:
+        '200':
+          description: Đã ghi nhận đăng xuất; Frontend tự xóa token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Auth/Me:
+    get:
+      tags: [Auth]
+      summary: Thông tin phiên, tên đơn vị và ngày hôm nay theo máy chủ
+      responses:
+        '200':
+          description: Phiên còn hiệu lực
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers:
+    get:
+      tags: [PartyMembers]
+      summary: Danh sách đảng viên, có phân trang (UC-20)
+      parameters:
+        - $ref: '#/components/parameters/Current'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/SearchFields'
+        - $ref: '#/components/parameters/SortQuery'
+        - name: filter.Gender
+          in: query
+          description: 'Lọc giới tính. Ví dụ: `$eq:Male` hoặc `$eq:Female`. Bỏ hẳn tham số nếu chọn Tất cả'
+          schema:
+            type: string
+            example: $eq:Male
+      responses:
+        '200':
+          description: Trang kết quả
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PartyMemberPagination'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [PartyMembers]
+      summary: Thêm đảng viên thủ công (UC-21)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyMemberRequest'
+      responses:
+        '200':
+          description: Đã thêm
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PartyMemberResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [PartyMembers]
+      summary: Lấy một đảng viên (UC-22)
+      responses:
+        '200':
+          description: Chi tiết đảng viên
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PartyMemberResponse'
+        '400':
+          $ref: '#/components/responses/NotFoundAsBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags: [PartyMembers]
+      summary: Sửa đảng viên (UC-22)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyMemberRequest'
+      responses:
+        '200':
+          description: Đã lưu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PartyMemberResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [PartyMembers]
+      summary: Xóa một đảng viên (UC-23)
+      responses:
+        '200':
+          description: Đã xóa
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/IdentifierResponse'
+        '400':
+          $ref: '#/components/responses/NotFoundAsBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers/DeleteMany:
+    post:
+      tags: [PartyMembers]
+      summary: Xóa nhiều đảng viên đã chọn (UC-23)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteManyRequest'
+      responses:
+        '200':
+          description: Danh sách id đã xóa được
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/MultipleIdentifierResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers/Import/Template:
+    get:
+      tags: [Import]
+      summary: Tải file Excel mẫu (UC-25)
+      responses:
+        '200':
+          $ref: '#/components/responses/ExcelFile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers/Import/Preview:
+    post:
+      tags: [Import]
+      summary: Xem trước file import, không ghi dữ liệu (UC-24 bước 2)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUpload'
+      responses:
+        '200':
+          description: Kết quả đọc file, gồm dòng hợp lệ và dòng lỗi
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ImportPreviewResponse'
+        '400':
+          description: Lỗi cấp file (Mes.Import.Invalid.Extension / FileSize / Columns / Empty)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers/Import/Commit:
+    post:
+      tags: [Import]
+      summary: Nạp các dòng hợp lệ, một giao dịch (UC-24 bước 3)
+      description: Gửi lại đúng file đã dùng ở bước xem trước. Máy chủ không giữ trạng thái giữa hai bước.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUpload'
+      responses:
+        '200':
+          description: Đã nạp xong
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ImportCommitResponse'
+        '400':
+          description: Lỗi cấp file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /AwardPeriods:
+    get:
+      tags: [AwardPeriods]
+      summary: Danh sách đợt kèm trạng thái, số người đủ điều kiện, cảnh báo và dải độ phủ (UC-30, UC-36)
+      parameters:
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          description: Danh sách đợt của năm đang xét
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AwardPeriodListResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [AwardPeriods]
+      summary: Thêm đợt trao huy hiệu (UC-31)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AwardPeriodRequest'
+      responses:
+        '200':
+          description: Đã thêm. Cảnh báo chồng lấn / chưa phủ kín trả kèm, không chặn lưu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AwardPeriodMutationResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /AwardPeriods/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [AwardPeriods]
+      summary: Lấy một đợt, đã gắn năm (UC-34 tab Thông tin)
+      parameters:
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          description: Chi tiết đợt
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AwardPeriodResponse'
+        '400':
+          $ref: '#/components/responses/NotFoundAsBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags: [AwardPeriods]
+      summary: Sửa đợt, có hiệu lực ngay cho mọi năm (UC-32)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AwardPeriodRequest'
+      responses:
+        '200':
+          description: Đã lưu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AwardPeriodMutationResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [AwardPeriods]
+      summary: Xóa đợt (UC-33)
+      responses:
+        '200':
+          description: Đã xóa, kèm cảnh báo khoảng trống mới sinh ra
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AwardPeriodDeleteResponse'
+        '400':
+          $ref: '#/components/responses/NotFoundAsBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Dashboard:
+    get:
+      tags: [Calculation]
+      summary: Toàn bộ dữ liệu Dashboard (UC-10, UC-11, UC-12, UC-13)
+      responses:
+        '200':
+          description: Đợt sắp tới, danh sách đủ điều kiện và cảnh báo
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DashboardResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Eligibility:
+    get:
+      tags: [Calculation]
+      summary: Danh sách đủ điều kiện của một đợt trong một năm (UC-34)
+      description: Tính lại mỗi lần gọi (QT5). Các dòng trả về không có id riêng.
+      parameters:
+        - name: awardPeriodId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          description: Danh sách đủ điều kiện
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/EligibilityResponse'
+        '400':
+          $ref: '#/components/responses/NotFoundAsBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Eligibility/Unassigned:
+    get:
+      tags: [Calculation]
+      summary: Danh sách chưa thuộc đợt nào trong năm (UC-40)
+      parameters:
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          description: Danh sách người bị sót kèm cột khoảng trống
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UnassignedResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Eligibility/UnassignedCount:
+    get:
+      tags: [Calculation]
+      summary: Số người bị sót trong năm, dùng cho badge menu trái
+      parameters:
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          description: Số lượng
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UnassignedCountResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Settings:
+    get:
+      tags: [Settings]
+      summary: Đọc cài đặt mốc tuổi đảng và tên đơn vị (UC-50, UC-51)
+      responses:
+        '200':
+          description: Cài đặt hiện tại kèm dãy mốc đã sinh
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SettingsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags: [Settings]
+      summary: Lưu cài đặt (UC-50, UC-51)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingsRequest'
+      responses:
+        '200':
+          description: Đã lưu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SettingsResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Settings/RestoreDefaults:
+    post:
+      tags: [Settings]
+      summary: Khôi phục mặc định 30 / 90 / 5, giữ nguyên tên đơn vị (UC-50)
+      responses:
+        '200':
+          description: Đã khôi phục
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SettingsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Settings/Milestones:
+    get:
+      tags: [Settings]
+      summary: Xem trước dãy mốc theo bộ ba đang gõ, không ghi dữ liệu (UC-50)
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            example: 30
+        - name: end
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            example: 90
+        - name: step
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            example: 10
+      responses:
+        '200':
+          description: Dãy mốc sinh theo QT1
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/MilestonePreviewResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Exports/Eligibility:
+    get:
+      tags: [Exports]
+      summary: Xuất Excel danh sách đủ điều kiện của một đợt (UC-34)
+      parameters:
+        - name: awardPeriodId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          $ref: '#/components/responses/ExcelFile'
+        '400':
+          $ref: '#/components/responses/NotFoundAsBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Exports/Dashboard:
+    get:
+      tags: [Exports]
+      summary: Xuất Excel danh sách đủ điều kiện của đợt sắp tới (UC-11)
+      responses:
+        '200':
+          $ref: '#/components/responses/ExcelFile'
+        '400':
+          description: Chưa cài đợt nào (Mes.Dashboard.NotFound.UpcomingPeriod)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /Exports/Unassigned:
+    get:
+      tags: [Exports]
+      summary: Xuất Excel danh sách chưa thuộc đợt nào (UC-40)
+      parameters:
+        - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          $ref: '#/components/responses/ExcelFile'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Year:
+      name: year
+      in: query
+      description: Năm đang xét. Bỏ trống thì lấy năm hiện tại theo lịch máy chủ
+      schema:
+        type: integer
+        minimum: 1900
+        maximum: 2200
+        example: 2026
+    Current:
+      name: current
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+    SearchKeyword:
+      name: searchKeyword
+      in: query
+      description: Tìm chứa chuỗi, không phân biệt hoa thường và dấu
+      schema:
+        type: string
+    SearchFields:
+      name: searchFields
+      in: query
+      description: Trường để tìm. Danh sách đảng viên chỉ dùng FullName
+      schema:
+        type: array
+        items:
+          type: string
+      example: [FullName]
+    SortQuery:
+      name: sortQuery
+      in: query
+      description: 'Ví dụ: `FullName asc`, `OfficialAdmissionDate desc`. Không sắp được theo cột tính ra'
+      schema:
+        type: string
+        default: FullName asc
+
+  responses:
+    Unauthorized:
+      description: Thiếu token, token hết hạn hoặc sai tài khoản
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    ValidationError:
+      description: Dữ liệu vào không hợp lệ. Chỉ trả lỗi đầu tiên
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResult'
+    NotFoundAsBadRequest:
+      description: Không tìm thấy bản ghi. Trả 400 chứ không phải 404
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    ServerError:
+      description: Lỗi máy chủ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    ExcelFile:
+      description: |
+        File .xlsx. Tên file nằm trong header Content-Disposition.
+        Frontend phải tải bằng XHR (responseType blob) vì cần gửi header Authorization.
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="DuDieuKien_Dot7-11_2026.xlsx"
+      content:
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+          schema:
+            type: string
+            format: binary
+
+  schemas:
+
+    Envelope:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Khóa thông điệp, không phải chữ hiển thị
+          example: Mes.PartyMember.Search.Successfully
+        data:
+          nullable: true
+
+    ErrorResult:
+      type: object
+      description: Lỗi nghiệp vụ và lỗi hệ thống. Trường mang giá trị mặc định bị lược khỏi JSON
+      properties:
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Mes.AwardPeriod.Repeated.Name
+        traceId:
+          type: string
+          nullable: true
+        supportMessage:
+          type: string
+          nullable: true
+
+    ValidationErrorResult:
+      type: object
+      description: Lỗi từ tầng kiểm tra dữ liệu vào. Chỉ có đúng một trường
+      properties:
+        message:
+          type: string
+          example: Mes.PartyMember.Required.FullName
+
+    Gender:
+      type: string
+      nullable: true
+      enum: [Male, Female, null]
+      description: Male = Nam, Female = Nữ, null = để trống
+
+    AwardPeriodStatus:
+      type: string
+      enum: [Past, Ongoing, Upcoming]
+      description: QT11 — Đã qua / Đang diễn ra / Sắp tới
+
+    GapType:
+      type: string
+      enum: [Between, BeforeFirst, AfterLast]
+
+    ImportErrorCode:
+      type: string
+      enum:
+        - MissingFullName
+        - MissingOfficialAdmissionDate
+        - InvalidDateFormat
+        - FutureOfficialAdmissionDate
+        - InvalidGender
+        - BirthDateAfterAdmissionDate
+
+    IdentifierResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+
+    MultipleIdentifierResponse:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    FileUpload:
+      type: object
+      required: [file]
+      properties:
+        file:
+          type: string
+          format: binary
+          description: File .xlsx, tối đa 10 MB, đúng 4 cột
+
+    PageInfo:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 1248
+        pageSize:
+          type: integer
+          example: 20
+        current:
+          type: integer
+          example: 1
+        totalPages:
+          type: integer
+          example: 63
+        hasNext:
+          type: boolean
+        hasPrevious:
+          type: boolean
+
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: admin
+        password:
+          type: string
+          format: password
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+        expiresAt:
+          type: string
+          format: date-time
+          example: '2026-09-19T16:30:00Z'
+        username:
+          type: string
+          example: admin
+        displayName:
+          type: string
+          example: Quản trị viên
+        unitName:
+          type: string
+          nullable: true
+          example: Đảng ủy Phường X
+        serverDate:
+          type: string
+          format: date
+          example: '2026-09-19'
+
+    SessionResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        displayName:
+          type: string
+        unitName:
+          type: string
+          nullable: true
+        serverDate:
+          type: string
+          format: date
+        expiresAt:
+          type: string
+          format: date-time
+
+    PartyMemberRequest:
+      type: object
+      required: [fullName, officialAdmissionDate]
+      properties:
+        fullName:
+          type: string
+          maxLength: 200
+          example: Nguyễn Văn An
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+          description: Nếu có, phải trước officialAdmissionDate
+          example: '1958-03-12'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        officialAdmissionDate:
+          type: string
+          format: date
+          description: Không được ở tương lai
+          example: '1996-10-15'
+
+    PartyMemberResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          $ref: '#/components/schemas/Gender'
+        officialAdmissionDate:
+          type: string
+          format: date
+        partyAgeYears:
+          type: integer
+          description: QT3 — tuổi đảng tính đến hôm nay
+          example: 50
+        nextMilestone:
+          type: integer
+          nullable: true
+          description: QT3a — null khi đã vượt mốc lớn nhất
+          example: 55
+        nextMilestoneDate:
+          type: string
+          format: date
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PartyMemberPagination:
+      type: object
+      properties:
+        pagedData:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartyMemberResponse'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+
+    DeleteManyRequest:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+
+    ImportValidRow:
+      type: object
+      properties:
+        rowNumber:
+          type: integer
+          description: Số dòng trong file Excel, dữ liệu bắt đầu từ dòng 2
+          example: 2
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          $ref: '#/components/schemas/Gender'
+        officialAdmissionDate:
+          type: string
+          format: date
+
+    ImportErrorRow:
+      type: object
+      description: Giữ nguyên chữ thô đọc từ ô Excel, mọi trường là chuỗi
+      properties:
+        rowNumber:
+          type: integer
+          example: 5
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+          example: 04/08/1963
+        gender:
+          type: string
+          example: Nữ
+        officialAdmissionDate:
+          type: string
+          example: ''
+        errorCode:
+          $ref: '#/components/schemas/ImportErrorCode'
+        field:
+          type: string
+          example: OfficialAdmissionDate
+
+    ImportPreviewResponse:
+      type: object
+      properties:
+        fileName:
+          type: string
+          example: DangVien_2026.xlsx
+        totalRows:
+          type: integer
+          example: 129
+        validCount:
+          type: integer
+          example: 125
+        errorCount:
+          type: integer
+          example: 4
+        validRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportValidRow'
+        errorRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportErrorRow'
+
+    ImportCommitResponse:
+      type: object
+      properties:
+        importedCount:
+          type: integer
+          example: 125
+        skippedCount:
+          type: integer
+          example: 4
+
+    AwardPeriodRequest:
+      type: object
+      required: [name, fromDay, fromMonth, toDay, toMonth]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: Duy nhất, không phân biệt hoa thường
+          example: Đợt 7/11
+        fromDay:
+          type: integer
+          minimum: 1
+          maximum: 31
+          example: 1
+        fromMonth:
+          type: integer
+          minimum: 1
+          maximum: 12
+          example: 10
+        toDay:
+          type: integer
+          minimum: 1
+          maximum: 31
+          example: 7
+        toMonth:
+          type: integer
+          minimum: 1
+          maximum: 12
+          example: 11
+
+    AwardPeriodResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Đợt 7/11
+        fromDay:
+          type: integer
+        fromMonth:
+          type: integer
+        toDay:
+          type: integer
+        toMonth:
+          type: integer
+        fromDisplay:
+          type: string
+          example: 01/10
+        toDisplay:
+          type: string
+          example: 07/11
+        year:
+          type: integer
+          example: 2026
+        fromDate:
+          type: string
+          format: date
+          example: '2026-10-01'
+        toDate:
+          type: string
+          format: date
+          example: '2026-11-07'
+        status:
+          $ref: '#/components/schemas/AwardPeriodStatus'
+        daysRemaining:
+          type: integer
+          nullable: true
+          description: Chỉ khác null khi status = Upcoming
+          example: 14
+        eligibleCount:
+          type: integer
+          example: 12
+
+    OverlapWarning:
+      type: object
+      properties:
+        firstPeriodId:
+          type: string
+          format: uuid
+        firstPeriodName:
+          type: string
+        secondPeriodId:
+          type: string
+          format: uuid
+        secondPeriodName:
+          type: string
+        fromDate:
+          type: string
+          format: date
+        toDate:
+          type: string
+          format: date
+        fromDisplay:
+          type: string
+        toDisplay:
+          type: string
+
+    GapWarning:
+      type: object
+      properties:
+        fromDate:
+          type: string
+          format: date
+        toDate:
+          type: string
+          format: date
+        fromDisplay:
+          type: string
+          example: 04/02
+        toDisplay:
+          type: string
+          example: 28/02
+        previousPeriodName:
+          type: string
+          nullable: true
+        nextPeriodName:
+          type: string
+          nullable: true
+
+    CoverageWarnings:
+      type: object
+      description: Cảnh báo trả kèm, không bao giờ chặn lưu
+      properties:
+        overlaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverlapWarning'
+        gaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GapWarning'
+
+    CoverageSegment:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Period, Gap]
+        periodId:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        fromDate:
+          type: string
+          format: date
+        toDate:
+          type: string
+          format: date
+
+    Coverage:
+      type: object
+      description: Phủ liên tục 01/01 đến 31/12 của năm đang xét, dùng vẽ dải 12 tháng (UC-36)
+      properties:
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoverageSegment'
+
+    AwardPeriodListResponse:
+      type: object
+      properties:
+        year:
+          type: integer
+        today:
+          type: string
+          format: date
+        totalCount:
+          type: integer
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/AwardPeriodResponse'
+        warnings:
+          $ref: '#/components/schemas/CoverageWarnings'
+        coverage:
+          $ref: '#/components/schemas/Coverage'
+
+    AwardPeriodMutationResponse:
+      type: object
+      properties:
+        period:
+          $ref: '#/components/schemas/AwardPeriodResponse'
+        warnings:
+          $ref: '#/components/schemas/CoverageWarnings'
+
+    AwardPeriodDeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        warnings:
+          $ref: '#/components/schemas/CoverageWarnings'
+
+    EligibleMemberResponse:
+      type: object
+      description: Không có trường id — danh sách đủ điều kiện không được lưu vào bảng (QT5)
+      properties:
+        partyMemberId:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        gender:
+          $ref: '#/components/schemas/Gender'
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+        officialAdmissionDate:
+          type: string
+          format: date
+        milestoneDate:
+          type: string
+          format: date
+          description: QT2 — ngày tròn mốc
+          example: '2026-10-15'
+        milestone:
+          type: integer
+          example: 30
+
+    MemberGap:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GapType'
+        previousPeriodName:
+          type: string
+          nullable: true
+        nextPeriodName:
+          type: string
+          nullable: true
+
+    UnassignedMemberResponse:
+      allOf:
+        - $ref: '#/components/schemas/EligibleMemberResponse'
+        - type: object
+          properties:
+            gap:
+              $ref: '#/components/schemas/MemberGap'
+
+    MilestoneCount:
+      type: object
+      properties:
+        milestone:
+          type: integer
+          example: 30
+        count:
+          type: integer
+          example: 3
+
+    UpcomingPeriod:
+      type: object
+      description: QT8 — đợt sắp tới, có thể thuộc năm sau
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        year:
+          type: integer
+        isNextYear:
+          type: boolean
+        fromDate:
+          type: string
+          format: date
+        toDate:
+          type: string
+          format: date
+        fromDisplay:
+          type: string
+        toDisplay:
+          type: string
+        status:
+          $ref: '#/components/schemas/AwardPeriodStatus'
+        daysRemaining:
+          type: integer
+          nullable: true
+        eligibleCount:
+          type: integer
+        milestoneBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneCount'
+
+    DashboardWarnings:
+      type: object
+      properties:
+        noMembers:
+          type: boolean
+        noPeriods:
+          type: boolean
+        unassignedYear:
+          type: integer
+        unassignedCount:
+          type: integer
+        overlaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverlapWarning'
+        gaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GapWarning'
+
+    DashboardResponse:
+      type: object
+      properties:
+        today:
+          type: string
+          format: date
+        currentYear:
+          type: integer
+        unitName:
+          type: string
+          nullable: true
+        memberCount:
+          type: integer
+        periodCount:
+          type: integer
+        upcomingPeriod:
+          allOf:
+            - $ref: '#/components/schemas/UpcomingPeriod'
+          nullable: true
+        eligibleMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EligibleMemberResponse'
+        warnings:
+          $ref: '#/components/schemas/DashboardWarnings'
+
+    EligibilityResponse:
+      type: object
+      properties:
+        awardPeriod:
+          $ref: '#/components/schemas/AwardPeriodResponse'
+        year:
+          type: integer
+        totalCount:
+          type: integer
+        milestoneBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneCount'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/EligibleMemberResponse'
+
+    UnassignedResponse:
+      type: object
+      properties:
+        year:
+          type: integer
+        totalCount:
+          type: integer
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnassignedMemberResponse'
+
+    UnassignedCountResponse:
+      type: object
+      properties:
+        year:
+          type: integer
+        count:
+          type: integer
+
+    SettingsRequest:
+      type: object
+      required: [startYears, endYears, stepYears]
+      properties:
+        startYears:
+          type: integer
+          minimum: 1
+          example: 30
+        endYears:
+          type: integer
+          minimum: 1
+          description: Phải lớn hơn hoặc bằng startYears
+          example: 90
+        stepYears:
+          type: integer
+          minimum: 1
+          example: 5
+        unitName:
+          type: string
+          nullable: true
+          maxLength: 200
+          example: Đảng ủy Phường X
+
+    SettingsResponse:
+      type: object
+      properties:
+        startYears:
+          type: integer
+        endYears:
+          type: integer
+        stepYears:
+          type: integer
+        unitName:
+          type: string
+          nullable: true
+        milestones:
+          type: array
+          description: QT1 — dãy mốc đã sinh, nguồn sự thật duy nhất
+          items:
+            type: integer
+          example: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]
+        milestoneCount:
+          type: integer
+          example: 13
+        updatedAt:
+          type: string
+          format: date-time
+
+    MilestonePreviewResponse:
+      type: object
+      properties:
+        milestones:
+          type: array
+          items:
+            type: integer
+          example: [30, 40, 50, 60, 70, 80, 90]
+        milestoneCount:
+          type: integer
+          example: 7
