@@ -41,6 +41,11 @@ python generate.py --with-oversize  # sinh thêm excel/loi-qua-10mb.xlsx (không
 đều do `qt_reference.py` tính ra rồi đối chiếu với các `assert` viết tay suy từ tài
 liệu nghiệp vụ. Script **không xuất tệp nếu một assert nào sai**.
 
+Kết quả **tái lập được từng byte**: chạy `python generate.py` khi chưa sửa gì trong
+`dataset.py` thì `git status` phải **trống**. Thấy tệp `.xlsx` bị đánh dấu thay đổi mà
+mình không sửa dữ liệu nào nghĩa là `normalize_zip()` đã hỏng — báo QC, đừng commit
+diff đó.
+
 ## Mốc thời gian cố định
 
 Bộ dữ liệu này chỉ đúng khi "hôm nay" được ép về một trong ba giá trị sau. Cách ép:
