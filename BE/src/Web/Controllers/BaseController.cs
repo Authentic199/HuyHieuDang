@@ -1,10 +1,12 @@
-﻿using HuyHieuDang.Core.Common.Exceptions;
+using HuyHieuDang.Core.Common.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HuyHieuDang.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class BaseController : ControllerBase
 {
     protected ActionResult<SuccessResultWrapper<TData>> OkWrapper<TData>(TData? data = default, string? message = default)
