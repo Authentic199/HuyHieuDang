@@ -350,7 +350,7 @@ Chạy trên PostgreSQL thật qua `WebApplicationFactory` + Testcontainers. M�
 dữ liệu và tự dọn (Respawn). `IDateTimeProvider` bị thay theo T-FIX-3.
 
 Mục tiêu bao phủ: **mọi endpoint trong `docs/api-contract.md` đều được chạm tới**. Bảng
-dưới viết theo chức năng; khi contract chốt (T04), QC rà lại và bổ sung ca cho endpoint
+dưới viết theo chức năng; khi contract chốt (T05), QC rà lại và bổ sung ca cho endpoint
 nào chưa có.
 
 ### 5.1 Phân quyền — gọi API khi chưa đăng nhập
@@ -735,8 +735,8 @@ Người sửa tự xác nhận không tính. Kèm lệnh đã chạy và kết 
 
 | Việc | Khi nào | Của ai |
 |---|---|---|
-| Rà lại bảng mục 5 theo `docs/api-contract.md`, bổ sung ca cho endpoint chưa chạm | Sau T04 | QC |
-| Sửa tên bảng/cột trong `tests/fixtures/generate.py` (biến `DB`) theo migration thật, sinh lại `sql/` | Sau T05 | QC |
+| Rà lại bảng mục 5 theo `docs/api-contract.md`, bổ sung ca cho endpoint chưa chạm | Sau T05 | QC |
+| Sửa tên bảng/cột trong `tests/fixtures/generate.py` (biến `DB`) theo migration thật, sinh lại `sql/` | Sau T06 | QC |
 | Trả lời OQ-1 → OQ-10 | Trước T26 | CEO, với ý kiến Backend |
 | Dựng abstraction thời gian theo T-FIX-1 → T-FIX-4 | Cùng T07 | Backend |
 | Dựng cấu hình Playwright theo T-FIX-5 | Cùng T24 | Frontend, QC |

@@ -123,7 +123,7 @@ ca kiểm thử dung lượng.
 
 `sql/` là **bản tạm**, sinh từ biến `DB` ở đầu `generate.py`. Tên bảng và tên cột đang
 đoán theo quy ước `UnderscoreTable` của boilerplate (`party_members`, `award_periods`,
-`app_settings`). Sau khi migration của T05 chốt tên thật:
+`app_settings`). Sau khi migration của T06 chốt tên thật:
 
 1. Sửa biến `DB` trong `generate.py` (một chỗ duy nhất).
 2. Chạy lại `python generate.py`.
@@ -132,7 +132,7 @@ ca kiểm thử dung lượng.
 bộ lớn `b0000000-…`, đợt `d0000000-…`, cài đặt `50000000-…-000000000001`.
 
 Giới tính ghi dạng chuỗi `'Nam'` / `'Nữ'` / `NULL`. Nếu Backend lưu enum số thì cột
-`gender` trong seed phải đổi tương ứng — ghi rõ trong PR của T05.
+`gender` trong seed phải đổi tương ứng — ghi rõ trong PR của T06.
 
 **Dạng chuẩn là JSON**, không phải SQL. Kiểm thử tích hợp nên nạp qua `members-core.json`
 (gọi API hoặc EF trực tiếp) để không phụ thuộc tên cột; SQL chỉ để dựng nhanh bằng tay

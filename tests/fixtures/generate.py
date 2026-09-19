@@ -51,7 +51,7 @@ SQL = ROOT / "sql"
 
 DATE_FMT = "DD/MM/YYYY"
 
-# Tên bảng / cột dùng cho seed SQL. Nếu migration của Backend (T05) dùng tên khác,
+# Tên bảng / cột dùng cho seed SQL. Nếu migration của Backend (T06) dùng tên khác,
 # sửa ở ĐÚNG MỘT chỗ này rồi chạy lại generate.py.
 DB = {
     "member_table": "party_members",
