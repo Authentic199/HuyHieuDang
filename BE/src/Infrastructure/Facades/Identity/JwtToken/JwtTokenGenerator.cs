@@ -1,4 +1,4 @@
-﻿using HuyHieuDang.Infrastructure.Facades.Auth;
+using HuyHieuDang.Infrastructure.Facades.Auth;
 using HuyHieuDang.Infrastructure.Facades.Auth.Jwt;
 using HuyHieuDang.Infrastructure.Facades.Identity.Base;
 using Microsoft.Extensions.Options;
@@ -13,6 +13,8 @@ namespace HuyHieuDang.Infrastructure.Facades.Identity.JwtToken
         JwtSettings GetSettingByScheme(string? scheme = null);
 
         string GenerateAccessToken(JwtSettings jwtSetting, IJwtUser user);
+
+        string GenerateAccessToken(JwtSettings jwtSetting, IJwtUser user, DateTime expiresAtUtc);
 
         string GenerateRefreshToken(JwtSettings jwtSetting, params Claim[] claims);
 
@@ -48,13 +50,17 @@ namespace HuyHieuDang.Infrastructure.Facades.Identity.JwtToken
         public JwtSettingOptions AllSettings { get; }
 
         public string GenerateAccessToken(JwtSettings jwtSetting, IJwtUser user)
+            => GenerateAccessToken(jwtSetting, user, jwtSetting.GetAccessTokenExpired());
+
+        public string GenerateAccessToken(JwtSettings jwtSetting, IJwtUser user, DateTime expiresAtUtc)
         {
             SigningCredentials creds = new(jwtSetting.GetSecurityKey(), SecurityAlgorithms.HmacSha256);
 
             JwtSecurityToken token = new(
                 jwtSetting.Issuer,
                 jwtSetting.IsAudience,
-                expires: jwtSetting.GetAccessTokenExpired(),
+                user.UseClaims(),
+                expires: expiresAtUtc,
                 signingCredentials: creds);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

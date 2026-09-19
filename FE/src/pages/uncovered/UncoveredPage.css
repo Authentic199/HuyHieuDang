@@ -1,0 +1,107 @@
+/* Màn 6 — Chưa thuộc đợt nào. Ba khối xếp dọc: đầu trang, khối gợi ý, thẻ bảng. */
+.hhd-uncovered {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hhd-space-xl);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Dòng phụ dưới tiêu đề gói chữ như artboard, không kéo dài hết màn hình. */
+.hhd-uncovered__lead {
+  max-width: 760px;
+  text-wrap: pretty;
+}
+
+/* Khối gợi ý trong artboard là thẻ trắng viền xám, không phải nền vàng mặc
+   định của Ant Design. */
+.hhd-uncovered__hint.ant-alert {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  align-items: center;
+  padding: 14px 20px;
+}
+
+.hhd-uncovered__hint-action.ant-btn-link {
+  color: var(--hhd-red-link);
+  font-weight: 600;
+  padding: 0 4px;
+}
+
+/* Thẻ bảng: đầu thẻ, bảng, chân thẻ. */
+.hhd-uncovered__panel {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-uncovered__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hhd-space-lg);
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--hhd-border);
+}
+
+.hhd-uncovered__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hhd-uncovered__title > span:first-child {
+  font: 700 16px/24px var(--hhd-font-serif);
+  white-space: nowrap;
+}
+
+/* TableStates dựng sẵn một thẻ trắng có viền bằng style nội tuyến; ở đây nó đã
+   nằm trong thẻ của bảng nên bỏ viền (cần !important vì style nội tuyến) và cho
+   giãn hết chiều cao, tránh thẻ lồng thẻ. */
+.hhd-uncovered__panel
+  > div:not(.ant-alert):not(.hhd-uncovered__head):not(.hhd-uncovered__footnote) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-uncovered__panel > .ant-alert {
+  margin: var(--hhd-space-lg);
+}
+
+.hhd-uncovered .ant-table-thead th {
+  white-space: nowrap;
+}
+
+/* Số thứ tự đọc như chú thích, giống cột STT trong artboard. */
+.hhd-uncovered td.hhd-uncovered__index {
+  color: var(--hhd-text-tertiary);
+}
+
+/* Khoảng trống là câu giải thích, viết nhẹ hơn tên người. */
+.hhd-uncovered td.hhd-uncovered__gap {
+  color: var(--hhd-text-secondary);
+}
+
+/* Dòng chân thẻ: số người bên trái, tên file vừa xuất bên phải. */
+.hhd-uncovered__footnote {
+  margin-top: auto;
+  padding: 12px 20px;
+  border-top: 1px solid var(--hhd-border);
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--hhd-space-lg);
+}
+
+.hhd-uncovered__filename {
+  font-family: var(--hhd-font-mono);
+  font-size: 13px;
+}

@@ -29,6 +29,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      TZ: Asia/Ho_Chi_Minh
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       DatabaseSettings__SqlSettings__ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Include Error Detail=true;"
       DatabaseSettings__SqlSettings__UseAutoMigration: "true"

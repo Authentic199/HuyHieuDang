@@ -1,4 +1,4 @@
-﻿using HuyHieuDang.Infrastructure.Facades.Common.Extensions;
+using HuyHieuDang.Infrastructure.Facades.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace HuyHieuDang.Infrastructure.Facades.Persistence;
@@ -44,9 +44,15 @@ public class ConnectionStrings : IValidatableObject
     public void OverrideConnection()
     {
         const string applicationNameKey = "ApplicationName";
-        if (!DefaultConnection.Contains(applicationNameKey, StringComparison.OrdinalIgnoreCase))
+        if (DefaultConnection.Contains(applicationNameKey, StringComparison.OrdinalIgnoreCase))
         {
-            DefaultConnection += $"{applicationNameKey}={Environment.MachineName};";
+            return;
         }
+
+        // Chuoi ket noi viet tay khong phai luc nao cung co dau ; o cuoi; thieu no thi
+        // khoa cuoi cung bi dinh lien voi ApplicationName va tro thanh mot gia tri khac.
+        string separator = DefaultConnection.Length == 0 || DefaultConnection.TrimEnd().EndsWith(';') ? string.Empty : ";";
+
+        DefaultConnection += $"{separator}{applicationNameKey}={Environment.MachineName};";
     }
 }
