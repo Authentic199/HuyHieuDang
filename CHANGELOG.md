@@ -27,7 +27,12 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ### Sửa lỗi
 
-- Hợp đồng API lên **v1.2**: sửa ví dụ mục 4 Import và làm rõ kiểm tra `year` ở mục 5.2 cho khớp mã đã duyệt, không đổi hình dạng.
+- Hợp đồng API lên **v1.2** cho khớp mã đã duyệt. Không đổi hình dạng request/response.
+  - **Mục 4 Import:** sửa thứ tự lý do trong `errors[]`, tệp đổi đuôi cũng ra `Mes.Import.Invalid.Extension`, ghi khóa thông điệp thành công của bước xem trước và bước nạp.
+  - **Mục 5.2:** `year` chỉ nhận 1900–2200, ngoài khoảng trả `Mes.Query.Invalid.Year`.
+  - **Mục 1.8 và 6.3:** danh sách đủ điều kiện sắp theo mốc tuổi đảng rồi **Họ tên đầy đủ**, bỏ quy ước sắp theo tên gọi. Đồng bộ mục 8, mục 11 điểm 9 và OQ-3.
+  - **Mục 7 Cài đặt:** tên đơn vị rỗng hoặc toàn khoảng trắng đều lưu thành chưa đặt và bị cắt khoảng trắng đầu/cuối; thêm khóa `Mes.AppSetting.OverLength.UnitName`; ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`; kho cài đặt trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi.
+  - **Mục 8 Xuất Excel:** mỗi file chỉ có một sheet tên `DanhSach`; ba dòng tiêu đề ghi ở ô đầu tiên của dòng, không gộp ô.
 
 ---
 
