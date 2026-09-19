@@ -15,7 +15,8 @@ namespace HuyHieuDang.Web.IntegrationTests;
 /// Các ca A-001 → A-006 của mục 5.1 kế hoạch kiểm thử, cùng hình dạng phản hồi
 /// của nhóm 1 trong hợp đồng API.
 /// </summary>
-public class AuthEndpointTests : IClassFixture<HuyHieuDangApiFactory>
+[Collection(ApiCollection.Name)]
+public class AuthEndpointTests
 {
     private const string LoginPath = "/api/Auth/Login";
     private const string LogoutPath = "/api/Auth/Logout";
