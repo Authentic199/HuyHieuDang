@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.0 — 19/09/2026 |
-| Trạng thái | Chờ cổng duyệt 1 của CEO |
+| Phiên bản | 1.1 — 19/09/2026 |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
@@ -15,7 +15,9 @@
 
 Tài liệu bao gồm: quy ước chung (xác thực, phân trang, định dạng ngày, hình dạng lỗi, cách trả file), 28 endpoint chia theo 7 nhóm, bảng đối chiếu với từng use case UC-xx, và những quyết định kỹ thuật đã chốt.
 
-**Quy tắc thay đổi:** không ai được đổi hình dạng request/response mà không báo. Xem mục 12.
+**Mười điểm tài liệu nghiệp vụ chưa quy định** đã được CEO chốt và đưa vào mục 12. **Tám quyết định tự chọn khi dựng bộ khung Backend** ghi ở mục 13.
+
+**Quy tắc thay đổi:** không ai được đổi hình dạng request/response mà không báo. Xem mục 14.
 
 ---
 
@@ -25,10 +27,12 @@ Tài liệu bao gồm: quy ước chung (xác thực, phân trang, định dạn
 
 | Môi trường | Địa chỉ Frontend gọi | Thực tế trỏ tới |
 |---|---|---|
-| Dev | `/api` (Vite proxy) | `http://localhost:5000/api` |
+| Dev | `/api` (Vite proxy) | `http://localhost:8080/api` |
 | Docker compose | `/api` (nginx proxy) | `http://be:8080/api` |
 
-Frontend luôn gọi đường dẫn tương đối `/api/...`, lấy từ biến `VITE_API_BASE_URL` (mặc định `/api`). Không viết cứng `http://localhost:5000` trong mã Frontend.
+Frontend luôn gọi đường dẫn tương đối `/api/...`, lấy từ biến `VITE_API_BASE_URL` (mặc định `/api`). Không viết cứng địa chỉ máy chủ trong mã Frontend.
+
+**Backend nghe cổng 8080 ở mọi chế độ** — số cổng nằm trong `BE/src/Web/Configurations/appsettings.json`, khóa `Urls`, và đúng bằng cổng của container `be`. Khi chạy `npm run dev`, đặt `VITE_DEV_API_PROXY=http://localhost:8080` trong `FE/.env.development`.
 
 Mọi đường dẫn trong tài liệu này viết đầy đủ từ `/api/`.
 
@@ -148,7 +152,8 @@ Lý do: bộ khung Backend sinh khóa tự động; để chữ tiếng Việt n
 | `Mes.Import.Invalid.Extension` | Chỉ nhận file .xlsx |
 | `Mes.Import.Invalid.FileSize` | File vượt quá 10 MB |
 | `Mes.Import.Invalid.Columns` | File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức |
-| `Mes.Import.Invalid.Empty` | File không có dòng dữ liệu nào |
+| `Mes.Import.Invalid.Empty` | File rỗng, không đọc được dữ liệu |
+| `Mes.Import.Invalid.NoDataRows` | File không có dòng dữ liệu nào |
 | `Mes.Dashboard.NotFound.UpcomingPeriod` | Chưa cài đợt trao huy hiệu |
 | `Mes.Query.Invalid.Year` | Năm không hợp lệ |
 
@@ -178,7 +183,7 @@ Chỉ **một** endpoint có phân trang: danh sách đảng viên (`GET /api/Pa
 |---|---|---|---|
 | `current` | int ≥ 1 | `1` | Trang số mấy |
 | `pageSize` | int ≥ 1 | `20` | Số dòng mỗi trang |
-| `searchKeyword` | string | – | Từ khóa tìm (chứa chuỗi, không phân biệt hoa thường và dấu) |
+| `searchKeyword` | string | – | Từ khóa tìm (chứa chuỗi). **Không** phân biệt hoa thường, **có** phân biệt dấu — mục 12, OQ-8 |
 | `searchFields` | string[] | – | Trường để tìm. Danh sách đảng viên chỉ dùng `FullName` |
 | `sortQuery` | string | `FullName asc` | Ví dụ `FullName desc`, `OfficialAdmissionDate asc` |
 | `filter.<Trường>` | string | – | Bộ lọc dạng `$<toán tử>:<giá trị>`. Dùng `filter.Gender=$eq:Male` |
@@ -209,6 +214,8 @@ GET /api/PartyMembers?current=1&pageSize=20&searchKeyword=an&searchFields=FullNa
 **Cột KHÔNG sắp xếp được:** `partyAgeYears`, `nextMilestone`, `nextMilestoneDate` — là giá trị tính ra, không có trong cơ sở dữ liệu.
 - Muốn sắp theo **Tuổi đảng tăng dần** → gửi `sortQuery=OfficialAdmissionDate desc` (vào Đảng muộn thì tuổi đảng nhỏ). Ngược lại cho giảm dần.
 - Hai cột "Mốc kế tiếp" và "Ngày tròn mốc kế tiếp" **không có nút sắp xếp** trên giao diện v1.
+
+**Đối chiếu tiếng Việt.** Cột `FullName` dùng collation ICU `vi` (trên PostgreSQL là `vi-x-icu`), nên `Đào Văn Ân` đứng **trước** `Nguyễn Văn An` — đúng bảng chữ cái tiếng Việt, không theo mã Unicode. Xem mục 12, OQ-3.
 
 ### 1.8 Quy ước sắp xếp danh sách đủ điều kiện
 
@@ -604,7 +611,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 | `Mes.Import.Invalid.Extension` | Không phải `.xlsx` |
 | `Mes.Import.Invalid.FileSize` | > 10 MB |
 | `Mes.Import.Invalid.Columns` | Không đúng 4 cột theo thứ tự quy định |
-| `Mes.Import.Invalid.Empty` | Không có dòng dữ liệu nào sau dòng tiêu đề |
+| `Mes.Import.Invalid.Empty` | File rỗng — không đọc được sheet, hoặc không có ô nào |
+| `Mes.Import.Invalid.NoDataRows` | Có dòng tiêu đề nhưng không có dòng dữ liệu nào (OQ-7) |
 
 **Phản hồi `data`**
 
@@ -619,9 +627,12 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
       "gender": "Male", "officialAdmissionDate": "1996-10-15" }
   ],
   "errorRows": [
-    { "rowNumber": 5, "fullName": "Nguyễn Thị Hạnh", "dateOfBirth": "04/08/1963",
+    { "rowNumber": 5, "fullName": "Nguyễn Thị Hạnh", "dateOfBirth": "31/02/1963",
       "gender": "Nữ", "officialAdmissionDate": "",
-      "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" }
+      "errors": [
+        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" },
+        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" }
+      ] }
   ]
 }
 ```
@@ -631,8 +642,9 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 | `rowNumber` | **Số dòng trong file Excel**, dòng tiêu đề là 1 nên dữ liệu bắt đầu từ 2. Đây chính là số hiện ở cột "Dòng" trong bảng lỗi |
 | `validRows[*]` | Đã chuẩn hóa: ngày `yyyy-MM-dd`, giới tính `Male`/`Female`/`null` |
 | `errorRows[*]` | **Giữ nguyên chữ thô đọc từ ô Excel**, mọi trường là chuỗi (có thể rỗng) — vì chính chúng đang sai, không chuẩn hóa được |
-| `errorCode` | Mã lý do, xem bảng dưới |
-| `field` | Cột gây lỗi, để Frontend tô đỏ ô đó |
+| `errors` | **Mảng**, chứa đủ mọi lý do của dòng đó (OQ-2). Luôn có ít nhất một phần tử |
+| `errors[*].errorCode` | Mã lý do, xem bảng dưới |
+| `errors[*].field` | Cột gây lỗi, để Frontend tô đỏ ô đó |
 
 **Bảng mã lỗi cấp dòng**
 
@@ -645,7 +657,20 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 | `InvalidGender` | `Gender` | Giới tính chỉ nhận Nam hoặc Nữ |
 | `BirthDateAfterAdmissionDate` | `DateOfBirth` | Ngày sinh phải trước ngày vào Đảng chính thức |
 
-Mỗi dòng lỗi chỉ trả **một** lý do — lý do đầu tiên gặp phải, theo đúng thứ tự trong bảng trên.
+**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Sai định dạng ngày (cần dd/MM/yyyy); Thiếu ngày vào Đảng chính thức`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
+
+**Chuẩn hóa trước khi kiểm tra** — áp dụng cho mọi dòng:
+
+| Việc | Quy tắc |
+|---|---|
+| Khoảng trắng | Cắt khoảng trắng đầu và cuối mọi ô (OQ-4) |
+| Giới tính | Nhận `Nam` / `nam` / `NAM` / `Nữ` / `nữ`, không phân biệt hoa thường (OQ-5) |
+| Ngày | Nhận cả `1/10/1996` lẫn `01/10/1996` — Excel hay tự bỏ số 0 đứng đầu (OQ-6) |
+
+**Hai chỗ dễ nhầm**
+
+- Ngày không có thật (`31/02/1974`) là **lỗi cấp dòng** `InvalidDateFormat`, không phải bỏ qua rồi để trống (OQ-1).
+- Ngày sinh **bằng** Ngày vào Đảng chính thức là **lỗi** `BirthDateAfterAdmissionDate`; ngày sinh phải thực sự trước (OQ-10).
 
 **Lời gọi này không ghi gì vào cơ sở dữ liệu.**
 
@@ -813,7 +838,7 @@ Không tham số. Máy chủ tự lấy ngày hôm nay và năm hiện tại.
 
 | Trường | Ghi chú |
 |---|---|
-| `upcomingPeriod` | QT8. `null` khi chưa có đợt nào → giao diện hiện "Chưa cài đợt trao huy hiệu" |
+| `upcomingPeriod` | QT8. `null` khi chưa có đợt nào → giao diện hiện "Chưa cài đợt trao huy hiệu". Hai đợt cùng `fromDate` → chọn đợt có `toDate` sớm hơn; vẫn bằng nhau → theo Tên đợt (OQ-9) |
 | `isNextYear` | `true` khi mọi đợt của năm nay đã qua và đợt sắp tới thuộc **năm sau**. Lúc đó `year` = năm sau, `fromDate`/`toDate` đã gắn năm sau |
 | `daysRemaining` | `null` khi `status = "Ongoing"` → giao diện hiện "Đang diễn ra" |
 | `milestoneBreakdown` | Sắp theo `milestone` tăng dần; chỉ liệt kê mốc có người |
@@ -1075,17 +1100,58 @@ Tổng: **28 endpoint**. Mọi use case trong tài liệu nghiệp vụ v1.1 đ�
 
 ---
 
-## 12. Quy trình thay đổi hợp đồng
+## 12. Mười điểm chốt từ câu hỏi treo (OQ-1 → OQ-10)
+
+Mục 8 của `docs/test-plan.md` nêu 10 điểm tài liệu nghiệp vụ **không quy định**. CEO chốt toàn bộ tại HUYH-5 ngày 19/09/2026, nhận nguyên đề xuất của QC. Hướng chung: cho cán bộ **thấy và sửa**, thay vì âm thầm bỏ qua.
+
+| Mã | Câu hỏi | Quyết định | Ràng buộc trong hợp đồng này |
+|---|---|---|---|
+| OQ-1 | Ngày sinh sai định dạng hoặc không có thật (`31/02/1974`) — lỗi cấp dòng hay bỏ qua để trống? | **Lỗi cấp dòng** | Mục 4.2, mã `InvalidDateFormat` |
+| OQ-2 | Một dòng nhiều lỗi — liệt kê hết hay chỉ lỗi đầu tiên? | **Liệt kê hết**, giao diện ngăn bằng `;` | Mục 4.2, `errorRows[*].errors` là **mảng** |
+| OQ-3 | Sắp xếp Họ tên theo đối chiếu nào? | **Tiếng Việt ICU `vi`** (PostgreSQL `vi-x-icu`) cho cột `FullName`. Danh sách đủ điều kiện sắp trong bộ nhớ dùng `CompareInfo` văn hóa `vi-VN` | Mục 1.7 và 1.8 |
+| OQ-4 | Họ tên có khoảng trắng đầu/cuối khi import? | **Cắt bỏ** | Mục 4.2, bảng chuẩn hóa |
+| OQ-5 | Giới tính `nam` / `NAM` có nhận không? | **Nhận**, không phân biệt hoa thường | Mục 4.2, bảng chuẩn hóa |
+| OQ-6 | Ngày `1/10/1996` thiếu số 0 đứng đầu? | **Nhận** | Mục 4.2, bảng chuẩn hóa |
+| OQ-7 | File chỉ có dòng tiêu đề — báo giống hay khác "file rỗng"? | **Khác**: "File không có dòng dữ liệu nào" | Mục 1.5 và 4.2, khóa `Mes.Import.Invalid.NoDataRows` |
+| OQ-8 | Tìm theo tên — phân biệt hoa thường? phân biệt dấu? | **Không** phân biệt hoa thường; **có** phân biệt dấu | Mục 1.7, tham số `searchKeyword` |
+| OQ-9 | Hai đợt cùng Từ ngày — QT8 chọn đợt nào là "sắp tới"? | Đợt có **Đến ngày sớm hơn**; bằng nhau nữa thì theo **Tên đợt** | Mục 6.1, trường `upcomingPeriod` |
+| OQ-10 | Ngày sinh **bằng** Ngày chính thức — hợp lệ hay lỗi? | **Lỗi** | Mục 4.2, mã `BirthDateAfterAdmissionDate` |
+
+OQ-2 là điểm duy nhất **đổi hình dạng phản hồi** so với v1.0: `errorRows[*].errorCode` và `errorRows[*].field` gộp thành mảng `errorRows[*].errors[]`. Chưa có mã nào gọi endpoint này (T10 và T18 còn trong hàng đợi), nên đổi bây giờ không hỏng gì; Frontend cập nhật `FE/src/api/imports.ts` khi làm T18.
+
+---
+
+## 13. Ghi chú kỹ thuật của bộ khung Backend
+
+Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài liệu nghiệp vụ không nhắc tới. Ghi lại ở đây để không ai phải đọc lại lịch sử issue.
+
+| # | Quyết định | Vì sao |
+|---|---|---|
+| 1 | Thêm migration `InitialSchema` cho lược đồ định danh sẵn có của bộ khung: `user`, `role`, `permission`, `model_role`, `model_permission`, `role_permission`, `user_refresh_token` | Không có nó, seeder chạy trên database rỗng làm container `be` chết ngay. Đây **không** phải entity nghiệp vụ |
+| 2 | Giữ module `Modules/Users` | Đăng nhập và seed tài khoản `admin` phụ thuộc vào nó. Các endpoint CRUD user/role của bộ khung vẫn còn; gỡ ở một task riêng nếu CEO muốn |
+| 3 | Giữ facade `Cache` | Chỉ dùng `MemoryCache`, không cần Redis; tầng phân quyền phụ thuộc vào nó |
+| 4 | Bỏ luồng quên mật khẩu qua email (`PasswordRecovery`, `VerifyPasswordRecoveryCode`, `ResetPassword`) | Facade `Mailing` đã gỡ. `ChangePassword` vẫn còn |
+| 5 | Bỏ field avatar S3 của user và các health check S3 / Elasticsearch / Redis | Các facade tương ứng đã gỡ. Cột `avatar` trong bảng `user` còn nhưng không chỗ nào ghi |
+| 6 | Service `fe` trong compose tạm dùng `nginx:alpine` phục vụ trang giữ chỗ | Lúc mở PR thì `FE/` chưa có trên `main`. Đổi sang `build: ./FE` trong T06 |
+| 7 | Bỏ `.gitlab-ci.yml`, `.releaserc.cjs`, `ci-utils.sh`, `scripts/` của bộ khung | Kho mã dùng GitHub. Chưa dựng CI thay thế |
+| 8 | Cổng API là **8080** (bộ khung để 5007), trang tài liệu ở `/docs` | Trùng cổng trong `docker-compose.yml`, khỏi phải nhớ hai số |
+
+**Những gì bộ khung đang có mà hợp đồng này chưa mô tả.** Bộ khung sinh sẵn `POST /api/Users/Auth`, `POST /api/Users/RefreshToken` và nhóm endpoint CRUD user/role/permission. Chúng **không nằm trong hợp đồng** và Frontend không được gọi. Khi làm T08, Backend dựng `POST /api/Auth/Login`, `POST /api/Auth/Logout`, `GET /api/Auth/Me` đúng như mục 2 và ngưng dùng đường cũ.
+
+---
+
+## 14. Quy trình thay đổi hợp đồng
 
 1. Ai thấy cần đổi (Backend, Frontend, QC) thì **ghi vào issue của mình** và gắn Technical Writer, không tự sửa tài liệu.
-2. Technical Writer sửa `docs/api-contract.md` và `docs/openapi.yaml`, tăng số phiên bản ở mục 13, rồi báo cả Backend và Frontend.
+2. Technical Writer sửa `docs/api-contract.md` và `docs/openapi.yaml`, tăng số phiên bản ở mục 15, ghi một dòng vào `CHANGELOG.md`, rồi báo cả Backend và Frontend.
 3. Thay đổi làm hỏng mã đang chạy (đổi tên trường, bỏ endpoint) phải có xác nhận của CEO trước khi sửa tài liệu.
 4. **Mã nguồn không bao giờ được khác tài liệu.** Nếu Backend đã làm khác, hoặc sửa mã cho khớp, hoặc báo để sửa tài liệu — không để tồn tại hai sự thật.
 
 ---
 
-## 13. Nhật ký phiên bản
+## 15. Nhật ký phiên bản
 
 | Phiên bản | Ngày | Thay đổi |
 |---|---|---|
 | 1.0 | 19/09/2026 | Bản đầu tiên. 28 endpoint, phủ toàn bộ UC-00 → UC-51 của tài liệu nghiệp vụ v1.1 |
+| 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
