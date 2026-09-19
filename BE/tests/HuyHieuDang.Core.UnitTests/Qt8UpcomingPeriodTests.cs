@@ -112,6 +112,24 @@ public sealed class Qt8UpcomingPeriodTests
         upcoming.Occurrence.Period.Name.ShouldBe("Đợt A");
     }
 
+    [Fact]
+    public void GetUpcomingPeriod_WhenTwoPeriodsShareTheSameStartDate_DoesNotDependOnTheInputOrder()
+    {
+        // Arrange — QC-03: sắp chỉ theo Từ ngày là sắp ổn định, nên kết quả đổi theo thứ tự nạp.
+        AwardPeriod first = new("Đợt A cùng ngày", 1, 10, 7, 11);
+        AwardPeriod second = new("Đợt B cùng ngày", 1, 10, 20, 10);
+
+        // Act
+        UpcomingPeriod? forward = sut.GetUpcomingPeriod([first, second], FixtureData.T0);
+        UpcomingPeriod? backward = sut.GetUpcomingPeriod([second, first], FixtureData.T0);
+
+        // Assert — Đến ngày sớm hơn thắng, không phụ thuộc thứ tự nạp.
+        forward.ShouldNotBeNull();
+        backward.ShouldNotBeNull();
+        forward.Occurrence.Period.Name.ShouldBe("Đợt B cùng ngày");
+        backward.Occurrence.Period.Name.ShouldBe("Đợt B cùng ngày");
+    }
+
     [Theory]
     [InlineData("core_default_T0")]
     [InlineData("core_default_T1")]
