@@ -608,7 +608,7 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 
 | Khóa | Khi nào |
 |---|---|
-| `Mes.Import.Invalid.Extension` | Không phải `.xlsx` |
+| `Mes.Import.Invalid.Extension` | Không phải `.xlsx`, hoặc tệp mang đuôi `.xlsx` nhưng nội dung không phải xlsx (tệp hỏng, tệp đổi đuôi) |
 | `Mes.Import.Invalid.FileSize` | > 10 MB |
 | `Mes.Import.Invalid.Columns` | Không đúng 4 cột theo thứ tự quy định |
 | `Mes.Import.Invalid.Empty` | File rỗng — không đọc được sheet, hoặc không có ô nào |
@@ -630,8 +630,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
     { "rowNumber": 5, "fullName": "Nguyễn Thị Hạnh", "dateOfBirth": "31/02/1963",
       "gender": "Nữ", "officialAdmissionDate": "",
       "errors": [
-        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" },
-        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" }
+        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" },
+        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" }
       ] }
   ]
 }
@@ -657,7 +657,7 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 | `InvalidGender` | `Gender` | Giới tính chỉ nhận Nam hoặc Nữ |
 | `BirthDateAfterAdmissionDate` | `DateOfBirth` | Ngày sinh phải trước ngày vào Đảng chính thức |
 
-**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Sai định dạng ngày (cần dd/MM/yyyy); Thiếu ngày vào Đảng chính thức`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
+**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Thiếu ngày vào Đảng chính thức; Sai định dạng ngày (cần dd/MM/yyyy)`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
 
 **Chuẩn hóa trước khi kiểm tra** — áp dụng cho mọi dòng:
 
@@ -671,6 +671,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 
 - Ngày không có thật (`31/02/1974`) là **lỗi cấp dòng** `InvalidDateFormat`, không phải bỏ qua rồi để trống (OQ-1).
 - Ngày sinh **bằng** Ngày vào Đảng chính thức là **lỗi** `BirthDateAfterAdmissionDate`; ngày sinh phải thực sự trước (OQ-10).
+
+**Khóa thông điệp thành công:** `Mes.Import.Search.Successfully`. Khóa này thuộc nhóm `*.Search.Successfully` ở mục 1.5 nên Frontend không hiện thông báo — bước xem trước chỉ đổ dữ liệu ra bảng.
 
 **Lời gọi này không ghi gì vào cơ sở dữ liệu.**
 
@@ -687,6 +689,8 @@ Máy chủ **nạp mọi dòng hợp lệ và bỏ qua dòng lỗi**, không ki�
 ```json
 { "importedCount": 125, "skippedCount": 4 }
 ```
+
+**Khóa thông điệp thành công:** `Mes.PartyMember.Import.Successfully` ("Đã nạp danh sách", mục 1.5).
 
 Frontend hiển thị: "Đã thêm 125 người, bỏ qua 4 dòng lỗi".
 
