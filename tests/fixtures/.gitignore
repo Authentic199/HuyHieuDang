@@ -1,0 +1,7 @@
+# Sinh bằng: python generate.py --with-oversize
+# 11 MB dữ liệu nhồi, không mang thông tin nghiệp vụ -> không commit.
+excel/loi-qua-10mb.xlsx
+
+# Python
+__pycache__/
+*.pyc

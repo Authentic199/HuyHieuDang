@@ -1,0 +1,20 @@
+{
+  "default": {
+    "start_years": 30,
+    "end_years": 90,
+    "step_years": 5,
+    "unit_name": "Đảng ủy Phường Kiểm Thử"
+  },
+  "step10": {
+    "start_years": 30,
+    "end_years": 90,
+    "step_years": 10,
+    "unit_name": "Đảng ủy Phường Kiểm Thử"
+  },
+  "noUnitName": {
+    "start_years": 30,
+    "end_years": 90,
+    "step_years": 5,
+    "unit_name": null
+  }
+}

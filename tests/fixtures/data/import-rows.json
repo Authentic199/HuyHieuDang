@@ -1,0 +1,152 @@
+{
+  "header": [
+    "Họ tên",
+    "Ngày sinh",
+    "Giới tính",
+    "Ngày vào Đảng chính thức"
+  ],
+  "errorRows": [
+    {
+      "fullName": "",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Nam",
+      "officialAdmissionDate": "01/10/1996",
+      "errorCode": "E-HOTEN-TRONG",
+      "expectedReason": "Thiếu Họ tên"
+    },
+    {
+      "fullName": "Nguyễn Thiếu Ngày",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Nam",
+      "officialAdmissionDate": "",
+      "errorCode": "E-NGAYCT-TRONG",
+      "expectedReason": "Thiếu Ngày vào Đảng chính thức"
+    },
+    {
+      "fullName": "Trần Sai Định Dạng",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Nữ",
+      "officialAdmissionDate": "1996-10-01",
+      "errorCode": "E-NGAYCT-SAIDANG",
+      "expectedReason": "Sai định dạng ngày, cần dd/MM/yyyy"
+    },
+    {
+      "fullName": "Lê Ngày Tương Lai",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Nam",
+      "officialAdmissionDate": "20/09/2026",
+      "errorCode": "E-NGAYCT-TUONGLAI",
+      "expectedReason": "Ngày vào Đảng chính thức ở tương lai (so với hôm nay T0 = 19/09/2026)"
+    },
+    {
+      "fullName": "Phạm Giới Tính Lạ",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Khác",
+      "officialAdmissionDate": "01/10/1996",
+      "errorCode": "E-GIOITINH",
+      "expectedReason": "Giới tính không hợp lệ, chỉ nhận Nam hoặc Nữ"
+    },
+    {
+      "fullName": "Hoàng Sinh Sau",
+      "dateOfBirth": "02/01/1997",
+      "gender": "Nam",
+      "officialAdmissionDate": "01/10/1996",
+      "errorCode": "E-NGAYSINH-SAU",
+      "expectedReason": "Ngày sinh sau Ngày vào Đảng chính thức"
+    },
+    {
+      "fullName": "Vũ Ngày Sinh Sai",
+      "dateOfBirth": "31/02/1974",
+      "gender": "Nữ",
+      "officialAdmissionDate": "01/10/1996",
+      "errorCode": "E-NGAYSINH-SAIDANG",
+      "expectedReason": "Ngày sinh không tồn tại / sai định dạng (chờ chốt OQ-1)"
+    },
+    {
+      "fullName": "",
+      "dateOfBirth": "31/02/1974",
+      "gender": "Khác",
+      "officialAdmissionDate": "",
+      "errorCode": "E-NHIEU-LOI",
+      "expectedReason": "Một dòng nhiều lỗi cùng lúc (chờ chốt OQ-2: liệt kê hết hay chỉ lỗi đầu)"
+    }
+  ],
+  "okRows": [
+    {
+      "fullName": "Nguyễn Hợp Lệ Một",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Nam",
+      "officialAdmissionDate": "01/10/1996"
+    },
+    {
+      "fullName": "Trần Hợp Lệ Hai",
+      "dateOfBirth": "05/07/1973",
+      "gender": "Nữ",
+      "officialAdmissionDate": "07/11/1996"
+    },
+    {
+      "fullName": "Lê Hợp Lệ Ba",
+      "dateOfBirth": "",
+      "gender": "",
+      "officialAdmissionDate": "15/01/1996"
+    },
+    {
+      "fullName": "Phạm Hợp Lệ Bốn",
+      "dateOfBirth": "09/02/1975",
+      "gender": "Nữ",
+      "officialAdmissionDate": "31/05/1996"
+    },
+    {
+      "fullName": "Hoàng Hợp Lệ Năm",
+      "dateOfBirth": "30/06/1971",
+      "gender": "Nam",
+      "officialAdmissionDate": "15/08/1996"
+    },
+    {
+      "fullName": "Vũ Hợp Lệ Sáu",
+      "dateOfBirth": "14/09/1972",
+      "gender": "Nữ",
+      "officialAdmissionDate": "10/09/1996"
+    }
+  ],
+  "okRowToday": {
+    "fullName": "Lưu Đúng Hôm Nay",
+    "dateOfBirth": "04/04/2000",
+    "gender": "Nữ",
+    "officialAdmissionDate": "19/09/2026"
+  },
+  "undecidedRows": [
+    {
+      "fullName": "  Nguyễn Có Khoảng Trắng  ",
+      "dateOfBirth": "12/03/1974",
+      "gender": "Nam",
+      "officialAdmissionDate": "01/10/1996",
+      "openQuestion": "OQ-4",
+      "question": "Họ tên có khoảng trắng đầu/cuối - có cắt bỏ (trim) không?"
+    },
+    {
+      "fullName": "Trần Giới Tính Thường",
+      "dateOfBirth": "05/07/1973",
+      "gender": "nữ",
+      "officialAdmissionDate": "07/11/1996",
+      "openQuestion": "OQ-5",
+      "question": "Giới tính viết thường - có nhận không?"
+    },
+    {
+      "fullName": "Lê Giới Tính Hoa",
+      "dateOfBirth": "21/11/1972",
+      "gender": "NAM",
+      "officialAdmissionDate": "30/09/1996",
+      "openQuestion": "OQ-5",
+      "question": "Giới tính viết hoa - có nhận không?"
+    },
+    {
+      "fullName": "Phạm Ngày Một Chữ Số",
+      "dateOfBirth": "9/2/1975",
+      "gender": "Nữ",
+      "officialAdmissionDate": "1/10/1996",
+      "openQuestion": "OQ-6",
+      "question": "Ngày viết d/M/yyyy (không đủ 2 chữ số) - có nhận không?"
+    }
+  ]
+}

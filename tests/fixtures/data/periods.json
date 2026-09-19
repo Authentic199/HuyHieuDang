@@ -1,0 +1,51 @@
+{
+  "main": [
+    {
+      "code": "P1",
+      "name": "Đợt 3/2",
+      "fromDay": 15,
+      "fromMonth": 1,
+      "toDay": 5,
+      "toMonth": 3,
+      "label": "15/01 – 05/03"
+    },
+    {
+      "code": "P2",
+      "name": "Đợt 19/5",
+      "fromDay": 1,
+      "fromMonth": 5,
+      "toDay": 31,
+      "toMonth": 5,
+      "label": "01/05 – 31/05"
+    },
+    {
+      "code": "P3",
+      "name": "Đợt 2/9",
+      "fromDay": 15,
+      "fromMonth": 8,
+      "toDay": 10,
+      "toMonth": 9,
+      "label": "15/08 – 10/09"
+    },
+    {
+      "code": "P4",
+      "name": "Đợt 7/11",
+      "fromDay": 1,
+      "fromMonth": 10,
+      "toDay": 7,
+      "toMonth": 11,
+      "label": "01/10 – 07/11"
+    }
+  ],
+  "leapEdge": [
+    {
+      "code": "PL1",
+      "name": "Đợt nhuận 29/02",
+      "fromDay": 29,
+      "fromMonth": 2,
+      "toDay": 5,
+      "toMonth": 3,
+      "label": "29/02 – 05/03"
+    }
+  ]
+}
