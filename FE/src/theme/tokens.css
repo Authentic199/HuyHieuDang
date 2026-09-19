@@ -44,6 +44,7 @@
 
   --hhd-header-height: 56px;
   --hhd-sider-width: 104px;
+  --hhd-sider-width-collapsed: 64px;
   --hhd-shell-padding: 16px;
 
   --hhd-gradient-header: linear-gradient(135deg, #8f1619 0%, #6c0f12 55%, #530b0e 100%);

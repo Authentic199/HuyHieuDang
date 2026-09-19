@@ -2,8 +2,9 @@ namespace HuyHieuDang.Core.Common.Interfaces;
 
 /// <summary>
 /// Nguồn thời gian duy nhất của hệ thống (T-FIX-1). Mọi chỗ cần "bây giờ" hay "hôm nay"
-/// đều tiêm giao diện này thay vì gọi thẳng <c>DateTime.Now</c> hay <c>DateTime.Today</c>,
-/// để kiểm thử có thể đóng băng thời gian mà không phụ thuộc đồng hồ máy chạy.
+/// đều tiêm giao diện này thay vì đọc thẳng đồng hồ máy, để kiểm thử đóng băng được thời gian.
+/// Ca kiểm thử tĩnh A-901 quét mã nguồn và chặn mọi lời gọi đồng hồ ngoài lớp cài đặt provider,
+/// nên tệp này cũng không viết tên các lời gọi đó ra.
 /// </summary>
 /// <remarks>
 /// Service tính mốc tuổi đảng là service thuần: nó nhận <c>DateOnly today</c> qua tham số,
