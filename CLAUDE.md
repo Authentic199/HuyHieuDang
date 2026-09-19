@@ -10,7 +10,8 @@ Mục tiêu duy nhất: **từ danh sách đảng viên, tự động lọc ra a
 | `docs/2026-09-17-huyhieudang-business-design.md` | **Nguồn sự thật nghiệp vụ.** Quy tắc QT1–QT11, use case UC-xx, mô hình dữ liệu |
 | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` | Bộ thiết kế 10 artboard 1440x900 |
 | `docs/2026-09-19-team-and-task-plan.md` | Vai trò 5 agent, 32 task, thứ tự phụ thuộc |
-| `docs/api-contract.md` | Hợp đồng API (Technical Writer sở hữu — **chưa tồn tại, phải tạo trước**) |
+| `docs/api-contract.md` | **Hợp đồng API v1.0** — 28 endpoint, quy ước chung, bảng đối chiếu UC-xx. Technical Writer sở hữu |
+| `docs/openapi.yaml` | Bản máy đọc của hợp đồng API (OpenAPI 3.0.3) |
 
 ## Cấu trúc
 
