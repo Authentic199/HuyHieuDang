@@ -305,6 +305,27 @@ def self_check(core: list[Member], scen: dict) -> None:
 # ---------------------------------------------------------------- xuất Excel
 
 
+def normalize_zip(path: Path) -> None:
+    """Ghi lại tệp zip với mốc thời gian cố định để tệp .xlsx tái lập được từng byte.
+
+    openpyxl đóng dấu giờ hiện tại vào từng phần của zip, nên chạy lại generate.py
+    sinh ra tệp khác byte dù dữ liệu không đổi - mỗi lần sinh lại sẽ tạo một diff
+    rác trong git. Hàm này đặt mọi mốc thời gian về 01/01/1980 (giá trị nhỏ nhất
+    mà định dạng zip biểu diễn được).
+    """
+    fixed = (1980, 1, 1, 0, 0, 0)
+    with zipfile.ZipFile(path) as z:
+        entries = [(i, z.read(i.filename)) for i in z.infolist()]
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as z:
+        for info, data in entries:
+            new = zipfile.ZipInfo(info.filename, date_time=fixed)
+            new.compress_type = info.compress_type
+            new.external_attr = info.external_attr
+            new.internal_attr = info.internal_attr
+            new.create_system = 3  # cố định, không lấy theo hệ điều hành đang chạy
+            z.writestr(new, data)
+
+
 def write_xlsx(path: Path, rows: list[tuple], header: list[str] | None,
                date_cols: set[int] | None = None) -> None:
     """Ghi 1 sheet. date_cols = chỉ số cột (0-based) cần ghi ở KIỂU NGÀY thật của Excel."""
@@ -323,6 +344,7 @@ def write_xlsx(path: Path, rows: list[tuple], header: list[str] | None,
     for col, width in zip("ABCD", (28, 14, 12, 26)):
         ws.column_dimensions[col].width = width
     wb.save(path)
+    normalize_zip(path)
 
 
 def member_row_text(m: Member) -> tuple:
@@ -404,6 +426,7 @@ def build_excel(core: list[Member], bulk: list[Member]) -> list[dict]:
     wb = Workbook()
     wb.active.title = "DanhSach"
     wb.save(EXCEL / "loi-rong.xlsx")
+    normalize_zip(EXCEL / "loi-rong.xlsx")
     rec("loi-rong.xlsx", 0, 0, "QT9 lỗi cấp file - sheet hoàn toàn rỗng, không có cả tiêu đề.")
 
     write_xlsx(EXCEL / "loi-chi-co-tieu-de.xlsx", [], ds.HEADER)
