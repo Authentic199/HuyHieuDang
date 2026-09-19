@@ -28,6 +28,12 @@ http.interceptors.request.use((config) => {
 /** Sự kiện phát ra khi thẻ hết hạn, để lớp auth đẩy người dùng về trang Đăng nhập. */
 export const UNAUTHORIZED_EVENT = 'hhd:unauthorized';
 
+/**
+ * Màn Đăng nhập cũng trả 401 khi sai tài khoản — đó không phải hết phiên.
+ * Chỉ 401 của các lời gọi khác mới đẩy người dùng ra ngoài.
+ */
+const LOGIN_PATH = '/Auth/Login';
+
 /** Hai hình dạng lỗi của hợp đồng (mục 1.4) gộp lại. */
 interface ServerErrorBody {
   statusCode?: number;
@@ -70,7 +76,8 @@ http.interceptors.response.use(
       raw instanceof Blob ? await readBlobError(raw) : (raw as ServerErrorBody | undefined);
 
     const apiError = toApiError(status, body);
-    if (apiError.isUnauthorized) {
+    const isLoginCall = (axiosError.config?.url ?? '').endsWith(LOGIN_PATH);
+    if (apiError.isUnauthorized && !isLoginCall) {
       clearToken();
       window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT));
     }
