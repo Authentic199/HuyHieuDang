@@ -1,0 +1,163 @@
+/* Dải độ phủ 12 tháng — artboard 5. Màu và bóng lấy nguyên từ thiết kế. */
+.hhd-coverage {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  padding: 20px 24px 18px;
+}
+
+.hhd-coverage__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+.hhd-coverage__title {
+  font: 700 16px/24px var(--hhd-font-serif);
+}
+
+.hhd-coverage__legend {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--hhd-text-secondary);
+}
+
+.hhd-coverage__legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hhd-coverage__swatch {
+  width: 14px;
+  height: 8px;
+  border-radius: 9999px;
+  flex: none;
+}
+
+.hhd-coverage__swatch--period {
+  background: linear-gradient(180deg, #bd2a1c, #6c0f12);
+}
+
+.hhd-coverage__swatch--gap {
+  background: #f0e2c2;
+}
+
+.hhd-coverage__swatch--overlap {
+  background: repeating-linear-gradient(135deg, #8a6a1e 0 3px, #ffcd00 3px 6px);
+}
+
+.hhd-coverage__swatch--today {
+  width: 2px;
+  height: 12px;
+  border-radius: 0;
+  background: #8a6a1e;
+}
+
+.hhd-coverage__stage {
+  position: relative;
+  padding: 26px 0 8px;
+}
+
+/* Quầng sáng mờ phía sau dải, đúng hai điểm gradient trong artboard. */
+.hhd-coverage__glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 18px;
+  height: 56px;
+  border-radius: 9999px;
+  background:
+    radial-gradient(60% 120% at 20% 50%, #fbe7c7 0%, rgba(251, 231, 199, 0) 70%),
+    radial-gradient(50% 120% at 62% 50%, #f7dcd6 0%, rgba(247, 220, 214, 0) 70%);
+  filter: blur(10px);
+}
+
+.hhd-coverage__track {
+  position: relative;
+  border-radius: 9999px;
+  background: #fdf8ee;
+  box-shadow:
+    inset 0 1px 3px rgba(108, 15, 18, 0.1),
+    0 8px 20px -10px rgba(108, 15, 18, 0.35);
+}
+
+/* Khoảng chưa đợt nào phủ — màu cát nhạt như ô chú thích "Khoảng trống". */
+.hhd-coverage__gap {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  background: #f0e2c2;
+}
+
+.hhd-coverage__bar {
+  position: absolute;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #bd2a1c, #991a14 55%, #6c0f12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px -4px rgba(108, 15, 18, 0.6);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  font: 600 13px/1 var(--hhd-font-sans);
+  white-space: nowrap;
+}
+
+/* Đợt đang diễn ra hoặc sắp tới — tô vàng để bật lên như artboard 5. */
+.hhd-coverage__bar--next {
+  background: linear-gradient(135deg, #ffcd00, #c99a10 60%, #8a6a1e);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 4px 12px -4px rgba(138, 106, 30, 0.7);
+  color: #3d2c00;
+  font-weight: 700;
+}
+
+/* Đoạn hai đợt trùng nhau — gạch chéo vàng phủ mờ lên cả hai hàng bar, đủ rõ
+   để nhận ra nhưng vẫn đọc được tên hai đợt nằm dưới. */
+.hhd-coverage__overlap {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 9999px;
+  border: 1px dashed #8a6a1e;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(138, 106, 30, 0.3) 0 4px,
+    rgba(255, 205, 0, 0.3) 4px 8px
+  );
+}
+
+.hhd-coverage__today-line {
+  position: absolute;
+  top: -18px;
+  bottom: -4px;
+  width: 2px;
+  background: linear-gradient(180deg, #8a6a1e, rgba(138, 106, 30, 0.25));
+}
+
+.hhd-coverage__today-chip {
+  position: absolute;
+  top: -34px;
+  transform: translateX(-50%);
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--hhd-ink);
+  color: #fff;
+  font: 600 12px/16px var(--hhd-font-sans);
+  white-space: nowrap;
+}
+
+/* Nhãn tháng rộng theo đúng số ngày của tháng nên luôn thẳng hàng với bar. */
+.hhd-coverage__months {
+  display: flex;
+  margin-top: 10px;
+  font: 600 12px/16px var(--hhd-font-sans);
+  letter-spacing: 0.04em;
+  color: var(--hhd-text-tertiary);
+  text-transform: uppercase;
+}
