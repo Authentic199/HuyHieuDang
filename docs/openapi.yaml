@@ -1,11 +1,11 @@
 openapi: 3.0.3
 
-# Bản máy đọc của docs/api-contract.md (v1.0 — 19/09/2026).
+# Bản máy đọc của docs/api-contract.md (v1.1 — 19/09/2026).
 # Tài liệu markdown là bản chuẩn; file này phải được sửa cùng lúc mỗi khi contract đổi.
 
 info:
   title: HuyHieuDang API
-  version: "1.0"
+  version: "1.1"
   description: |
     API của hệ thống hỗ trợ xét trao Huy hiệu Đảng.
     Mọi phản hồi thành công bọc trong `{ message, data }`; phần mô tả dưới đây chỉ nói về `data`.
@@ -14,7 +14,7 @@ info:
 servers:
   - url: /api
     description: Frontend gọi qua proxy (dev - Vite, chạy thật - nginx)
-  - url: http://localhost:5000/api
+  - url: http://localhost:8080/api
     description: Backend chạy trực tiếp khi dev
 
 security:
@@ -288,7 +288,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/ImportPreviewResponse'
         '400':
-          description: Lỗi cấp file (Mes.Import.Invalid.Extension / FileSize / Columns / Empty)
+          description: Lỗi cấp file (Mes.Import.Invalid.Extension / FileSize / Columns / Empty / NoDataRows)
           content:
             application/json:
               schema:
@@ -737,7 +737,7 @@ components:
     SearchKeyword:
       name: searchKeyword
       in: query
-      description: Tìm chứa chuỗi, không phân biệt hoa thường và dấu
+      description: Tìm chứa chuỗi. Không phân biệt hoa thường, CÓ phân biệt dấu (OQ-8)
       schema:
         type: string
     SearchFields:
@@ -1069,13 +1069,23 @@ components:
           type: string
         dateOfBirth:
           type: string
-          example: 04/08/1963
+          example: 31/02/1963
         gender:
           type: string
           example: Nữ
         officialAdmissionDate:
           type: string
           example: ''
+        errors:
+          type: array
+          description: Đủ mọi lý do của dòng đó, ít nhất một phần tử (OQ-2)
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ImportRowError'
+
+    ImportRowError:
+      type: object
+      properties:
         errorCode:
           $ref: '#/components/schemas/ImportErrorCode'
         field:
