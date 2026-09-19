@@ -4,20 +4,9 @@ namespace HuyHieuDang.Infrastructure.Modules.PartyMembers.Requests;
 
 /// <summary>
 /// Tham số truy vấn của <c>GET /api/PartyMembers</c> (mục 1.7 hợp đồng API).
-/// Khác <see cref="QueryContainer"/> ở đúng một điểm: mặc định 20 dòng mỗi trang.
+/// Mặc định 20 dòng mỗi trang và trần <see cref="QueryContainer.MaxPageSize"/> nằm ở
+/// <see cref="QueryContainer"/> để mọi endpoint có phân trang dùng chung một bộ luật.
 /// </summary>
 public class PartyMemberQueryRequest : QueryContainer
 {
-    /// <summary>
-    /// Số dòng mỗi trang khi Frontend không gửi <c>pageSize</c>.
-    /// </summary>
-    public const int DefaultPageSize = 20;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PartyMemberQueryRequest"/> class.
-    /// </summary>
-    public PartyMemberQueryRequest()
-    {
-        PageSize = DefaultPageSize;
-    }
 }

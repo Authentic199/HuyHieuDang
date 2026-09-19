@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Web;
+﻿using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -10,27 +9,99 @@ public static class PaginationExtension
 {
     public static PaginationResponse<T> ToPagedList<T>(this IEnumerable<T> entities, int current, int pageSize)
     {
-        IEnumerable<T> items = entities.Skip((current - 1) * pageSize).Take(pageSize);
-        return new PaginationResponse<T>(items, entities.Count(), pageSize, current);
+        PageRequest page = PageRequest.From(current, pageSize);
+        IEnumerable<T> items = page.IsBeyondAnyData ? Array.Empty<T>() : entities.Skip(page.Skip).Take(page.PageSize);
+        return new PaginationResponse<T>(items, entities.Count(), page.PageSize, page.Current);
     }
 
     public static PaginationResponse<TEntity, TMoreInfo> ToPagedList<TEntity, TMoreInfo>(this IEnumerable<TEntity> entities, int current, int pageSize, TMoreInfo moreInfo)
     {
-        IEnumerable<TEntity> items = entities.Skip((current - 1) * pageSize).Take(pageSize);
-        return new PaginationResponse<TEntity, TMoreInfo>(items, entities.Count(), pageSize, current, moreInfo);
+        PageRequest page = PageRequest.From(current, pageSize);
+        IEnumerable<TEntity> items = page.IsBeyondAnyData ? Array.Empty<TEntity>() : entities.Skip(page.Skip).Take(page.PageSize);
+        return new PaginationResponse<TEntity, TMoreInfo>(items, entities.Count(), page.PageSize, page.Current, moreInfo);
     }
 
     public static async Task<PaginationResponse<T>> ToPagedListAsync<T>(this IQueryable<T> entities, int current, int pageSize, CancellationToken cancellationToken = default)
     {
-        IEnumerable<T> items = await entities.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-        return new PaginationResponse<T>(items, entities.Count(), pageSize, current);
+        PageRequest page = PageRequest.From(current, pageSize);
+        IEnumerable<T> items = page.IsBeyondAnyData
+            ? Array.Empty<T>()
+            : await entities.Skip(page.Skip).Take(page.PageSize).ToListAsync(cancellationToken);
+        return new PaginationResponse<T>(items, entities.Count(), page.PageSize, page.Current);
     }
 
     public static async Task<PaginationResponse<TEntity, TMoreInfo>> ToPagedListAsync<TEntity, TMoreInfo>(this IQueryable<TEntity> entities, int current, int pageSize, TMoreInfo moreInfo, CancellationToken cancellationToken = default)
     {
-        IEnumerable<TEntity> items = await entities.Skip((current - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-        return new PaginationResponse<TEntity, TMoreInfo>(items, entities.Count(), pageSize, current, moreInfo);
+        PageRequest page = PageRequest.From(current, pageSize);
+        IEnumerable<TEntity> items = page.IsBeyondAnyData
+            ? Array.Empty<TEntity>()
+            : await entities.Skip(page.Skip).Take(page.PageSize).ToListAsync(cancellationToken);
+        return new PaginationResponse<TEntity, TMoreInfo>(items, entities.Count(), page.PageSize, page.Current, moreInfo);
     }
+}
+
+/// <summary>
+/// Cặp <c>current</c> / <c>pageSize</c> đã được kẹp về khoảng an toàn (A-104, A-106).
+/// Đây là chỗ duy nhất tính vị trí bỏ qua, nên mọi endpoint có phân trang cùng được vá một lần:
+/// <list type="bullet">
+/// <item><description><c>current &lt; 1</c> coi như trang 1.</description></item>
+/// <item><description><c>pageSize</c> vượt <see cref="QueryContainer.MaxPageSize"/> bị kẹp về trần, dưới 1 thì lấy mặc định.</description></item>
+/// <item><description>Vị trí bỏ qua tính bằng <see cref="long"/> nên số trang rất lớn không còn tràn <see cref="int"/> rồi sinh <c>OFFSET</c> âm; trang vượt kho dữ liệu chỉ trả danh sách rỗng với mã 200.</description></item>
+/// </list>
+/// </summary>
+public readonly struct PageRequest : IEquatable<PageRequest>
+{
+    private PageRequest(int current, int pageSize, long skip)
+    {
+        Current = current;
+        PageSize = pageSize;
+        Skip = skip > int.MaxValue ? int.MaxValue : (int)skip;
+        IsBeyondAnyData = skip > int.MaxValue;
+    }
+
+    /// <summary>Trang đang xin, luôn ≥ 1.</summary>
+    public int Current { get; }
+
+    /// <summary>Số dòng mỗi trang sau khi kẹp, luôn trong khoảng 1 → trần.</summary>
+    public int PageSize { get; }
+
+    /// <summary>Số dòng cần bỏ qua, luôn ≥ 0.</summary>
+    public int Skip { get; }
+
+    /// <summary>
+    /// Trang xin nằm quá xa (vị trí bỏ qua vượt <see cref="int.MaxValue"/>): không kho dữ liệu nào
+    /// của hệ thống với tới, nên trả thẳng danh sách rỗng thay vì hỏi cơ sở dữ liệu.
+    /// </summary>
+    public bool IsBeyondAnyData { get; }
+
+    public static bool operator ==(PageRequest left, PageRequest right) => left.Equals(right);
+
+    public static bool operator !=(PageRequest left, PageRequest right) => !left.Equals(right);
+
+    /// <summary>
+    /// Kẹp một cặp tham số phân trang thô về khoảng an toàn.
+    /// </summary>
+    /// <param name="current">Số trang người dùng gửi.</param>
+    /// <param name="pageSize">Số dòng mỗi trang người dùng gửi.</param>
+    /// <returns>Cặp đã kẹp kèm vị trí bỏ qua.</returns>
+    public static PageRequest From(int current, int pageSize)
+    {
+        int safeCurrent = current < 1 ? 1 : current;
+        int safePageSize = QueryContainer.ClampPageSize(pageSize);
+
+        return new PageRequest(safeCurrent, safePageSize, (long)(safeCurrent - 1) * safePageSize);
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(PageRequest other)
+        => Current == other.Current && PageSize == other.PageSize && Skip == other.Skip
+            && IsBeyondAnyData == other.IsBeyondAnyData;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is PageRequest other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(Current, PageSize, Skip, IsBeyondAnyData);
 }
 
 public class PaginationResponse<T>
@@ -79,8 +150,22 @@ public class PageInfo
     public bool HasPrevious => Current > 1 && Current <= TotalPages;
 }
 
-public class QueryContainer : IValidatableObject
+public class QueryContainer
 {
+    /// <summary>
+    /// Trần số dòng mỗi trang (A-106). Gửi lớn hơn thì được phục vụ đúng trần, không báo lỗi —
+    /// giao diện chỉ dùng 10 / 20 / 50 nên không ai chạm tới trần này.
+    /// </summary>
+    public const int MaxPageSize = 200;
+
+    /// <summary>
+    /// Số dòng mỗi trang khi không gửi <c>pageSize</c> hoặc gửi giá trị nhỏ hơn 1 (mục 1.7).
+    /// </summary>
+    public const int DefaultPageSize = 20;
+
+    private int pageSize = DefaultPageSize;
+    private int current = 1;
+
     /// <summary>
     /// filter data by operator($eq, $null, $in, $gt, $lt, $lte, $gte, $btw, $ilike, $sw) ex: { filter.propName : "$eq:mxm" }
     /// </summary>
@@ -88,14 +173,22 @@ public class QueryContainer : IValidatableObject
     public Dictionary<string, List<string>?>? Filter { get; set; }
 
     /// <summary>
-    /// Number elements on a page.
+    /// Number elements on a page. Kẹp về <see cref="MaxPageSize"/>; nhỏ hơn 1 thì lấy mặc định.
     /// </summary>
-    public int PageSize { get; set; } = int.MaxValue / 2;
+    public int PageSize
+    {
+        get => pageSize;
+        set => pageSize = ClampPageSize(value);
+    }
 
     /// <summary>
-    /// Pages number to take out of the total pages.
+    /// Pages number to take out of the total pages. Nhỏ hơn 1 thì coi như trang 1.
     /// </summary>
-    public int Current { get; set; } = 1;
+    public int Current
+    {
+        get => current;
+        set => current = value < 1 ? 1 : value;
+    }
 
     /// <summary>
     /// Search field. Ex: '["Name","Relatives.Name"]'.
@@ -112,24 +205,13 @@ public class QueryContainer : IValidatableObject
     /// </summary>
     public string? SortQuery { get; set; }
 
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (PageSize <= 0 || PageSize > int.MaxValue / 2)
-        {
-            yield return new ValidationResult(
-                $"{nameof(PageSize)}Invalid",
-                new[] { nameof(PageSize) }
-            );
-        }
-
-        if (Current <= 0 || Current > int.MaxValue / 2)
-        {
-            yield return new ValidationResult(
-                $"{nameof(PageSize)}Invalid",
-                new[] { nameof(PageSize) }
-            );
-        }
-    }
+    /// <summary>
+    /// Kẹp số dòng mỗi trang về khoảng 1 → <see cref="MaxPageSize"/>.
+    /// </summary>
+    /// <param name="value">Giá trị người dùng gửi.</param>
+    /// <returns>Số dòng mỗi trang an toàn.</returns>
+    public static int ClampPageSize(int value)
+        => value < 1 ? DefaultPageSize : Math.Min(value, MaxPageSize);
 }
 
 public class CustomFilterBinder : IModelBinder

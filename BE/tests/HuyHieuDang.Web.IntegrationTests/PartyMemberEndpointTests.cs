@@ -103,16 +103,18 @@ public class PartyMemberEndpointTests
         Assert.True(last.PageInfo.HasPrevious);
     }
 
-    [Theory(DisplayName = "3.1 · pageSize hoặc current không dương trả 400")]
+    // QC-T27-03: CEO chốt ngày 19/09/2026 là tham số phân trang ngoài khoảng được KẸP chứ không
+    // báo lỗi, để một lần gõ nhầm không dựng banner đỏ trước mặt người dùng. Ca này trước đòi 400.
+    [Theory(DisplayName = "3.1 · pageSize hoặc current không dương được kẹp về mặc định, vẫn trả 200")]
     [InlineData("?pageSize=0")]
     [InlineData("?current=0")]
-    public async Task Search_WithNonPositivePaging_ReturnsBadRequest(string query)
+    public async Task Search_WithNonPositivePaging_ClampsInsteadOfFailing(string query)
     {
         HttpClient client = await CreateAuthenticatedClientAsync();
 
         HttpResponseMessage response = await client.GetAsync(BasePath + query);
 
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact(DisplayName = "3.1 · Tìm theo họ tên chứa chuỗi, không phân biệt hoa thường")]
