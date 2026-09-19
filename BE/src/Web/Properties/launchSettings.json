@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "HuyHieuDang.Web": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "launchUrl": "docs",
+      "applicationUrl": "http://0.0.0.0:8080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+
+        // Giá trị chạy máy cá nhân. Môi trường thật đặt qua biến môi trường / .env, không commit.
+        "SecuritySettings__JwtSettingOptions__Default__Key": "local-dev-jwt-key-0123456789abcdef0123456789abcdef",
+        "SecuritySettings__JwtSettingOptions__Default__RefreshKey": "local-dev-refresh-key-0123456789abcdef0123456789abcdef",
+
+        "SwaggerSettings__Credentials__Username": "admin",
+        "SwaggerSettings__Credentials__Password": "admin",
+
+        "DatabaseSettings__SqlSettings__UseAutoMigration": "true",
+        "DatabaseSettings__SqlSettings__ConnectionStrings__DefaultConnection": "Host=localhost;Port=5432;Database=huyhieudang;Username=postgres;Password=postgres;Include Error Detail=true;"
+      }
+    }
+  }
+}

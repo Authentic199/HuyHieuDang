@@ -1,0 +1,7 @@
+{
+  "CacheSettings": {
+    "Permission": {
+      "ExpiredInMinute": 10
+    }
+  }
+}

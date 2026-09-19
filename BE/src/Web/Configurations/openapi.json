@@ -1,0 +1,17 @@
+{
+  "SwaggerSettings": {
+    "Enable": true,
+    "DefaultInfos": {
+      "Title": "HuyHieuDang API",
+      "Version": "1.0.0",
+      "Description": "Tài liệu API hệ thống hỗ trợ xét trao Huy hiệu Đảng.",
+      "DocKey": "default",
+      "DocName": "Default",
+      "RoutePrefix": "docs"
+    },
+    "Credentials": {
+      "Username": "admin",
+      "Password": "admin"
+    }
+  }
+}

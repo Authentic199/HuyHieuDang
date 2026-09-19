@@ -1,0 +1,21 @@
+{
+  "HealthChecksUI": {
+    "UIPath": "/healthchecks-ui",
+    "HealthChecks": [
+      {
+        "Name": "HTTP-Api-Basic",
+        "Uri": "http://localhost:8080/healthz"
+      }
+    ],
+    "CustomWebhooks": [
+      {
+        "Name": "",
+        "Uri": "",
+        "Payload": "",
+        "RestoredPayload": ""
+      }
+    ],
+    "EvaluationTimeInSeconds": 300,
+    "MinimumSecondsBetweenFailureNotifications": 60
+  }
+}
