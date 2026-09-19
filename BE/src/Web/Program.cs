@@ -28,6 +28,10 @@ try
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetConverter());
         options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+
+        // Hop dong API muc 1.10 chot moi enum tra ve chuoi ("Male"/"Female", "Past"/"Ongoing"/"Upcoming"),
+        // khong phai so thu tu cua enum.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     })
     .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new { message = context.ModelState?.FirstOrDefault(x => x.Value.ValidationState is ModelValidationState.Invalid).Value?.Errors[0].ErrorMessage }));
 
