@@ -1,0 +1,108 @@
+/* Màn 7 — Cài đặt. Kích thước và màu lấy từ artboard "Màn 7 — Cài đặt mốc
+   tuổi đảng": thẻ trắng rộng 760px, viền #e6e8ec, bo 10px, đệm 24px. */
+
+.hhd-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hhd-settings__card {
+  width: 760px;
+  max-width: 100%;
+  background: var(--hhd-white, #ffffff);
+  border: 1px solid #e6e8ec;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.hhd-settings__section {
+  display: grid;
+  gap: 16px;
+}
+
+.hhd-settings__section + .hhd-settings__section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e6e8ec;
+}
+
+.hhd-settings__section-title {
+  font:
+    700 16px/24px 'Noto Serif',
+    Georgia,
+    serif;
+}
+
+.hhd-settings__section-note {
+  color: #55575c;
+  margin-top: 2px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.hhd-settings__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* Ô nhập trong màn này không có khoảng trống thừa phía dưới khi không lỗi. */
+.hhd-settings .ant-form-item {
+  margin-bottom: 0;
+}
+
+.hhd-settings .ant-form-item-label > label {
+  font:
+    500 14px/20px 'Noto Sans',
+    sans-serif;
+  color: #55575c;
+}
+
+/* Ô số có nút − / + — cao 48px như artboard, số bằng chữ có chân 20px. */
+.hhd-settings__stepper {
+  display: flex;
+  width: 100%;
+}
+
+.hhd-settings__stepper .hhd-settings__stepper-button {
+  width: 44px;
+  height: 48px;
+  flex: none;
+  font-size: 18px;
+  color: #55575c;
+}
+
+.hhd-settings__stepper .hhd-settings__stepper-input {
+  flex: 1;
+  height: 48px;
+}
+
+.hhd-settings__stepper .hhd-settings__stepper-input .ant-input-number-input {
+  height: 46px;
+  text-align: center;
+  font:
+    500 20px 'Noto Serif',
+    Georgia,
+    serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.hhd-settings__impact .ant-alert-message {
+  font-weight: 600;
+}
+
+.hhd-settings__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #e6e8ec;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+
+.hhd-settings__actions .ant-btn {
+  height: 40px;
+  padding: 0 16px;
+  font-weight: 600;
+}
