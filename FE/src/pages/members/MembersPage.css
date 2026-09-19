@@ -1,0 +1,81 @@
+/* Màn 3 — Đảng viên. Khung thẻ trắng bao thanh công cụ và bảng, đúng artboard 3. */
+.hhd-members {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hhd-space-xl);
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-members__panel {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-members__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-md);
+  padding: var(--hhd-space-md) var(--hhd-space-lg);
+  border-bottom: 1px solid var(--hhd-border);
+}
+
+/* Chưa có ai trong danh sách thì ô tìm và ô lọc chưa dùng được — làm mờ đi
+   đúng như artboard "3 Đảng viên trống". */
+.hhd-members__toolbar--muted {
+  opacity: 0.55;
+}
+
+.hhd-members__search {
+  width: 320px;
+}
+
+.hhd-members__gender {
+  width: 200px;
+}
+
+.hhd-members__selected {
+  margin-left: auto;
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+}
+
+.hhd-members__selected b {
+  color: var(--hhd-ink);
+}
+
+.hhd-members__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TableStates dựng sẵn một thẻ trắng có viền cho trạng thái đang tải và trống.
+   Ở đây nó đã nằm trong thẻ của bảng nên bỏ viền, tránh thẻ lồng thẻ. */
+.hhd-members__body > div:not(.ant-alert) {
+  border: 0;
+  border-radius: 0;
+  flex: 1;
+}
+
+.hhd-members__body > .ant-alert {
+  margin: var(--hhd-space-lg);
+}
+
+/* Hai nút biểu tượng Sửa / Xóa ở cột Thao tác. */
+.hhd-members__row-actions {
+  display: inline-flex;
+  gap: var(--hhd-space-xs);
+}
+
+/* Tên cột luôn nằm trên một dòng, đúng hàng tiêu đề của artboard. */
+.hhd-members .ant-table-thead th {
+  white-space: nowrap;
+}

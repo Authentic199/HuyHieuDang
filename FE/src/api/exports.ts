@@ -19,8 +19,7 @@ export function exportDashboard(): Promise<DownloadedFile> {
 
 /** UC-40 — xuất danh sách chưa thuộc đợt nào. */
 export function exportUnassigned(year?: number): Promise<DownloadedFile> {
-  const suffix = year ?? new Date().getFullYear();
-  return apiClient.download('/Exports/Unassigned', `ChuaThuocDot_${suffix}.xlsx`, {
+  return apiClient.download('/Exports/Unassigned', 'ChuaThuocDot.xlsx', {
     params: { year },
   });
 }

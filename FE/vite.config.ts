@@ -4,7 +4,7 @@ import { defineConfig, loadEnv } from 'vite';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   // Khi chạy dev, /api được chuyển tiếp sang BE để tránh vướng CORS.
-  const apiProxyTarget = env.VITE_DEV_API_PROXY ?? 'http://localhost:5000';
+  const apiProxyTarget = env.VITE_DEV_API_PROXY ?? 'http://localhost:8080';
 
   return {
     plugins: [react()],

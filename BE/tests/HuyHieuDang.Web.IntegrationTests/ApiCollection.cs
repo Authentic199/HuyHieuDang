@@ -1,16 +1,14 @@
 namespace HuyHieuDang.Web.IntegrationTests;
 
 /// <summary>
-/// Mọi lớp kiểm thử tích hợp dùng chung đúng một <see cref="HuyHieuDangApiFactory"/>.
-/// Bắt buộc phải chung: factory đặt chuỗi kết nối bằng biến môi trường của tiến trình, nên hai
-/// factory chạy song song sẽ ghi đè lẫn nhau và host trỏ nhầm container. Gom vào một collection
-/// thì các lớp chạy tuần tự trên một container duy nhất.
+/// Gom mọi lớp kiểm thử cần API thật vào một bộ, để cả bộ dùng chung đúng một container
+/// PostgreSQL thay vì mỗi lớp dựng một cái.
 /// </summary>
 [CollectionDefinition(Name)]
-public class ApiCollection : ICollectionFixture<HuyHieuDangApiFactory>
+public sealed class ApiCollection : ICollectionFixture<HuyHieuDangApiFactory>
 {
     /// <summary>
-    /// Tên collection dùng cho thuộc tính <c>[Collection]</c>.
+    /// Tên bộ, dùng ở thuộc tính <c>[Collection]</c> của từng lớp.
     /// </summary>
-    public const string Name = "HuyHieuDang API";
+    public const string Name = "API";
 }
