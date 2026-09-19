@@ -1,4 +1,4 @@
-﻿using HuyHieuDang.Infrastructure.Facades.Identity.Base;
+using HuyHieuDang.Infrastructure.Facades.Identity.Base;
 using System.Security.Claims;
 
 namespace HuyHieuDang.Infrastructure.Facades.Auth;
@@ -20,6 +20,8 @@ public interface ICurrentUser
     void SetJwtUser(IJwtUser user);
 
     string GetModelType();
+
+    DateTimeOffset? GetExpiresAt();
 
     bool IsAuthenticated();
 }
@@ -46,6 +48,9 @@ public sealed class CurrentUser : ICurrentUser, ICurrentUserInitializer
         IsAuthenticated()
             ? user?.GetModelType() ?? string.Empty
             : string.Empty;
+
+    public DateTimeOffset? GetExpiresAt() =>
+        IsAuthenticated() ? user?.GetExpiresAt() : null;
 
     public void SetCurrentUser(ClaimsPrincipal user)
     {

@@ -1,9 +1,10 @@
-﻿using HuyHieuDang.Core.Bases;
+using HuyHieuDang.Core.Bases;
 using HuyHieuDang.Infrastructure.Exceptions.HttpExceptions;
 using HuyHieuDang.Infrastructure.Facades.Auth;
 using HuyHieuDang.Infrastructure.Facades.Definitions;
 using HuyHieuDang.Infrastructure.Facades.Identity.Base;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Repositories;
+using HuyHieuDang.Infrastructure.Modules.Users.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Linq.Dynamic.Core;
@@ -23,15 +24,20 @@ public class VerifyJwtUserMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext, ICurrentUser currentUser, IRepositoryWrapper repositoryWrapper)
     {
-        Type? type = Type.GetType(currentUser.GetModelType());
-
         if (
-            type?.IsAssignableTo(typeof(IJwtUser)) == true
-            &&
             httpContext.User.Identity?.IsAuthenticated == true
             &&
             httpContext.GetEndpoint()?.Metadata?.GetMetadata<IAllowAnonymous>() is null)
         {
+            // Mot yeu cau da xac thuc ma khong doc duoc kieu chu the la token hong hoac lac hau:
+            // tu choi thay vi cho di tiep, neu khong ba buoc kiem tra duoi day se lang le bi bo qua.
+            Type? type = Type.GetType(currentUser.GetModelType());
+
+            if (type?.IsAssignableTo(typeof(IJwtUser)) != true)
+            {
+                throw new UnAuthorizedException(Messages<User>.NotFound());
+            }
+
             Guid userId = currentUser.GetUserId();
             const string repository = nameof(repositoryWrapper.Repository);
             object repositoryBase = repositoryWrapper.GetType().GetMethod(repository)?.MakeGenericMethod(type).Invoke(repositoryWrapper, null)
