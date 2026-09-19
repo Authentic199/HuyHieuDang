@@ -1,0 +1,61 @@
+# ---------- .NET (BE) ----------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+artifacts/
+TestResults/
+*.trx
+*.coverage
+coverage*.json
+coverage*.xml
+*.received.*
+
+# ---------- Node / React (FE) ----------
+node_modules/
+dist/
+dist-ssr/
+build/
+.vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+
+# ---------- Cấu hình và bí mật ----------
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+*.pfx
+*.key
+
+# ---------- Docker / dữ liệu cục bộ ----------
+.docker-data/
+pgdata/
+
+# ---------- Hệ điều hành và IDE ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# ---------- Tệp tạm của dự án ----------
+*.tmp
+*.bak
+~$*.xlsx
