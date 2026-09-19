@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.1 — 19/09/2026 |
+| Phiên bản | 1.2 — 19/09/2026 |
 | Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
@@ -928,6 +928,8 @@ Endpoint nhẹ, dành riêng cho badge trên menu "Chưa thuộc đợt nào" (K
 
 `milestones` là dãy mốc đã sinh theo QT1 — nguồn sự thật duy nhất, Frontend không tự suy ra để hiển thị.
 
+Khi bảng cài đặt chưa có bản ghi nào, API trả mặc định 30 / 90 / 5 với `unitName = null` và **không tự tạo bản ghi** (A-501); lần `PUT` hoặc `RestoreDefaults` đầu tiên mới tạo đúng một bản ghi (A-509).
+
 ### 7.2 `PUT /api/Settings` — Lưu cài đặt (UC-50, UC-51)
 
 **Thân yêu cầu**
@@ -941,11 +943,13 @@ Endpoint nhẹ, dành riêng cho badge trên menu "Chưa thuộc đợt nào" (K
 | `startYears` | int | ✔ | ≥ 1 |
 | `endYears` | int | ✔ | ≥ 1, ≥ `startYears` |
 | `stepYears` | int | ✔ | ≥ 1 |
-| `unitName` | string \| null | – | ≤ 200 ký tự; `null` hoặc rỗng = không đặt |
+| `unitName` | string \| null | – | ≤ 200 ký tự; `null`, chuỗi rỗng hoặc toàn khoảng trắng đều là bỏ trống và lưu thành `null`; khoảng trắng đầu/cuối bị cắt bớt trước khi lưu |
 
 **Phản hồi `data`:** như `GET /api/Settings` sau khi lưu.
 
-**Lỗi:** `Mes.AppSetting.Invalid.StartYears`, `.EndYears`, `.StepYears`, `.Range`.
+**Lỗi:** `Mes.AppSetting.Invalid.StartYears`, `.EndYears`, `.StepYears`, `.Range`, `Mes.AppSetting.OverLength.UnitName` (tên đơn vị quá 200 ký tự).
+
+Giá trị `startYears` / `endYears` / `stepYears` không phải số nguyên (rỗng `""`, chữ, số thập phân) bị từ chối 400 ngay ở bước đọc JSON, với thông điệp của khung ASP.NET chứ **không** mang khóa `Mes.*`; Frontend chặn trước bằng ô số nên không cần dịch.
 
 Đổi cài đặt làm mọi danh sách đủ điều kiện thay đổi ngay (QT5) → Frontend nên tải lại Dashboard và badge sau khi lưu.
 
@@ -1155,3 +1159,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 |---|---|---|
 | 1.0 | 19/09/2026 | Bản đầu tiên. 28 endpoint, phủ toàn bộ UC-00 → UC-51 của tài liệu nghiệp vụ v1.1 |
 | 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
+| 1.2 | 19/09/2026 | Mục 7 Cài đặt khớp API đã duyệt (T13, PR #24): `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối; thêm khóa `Mes.AppSetting.OverLength.UnitName`; ghi rõ ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`; ghi rõ kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi |
