@@ -1,4 +1,4 @@
-﻿using HuyHieuDang.Infrastructure;
+using HuyHieuDang.Infrastructure;
 using HuyHieuDang.Infrastructure.Facades.Common.Converters;
 using HuyHieuDang.Infrastructure.Facades.Logging;
 using HuyHieuDang.Web.Configurations;
@@ -9,6 +9,10 @@ using System.Text.Json.Serialization;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Server Booting Up...");
+
+// WebApplicationFactory cua bo kiem thu tich hop dung diem vao bang mot ngoai le noi bo cua
+// khung ngay sau khi host duoc dung. Nuot ngoai le do thi factory khong bao gio nhan duoc host.
+const string HostControlExceptionName = "StopTheHostException";
 
 try
 {
@@ -42,7 +46,7 @@ try
         Log.CloseAndFlush();
     });
 }
-catch (Exception ex) when (ex is not HostAbortedException)
+catch (Exception ex) when (ex is not HostAbortedException && ex.GetType().Name != HostControlExceptionName)
 {
     StaticLogger.EnsureInitialized();
     Log.Fatal(ex, "Unhandled Exception");
@@ -52,4 +56,14 @@ finally
     StaticLogger.EnsureInitialized();
     Log.Information("Server Shutting Down...");
     await Log.CloseAndFlushAsync();
+}
+
+/// <summary>
+/// Lộ điểm vào cho <c>WebApplicationFactory</c> của bộ kiểm thử tích hợp.
+/// </summary>
+public partial class Program
+{
+    private Program()
+    {
+    }
 }
