@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+using System.Reflection;
 using HuyHieuDang.Core.Common.Interfaces;
+using HuyHieuDang.Infrastructure.Facades.Common.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HuyHieuDang.Infrastructure.Facades.Common;
@@ -17,6 +18,9 @@ internal static class Startup
                 .AsImplementedInterfaces()
                 .WithScopedLifetime()
         );
+
+        // Nguồn thời gian dùng chung (T-FIX-1): không trạng thái nên đăng ký singleton.
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
         return services;
     }
