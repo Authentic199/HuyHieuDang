@@ -125,7 +125,11 @@ public static class QcOracle
 
         if (cursor <= new DateOnly(year, 12, 31))
         {
-            gaps.Add((cursor, new DateOnly(year, 12, 31), "Sau đợt cuối cùng"));
+            // Chưa cài đợt nào: cả năm nằm trước đợt đầu tiên sắp được tạo.
+            gaps.Add((
+                cursor,
+                new DateOnly(year, 12, 31),
+                ordered.Count == 0 ? "Trước đợt đầu tiên" : "Sau đợt cuối cùng"));
         }
 
         return gaps;

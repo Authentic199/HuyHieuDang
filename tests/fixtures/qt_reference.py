@@ -151,7 +151,9 @@ def gap_ranges(periods: list[Period], year: int) -> list[tuple[date, date, str]]
         if t >= cursor:
             cursor = date.fromordinal(t.toordinal() + 1)
     if cursor <= date(year, 12, 31):
-        gaps.append((cursor, date(year, 12, 31), "Sau đợt cuối cùng"))
+        # Chưa cài đợt nào: cả năm nằm trước đợt đầu tiên sắp được tạo.
+        label = "Trước đợt đầu tiên" if not ordered else "Sau đợt cuối cùng"
+        gaps.append((cursor, date(year, 12, 31), label))
     return gaps
 
 

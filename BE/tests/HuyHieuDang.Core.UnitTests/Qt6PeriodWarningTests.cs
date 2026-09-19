@@ -77,14 +77,14 @@ public sealed class Qt6PeriodWarningTests
     }
 
     [Fact]
-    public void GetGaps_WhenThereIsNoPeriod_LabelsTheWholeYearAsAfterTheLastPeriod()
+    public void GetGaps_WhenThereIsNoPeriod_LabelsTheWholeYearAsBeforeTheFirstPeriod()
     {
-        // Act — QC-02: nhãn phải khớp expected.json của QC, không phải "Trước đợt đầu tiên".
+        // Act — QC-02: chưa cài đợt nào thì mọi ngày tròn mốc đều nằm trước đợt đầu tiên sắp được tạo.
         IReadOnlyList<DateGap> gaps = sut.GetGaps([], 2026);
 
         // Assert
-        gaps[0].Kind.ShouldBe(GapKind.AfterLastPeriod);
-        gaps[0].Label.ShouldBe("Sau đợt cuối cùng");
+        gaps[0].Kind.ShouldBe(GapKind.BeforeFirstPeriod);
+        gaps[0].Label.ShouldBe("Trước đợt đầu tiên");
     }
 
     [Fact]
