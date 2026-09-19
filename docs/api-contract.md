@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Phiên bản | 1.2 — 19/09/2026 |
-| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8 |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
@@ -222,13 +222,13 @@ GET /api/PartyMembers?current=1&pageSize=20&searchKeyword=an&searchFields=FullNa
 Áp dụng cho mọi danh sách đủ điều kiện (Dashboard, chi tiết đợt, chưa thuộc đợt nào) và cho file Excel xuất ra:
 
 1. Mốc huy hiệu tăng dần (30 → 35 → 40 …).
-2. Trong cùng mốc: theo **tên gọi** (từ cuối cùng của Họ tên) theo bảng chữ cái tiếng Việt; trùng tên gọi thì so tiếp toàn bộ Họ tên. So sánh theo văn hóa `vi-VN` (Đ sau D, dấu thanh đúng thứ tự tiếng Việt).
+2. Trong cùng mốc: theo **Họ tên đầy đủ** theo bảng chữ cái tiếng Việt, so sánh từ đầu chuỗi. So sánh theo văn hóa `vi-VN` (Đ sau D, dấu thanh đúng thứ tự tiếng Việt).
 
-Ví dụ đúng thứ tự: `Nguyễn Văn An` · `Trần Thị Bích` · `Lê Minh Châu` · `Phạm Thị Dung`.
+Ví dụ đúng thứ tự — mốc 30 của Đợt 7/11 năm 2026 trong `tests/fixtures/data/expected.json`: `Đào Văn Ân` · `Nguyễn Văn An` · `Trần Thị Bình`.
 
 Backend chịu trách nhiệm sắp xếp; Frontend hiển thị đúng thứ tự nhận được, **không sắp lại**.
 
-> Riêng danh sách đảng viên (M2) mặc định sắp theo **toàn bộ Họ tên** A→Z (`Bùi Thị Lan` · `Cao Văn Phúc` · `Đỗ Thị Mai`), đúng như bản thiết kế. Hai quy tắc khác nhau là có chủ ý.
+> Danh sách đảng viên (M2) mặc định cũng sắp theo **Họ tên đầy đủ** A→Z (`Bùi Thị Lan` · `Cao Văn Phúc` · `Đỗ Thị Mai`). Hai danh sách dùng cùng một cách so sánh tên; khác nhau duy nhất ở chỗ danh sách đủ điều kiện gom theo mốc trước.
 
 ### 1.9 Cách trả file Excel
 
@@ -608,7 +608,7 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 
 | Khóa | Khi nào |
 |---|---|
-| `Mes.Import.Invalid.Extension` | Không phải `.xlsx` |
+| `Mes.Import.Invalid.Extension` | Không phải `.xlsx`, hoặc tệp mang đuôi `.xlsx` nhưng nội dung không phải xlsx (tệp hỏng, tệp đổi đuôi) |
 | `Mes.Import.Invalid.FileSize` | > 10 MB |
 | `Mes.Import.Invalid.Columns` | Không đúng 4 cột theo thứ tự quy định |
 | `Mes.Import.Invalid.Empty` | File rỗng — không đọc được sheet, hoặc không có ô nào |
@@ -630,8 +630,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
     { "rowNumber": 5, "fullName": "Nguyễn Thị Hạnh", "dateOfBirth": "31/02/1963",
       "gender": "Nữ", "officialAdmissionDate": "",
       "errors": [
-        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" },
-        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" }
+        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" },
+        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" }
       ] }
   ]
 }
@@ -657,7 +657,7 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 | `InvalidGender` | `Gender` | Giới tính chỉ nhận Nam hoặc Nữ |
 | `BirthDateAfterAdmissionDate` | `DateOfBirth` | Ngày sinh phải trước ngày vào Đảng chính thức |
 
-**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Sai định dạng ngày (cần dd/MM/yyyy); Thiếu ngày vào Đảng chính thức`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
+**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Thiếu ngày vào Đảng chính thức; Sai định dạng ngày (cần dd/MM/yyyy)`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
 
 **Chuẩn hóa trước khi kiểm tra** — áp dụng cho mọi dòng:
 
@@ -671,6 +671,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 
 - Ngày không có thật (`31/02/1974`) là **lỗi cấp dòng** `InvalidDateFormat`, không phải bỏ qua rồi để trống (OQ-1).
 - Ngày sinh **bằng** Ngày vào Đảng chính thức là **lỗi** `BirthDateAfterAdmissionDate`; ngày sinh phải thực sự trước (OQ-10).
+
+**Khóa thông điệp thành công:** `Mes.Import.Search.Successfully`. Khóa này thuộc nhóm `*.Search.Successfully` ở mục 1.5 nên Frontend không hiện thông báo — bước xem trước chỉ đổ dữ liệu ra bảng.
 
 **Lời gọi này không ghi gì vào cơ sở dữ liệu.**
 
@@ -688,9 +690,11 @@ Máy chủ **nạp mọi dòng hợp lệ và bỏ qua dòng lỗi**, không ki�
 { "importedCount": 125, "skippedCount": 4 }
 ```
 
+**Khóa thông điệp thành công:** `Mes.PartyMember.Import.Successfully` ("Đã nạp danh sách", mục 1.5).
+
 Frontend hiển thị: "Đã thêm 125 người, bỏ qua 4 dòng lỗi".
 
-**Lỗi:** giống bước xem trước (4 khóa cấp file), thêm `500` khi giao dịch hỏng.
+**Lỗi:** giống bước xem trước (5 khóa cấp file), thêm `500` khi giao dịch hỏng.
 
 ---
 
@@ -730,10 +734,10 @@ Một lời gọi trả đủ dữ liệu cho cả bảng, dải độ phủ và
 
 | Tham số | Kiểu | Mặc định |
 |---|---|---|
-| `year` | int | Năm hiện tại |
+| `year` | int, 1900–2200 | Năm hiện tại |
 
 **Phản hồi `data`:** một `AwardPeriodResponse` (đã gắn `year`).
-**Lỗi:** `Mes.AwardPeriod.NotFound`.
+**Lỗi:** `Mes.AwardPeriod.NotFound`, `Mes.Query.Invalid.Year`.
 
 ### 5.3 `POST /api/AwardPeriods` — Thêm đợt (UC-31)
 
@@ -889,7 +893,7 @@ Bộ chọn năm segmented (năm trước · năm nay · năm sau) chỉ là ba 
 }
 ```
 
-Sắp theo `milestoneDate` tăng dần, rồi theo quy ước tên ở mục 1.8.
+Sắp theo mục 1.8 (Mốc rồi Họ tên), cùng quy ước với 6.1 và 6.2.
 `totalCount = 0` → giao diện hiện "Không có ai bị sót trong năm 2026."
 
 ### 6.4 `GET /api/Eligibility/UnassignedCount` — Số người bị sót (badge menu trái)
@@ -985,18 +989,20 @@ Không ghi gì vào cơ sở dữ liệu. Giữ QT1 ở một chỗ duy nhất (
 
 ## 8. Nhóm 7 — Xuất Excel
 
-Cả ba đều trả file nhị phân theo mục 1.9. Nội dung file:
+Cả ba đều trả file nhị phân theo mục 1.9. Mỗi file chỉ có **một sheet, tên `DanhSach`**. Nội dung file:
 
 - **Dòng 1:** Tên đơn vị (bỏ dòng này nếu `unitName` trống).
 - **Dòng 2:** Tên đợt + khoảng ngày đã gắn năm, ví dụ `Đợt 7/11 · 01/10/2026 – 07/11/2026`. Với file "chưa thuộc đợt nào": `Chưa thuộc đợt nào · năm 2026`.
 - **Dòng 3:** `Ngày xuất: 19/09/2026`.
 - **Dòng 4:** trống.
 - **Dòng 5:** tiêu đề cột.
-- **Từ dòng 6:** dữ liệu, đúng cột và đúng thứ tự như bảng đang xem.
+- **Từ dòng 6:** dữ liệu, đúng cột và đúng thứ tự như bảng đang xem — tức thứ tự của mục 1.8 (Mốc rồi Họ tên đầy đủ).
 - Ô trống **để rỗng**, không ghi `—`. Ngày ghi dạng `dd/MM/yyyy`. Giới tính ghi `Nam` / `Nữ`.
 
 Cột của file đủ điều kiện: `STT` · `Họ tên` · `Giới tính` · `Ngày sinh` · `Ngày chính thức` · `Ngày tròn mốc` · `Mốc huy hiệu`.
 File "chưa thuộc đợt nào" có thêm cột cuối: `Khoảng trống`.
+
+Ba dòng tiêu đề đầu file ghi chữ vào **ô đầu tiên của dòng**, **không gộp ô** ngang qua các cột. Cán bộ lọc hay sắp xếp lại bảng trong Excel vẫn được.
 
 ### 8.1 `GET /api/Exports/Eligibility` — Xuất danh sách một đợt (UC-34)
 
@@ -1091,7 +1097,7 @@ Tổng: **28 endpoint**. Mọi use case trong tài liệu nghiệp vụ v1.1 đ�
 6. **Bước nạp import gửi lại file**, không dùng id phiên — máy chủ không giữ trạng thái giữa hai bước.
 7. **Chỉ danh sách đảng viên có phân trang.** Các danh sách khác trả đủ.
 8. **Giới tính trên API là `Male`/`Female`**, chữ "Nam"/"Nữ" chỉ nằm ở giao diện và file Excel.
-9. **Danh sách đủ điều kiện sắp theo tên gọi** (từ cuối của họ tên), khác với danh sách đảng viên sắp theo cả họ tên — theo đúng dữ liệu trong bản thiết kế. *Cần CEO xác nhận lại điểm này; nếu chọn sắp theo cả họ tên cho thống nhất, chỉ cần sửa mục 1.8, không ảnh hưởng hình dạng API.*
+9. **Danh sách đủ điều kiện sắp theo Mốc rồi Họ tên đầy đủ** (mục 1.8), cùng cách so sánh tên với danh sách đảng viên. Điểm treo ở v1.1 đã chốt theo tài liệu nghiệp vụ v1.1 (UC-11, UC-40); không ảnh hưởng hình dạng API.
 
 **Cố ý không có trong v1**
 
@@ -1112,7 +1118,7 @@ Mục 8 của `docs/test-plan.md` nêu 10 điểm tài liệu nghiệp vụ **kh
 |---|---|---|---|
 | OQ-1 | Ngày sinh sai định dạng hoặc không có thật (`31/02/1974`) — lỗi cấp dòng hay bỏ qua để trống? | **Lỗi cấp dòng** | Mục 4.2, mã `InvalidDateFormat` |
 | OQ-2 | Một dòng nhiều lỗi — liệt kê hết hay chỉ lỗi đầu tiên? | **Liệt kê hết**, giao diện ngăn bằng `;` | Mục 4.2, `errorRows[*].errors` là **mảng** |
-| OQ-3 | Sắp xếp Họ tên theo đối chiếu nào? | **Tiếng Việt ICU `vi`** (PostgreSQL `vi-x-icu`) cho cột `FullName`. Danh sách đủ điều kiện sắp trong bộ nhớ dùng `CompareInfo` văn hóa `vi-VN` | Mục 1.7 và 1.8 |
+| OQ-3 | Sắp xếp Họ tên theo đối chiếu nào? | **Tiếng Việt ICU `vi`** (PostgreSQL `vi-x-icu`) cho cột `FullName`. Danh sách đủ điều kiện sắp trong bộ nhớ dùng `CompareInfo` văn hóa `vi-VN`, so cả Họ tên đầy đủ | Mục 1.7 và 1.8 |
 | OQ-4 | Họ tên có khoảng trắng đầu/cuối khi import? | **Cắt bỏ** | Mục 4.2, bảng chuẩn hóa |
 | OQ-5 | Giới tính `nam` / `NAM` có nhận không? | **Nhận**, không phân biệt hoa thường | Mục 4.2, bảng chuẩn hóa |
 | OQ-6 | Ngày `1/10/1996` thiếu số 0 đứng đầu? | **Nhận** | Mục 4.2, bảng chuẩn hóa |
@@ -1159,4 +1165,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 |---|---|---|
 | 1.0 | 19/09/2026 | Bản đầu tiên. 28 endpoint, phủ toàn bộ UC-00 → UC-51 của tài liệu nghiệp vụ v1.1 |
 | 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
-| 1.2 | 19/09/2026 | Mục 7 Cài đặt khớp API đã duyệt (T13, PR #24): `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối; thêm khóa `Mes.AppSetting.OverLength.UnitName`; ghi rõ ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`; ghi rõ kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi |
+| 1.2 | 19/09/2026 | **Mục 4 Import** khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. **Mục 5.2** làm rõ kiểm tra `year` (1900–2200, `Mes.Query.Invalid.Year`) cho khớp mã đã duyệt ở PR #18. **Mục 1.8** trong cùng mốc sắp theo Họ tên đầy đủ, bỏ quy ước sắp theo tên gọi (từ cuối); đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3, khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. **Mục 7 Cài đặt** khớp API đã duyệt ở PR #24: `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối, thêm khóa `Mes.AppSetting.OverLength.UnitName`, ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`, kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi. **Mục 8** ghi tên sheet `DanhSach` và cách ghi dòng tiêu đề (T14). Không đổi hình dạng request/response |
