@@ -217,18 +217,31 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
             return null;
         }
 
-        PeriodOccurrence? occurrence = periods
-            .Select(x => BindToYear(x, today.Year))
-            .Where(x => x.To >= today)
-            .OrderBy(x => x.From)
-            .FirstOrDefault()
-            ?? periods
-                .Select(x => BindToYear(x, today.Year + 1))
-                .OrderBy(x => x.From)
-                .First();
+        // Hai đợt cùng Từ ngày thì chọn đợt kết thúc sớm hơn, vẫn bằng nhau thì theo Tên đợt
+        // — OQ-9 của hợp đồng API, để Dashboard luôn chọn ra đúng một đợt tất định.
+        PeriodOccurrence? occurrence = Earliest(periods, today.Year, x => x.To >= today)
+            ?? Earliest(periods, today.Year + 1, _ => true)!;
 
         return new UpcomingPeriod(occurrence, GetStatus(occurrence, today));
     }
+
+    /// <summary>
+    /// Lần diễn ra sớm nhất trong một năm trong số các đợt thỏa điều kiện, theo thứ tự
+    /// Từ ngày → Đến ngày → Tên đợt (OQ-9).
+    /// </summary>
+    /// <param name="periods">Toàn bộ đợt đang cấu hình.</param>
+    /// <param name="year">Năm cần gắn.</param>
+    /// <param name="filter">Điều kiện lọc thêm trên lần diễn ra.</param>
+    /// <returns>Lần diễn ra được chọn, hoặc <c>null</c> khi không đợt nào thỏa.</returns>
+    private PeriodOccurrence? Earliest(
+        IReadOnlyList<AwardPeriod> periods, int year, Func<PeriodOccurrence, bool> filter)
+        => periods
+            .Select(x => BindToYear(x, year))
+            .Where(filter)
+            .OrderBy(x => x.From)
+            .ThenBy(x => x.To)
+            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
+            .FirstOrDefault();
 
     /// <inheritdoc/>
     public PeriodStatusResult GetPeriodStatus(AwardPeriod period, DateOnly today) =>

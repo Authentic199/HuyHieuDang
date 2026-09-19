@@ -1,7 +1,8 @@
-using HuyHieuDang.Infrastructure.Facades.Persistence.Contexts;
+﻿using HuyHieuDang.Infrastructure.Facades.Persistence.Contexts;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
+using Xunit.Abstractions;
 
 namespace HuyHieuDang.Web.IntegrationTests;
 
@@ -17,14 +18,17 @@ public class EligibilityPerformanceTests
     private static readonly TimeSpan Budget = TimeSpan.FromSeconds(1);
 
     private readonly HuyHieuDangApiFactory factory;
+    private readonly ITestOutputHelper output;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EligibilityPerformanceTests"/> class.
     /// </summary>
     /// <param name="factory">Host kiểm thử dùng chung cho cả lớp.</param>
-    public EligibilityPerformanceTests(HuyHieuDangApiFactory factory)
+    /// <param name="output">Cổng ghi số đo ra nhật ký chạy test.</param>
+    public EligibilityPerformanceTests(HuyHieuDangApiFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        this.output = output;
     }
 
     [Fact(DisplayName = "6.1 → 6.4 · 10.000 đảng viên: mỗi endpoint tính toán dưới 1 giây")]
@@ -49,11 +53,14 @@ public class EligibilityPerformanceTests
         TimeSpan unassigned = await MeasureAsync<UnassignedListPayload>(client, "/api/Eligibility/Unassigned");
         TimeSpan badge = await MeasureAsync<UnassignedCountPayload>(client, "/api/Eligibility/UnassignedCount");
 
-        Assert.True(
-            eligibility < Budget && dashboard < Budget && unassigned < Budget && badge < Budget,
+        string measured =
             $"Đủ điều kiện {eligibility.TotalMilliseconds:F0} ms · Dashboard {dashboard.TotalMilliseconds:F0} ms · "
             + $"Chưa thuộc đợt nào {unassigned.TotalMilliseconds:F0} ms · Badge {badge.TotalMilliseconds:F0} ms "
-            + $"— ngân sách {Budget.TotalMilliseconds:F0} ms với {MemberCount} đảng viên.");
+            + $"— ngân sách {Budget.TotalMilliseconds:F0} ms với {MemberCount} đảng viên.";
+
+        output.WriteLine(measured);
+
+        Assert.True(eligibility < Budget && dashboard < Budget && unassigned < Budget && badge < Budget, measured);
     }
 
     private static async Task<TimeSpan> MeasureAsync<TData>(HttpClient client, string url)
