@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.1 — 19/09/2026 |
+| Phiên bản | 1.2 — 19/09/2026 |
 | Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
@@ -694,7 +694,7 @@ Máy chủ **nạp mọi dòng hợp lệ và bỏ qua dòng lỗi**, không ki�
 
 Frontend hiển thị: "Đã thêm 125 người, bỏ qua 4 dòng lỗi".
 
-**Lỗi:** giống bước xem trước (4 khóa cấp file), thêm `500` khi giao dịch hỏng.
+**Lỗi:** giống bước xem trước (5 khóa cấp file), thêm `500` khi giao dịch hỏng.
 
 ---
 
@@ -1159,3 +1159,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 |---|---|---|
 | 1.0 | 19/09/2026 | Bản đầu tiên. 28 endpoint, phủ toàn bộ UC-00 → UC-51 của tài liệu nghiệp vụ v1.1 |
 | 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
+| 1.2 | 19/09/2026 | Sửa ví dụ và làm rõ mục 4 cho khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. Không đổi hình dạng request/response |

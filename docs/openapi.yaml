@@ -1,11 +1,11 @@
 openapi: 3.0.3
 
-# Bản máy đọc của docs/api-contract.md (v1.1 — 19/09/2026).
+# Bản máy đọc của docs/api-contract.md (v1.2 — 19/09/2026).
 # Tài liệu markdown là bản chuẩn; file này phải được sửa cùng lúc mỗi khi contract đổi.
 
 info:
   title: HuyHieuDang API
-  version: "1.1"
+  version: "1.2"
   description: |
     API của hệ thống hỗ trợ xét trao Huy hiệu Đảng.
     Mọi phản hồi thành công bọc trong `{ message, data }`; phần mô tả dưới đây chỉ nói về `data`.

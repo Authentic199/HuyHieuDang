@@ -25,6 +25,10 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 - `README.md`: cách chạy bằng `docker compose`, cách chạy chế độ phát triển, cách sao lưu và khôi phục bằng `pg_dump` / `psql`.
 - `CHANGELOG.md` (tài liệu này).
 
+### Sửa lỗi
+
+- Hợp đồng API lên **v1.2**: sửa ví dụ mục 4 Import cho khớp mã đã duyệt, không đổi hình dạng.
+
 ---
 
 ## Giai đoạn 0 — Nền móng · 19/09/2026
