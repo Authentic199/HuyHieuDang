@@ -134,6 +134,35 @@ namespace HuyHieuDang.Migrators.PostgreSql.Migrations
                     b.ToTable("role_permission", (string)null);
                 });
 
+            modelBuilder.Entity("HuyHieuDang.Infrastructure.Modules.AppSettings.Entities.AppSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EndYears")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StartYears")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StepYears")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UnitName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("app_setting", (string)null);
+                });
+
             modelBuilder.Entity("HuyHieuDang.Infrastructure.Modules.Auth.Entities.UserRefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -164,6 +193,75 @@ namespace HuyHieuDang.Migrators.PostgreSql.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("user_refresh_token", (string)null);
+                });
+
+            modelBuilder.Entity("HuyHieuDang.Infrastructure.Modules.AwardPeriods.Entities.AwardPeriod", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FromDay")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FromMonth")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("citext");
+
+                    b.Property<int>("ToDay")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ToMonth")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("award_period", (string)null);
+                });
+
+            modelBuilder.Entity("HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities.PartyMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly?>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("vi-x-icu");
+
+                    b.Property<byte?>("Gender")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateOnly>("OfficialAdmissionDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfficialAdmissionDate");
+
+                    b.ToTable("party_member", (string)null);
                 });
 
             modelBuilder.Entity("HuyHieuDang.Infrastructure.Modules.Users.Entities.User", b =>

@@ -29,6 +29,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      TZ: Asia/Ho_Chi_Minh
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       DatabaseSettings__SqlSettings__ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Include Error Detail=true;"
       DatabaseSettings__SqlSettings__UseAutoMigration: "true"
@@ -36,18 +37,20 @@ services:
       SecuritySettings__JwtSettingOptions__Default__RefreshKey: ${JWT_REFRESH_KEY}
       SwaggerSettings__Credentials__Username: ${SWAGGER_USERNAME}
       SwaggerSettings__Credentials__Password: ${SWAGGER_PASSWORD}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     ports:
       - "${BE_PORT}:8080"
 
-  # Khi thư mục FE/ đã có mã nguồn, thay `image` + `volumes` bên dưới bằng `build: ./FE`.
   fe:
-    image: nginx:alpine
+    build:
+      context: ./FE
+      dockerfile: Dockerfile
     container_name: huyhieudang-fe
     restart: unless-stopped
     depends_on:
       - be
-    volumes:
-      - ./docker/fe-placeholder:/usr/share/nginx/html:ro
+    environment:
+      API_UPSTREAM: http://be:8080
     ports:
       - "${FE_PORT}:80"
 
