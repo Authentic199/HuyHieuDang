@@ -27,7 +27,7 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ### Sửa lỗi
 
-- Hợp đồng API lên **v1.2**: sửa ví dụ mục 4 Import cho khớp mã đã duyệt, không đổi hình dạng.
+- Hợp đồng API lên **v1.2**: sửa ví dụ mục 4 Import và làm rõ kiểm tra `year` ở mục 5.2 cho khớp mã đã duyệt, không đổi hình dạng.
 
 ---
 
