@@ -55,12 +55,12 @@ public sealed class Qc11ClockScanTests
         Scan(folder, AnyClock, applyExclusions: true).ShouldBeEmpty();
     }
 
-    // LỖI QC-05 — BE/src/Core/Bases/BaseEntity.cs:14 đặt CreatedAt = DateTimeOffset.UtcNow.
-    // Đây là dòng đọc đồng hồ duy nhất còn lại trong Core và KHÔNG nằm trong 7 dòng tầng khung
-    // CEO đã loại trừ. Không ảnh hưởng QT1–QT11 (chỉ là trường kiểm toán), nhưng theo T-FIX-1
-    // thì Core không được đọc đồng hồ: hoặc chuyển sang IDateTimeProvider, hoặc CEO chốt bổ
-    // sung vào danh sách loại trừ. Ghi chú: IDateTimeProvider hiện chưa tồn tại trong mã nguồn.
-    [Fact(DisplayName = "QC-05 · Core không được đọc đồng hồ hệ thống", Skip = "LỖI QC-05 chưa chốt — BaseEntity.cs:14 dùng DateTimeOffset.UtcNow.")]
+    // QC-05 — BE/src/Core/Bases/BaseEntity.cs:14 đặt CreatedAt = DateTimeOffset.UtcNow.
+    // CEO đã chốt ngày 19/09/2026: đây là dấu thời gian kiểm toán của tầng khung, dùng UTC chứ
+    // không phải giờ máy, không tham gia QT1–QT11, nên được LOẠI TRỪ khỏi A-901 chứ không sửa.
+    // Ca này giữ [Skip] làm dấu ghi nhận quyết định đó — bỏ Skip là nó đỏ vì đúng dòng đã loại trừ.
+    // Ghi chú: IDateTimeProvider (T-FIX-1) hiện chưa tồn tại; Backend dựng khi lên API (T12/T13).
+    [Fact(DisplayName = "QC-05 · Core không được đọc đồng hồ hệ thống", Skip = "QC-05 đã chốt loại trừ BaseEntity.CreatedAt — giữ Skip theo quyết định của CEO.")]
     public void Qc05_NoClockAnywhereInCore()
     {
         Scan(Path.Combine(RepoPaths.BackendSource, "Core"), AnyClock, applyExclusions: false).ShouldBeEmpty();

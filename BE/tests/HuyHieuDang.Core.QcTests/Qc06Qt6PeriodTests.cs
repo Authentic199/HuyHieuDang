@@ -139,13 +139,13 @@ public sealed class Qc06Qt6PeriodTests
     //  - Ngày/tháng không tồn tại (31/02, 31/04): BindToYear ném ArgumentOutOfRangeException
     //    (lỗi kỹ thuật → 500) thay vì lỗi nghiệp vụ 400.
     // Để [Skip] cho tới khi Backend bổ sung ràng buộc; xem báo cáo bàn giao T26.
-    [Fact(DisplayName = "U-602 · Đợt có Từ ngày > Đến ngày phải bị từ chối", Skip = "LỖI QC-01 chưa sửa — tầng logic chưa kiểm ràng buộc QT6.")]
+    [Fact(DisplayName = "U-602 · Đợt có Từ ngày > Đến ngày phải bị từ chối")]
     public void U602_PeriodWithFromAfterTo_MustBeRejected()
     {
         Should.Throw<BadRequestException>(() => sut.BindToYear(new AwardPeriod("Đợt vắt năm", 7, 11, 1, 10), 2026));
     }
 
-    [Fact(DisplayName = "U-606/U-607 · Ngày/tháng không tồn tại phải báo lỗi nghiệp vụ", Skip = "LỖI QC-01 chưa sửa — hiện ném ArgumentOutOfRangeException.")]
+    [Fact(DisplayName = "U-606/U-607 · Ngày/tháng không tồn tại phải báo lỗi nghiệp vụ")]
     public void U606_ImpossibleDayMonth_MustRaiseABusinessError()
     {
         Should.Throw<BadRequestException>(() => sut.BindToYear(new AwardPeriod("Đợt 31/02", 31, 2, 5, 3), 2026));

@@ -104,7 +104,7 @@ public sealed class Qc08Qt8UpcomingPeriodTests
     // LỖI QC-03 — Hai đợt cùng Từ ngày: GetUpcomingPeriod sắp bằng OrderBy(From) (sắp ổn định)
     // nên kết quả phụ thuộc thứ tự nạp danh sách. U-808 đòi kết quả TẤT ĐỊNH, không phụ thuộc
     // thứ tự nạp — nạp từ DB không có ORDER BY tất định sẽ làm Dashboard đổi đợt giữa hai lần F5.
-    [Fact(DisplayName = "U-808 · Hai đợt cùng Từ ngày phải cho kết quả tất định", Skip = "LỖI QC-03 chưa sửa — kết quả phụ thuộc thứ tự nạp danh sách đợt.")]
+    [Fact(DisplayName = "U-808 · Hai đợt cùng Từ ngày phải cho kết quả tất định")]
     public void U808_TwoPeriodsWithTheSameStartDate_MustResolveDeterministically()
     {
         AwardPeriod first = new("Đợt A cùng ngày", 1, 10, 7, 11);

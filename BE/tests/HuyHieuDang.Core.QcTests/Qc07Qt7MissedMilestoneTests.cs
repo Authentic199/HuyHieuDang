@@ -125,7 +125,7 @@ public sealed class Qc07Qt7MissedMilestoneTests
     // LỖI QC-02 — Khi chưa cài đợt nào, nhãn khoảng trống của service là "Trước đợt đầu tiên",
     // trong khi oracle của QC (tests/fixtures/qt_reference.py) và expected.json ghi
     // "Sau đợt cuối cùng". Hai bên phải thống nhất vì nhãn này hiện thẳng lên UC-40.
-    [Fact(DisplayName = "QC-02 · Nhãn khoảng trống khi chưa cài đợt nào phải khớp expected.json", Skip = "LỖI QC-02 chưa chốt — service trả 'Trước đợt đầu tiên', expected.json ghi 'Sau đợt cuối cùng'.")]
+    [Fact(DisplayName = "QC-02 · Nhãn khoảng trống khi chưa cài đợt nào phải khớp expected.json")]
     public void Qc02_GapLabelWithoutAnyPeriod_MatchesTheExpectedFile()
     {
         JsonElement row = QcFixtures

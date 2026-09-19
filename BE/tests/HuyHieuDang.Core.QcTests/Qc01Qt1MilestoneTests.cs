@@ -103,7 +103,7 @@ public sealed class Qc01Qt1MilestoneTests
     // 30 + int.MaxValue quay vòng thành -2.147.483.619, vẫn <= 90 nên vòng lặp chạy tiếp.
     // Kết quả thực tế: 31 mốc, trong đó 15 mốc âm, nhỏ nhất là -2.147.483.647.
     // Kết quả mong đợi theo QT1 (giống U-104): chỉ còn mốc đầu, tức [30].
-    [Fact(DisplayName = "QC-04 · Bước = int.MaxValue chỉ được cho ra mốc đầu, không được tràn số", Skip = "LỖI QC-04 chưa sửa — hiện trả 31 mốc, 15 mốc âm.")]
+    [Fact(DisplayName = "QC-04 · Bước = int.MaxValue chỉ được cho ra mốc đầu, không được tràn số")]
     public void Qc04_HugeStepMustNotOverflowIntoNegativeMilestones()
     {
         sut.BuildMilestones(new MilestoneSettings(30, 90, int.MaxValue)).ShouldBe([30]);
