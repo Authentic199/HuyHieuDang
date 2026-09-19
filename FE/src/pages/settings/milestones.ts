@@ -9,13 +9,6 @@ import { messageText } from '../../api/messages';
  * chỗ duy nhất ở Backend, giao diện không cài lại công thức.
  */
 
-/** Ba số mặc định ghi trên nút Khôi phục (mục 7.3 hợp đồng API). */
-export const DEFAULT_MILESTONE_SETTINGS = {
-  startYears: 30,
-  endYears: 90,
-  stepYears: 5,
-} as const;
-
 /** Số viên thuốc tối đa vẽ ra màn hình; phần còn lại gộp vào một dòng chữ. */
 export const PREVIEW_PILL_LIMIT = 60;
 

@@ -9,12 +9,7 @@ import { TableError } from '../../components/TableStates';
 import { ApiError } from '../../types/api';
 import { MilestonePreview } from './MilestonePreview';
 import { NumberStepper } from './NumberStepper';
-import {
-  DEFAULT_MILESTONE_SETTINGS,
-  type MilestoneErrors,
-  milestoneMessages,
-  validateMilestoneInput,
-} from './milestones';
+import { type MilestoneErrors, milestoneMessages, validateMilestoneInput } from './milestones';
 import './SettingsPage.css';
 import { useMilestonePreview } from './useMilestonePreview';
 import { useSettings } from './useSettings';
@@ -159,10 +154,11 @@ export default function SettingsPage() {
 
   async function handleRestoreDefaults() {
     try {
+      // Ba số mặc định do máy chủ đặt (mục 7.3); giao diện chỉ nhắc lại đúng
+      // câu chữ in trên nút, không giữ bản sao nào của bộ số đó.
       await restoreDefaults();
       setServerErrors({});
-      const { startYears, endYears, stepYears } = DEFAULT_MILESTONE_SETTINGS;
-      message.success(`Đã khôi phục mốc mặc định ${startYears} / ${endYears} / ${stepYears}`);
+      message.success('Đã khôi phục mốc mặc định 30 / 90 / 5');
     } catch (reason) {
       message.error(reason instanceof ApiError ? reason.message : FALLBACK_MESSAGE);
     }
@@ -252,9 +248,14 @@ export default function SettingsPage() {
           />
 
           <div className="hhd-settings__card-foot">
-            <Button type="text" loading={restoring} onClick={handleRestoreDefaults}>
-              Khôi phục mặc định {DEFAULT_MILESTONE_SETTINGS.startYears} /{' '}
-              {DEFAULT_MILESTONE_SETTINGS.endYears} / {DEFAULT_MILESTONE_SETTINGS.stepYears}
+            {/* Nút này luôn bật: khôi phục được cả khi ba ô đang có lỗi. */}
+            <Button
+              type="text"
+              loading={restoring}
+              disabled={restoring}
+              onClick={handleRestoreDefaults}
+            >
+              Khôi phục mặc định 30 / 90 / 5
             </Button>
           </div>
         </div>
