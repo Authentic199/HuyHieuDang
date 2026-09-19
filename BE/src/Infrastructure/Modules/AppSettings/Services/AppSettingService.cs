@@ -138,8 +138,7 @@ public class AppSettingService : IAppSettingService
             entity.UnitName = unitName;
         }
 
-        entity.UpdatedAt = DateTimeOffset.UtcNow;
-
+        // Không gán UpdatedAt ở đây: UpdatedAtInterceptor đóng dấu ở tầng lưu cho mọi module (T-FIX-1).
         if (isNew)
         {
             await repositoryWrapper.Repository<AppSetting>().AddAsync(entity, cancellationToken);

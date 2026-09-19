@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { App as AntApp } from 'antd';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
-import { authApi, uncoveredApi, UNAUTHORIZED_EVENT } from '../api';
+import { authApi, SESSION_EXPIRED_MESSAGE, uncoveredApi, UNAUTHORIZED_EVENT } from '../api';
 import type { SessionInfo } from '../api/auth';
 import { clearToken, readToken, writeToken } from '../api/token';
 import { AuthContext, type AuthContextValue } from './AuthContext';
@@ -13,6 +14,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isInitializing, setIsInitializing] = useState(true);
   const [session, setSession] = useState<SessionInfo | null>(null);
   const [uncoveredCount, setUncoveredCount] = useState(0);
+  const { message } = AntApp.useApp();
+  // Chỉ báo "hết phiên" khi người dùng đang làm dở; 401 lúc mở ứng dụng thì
+  // chỉ lặng lẽ đưa về màn Đăng nhập.
+  const hasSessionRef = useRef(false);
+
+  useEffect(() => {
+    hasSessionRef.current = session !== null;
+  }, [session]);
 
   const clearSession = useCallback(() => {
     clearToken();
@@ -37,11 +46,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearSession();
   }, [clearSession]);
 
-  // Thẻ hết hạn giữa chừng thì đẩy người dùng về trang Đăng nhập.
+  // Thẻ hết hạn giữa chừng thì xóa thẻ, báo một câu và đẩy về trang Đăng nhập.
   useEffect(() => {
-    window.addEventListener(UNAUTHORIZED_EVENT, clearSession);
-    return () => window.removeEventListener(UNAUTHORIZED_EVENT, clearSession);
-  }, [clearSession]);
+    function handleExpired() {
+      if (hasSessionRef.current) {
+        message.warning(SESSION_EXPIRED_MESSAGE);
+      }
+      clearSession();
+    }
+
+    window.addEventListener(UNAUTHORIZED_EVENT, handleExpired);
+    return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleExpired);
+  }, [clearSession, message]);
 
   // Mở lại trình duyệt mà thẻ còn hạn thì vào thẳng, khỏi đăng nhập lại.
   useEffect(() => {

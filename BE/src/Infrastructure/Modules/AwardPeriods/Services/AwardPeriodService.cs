@@ -166,7 +166,8 @@ public class AwardPeriodService : IAwardPeriodService
     }
 
     /// <summary>
-    /// Chép năm trường của yêu cầu vào bản ghi và đánh dấu lần sửa.
+    /// Chép năm trường của yêu cầu vào bản ghi. Không gán <c>UpdatedAt</c>:
+    /// <c>UpdatedAtInterceptor</c> đóng dấu ở tầng lưu thay cho mọi module (T-FIX-1).
     /// </summary>
     /// <param name="request">Yêu cầu đã qua kiểm tra hợp lệ.</param>
     /// <param name="entity">Bản ghi đích.</param>
@@ -177,7 +178,6 @@ public class AwardPeriodService : IAwardPeriodService
         entity.FromMonth = request.FromMonth!.Value;
         entity.ToDay = request.ToDay!.Value;
         entity.ToMonth = request.ToMonth!.Value;
-        entity.UpdatedAt = DateTimeOffset.UtcNow;
     }
 
     /// <summary>
