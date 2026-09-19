@@ -10,6 +10,7 @@ Cần tìm thứ khác:
 
 | Muốn biết | Đọc |
 |---|---|
+| Cách dùng phần mềm, dành cho cán bộ | `docs/huong-dan-su-dung.md` |
 | Nghiệp vụ: quy tắc QT1–QT11, use case | `docs/2026-09-17-huyhieudang-business-design.md` |
 | Hợp đồng API giữa Backend và Frontend | `docs/api-contract.md` (bản máy đọc: `docs/openapi.yaml`) |
 | Kế hoạch kiểm thử và bộ dữ liệu biên | `docs/test-plan.md`, `tests/fixtures/README.md` |
