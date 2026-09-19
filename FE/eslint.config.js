@@ -40,8 +40,8 @@ export default tseslint.config(
     },
   },
   {
-    // Tầng API là nơi duy nhất được dùng axios.
-    files: ['src/api/**/*.ts'],
+    // Tầng API và tầng dữ liệu giả là nơi duy nhất được dùng axios.
+    files: ['src/api/**/*.ts', 'src/mocks/**/*.ts'],
     rules: { 'no-restricted-imports': 'off' },
   },
   {

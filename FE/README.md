@@ -19,10 +19,11 @@ npm run test:e2e
 
 ## Biến môi trường
 
-| Biến                 | Ý nghĩa                        | Mặc định                |
-| -------------------- | ------------------------------ | ----------------------- |
-| `VITE_API_BASE_URL`  | Địa chỉ gốc của API            | `/api`                  |
-| `VITE_DEV_API_PROXY` | BE thật khi chạy `npm run dev` | `http://localhost:5000` |
+| Biến                 | Ý nghĩa                                        | Mặc định                |
+| -------------------- | ---------------------------------------------- | ----------------------- |
+| `VITE_API_BASE_URL`  | Địa chỉ gốc của API                            | `/api`                  |
+| `VITE_DEV_API_PROXY` | BE thật khi chạy `npm run dev`                 | `http://localhost:8080` |
+| `VITE_USE_MOCK`      | `true` thì chạy bằng dữ liệu giả, không cần BE | `false`                 |
 
 Chạy bằng Docker thì `VITE_API_BASE_URL=/api` và nginx trong ảnh chuyển tiếp
 `/api/` sang service `be` — xem `nginx.conf`.
@@ -38,7 +39,8 @@ src/
 │   └── auth|members|periods|uncovered|settings|imports|dashboard|exports.ts
 ├── auth/       Trạng thái đăng nhập dùng chung
 ├── components/ Thành phần dùng lại (Logo, PageHeading…)
-├── layouts/    Khung chung: header + sider 5 mục
+├── layouts/    Khung chung: header + sider 5 mục (thu gọn được)
+├── mocks/      Dữ liệu giả — chỉ nạp khi VITE_USE_MOCK=true
 ├── pages/      Một thư mục một màn
 ├── routes/     Đường dẫn và lớp chặn khi chưa đăng nhập
 ├── theme/      Token thiết kế — NGUỒN MÀU DUY NHẤT
@@ -63,11 +65,24 @@ src/
 7. Dùng component của Ant Design (Layout, Table, Modal, Steps, Tabs, Statistic,
    Alert, Form, DatePicker, InputNumber, Tag, Empty, Segmented) thay vì tự chế.
 
+## Chạy bằng dữ liệu giả
+
+Chưa có Backend thì đặt `VITE_USE_MOCK=true` trong `.env.development` rồi `npm run dev`.
+Đăng nhập bằng `admin` / `admin`. Số liệu lấy từ bộ dữ liệu kiểm thử của QC
+(`tests/fixtures/data/`), ngày hôm nay của bộ dữ liệu là 19/09/2026.
+
+Điểm bật/tắt nằm gọn ở một chỗ: khối `if (import.meta.env.VITE_USE_MOCK === 'true')`
+trong `src/main.tsx`. Khi nối Backend thật (T24), xóa khối đó và cả thư mục `src/mocks/`
+— tầng `src/api` và các màn hình không phải sửa gì.
+
 ## Hiện trạng
 
 Task T00B dựng khung: theme, layout, định tuyến 5 màn, chặn route, trang Đăng nhập,
-tầng gọi API, Dockerfile. Nội dung từng màn (bảng, form, wizard import) thuộc các
-task sau; hiện mỗi màn chỉ có tiêu đề và khối giữ chỗ.
+tầng gọi API, Dockerfile. Task T15 chốt phần khung: sider thu gọn được, định tuyến
+thêm trang chi tiết đợt và trang nạp Excel, xử lý hết phiên (401), tầng dữ liệu giả,
+và bộ component ba trạng thái bảng (`src/components/TableStates.tsx`). Nội dung từng
+màn (bảng, form, wizard import) thuộc các task sau; hiện mỗi màn chỉ có tiêu đề và
+khối giữ chỗ.
 
 Tầng gọi API bám theo `docs/api-contract.md` v1: lớp vỏ `{ message, data }` được bóc
 trong `httpClient.ts`, khóa thông điệp tra sang tiếng Việt trong `messages.ts`, phân
