@@ -234,7 +234,11 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
 
     /// <inheritdoc/>
     public PeriodStatusResult GetPeriodStatus(AwardPeriod period, DateOnly today) =>
-        GetStatus(BindToYear(period, today.Year), today);
+        GetPeriodStatus(period, today.Year, today);
+
+    /// <inheritdoc/>
+    public PeriodStatusResult GetPeriodStatus(AwardPeriod period, int year, DateOnly today) =>
+        GetStatus(BindToYear(period, year), today);
 
     /// <summary>
     /// Gắn năm vào một cặp ngày/tháng. 29/02 ở năm không nhuận lùi về 28/02 (QT2, QT4).
