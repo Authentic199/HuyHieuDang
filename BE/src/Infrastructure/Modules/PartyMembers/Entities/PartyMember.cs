@@ -9,7 +9,7 @@ namespace HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities;
 /// <summary>
 /// Đảng viên. Hệ thống cố ý không chống trùng: hai người cùng tên, cùng ngày vẫn là hai bản ghi (QT9).
 /// </summary>
-public class PartyMember : BaseEntity
+public class PartyMember : BaseEntity, IHasUpdatedAt
 {
     /// <summary>
     /// Họ và tên đầy đủ. Bắt buộc.
@@ -34,7 +34,7 @@ public class PartyMember : BaseEntity
     /// <summary>
     /// Lần sửa gần nhất.
     /// </summary>
-    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; }
 }
 
 /// <summary>

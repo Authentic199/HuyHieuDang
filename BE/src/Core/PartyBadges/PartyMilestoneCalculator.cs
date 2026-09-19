@@ -181,11 +181,13 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
 
         if (cursor <= lastDayOfYear)
         {
+            // Chưa cài đợt nào thì cả năm là khoảng trống nằm trước đợt đầu tiên, không phải
+            // sau đợt cuối cùng — hợp đồng API mục 1.10 chốt `type = "BeforeFirst"`.
             gaps.Add(new DateGap(
                 cursor,
                 lastDayOfYear,
-                GapKind.AfterLastPeriod,
-                "Sau đợt cuối cùng"));
+                ordered.Count == 0 ? GapKind.BeforeFirstPeriod : GapKind.AfterLastPeriod,
+                ordered.Count == 0 ? "Trước đợt đầu tiên" : "Sau đợt cuối cùng"));
         }
 
         return gaps;
@@ -224,17 +226,39 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
             return null;
         }
 
-        PeriodOccurrence occurrence =
-            OrderDeterministically(periods.Select(x => BindToYear(x, today.Year)).Where(x => x.To >= today))
-                .FirstOrDefault()
-            ?? OrderDeterministically(periods.Select(x => BindToYear(x, today.Year + 1)))[0];
+        // Hai đợt cùng Từ ngày thì chọn đợt kết thúc sớm hơn, vẫn bằng nhau thì theo Tên đợt
+        // — OQ-9 của hợp đồng API, để Dashboard luôn chọn ra đúng một đợt tất định.
+        PeriodOccurrence? occurrence = Earliest(periods, today.Year, x => x.To >= today)
+            ?? Earliest(periods, today.Year + 1, _ => true)!;
 
         return new UpcomingPeriod(occurrence, GetStatus(occurrence, today));
     }
 
+    /// <summary>
+    /// Lần diễn ra sớm nhất trong một năm trong số các đợt thỏa điều kiện, theo thứ tự
+    /// Từ ngày → Đến ngày → Tên đợt (OQ-9).
+    /// </summary>
+    /// <param name="periods">Toàn bộ đợt đang cấu hình.</param>
+    /// <param name="year">Năm cần gắn.</param>
+    /// <param name="filter">Điều kiện lọc thêm trên lần diễn ra.</param>
+    /// <returns>Lần diễn ra được chọn, hoặc <c>null</c> khi không đợt nào thỏa.</returns>
+    private PeriodOccurrence? Earliest(
+        IReadOnlyList<AwardPeriod> periods, int year, Func<PeriodOccurrence, bool> filter)
+        => periods
+            .Select(x => BindToYear(x, year))
+            .Where(filter)
+            .OrderBy(x => x.From)
+            .ThenBy(x => x.To)
+            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
+            .FirstOrDefault();
+
     /// <inheritdoc/>
     public PeriodStatusResult GetPeriodStatus(AwardPeriod period, DateOnly today) =>
-        GetStatus(BindToYear(period, today.Year), today);
+        GetPeriodStatus(period, today.Year, today);
+
+    /// <inheritdoc/>
+    public PeriodStatusResult GetPeriodStatus(AwardPeriod period, int year, DateOnly today) =>
+        GetStatus(BindToYear(period, year), today);
 
     /// <summary>
     /// Gắn năm vào một cặp ngày/tháng. 29/02 ở năm không nhuận lùi về 28/02 (QT2, QT4).

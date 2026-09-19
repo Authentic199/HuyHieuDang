@@ -1,0 +1,134 @@
+/* Màn 5 — Chi tiết đợt. Ba khối xếp dọc: đầu trang, dải tab, thẻ nội dung. */
+.hhd-period-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hhd-space-xl);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Khoảng ngày đứng cùng dòng với tên đợt nhưng nhẹ hơn, đúng artboard. */
+.hhd-period-detail__range {
+  font: 500 16px/38px var(--hhd-font-sans);
+  color: var(--hhd-text-secondary);
+  white-space: nowrap;
+}
+
+/* Tab chiếm hết chiều cao còn lại để bảng cuộn bên trong thẻ, không cuộn trang. */
+.hhd-period-detail__tabs {
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-period-detail__tabs.ant-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.hhd-period-detail__tabs > .ant-tabs-content-holder,
+.hhd-period-detail__tabs .ant-tabs-content,
+.hhd-period-detail__tabs .ant-tabs-tabpane-active {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-period-detail__tabs .ant-tabs-tab {
+  font-size: 15px;
+}
+
+/* Thẻ trắng bao quanh nội dung của cả hai tab. */
+.hhd-period-info,
+.hhd-eligibility {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-period-info {
+  padding: var(--hhd-space-xl);
+  flex: none;
+}
+
+.hhd-period-info .ant-descriptions-item-label,
+.hhd-period-info .ant-descriptions-item-content {
+  font-size: 15px;
+}
+
+/* Thanh công cụ: bộ chọn năm, khoảng ngày + nhãn ngữ cảnh, nút Xuất Excel. */
+.hhd-eligibility__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-lg);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--hhd-border);
+  flex-wrap: wrap;
+}
+
+.hhd-eligibility__toolbar > .ant-btn {
+  margin-left: auto;
+}
+
+.hhd-eligibility__range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hhd-eligibility__dates {
+  font: 700 16px/24px var(--hhd-font-serif);
+  white-space: nowrap;
+}
+
+.hhd-eligibility__count {
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* TableStates dựng sẵn một thẻ trắng có viền bằng style nội tuyến; ở đây nó đã
+   nằm trong thẻ của bảng nên bỏ viền (cần !important vì style nội tuyến) và cho
+   giãn hết chiều cao, tránh thẻ lồng thẻ. */
+.hhd-eligibility
+  > div:not(.ant-alert):not(.hhd-eligibility__toolbar):not(.hhd-eligibility__footnote) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-eligibility > .ant-alert {
+  margin: var(--hhd-space-lg);
+}
+
+.hhd-eligibility .ant-table-thead th {
+  white-space: nowrap;
+}
+
+/* Số thứ tự đọc như chú thích, giống cột STT trong artboard. */
+.hhd-eligibility td.hhd-eligibility__index {
+  color: var(--hhd-text-tertiary);
+}
+
+/* Dòng chân thẻ: số người bên trái, tên file vừa xuất bên phải. */
+.hhd-eligibility__footnote {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid var(--hhd-border);
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--hhd-space-lg);
+}
+
+.hhd-eligibility__filename {
+  font-family: var(--hhd-font-mono);
+  font-size: 13px;
+}

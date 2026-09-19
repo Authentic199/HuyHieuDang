@@ -86,4 +86,11 @@ public interface IPartyMilestoneCalculator : IScopedService
     /// <param name="today">Ngày hôm nay.</param>
     /// <returns>Trạng thái kèm số ngày còn lại khi đợt sắp tới.</returns>
     PeriodStatusResult GetPeriodStatus(AwardPeriod period, DateOnly today);
+
+    /// <summary>QT11 — trạng thái của đợt trong một năm bất kỳ, vẫn so với hôm nay.</summary>
+    /// <param name="period">Đợt trao huy hiệu.</param>
+    /// <param name="year">Năm đang xét, có thể khác năm của <paramref name="today"/>.</param>
+    /// <param name="today">Ngày hôm nay.</param>
+    /// <returns>Trạng thái kèm số ngày còn lại khi đợt sắp tới.</returns>
+    PeriodStatusResult GetPeriodStatus(AwardPeriod period, int year, DateOnly today);
 }

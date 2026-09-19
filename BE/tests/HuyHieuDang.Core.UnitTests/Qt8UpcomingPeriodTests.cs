@@ -1,4 +1,4 @@
-using HuyHieuDang.Core.PartyBadges;
+﻿using HuyHieuDang.Core.PartyBadges;
 using HuyHieuDang.Core.UnitTests.Fixtures;
 
 namespace HuyHieuDang.Core.UnitTests;
@@ -164,5 +164,44 @@ public sealed class Qt8UpcomingPeriodTests
         upcoming.Occurrence.From.ShouldBe(expected.Value.From);
         upcoming.Occurrence.To.ShouldBe(expected.Value.To);
         upcoming.Status.DaysLeft.ShouldBe(expected.Value.DaysLeft);
+    }
+
+    [Fact]
+    public void GetUpcomingPeriod_WhenTwoPeriodsShareTheSameStart_PrefersTheEarlierEndThenTheName()
+    {
+        // Arrange - ba đợt cùng Từ ngày 01/10: khác Đến ngày, và hai đợt trùng cả hai đầu (OQ-9).
+        List<AwardPeriod> periods = new()
+        {
+            new AwardPeriod("Đợt B", 1, 10, 30, 11),
+            new AwardPeriod("Đợt C", 1, 10, 7, 11),
+            new AwardPeriod("Đợt A", 1, 10, 7, 11),
+        };
+
+        // Act
+        UpcomingPeriod? upcoming = sut.GetUpcomingPeriod(periods, FixtureData.T0);
+
+        // Assert
+        upcoming.ShouldNotBeNull();
+        upcoming.Occurrence.Period.Name.ShouldBe("Đợt A");
+        upcoming.Occurrence.To.ShouldBe(new DateOnly(2026, 11, 7));
+    }
+
+    [Fact]
+    public void GetUpcomingPeriod_WhenEveryPeriodOfThisYearHasPassed_KeepsTheSameTieBreakNextYear()
+    {
+        // Arrange - hai đợt đã qua hẳn tại T2, cùng Từ ngày của năm sau.
+        List<AwardPeriod> periods = new()
+        {
+            new AwardPeriod("Đợt Y", 15, 1, 5, 3),
+            new AwardPeriod("Đợt X", 15, 1, 20, 1),
+        };
+
+        // Act
+        UpcomingPeriod? upcoming = sut.GetUpcomingPeriod(periods, FixtureData.T2);
+
+        // Assert
+        upcoming.ShouldNotBeNull();
+        upcoming.Occurrence.Year.ShouldBe(2027);
+        upcoming.Occurrence.Period.Name.ShouldBe("Đợt X");
     }
 }

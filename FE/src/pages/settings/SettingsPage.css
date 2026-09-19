@@ -1,0 +1,125 @@
+/* Màn 7 — Cài đặt. Kích thước và màu lấy từ artboard "Màn 7 — Cài đặt mốc
+   tuổi đảng": thẻ trắng rộng 760px, viền #e6e8ec, bo 10px, đệm 24px. */
+
+.hhd-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hhd-settings .ant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hhd-settings__card {
+  width: 760px;
+  max-width: 100%;
+  background: #ffffff;
+  border: 1px solid #e6e8ec;
+  border-radius: 10px;
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+}
+
+.hhd-settings__card-title {
+  font:
+    700 16px/24px 'Noto Serif',
+    Georgia,
+    serif;
+}
+
+.hhd-settings__card-note {
+  color: #55575c;
+  margin-top: 2px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.hhd-settings__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* Ô nhập trong màn này không có khoảng trống thừa phía dưới khi không lỗi. */
+.hhd-settings .ant-form-item {
+  margin-bottom: 0;
+}
+
+.hhd-settings .ant-form-item-label > label {
+  font:
+    500 14px/20px 'Noto Sans',
+    sans-serif;
+  color: #55575c;
+}
+
+/* Ô số có nút − / + — cao 48px như artboard, số bằng chữ có chân 20px. */
+.hhd-settings__stepper {
+  display: flex;
+  width: 100%;
+}
+
+.hhd-settings__stepper .hhd-settings__stepper-button {
+  width: 44px;
+  height: 48px;
+  flex: none;
+  font-size: 18px;
+  color: #55575c;
+}
+
+.hhd-settings__stepper .hhd-settings__stepper-input {
+  flex: 1;
+  height: 48px;
+}
+
+.hhd-settings__stepper .hhd-settings__stepper-input .ant-input-number-input {
+  height: 46px;
+  text-align: center;
+  font:
+    500 20px 'Noto Serif',
+    Georgia,
+    serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.hhd-settings__preview-title {
+  font:
+    600 12px/16px 'Noto Sans',
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #55575c;
+  margin-bottom: 10px;
+}
+
+.hhd-settings__impact .ant-alert-message {
+  font-weight: 600;
+}
+
+.hhd-settings__card-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #e6e8ec;
+  padding-top: 20px;
+}
+
+.hhd-settings__card-foot--save {
+  justify-content: flex-end;
+}
+
+.hhd-settings__save-note {
+  margin-right: auto;
+  color: #55575c;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.hhd-settings__card-foot .ant-btn {
+  height: 40px;
+  padding: 0 16px;
+  font-weight: 600;
+}

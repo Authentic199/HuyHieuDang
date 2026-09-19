@@ -450,6 +450,24 @@ export const MOCK_PERIODS: MockPeriod[] = [
     status: 'Upcoming',
     daysRemaining: 12,
   },
+  /**
+   * Đợt chồng lấn, thêm cho T19 để xem được banner cảnh báo và đoạn gạch chéo
+   * trên dải độ phủ. Nằm TRỌN trong "Đợt 3/2" (15/01–05/03) nên không đụng vào
+   * khoảng trống nào của MOCK_GAPS, cũng không đổi số người "Chưa thuộc đợt
+   * nào". Người đủ điều kiện của đợt này là đúng ba người của P1 rơi vào
+   * 01/02–28/02, không thêm ai mới.
+   */
+  {
+    code: 'P5',
+    id: '22222222-0000-4000-8000-000000000005',
+    name: 'Đợt tháng 2',
+    fromDay: 1,
+    fromMonth: 2,
+    toDay: 28,
+    toMonth: 2,
+    status: 'Past',
+    daysRemaining: null,
+  },
 ];
 
 export interface MockEligibleRow {
@@ -728,6 +746,58 @@ export const MOCK_ELIGIBLE: Record<string, Record<string, MockEligibleYear>> = {
           milestoneDate: '2027-10-01',
         },
       ],
+    },
+    '2028': {
+      total: 0,
+      byMilestone: [],
+      rows: [],
+    },
+  },
+  /**
+   * Đợt chồng lấn P5 (01/02–28/02) không có người nào của riêng nó: đây đúng
+   * ba người của P1 tròn mốc trong tháng 2 — chính là hệ quả mà banner "có đợt
+   * chồng lấn" muốn cảnh báo.
+   */
+  P5: {
+    '2025': {
+      total: 0,
+      byMilestone: [],
+      rows: [],
+    },
+    '2026': {
+      total: 3,
+      byMilestone: [
+        {
+          milestone: 30,
+          count: 2,
+        },
+        {
+          milestone: 35,
+          count: 1,
+        },
+      ],
+      rows: [
+        {
+          code: 'X01',
+          milestone: 30,
+          milestoneDate: '2026-02-10',
+        },
+        {
+          code: 'L01',
+          milestone: 30,
+          milestoneDate: '2026-02-28',
+        },
+        {
+          code: 'X02',
+          milestone: 35,
+          milestoneDate: '2026-02-20',
+        },
+      ],
+    },
+    '2027': {
+      total: 0,
+      byMilestone: [],
+      rows: [],
     },
     '2028': {
       total: 0,

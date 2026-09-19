@@ -1,0 +1,89 @@
+/* Màn 5 — Đợt trao huy hiệu. Ba khối xếp dọc: banner, dải độ phủ, bảng. */
+.hhd-periods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hhd-space-xl);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Banner cảnh báo trong artboard là thẻ trắng viền xám, không phải nền vàng
+   mặc định của Ant Design. */
+.hhd-periods__banner.ant-alert {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  align-items: flex-start;
+}
+
+.hhd-periods__panel {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* TableStates dựng sẵn một thẻ trắng có viền cho trạng thái đang tải và trống.
+   Ở đây nó đã nằm trong thẻ của bảng nên bỏ viền, tránh thẻ lồng thẻ. */
+.hhd-periods__panel > div:not(.ant-alert) {
+  border: 0;
+  border-radius: 0;
+}
+
+.hhd-periods__panel > .ant-alert {
+  margin: var(--hhd-space-lg);
+}
+
+/* Tên đợt là liên kết sang trang chi tiết, nhưng vẫn đọc như chữ trong bảng. */
+.hhd-periods__name.ant-btn-link {
+  padding: 0;
+  height: auto;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Từ ngày / Đến ngày dùng chữ đều nét như artboard, cỡ 14px theo quy tắc
+   "chữ trong bảng tối thiểu 14px" của CLAUDE.md. */
+.hhd-periods td.hhd-periods__daycell {
+  font-family: var(--hhd-font-mono);
+  font-size: 14px;
+}
+
+.hhd-periods__row--next > td {
+  background: var(--hhd-gold-soft);
+}
+
+.hhd-periods__row-actions {
+  display: inline-flex;
+  gap: var(--hhd-space-xs);
+}
+
+.hhd-periods .ant-table-thead th {
+  white-space: nowrap;
+}
+
+/* Dòng chú thích dưới chân bảng, đúng câu chữ trong artboard 5. */
+.hhd-periods__footnote {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid var(--hhd-border);
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+}
+
+/* Dòng nhắc nền xám trong modal Thêm/Sửa đợt, theo mockup đi kèm artboard 5. */
+.hhd-period-form__note {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--hhd-fill);
+  border-radius: var(--hhd-radius-control);
+  color: var(--hhd-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
