@@ -36,6 +36,7 @@ import type {
   AwardPeriodResponse,
   AwardPeriodStatus,
   CoverageGap,
+  CoverageOverlap,
   EligibleMemberResponse,
   Gender,
   PartyMemberResponse,
@@ -175,18 +176,38 @@ function unassignedOf(year: number): UnassignedMemberResponse[] {
   }));
 }
 
-/** Dải độ phủ 12 tháng: xen kẽ đoạn có đợt và đoạn trống (UC-36). */
+/** Các đợt đã gắn năm, sắp theo Từ ngày — dùng chung cho dải độ phủ và cảnh báo. */
+function boundPeriods(year: number) {
+  return [...periods]
+    .map((item) => ({
+      item,
+      fromDate: bindDate(item.fromDay, item.fromMonth, year),
+      toDate: bindDate(item.toDay, item.toMonth, year),
+    }))
+    .sort((a, b) => a.fromDate.localeCompare(b.fromDate));
+}
+
+/**
+ * Dải độ phủ 12 tháng (UC-36): mỗi đợt một đoạn `Period` riêng — hai đợt chồng
+ * lấn cho ra hai đoạn trùng nhau, giao diện xếp chúng thành hai hàng — cộng các
+ * đoạn `Gap` cho phần cả năm chưa đợt nào phủ.
+ */
 function coverageSegments(year: number): CoverageSegment[] {
-  const sorted = [...periods].sort((a, b) =>
-    bindDate(a.fromDay, a.fromMonth, year).localeCompare(bindDate(b.fromDay, b.fromMonth, year)),
-  );
-  const segments: CoverageSegment[] = [];
+  const bound = boundPeriods(year);
+  const segments: CoverageSegment[] = bound.map(({ item, fromDate, toDate }) => ({
+    type: 'Period',
+    periodId: item.id,
+    name: item.name,
+    fromDate,
+    toDate,
+  }));
+
+  // Con trỏ chạy theo mốc phủ XA NHẤT đã đạt, nhờ vậy một đợt nằm lọt trong đợt
+  // khác không sinh ra khoảng trống ảo.
   let cursor = dayjs(`${year}-01-01`);
   const lastDay = dayjs(`${year}-12-31`);
-
-  for (const item of sorted) {
-    const from = dayjs(bindDate(item.fromDay, item.fromMonth, year));
-    const to = dayjs(bindDate(item.toDay, item.toMonth, year));
+  for (const { fromDate, toDate } of bound) {
+    const from = dayjs(fromDate);
     if (from.isAfter(cursor)) {
       segments.push({
         type: 'Gap',
@@ -196,16 +217,9 @@ function coverageSegments(year: number): CoverageSegment[] {
         toDate: from.subtract(1, 'day').format('YYYY-MM-DD'),
       });
     }
-    segments.push({
-      type: 'Period',
-      periodId: item.id,
-      name: item.name,
-      fromDate: from.format('YYYY-MM-DD'),
-      toDate: to.format('YYYY-MM-DD'),
-    });
-    cursor = to.add(1, 'day');
+    const next = dayjs(toDate).add(1, 'day');
+    if (next.isAfter(cursor)) cursor = next;
   }
-
   if (!cursor.isAfter(lastDay)) {
     segments.push({
       type: 'Gap',
@@ -215,7 +229,40 @@ function coverageSegments(year: number): CoverageSegment[] {
       toDate: lastDay.format('YYYY-MM-DD'),
     });
   }
-  return segments;
+
+  return segments.sort((a, b) => a.fromDate.localeCompare(b.fromDate));
+}
+
+/** Từng cặp đợt trùng ngày nhau trong năm (QT6) — cảnh báo, không chặn lưu. */
+function overlapsOf(year: number): CoverageOverlap[] {
+  const bound = boundPeriods(year);
+  const result: CoverageOverlap[] = [];
+
+  for (let i = 0; i < bound.length; i += 1) {
+    for (let j = i + 1; j < bound.length; j += 1) {
+      const first = bound[i];
+      const second = bound[j];
+      const from = first.fromDate > second.fromDate ? first.fromDate : second.fromDate;
+      const to = first.toDate < second.toDate ? first.toDate : second.toDate;
+      if (from > to) continue;
+      result.push({
+        firstPeriodId: first.item.id,
+        firstPeriodName: first.item.name,
+        secondPeriodId: second.item.id,
+        secondPeriodName: second.item.name,
+        fromDate: from,
+        toDate: to,
+        fromDisplay: dayjs(from).format('DD/MM'),
+        toDisplay: dayjs(to).format('DD/MM'),
+      });
+    }
+  }
+  return result;
+}
+
+/** Gói cảnh báo của một năm, dùng cho cả danh sách lẫn thêm/sửa/xóa. */
+function warningsOf(year: number) {
+  return { overlaps: overlapsOf(year), gaps: gapsOf(year) };
 }
 
 function settingsResponse(): SettingsResponse {
@@ -384,7 +431,7 @@ function periodList(context: MockContext): AwardPeriodListResponse {
     periods: periods
       .map((item) => toPeriodResponse(item, year))
       .sort((a, b) => a.fromDate.localeCompare(b.fromDate)),
-    warnings: { overlaps: [], gaps: gapsOf(year) },
+    warnings: warningsOf(year),
     coverage: { segments: coverageSegments(year) },
   };
 }
@@ -431,7 +478,7 @@ function savePeriod(
 
   return {
     period: toPeriodResponse(saved, MOCK_CURRENT_YEAR),
-    warnings: { overlaps: [], gaps: gapsOf(MOCK_CURRENT_YEAR) },
+    warnings: warningsOf(MOCK_CURRENT_YEAR),
   };
 }
 
@@ -572,7 +619,7 @@ function handleJson(context: MockContext): unknown {
       return savePeriod(context.body as unknown as AwardPeriodPayload, existing);
     if (method === 'delete') {
       periods = periods.filter((item) => item.id !== existing.id);
-      return { id: existing.id, warnings: { overlaps: [], gaps: gapsOf(MOCK_CURRENT_YEAR) } };
+      return { id: existing.id, warnings: warningsOf(MOCK_CURRENT_YEAR) };
     }
     return toPeriodResponse(existing, yearParam(context));
   }
