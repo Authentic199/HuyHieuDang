@@ -1,0 +1,451 @@
+/* Màn 4 — Import Excel. Hình dáng lấy từ artboard 1g (bước 2) và 1h (bước 1 &
+   bước 3) của bộ thiết kế 10 artboard. */
+
+.hhd-import {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hhd-space-xl);
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-import__crumbs {
+  color: var(--hhd-text-secondary);
+  font-size: 14px;
+}
+
+.hhd-import__crumbs b {
+  color: var(--hhd-ink);
+  font-weight: 400;
+}
+
+/* ---------------------------------------------------------------- */
+/* Thanh ba bước — ba viên pill rời (phương án 4b của thiết kế)      */
+/* ---------------------------------------------------------------- */
+
+.hhd-import .hhd-import__steps.ant-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item {
+  padding: 0;
+  overflow: visible;
+}
+
+/* Bỏ đường nối giữa các bước — thiết kế dùng pill rời, không có đường kẻ. */
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-title::after {
+  display: none;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-container {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-md);
+  height: 56px;
+  box-sizing: border-box;
+  padding: 0 18px;
+  border-radius: var(--hhd-radius-pill);
+  background: var(--hhd-fill);
+  border: 1px solid var(--hhd-border);
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-icon {
+  margin: 0;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 50%;
+  background: var(--hhd-border);
+  border: 0;
+  display: grid;
+  place-items: center;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-icon .ant-steps-icon {
+  font: 700 13px var(--hhd-font-sans);
+  color: var(--hhd-text-disabled);
+  top: 0;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-content {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-title {
+  display: block;
+  font: 700 14px/20px var(--hhd-font-sans);
+  color: var(--hhd-ink);
+  white-space: nowrap;
+  padding-inline-end: 0;
+  line-height: 20px;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-description {
+  display: block;
+  max-width: none;
+  font: 12px/16px var(--hhd-font-sans);
+  color: var(--hhd-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 0;
+}
+
+/* Bước đang làm: nền trắng, viền đỏ 2px, số trong vòng tròn gradient. */
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-process .ant-steps-item-container {
+  background: var(--hhd-white);
+  border: 2px solid var(--hhd-red);
+  box-shadow: 0 2px 6px -2px #6c0f1233;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-process .ant-steps-item-icon {
+  background: var(--hhd-gradient-primary);
+}
+
+.hhd-import
+  .hhd-import__steps.ant-steps
+  .ant-steps-item-process
+  .ant-steps-item-icon
+  .ant-steps-icon {
+  color: var(--hhd-white);
+}
+
+/* Bước đã xong: pill tô gradient đỏ, dấu tích trong vòng tròn mờ. */
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-finish .ant-steps-item-container {
+  background: var(--hhd-gradient-primary);
+  border: 0;
+  box-shadow: var(--hhd-shadow-primary);
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-finish .ant-steps-item-icon {
+  background: #ffffff2e;
+  border: 1.5px solid #ffffff8c;
+}
+
+.hhd-import
+  .hhd-import__steps.ant-steps
+  .ant-steps-item-finish
+  .ant-steps-item-icon
+  .ant-steps-icon {
+  color: var(--hhd-white);
+  font-size: 15px;
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-finish .ant-steps-item-title {
+  color: var(--hhd-white);
+}
+
+.hhd-import .hhd-import__steps.ant-steps .ant-steps-item-finish .ant-steps-item-description {
+  color: #f2c4c2;
+}
+
+/* ---------------------------------------------------------------- */
+/* Bước 1 — Chọn file                                                */
+/* ---------------------------------------------------------------- */
+
+.hhd-import__card {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  padding: var(--hhd-space-xl);
+  display: grid;
+  gap: 20px;
+}
+
+.hhd-import__file-error.ant-alert {
+  margin: 0;
+}
+
+.hhd-import__dropzone.ant-upload-wrapper .ant-upload-drag {
+  border: 1.5px dashed var(--hhd-border-input);
+  border-radius: var(--hhd-radius-card);
+  background: var(--hhd-fill);
+}
+
+.hhd-import__dropzone.ant-upload-wrapper .ant-upload-drag:hover {
+  border-color: var(--hhd-red);
+}
+
+.hhd-import__dropzone.ant-upload-wrapper .ant-upload-btn {
+  padding: 48px 24px;
+}
+
+.hhd-import__dropzone-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--hhd-gold-soft);
+  color: #7a5a00;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.hhd-import__dropzone-title {
+  font: 600 16px/24px var(--hhd-font-sans);
+  color: var(--hhd-ink);
+  margin-top: var(--hhd-space-md);
+  word-break: break-all;
+}
+
+.hhd-import__dropzone-hint {
+  color: var(--hhd-text-secondary);
+  font-size: 14px;
+  margin-top: var(--hhd-space-xs);
+}
+
+.hhd-import__dropzone-link {
+  color: var(--hhd-red-link);
+  font-weight: 700;
+}
+
+.hhd-import__template {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--hhd-space-lg);
+  align-items: start;
+}
+
+.hhd-import__overline {
+  font: 600 11px/16px var(--hhd-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hhd-text-secondary);
+  margin-bottom: var(--hhd-space-sm);
+}
+
+.hhd-import__columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-control);
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.hhd-import__columns-head {
+  padding: var(--hhd-space-sm) var(--hhd-space-md);
+  background: var(--hhd-fill);
+  font-weight: 600;
+  border-right: 1px solid var(--hhd-border);
+}
+
+.hhd-import__columns-head:last-of-type {
+  border-right: 0;
+}
+
+.hhd-import__columns-cell {
+  padding: var(--hhd-space-sm) var(--hhd-space-md);
+  border-top: 1px solid var(--hhd-border);
+  border-right: 1px solid var(--hhd-border);
+}
+
+.hhd-import__columns-cell:last-child {
+  border-right: 0;
+}
+
+.hhd-import__required {
+  color: var(--hhd-danger);
+}
+
+.hhd-import__template-note {
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+  margin-top: var(--hhd-space-sm);
+}
+
+.hhd-import__mono,
+.hhd-import__mono-cell {
+  font-family: var(--hhd-font-mono);
+}
+
+.hhd-import__footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+  border-top: 1px solid var(--hhd-border);
+  padding-top: var(--hhd-space-lg);
+}
+
+/* ---------------------------------------------------------------- */
+/* Bước 2 — Xem trước                                                */
+/* ---------------------------------------------------------------- */
+
+.hhd-import__summary {
+  display: flex;
+  gap: var(--hhd-space-md);
+  align-items: center;
+  padding: 14px 20px;
+  background: var(--hhd-gold-soft);
+  border: 1px solid #a9790a;
+  border-radius: var(--hhd-radius-card);
+  font-size: 14px;
+}
+
+.hhd-import__summary-number {
+  font: 700 24px/32px var(--hhd-font-serif);
+  color: #7a5a00;
+  font-variant-numeric: tabular-nums;
+}
+
+.hhd-import__summary-note {
+  color: var(--hhd-text-secondary);
+}
+
+.hhd-import__panel {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hhd-import__tabs.ant-tabs {
+  flex: 1;
+  min-height: 0;
+}
+
+.hhd-import__tabs.ant-tabs > .ant-tabs-nav {
+  margin: 0;
+  padding: 0 20px;
+}
+
+.hhd-import__tabs.ant-tabs > .ant-tabs-nav .ant-tabs-tab {
+  padding: 14px 4px;
+  font-weight: 600;
+}
+
+.hhd-import__tabs.ant-tabs .ant-tabs-content-holder {
+  overflow: auto;
+}
+
+.hhd-import__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+}
+
+.hhd-import__count {
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--hhd-radius-pill);
+  white-space: nowrap;
+  font: 600 12px/20px var(--hhd-font-sans);
+}
+
+.hhd-import__count--valid {
+  background: var(--hhd-fill);
+  color: var(--hhd-text-secondary);
+}
+
+.hhd-import__count--invalid {
+  background: #fdeceb;
+  color: var(--hhd-red-link);
+}
+
+/* TableStates dựng sẵn thẻ trắng có viền cho trạng thái trống; ở đây nó đã nằm
+   trong thẻ của bảng nên bỏ viền, tránh thẻ lồng thẻ. */
+.hhd-import__tabs .ant-tabs-tabpane > div:not(.ant-alert):not(.ant-table-wrapper) {
+  border: 0;
+  border-radius: 0;
+}
+
+.hhd-import__tabs .ant-table-thead th {
+  white-space: nowrap;
+}
+
+/* Ô gây ra lỗi — tô đỏ nhạt, chữ đỏ, giữ nguyên chữ thô trong file Excel. */
+.hhd-import__cell-bad {
+  background: #fdeceb;
+  color: var(--hhd-danger);
+  font-family: var(--hhd-font-mono);
+  font-size: 14px;
+}
+
+.hhd-import__reason {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--hhd-space-sm);
+}
+
+.hhd-import__reason i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hhd-danger);
+  margin-top: 7px;
+  flex: none;
+}
+
+.hhd-import__footer--panel {
+  padding: var(--hhd-space-lg) 20px;
+  border-top: 1px solid var(--hhd-border);
+  margin-top: auto;
+}
+
+.hhd-import__footer-note {
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+  margin-right: auto;
+}
+
+/* ---------------------------------------------------------------- */
+/* Bước 3 — Kết quả                                                  */
+/* ---------------------------------------------------------------- */
+
+.hhd-import__result {
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+  padding: 64px 24px;
+  text-align: center;
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.hhd-import__result-inner {
+  width: 460px;
+}
+
+.hhd-import__result-check {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: #e6f4ec;
+  color: var(--hhd-success);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+
+.hhd-import__result-title {
+  font: 700 34px/42px var(--hhd-font-serif);
+  letter-spacing: -0.01em;
+  margin-top: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hhd-import__result-note {
+  color: var(--hhd-text-secondary);
+  margin-top: var(--hhd-space-sm);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.hhd-import__result-actions {
+  display: flex;
+  gap: var(--hhd-space-sm);
+  justify-content: center;
+  margin-top: 28px;
+}

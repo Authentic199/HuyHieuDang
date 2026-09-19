@@ -26,8 +26,12 @@
   pointer-events: none;
 }
 
-.hhd-login__headline {
+/* Nằm trên hình mờ chứ không bị nó che. */
+.hhd-login__brand-row {
   position: relative;
+}
+
+.hhd-login__headline {
   font: 700 42px/50px var(--hhd-font-serif);
   letter-spacing: -0.01em;
   max-width: 520px;
@@ -56,8 +60,9 @@
   padding: 64px;
 }
 
+/* Thiết kế ghi 420px phần ruột, cộng 32px đệm mỗi bên thành 484px. */
 .hhd-login__card {
-  width: 420px;
+  width: 484px;
   background: var(--hhd-white);
   border: 1px solid var(--hhd-border);
   border-radius: var(--hhd-radius-panel);
@@ -73,16 +78,90 @@
   margin-top: 4px;
 }
 
+/* Báo lỗi chung: hộp trắng viền xám, chữ đậm — đúng artboard 1, không phải
+   nền hồng mặc định của Ant Design. */
+.hhd-login__error.ant-alert {
+  margin-top: 24px;
+  padding: 14px 20px;
+  gap: 12px;
+  align-items: center;
+  background: var(--hhd-white);
+  border: 1px solid var(--hhd-border);
+  border-radius: var(--hhd-radius-card);
+}
+
+/* Ant Design chỉ bọc lớp .ant-alert-icon quanh hình của riêng nó; hình ta tự
+   truyền vào nằm thẳng trong .ant-alert nên phải gọi đúng thẻ svg con. */
+.hhd-login__error.ant-alert > svg {
+  color: var(--hhd-danger);
+  flex: none;
+}
+
+.hhd-login__error.ant-alert .ant-alert-message {
+  color: var(--hhd-ink);
+  font-weight: 700;
+}
+
+/* Khoảng cách giữa các ô đúng 16px như thiết kế. */
+.hhd-login__form {
+  margin-top: 20px;
+}
+
+.hhd-login__form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.hhd-login__form .ant-form-item-label {
+  padding-bottom: 6px;
+}
+
+.hhd-login__form .ant-form-item-label > label {
+  height: auto;
+  font: 500 13px/18px var(--hhd-font-sans);
+  color: var(--hhd-text-secondary);
+}
+
 /* Ô nhập và nút cao 48px cho dễ bấm. */
 .hhd-login__card .ant-input-affix-wrapper,
 .hhd-login__card .ant-input {
   height: 48px;
+  padding-inline: 14px;
+  border-radius: var(--hhd-radius-control);
+  border-color: var(--hhd-border-input);
   font-size: 16px;
+}
+
+/* Bọc ngoài đã có padding, ô bên trong không thêm lần nữa. */
+.hhd-login__card .ant-input-affix-wrapper > .ant-input {
+  height: auto;
+  padding-inline: 0;
+}
+
+/* Nút chữ "Hiện" / "Ẩn" thay cho hình con mắt. */
+.hhd-login__reveal {
+  font: 700 12px/16px var(--hhd-font-sans);
+  color: var(--hhd-red-link);
+  letter-spacing: 0;
 }
 
 .hhd-login__submit.ant-btn {
   height: 48px;
-  font-size: 16px;
+  margin-top: 4px;
+  font: 600 16px var(--hhd-font-sans);
+  border: 0;
+  border-radius: var(--hhd-radius-control);
+  background: var(--hhd-gradient-primary);
+  box-shadow: var(--hhd-shadow-primary);
+}
+
+/* Đang gửi: nút bị khóa thật nhưng vẫn giữ nền đỏ của thiết kế, chỉ mờ đi
+   để người dùng thấy hệ thống đang làm việc. */
+.hhd-login__submit.ant-btn.ant-btn-loading,
+.hhd-login__submit.ant-btn.ant-btn-loading:disabled {
+  opacity: 0.7;
+  color: var(--hhd-white);
+  background: var(--hhd-gradient-primary);
+  box-shadow: var(--hhd-shadow-primary);
 }
 
 @media (max-width: 1024px) {

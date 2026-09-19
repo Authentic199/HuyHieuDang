@@ -214,7 +214,8 @@ public class PartyMemberService : IPartyMemberService
     }
 
     /// <summary>
-    /// Chép bốn trường của yêu cầu vào bản ghi và đánh dấu lần sửa.
+    /// Chép bốn trường của yêu cầu vào bản ghi. Không gán <c>UpdatedAt</c>:
+    /// <c>UpdatedAtInterceptor</c> đóng dấu ở tầng lưu thay cho mọi module (T-FIX-1).
     /// </summary>
     /// <param name="request">Yêu cầu đã qua kiểm tra hợp lệ.</param>
     /// <param name="entity">Bản ghi đích.</param>
@@ -224,7 +225,6 @@ public class PartyMemberService : IPartyMemberService
         entity.DateOfBirth = request.DateOfBirth;
         entity.Gender = request.ToGender();
         entity.OfficialAdmissionDate = request.OfficialAdmissionDate!.Value;
-        entity.UpdatedAt = DateTimeOffset.UtcNow;
     }
 
     /// <summary>
