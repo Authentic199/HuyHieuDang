@@ -8,7 +8,7 @@ namespace HuyHieuDang.Infrastructure.Modules.AppSettings.Entities;
 /// <summary>
 /// Cài đặt toàn hệ thống. Bảng luôn có đúng một bản ghi, tạo sẵn khi seed.
 /// </summary>
-public class AppSetting : BaseEntity
+public class AppSetting : BaseEntity, IHasUpdatedAt
 {
     /// <summary>
     /// Mốc huy hiệu đầu tiên, mặc định 30 năm.
@@ -48,7 +48,7 @@ public class AppSetting : BaseEntity
     /// <summary>
     /// Lần sửa cài đặt gần nhất.
     /// </summary>
-    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; }
 }
 
 /// <summary>

@@ -8,7 +8,7 @@ namespace HuyHieuDang.Infrastructure.Modules.AwardPeriods.Entities;
 /// <summary>
 /// Đợt trao huy hiệu. Chỉ lưu ngày/tháng, không lưu năm — một đợt lặp lại hằng năm (QT6).
 /// </summary>
-public class AwardPeriod : BaseEntity
+public class AwardPeriod : BaseEntity, IHasUpdatedAt
 {
     /// <summary>
     /// Tên đợt, duy nhất không phân biệt hoa thường.
@@ -38,7 +38,7 @@ public class AwardPeriod : BaseEntity
     /// <summary>
     /// Lần sửa gần nhất.
     /// </summary>
-    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; }
 }
 
 /// <summary>

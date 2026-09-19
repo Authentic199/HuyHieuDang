@@ -10,6 +10,11 @@
   background: var(--hhd-canvas);
 }
 
+/* Thu gọn: sider còn dải biểu tượng, phần nội dung rộng thêm. */
+.hhd-shell--collapsed {
+  grid-template-columns: var(--hhd-sider-width-collapsed) 1fr;
+}
+
 .hhd-main {
   grid-row: 2;
   min-width: 0;

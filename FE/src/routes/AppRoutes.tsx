@@ -9,7 +9,9 @@ import { RequireAuth } from './RequireAuth';
 const LoginPage = lazy(() => import('../pages/login/LoginPage'));
 const DashboardPage = lazy(() => import('../pages/dashboard/DashboardPage'));
 const MembersPage = lazy(() => import('../pages/members/MembersPage'));
+const MembersImportPage = lazy(() => import('../pages/members/MembersImportPage'));
 const PeriodsPage = lazy(() => import('../pages/periods/PeriodsPage'));
+const PeriodDetailPage = lazy(() => import('../pages/periods/PeriodDetailPage'));
 const UncoveredPage = lazy(() => import('../pages/uncovered/UncoveredPage'));
 const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
@@ -22,7 +24,9 @@ export function AppRoutes() {
         <Route element={<AppLayout />}>
           <Route path={paths.dashboard} element={<DashboardPage />} />
           <Route path={paths.members} element={<MembersPage />} />
+          <Route path={paths.membersImport} element={<MembersImportPage />} />
           <Route path={paths.periods} element={<PeriodsPage />} />
+          <Route path={paths.periodDetail} element={<PeriodDetailPage />} />
           <Route path={paths.uncovered} element={<UncoveredPage />} />
           <Route path={paths.settings} element={<SettingsPage />} />
           <Route path="*" element={<NotFoundPage />} />

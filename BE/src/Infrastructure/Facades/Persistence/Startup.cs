@@ -1,6 +1,7 @@
-﻿using HuyHieuDang.Infrastructure.Facades.Common;
+using HuyHieuDang.Infrastructure.Facades.Common;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Contexts;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Initialization;
+using HuyHieuDang.Infrastructure.Facades.Persistence.Interceptors;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,11 +22,14 @@ internal static class Startup
             .ValidateDataAnnotationsRecursively()
             .ValidateOnStart();
 
+        services.AddSingleton<UpdatedAtInterceptor>();
+
         services.AddDbContextPool<ApplicationDbContext>((provider, options) =>
         {
             DatabaseSettings databaseSettings = provider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
             Logger.Information("Current sql db provider: {dbProvider}", databaseSettings.SqlSettings.DbProvider);
             options.UseDatabase(databaseSettings.SqlSettings.DbProvider, databaseSettings.SqlSettings.ConnectionStrings.DefaultConnection);
+            options.AddInterceptors(provider.GetRequiredService<UpdatedAtInterceptor>());
         });
 
         services.Scan(scan => scan

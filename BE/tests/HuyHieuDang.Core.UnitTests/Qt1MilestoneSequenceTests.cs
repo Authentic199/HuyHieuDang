@@ -76,6 +76,16 @@ public sealed class Qt1MilestoneSequenceTests
     }
 
     [Fact]
+    public void BuildMilestones_WithAStepLargerThanTheRange_ReturnsOnlyTheFirstMilestone()
+    {
+        // Act — QC-04: Bước = int.MaxValue từng làm phép cộng tràn kiểu int rồi quay vòng sang mốc âm.
+        IReadOnlyList<int> milestones = sut.BuildMilestones(new MilestoneSettings(30, 90, int.MaxValue));
+
+        // Assert
+        milestones.ShouldBe([30]);
+    }
+
+    [Fact]
     public void BuildMilestones_WhenStartIsGreaterThanEnd_ThrowsBadRequest()
     {
         // Act
