@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Phiên bản | 1.2 — 19/09/2026 |
-| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 sửa quy ước sắp xếp ở mục 1.8 |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import và Đợt, sửa quy ước sắp xếp ở mục 1.8 |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
@@ -608,7 +608,7 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 
 | Khóa | Khi nào |
 |---|---|
-| `Mes.Import.Invalid.Extension` | Không phải `.xlsx` |
+| `Mes.Import.Invalid.Extension` | Không phải `.xlsx`, hoặc tệp mang đuôi `.xlsx` nhưng nội dung không phải xlsx (tệp hỏng, tệp đổi đuôi) |
 | `Mes.Import.Invalid.FileSize` | > 10 MB |
 | `Mes.Import.Invalid.Columns` | Không đúng 4 cột theo thứ tự quy định |
 | `Mes.Import.Invalid.Empty` | File rỗng — không đọc được sheet, hoặc không có ô nào |
@@ -630,8 +630,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
     { "rowNumber": 5, "fullName": "Nguyễn Thị Hạnh", "dateOfBirth": "31/02/1963",
       "gender": "Nữ", "officialAdmissionDate": "",
       "errors": [
-        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" },
-        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" }
+        { "errorCode": "MissingOfficialAdmissionDate", "field": "OfficialAdmissionDate" },
+        { "errorCode": "InvalidDateFormat", "field": "DateOfBirth" }
       ] }
   ]
 }
@@ -657,7 +657,7 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 | `InvalidGender` | `Gender` | Giới tính chỉ nhận Nam hoặc Nữ |
 | `BirthDateAfterAdmissionDate` | `DateOfBirth` | Ngày sinh phải trước ngày vào Đảng chính thức |
 
-**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Sai định dạng ngày (cần dd/MM/yyyy); Thiếu ngày vào Đảng chính thức`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
+**Một dòng lỗi trả về đủ mọi lý do**, sắp theo thứ tự bảng trên (OQ-2). Cột "Lý do" trên giao diện ghép các chữ hiển thị bằng `; ` — ví dụ `Thiếu ngày vào Đảng chính thức; Sai định dạng ngày (cần dd/MM/yyyy)`. Cán bộ sửa một lượt là xong, không phải nạp lại nhiều vòng.
 
 **Chuẩn hóa trước khi kiểm tra** — áp dụng cho mọi dòng:
 
@@ -671,6 +671,8 @@ Nội dung file: dòng 1 là tiêu đề `Họ tên` · `Ngày sinh` · `Giới 
 
 - Ngày không có thật (`31/02/1974`) là **lỗi cấp dòng** `InvalidDateFormat`, không phải bỏ qua rồi để trống (OQ-1).
 - Ngày sinh **bằng** Ngày vào Đảng chính thức là **lỗi** `BirthDateAfterAdmissionDate`; ngày sinh phải thực sự trước (OQ-10).
+
+**Khóa thông điệp thành công:** `Mes.Import.Search.Successfully`. Khóa này thuộc nhóm `*.Search.Successfully` ở mục 1.5 nên Frontend không hiện thông báo — bước xem trước chỉ đổ dữ liệu ra bảng.
 
 **Lời gọi này không ghi gì vào cơ sở dữ liệu.**
 
@@ -688,9 +690,11 @@ Máy chủ **nạp mọi dòng hợp lệ và bỏ qua dòng lỗi**, không ki�
 { "importedCount": 125, "skippedCount": 4 }
 ```
 
+**Khóa thông điệp thành công:** `Mes.PartyMember.Import.Successfully` ("Đã nạp danh sách", mục 1.5).
+
 Frontend hiển thị: "Đã thêm 125 người, bỏ qua 4 dòng lỗi".
 
-**Lỗi:** giống bước xem trước (4 khóa cấp file), thêm `500` khi giao dịch hỏng.
+**Lỗi:** giống bước xem trước (5 khóa cấp file), thêm `500` khi giao dịch hỏng.
 
 ---
 
@@ -730,10 +734,10 @@ Một lời gọi trả đủ dữ liệu cho cả bảng, dải độ phủ và
 
 | Tham số | Kiểu | Mặc định |
 |---|---|---|
-| `year` | int | Năm hiện tại |
+| `year` | int, 1900–2200 | Năm hiện tại |
 
 **Phản hồi `data`:** một `AwardPeriodResponse` (đã gắn `year`).
-**Lỗi:** `Mes.AwardPeriod.NotFound`.
+**Lỗi:** `Mes.AwardPeriod.NotFound`, `Mes.Query.Invalid.Year`.
 
 ### 5.3 `POST /api/AwardPeriods` — Thêm đợt (UC-31)
 
@@ -1155,4 +1159,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 |---|---|---|
 | 1.0 | 19/09/2026 | Bản đầu tiên. 28 endpoint, phủ toàn bộ UC-00 → UC-51 của tài liệu nghiệp vụ v1.1 |
 | 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
-| 1.2 | 19/09/2026 | Sửa mục 1.8: trong cùng mốc sắp theo **Họ tên đầy đủ**, bỏ quy ước sắp theo tên gọi (từ cuối). Đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3. Khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. Không đổi hình dạng API |
+| 1.2 | 19/09/2026 | Sửa ví dụ và làm rõ mục 4 Import cho khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. Làm rõ kiểm tra `year` ở mục 5.2 (1900–2200, `Mes.Query.Invalid.Year`) cho khớp mã đã duyệt ở PR #18. Sửa mục 1.8: trong cùng mốc sắp theo **Họ tên đầy đủ**, bỏ quy ước sắp theo tên gọi (từ cuối); đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3, khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. Không đổi hình dạng request/response |
