@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 
 namespace HuyHieuDang.Core.UnitTests.Fixtures;
@@ -29,11 +30,11 @@ public static class FixtureExpectations
             .GetProperty("eligibleByPeriod")
             .GetProperty(periodCode)
             .GetProperty("byYear")
-            .GetProperty(year.ToString());
+            .GetProperty(year.ToString(CultureInfo.InvariantCulture));
 
         Dictionary<int, int> byMilestone = node.TryGetProperty("byMilestone", out JsonElement breakdown)
-            ? breakdown.EnumerateObject().ToDictionary(x => int.Parse(x.Name), x => x.Value.GetInt32())
-            : [];
+            ? breakdown.EnumerateObject().ToDictionary(x => int.Parse(x.Name, CultureInfo.InvariantCulture), x => x.Value.GetInt32())
+            : new Dictionary<int, int>();
 
         return (node.GetProperty("total").GetInt32(), byMilestone);
     }
@@ -47,31 +48,31 @@ public static class FixtureExpectations
             .GetProperty(periodCode)
             .GetProperty("byYear")
             .EnumerateObject()
-            .Select(x => int.Parse(x.Name))
+            .Select(x => int.Parse(x.Name, CultureInfo.InvariantCulture))
             .ToList();
 
     public static IReadOnlyList<(string Code, int Milestone, DateOnly Anniversary, string GapLabel)> Missed(
         string scenario, int year)
     {
-        JsonElement node = Scenario(scenario).GetProperty("missedByYear").GetProperty(year.ToString());
+        JsonElement node = Scenario(scenario).GetProperty("missedByYear").GetProperty(year.ToString(CultureInfo.InvariantCulture));
 
         return node.GetProperty("rows").EnumerateArray()
             .Select(x => (
                 x.GetProperty("code").GetString()!,
                 x.GetProperty("milestone").GetInt32(),
-                DateOnly.Parse(x.GetProperty("anniversary").GetString()!),
+                DateOnly.Parse(x.GetProperty("anniversary").GetString()!, CultureInfo.InvariantCulture),
                 x.GetProperty("gapLabel").GetString()!))
             .ToList();
     }
 
     public static IReadOnlyList<(DateOnly From, DateOnly To, string Label)> Gaps(string scenario, int year)
     {
-        JsonElement node = Scenario(scenario).GetProperty("gapsByYear").GetProperty(year.ToString());
+        JsonElement node = Scenario(scenario).GetProperty("gapsByYear").GetProperty(year.ToString(CultureInfo.InvariantCulture));
 
         return node.EnumerateArray()
             .Select(x => (
-                DateOnly.Parse(x.GetProperty("from").GetString()!),
-                DateOnly.Parse(x.GetProperty("to").GetString()!),
+                DateOnly.Parse(x.GetProperty("from").GetString()!, CultureInfo.InvariantCulture),
+                DateOnly.Parse(x.GetProperty("to").GetString()!, CultureInfo.InvariantCulture),
                 x.GetProperty("label").GetString()!))
             .ToList();
     }
@@ -93,8 +94,8 @@ public static class FixtureExpectations
         return (
             node.GetProperty("name").GetString()!,
             node.GetProperty("year").GetInt32(),
-            DateOnly.Parse(node.GetProperty("boundFrom").GetString()!),
-            DateOnly.Parse(node.GetProperty("boundTo").GetString()!),
+            DateOnly.Parse(node.GetProperty("boundFrom").GetString()!, CultureInfo.InvariantCulture),
+            DateOnly.Parse(node.GetProperty("boundTo").GetString()!, CultureInfo.InvariantCulture),
             node.GetProperty("status").GetString()!,
             ReadNullableInt(node, "daysLeft"));
     }
@@ -118,6 +119,6 @@ public static class FixtureExpectations
 
     private static DateOnly? ReadNullableDate(JsonElement node, string property) =>
         node.GetProperty(property) is { ValueKind: not JsonValueKind.Null } value
-            ? DateOnly.Parse(value.GetString()!)
+            ? DateOnly.Parse(value.GetString()!, CultureInfo.InvariantCulture)
             : null;
 }

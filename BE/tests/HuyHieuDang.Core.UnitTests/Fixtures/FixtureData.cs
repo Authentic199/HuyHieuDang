@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using HuyHieuDang.Core.PartyBadges;
 
@@ -70,7 +71,7 @@ public static class FixtureData
 
         return new FixtureScenario(
             name,
-            DateOnly.Parse(node.GetProperty("today").GetString()!),
+            DateOnly.Parse(node.GetProperty("today").GetString()!, CultureInfo.InvariantCulture),
             new MilestoneSettings(
                 settingsNode.GetProperty("start_years").GetInt32(),
                 settingsNode.GetProperty("end_years").GetInt32(),
@@ -84,7 +85,7 @@ public static class FixtureData
         "core_default_T0_leapEdgePeriod" => LeapEdgePeriods,
         "core_default_T0_overlap" => OverlapPeriods,
         "core_default_T0_fullCover" => FullCoverPeriods,
-        "core_default_T0_noPeriod" => [],
+        "core_default_T0_noPeriod" => Array.Empty<FixturePeriod>(),
         "core_default_T0_widenedP3" => WidenedP3Periods,
         _ => MainPeriods,
     };
@@ -103,7 +104,7 @@ public static class FixtureData
             .Select(x => new FixtureMember(
                 x.GetProperty("code").GetString()!,
                 x.GetProperty("fullName").GetString()!,
-                DateOnly.Parse(x.GetProperty("officialAdmissionDate").GetString()!)))
+                DateOnly.Parse(x.GetProperty("officialAdmissionDate").GetString()!, CultureInfo.InvariantCulture)))
             .ToList();
     }
 
