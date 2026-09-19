@@ -247,6 +247,8 @@ public class AwardPeriodService : IAwardPeriodService
 
     /// <summary>
     /// Tên đợt là duy nhất, so sánh không phân biệt hoa thường; khi sửa thì bỏ qua chính nó.
+    /// Cột <c>name</c> có kiểu <c>citext</c> nên phép so sánh bằng ngay trong câu truy vấn đã
+    /// không phân biệt hoa thường, đúng bằng ngữ nghĩa của chỉ mục duy nhất trên cột đó.
     /// </summary>
     /// <param name="name">Tên đợt trong yêu cầu.</param>
     /// <param name="ignoredId">Id được bỏ qua khi so trùng.</param>
@@ -258,7 +260,7 @@ public class AwardPeriodService : IAwardPeriodService
         bool repeated = await repositoryWrapper.Repository<PeriodEntity>()
             .Find(isAsNoTracking: true)
             .Where(x => ignoredId == null || x.Id != ignoredId)
-            .AnyAsync(x => x.Name.ToLower() == trimmed.ToLower(), cancellationToken);
+            .AnyAsync(x => x.Name == trimmed, cancellationToken);
 
         if (repeated)
         {

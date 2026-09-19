@@ -5,6 +5,22 @@ using HuyHieuDang.Infrastructure.Modules.AwardPeriods.Entities;
 namespace HuyHieuDang.Infrastructure.Modules.AwardPeriods.Requests;
 
 /// <summary>
+/// Tên trường trong khóa thông điệp không trùng với tên cột của bảng: hợp đồng API gọi cặp
+/// ngày/tháng là <c>FromDate</c> / <c>ToDate</c> và gọi ràng buộc thứ tự là <c>Range</c>.
+/// </summary>
+public static class AwardPeriodMessageProperties
+{
+    /// <summary>Khóa lỗi của Từ ngày.</summary>
+    public const string FromDate = "FromDate";
+
+    /// <summary>Khóa lỗi của Đến ngày.</summary>
+    public const string ToDate = "ToDate";
+
+    /// <summary>Khóa lỗi của ràng buộc Từ ≤ Đến.</summary>
+    public const string Range = "Range";
+}
+
+/// <summary>
 /// Năm trường chung của thêm mới và sửa đợt trao huy hiệu (mục 5.3 hợp đồng API).
 /// Đợt chỉ lưu ngày/tháng, không lưu năm (QT6).
 /// </summary>
@@ -96,20 +112,4 @@ public abstract class AwardPeriodRequestValidator<TRequest> : AbstractValidator<
     private static bool IsOrderedWithinOneYear(TRequest request)
         => request.FromMonth!.Value < request.ToMonth!.Value
             || (request.FromMonth.Value == request.ToMonth.Value && request.FromDay!.Value <= request.ToDay!.Value);
-}
-
-/// <summary>
-/// Tên trường trong khóa thông điệp không trùng với tên cột của bảng: hợp đồng API gọi cặp
-/// ngày/tháng là <c>FromDate</c> / <c>ToDate</c> và gọi ràng buộc thứ tự là <c>Range</c>.
-/// </summary>
-public static class AwardPeriodMessageProperties
-{
-    /// <summary>Khóa lỗi của Từ ngày.</summary>
-    public const string FromDate = "FromDate";
-
-    /// <summary>Khóa lỗi của Đến ngày.</summary>
-    public const string ToDate = "ToDate";
-
-    /// <summary>Khóa lỗi của ràng buộc Từ ≤ Đến.</summary>
-    public const string Range = "Range";
 }
