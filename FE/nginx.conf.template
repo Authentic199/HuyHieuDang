@@ -1,0 +1,40 @@
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Nén cho nhẹ đường truyền nội bộ.
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+    gzip_min_length 1024;
+
+    # Tài nguyên có vân tay trong tên file — cho phép nhớ lâu.
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Chuyển tiếp lời gọi API sang service backend trong docker-compose.
+    location /api/ {
+        # Dùng DNS nội bộ của Docker và đặt đích vào biến, nhờ vậy nginx vẫn
+        # khởi động được khi service backend chưa kịp lên.
+        resolver 127.0.0.11 valid=10s ipv6=off;
+        set $hhd_api_upstream ${API_UPSTREAM};
+        proxy_pass $hhd_api_upstream$request_uri;
+
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # Import Excel có thể tới 10 MB.
+        client_max_body_size 16m;
+        proxy_read_timeout 120s;
+    }
+
+    # Ứng dụng một trang: mọi đường dẫn đều trả index.html.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

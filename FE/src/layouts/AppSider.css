@@ -1,0 +1,96 @@
+.hhd-sider {
+  grid-row: 2;
+  background: var(--hhd-gradient-sider);
+  box-shadow: var(--hhd-shadow-sider);
+  color: var(--hhd-white);
+  border-radius: var(--hhd-radius-shell);
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px;
+}
+
+.hhd-sider__nav {
+  display: grid;
+  gap: 4px;
+}
+
+.hhd-sider__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 64px;
+  padding: 10px 4px;
+  border: 0;
+  border-radius: var(--hhd-radius-card);
+  text-align: center;
+  background: transparent;
+  color: var(--hhd-white);
+  cursor: pointer;
+  font-family: var(--hhd-font-sans);
+  transition: background 0.15s ease;
+}
+
+.hhd-sider__item:hover {
+  background: #ffffff1f;
+}
+
+.hhd-sider__item:focus-visible {
+  outline: 2px solid var(--hhd-gold);
+  outline-offset: 2px;
+}
+
+.hhd-sider__item--active,
+.hhd-sider__item--active:hover {
+  background: var(--hhd-gradient-sider-active);
+  box-shadow: var(--hhd-shadow-sider-active);
+  color: var(--hhd-gold);
+  font-weight: 700;
+}
+
+.hhd-sider__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.hhd-sider__label {
+  font: 500 11px/14px var(--hhd-font-sans);
+}
+
+.hhd-sider__item--active .hhd-sider__label {
+  font-weight: 700;
+}
+
+/* Badge số người chưa thuộc đợt nào; không có ai thì không dựng phần tử này. */
+.hhd-sider__badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--hhd-radius-pill);
+  background: var(--hhd-gold);
+  color: var(--hhd-ink);
+  font: 700 11px/18px var(--hhd-font-sans);
+  text-align: center;
+}
+
+.hhd-sider__collapse {
+  margin-top: auto;
+  display: grid;
+  place-items: center;
+  height: 36px;
+  border: 0;
+  border-radius: var(--hhd-radius-card);
+  background: transparent;
+  color: #f2c4c2;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.hhd-sider__collapse:hover {
+  background: #ffffff1f;
+}
