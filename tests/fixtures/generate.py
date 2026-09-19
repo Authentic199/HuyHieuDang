@@ -15,6 +15,7 @@ import argparse
 import json
 import os
 import random
+import re
 import shutil
 import sys
 import zipfile
@@ -305,20 +306,42 @@ def self_check(core: list[Member], scen: dict) -> None:
 # ---------------------------------------------------------------- xuất Excel
 
 
-def normalize_zip(path: Path) -> None:
-    """Ghi lại tệp zip với mốc thời gian cố định để tệp .xlsx tái lập được từng byte.
+FROZEN_STAMP = "2026-09-19T00:00:00Z"
+FROZEN_ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
-    openpyxl đóng dấu giờ hiện tại vào từng phần của zip, nên chạy lại generate.py
-    sinh ra tệp khác byte dù dữ liệu không đổi - mỗi lần sinh lại sẽ tạo một diff
-    rác trong git. Hàm này đặt mọi mốc thời gian về 01/01/1980 (giá trị nhỏ nhất
-    mà định dạng zip biểu diễn được).
+
+def freeze_properties(wb: Workbook) -> None:
+    """Đặt tên người tạo cố định. Mốc thời gian do normalize_zip đóng băng."""
+    wb.properties.creator = "HuyHieuDang QC fixtures"
+    wb.properties.lastModifiedBy = "HuyHieuDang QC fixtures"
+
+
+def normalize_zip(path: Path) -> None:
+    """Ghi lại tệp .xlsx sao cho tái lập được từng byte.
+
+    Có hai nguồn bất định, phải chặn cả hai:
+
+    1. Mốc thời gian của từng phần trong zip - openpyxl đóng dấu giờ hiện tại.
+       Đặt hết về 01/01/1980 (giá trị nhỏ nhất định dạng zip biểu diễn được).
+    2. `dcterms:modified` trong `docProps/core.xml` - `openpyxl.save_workbook` ghi
+       đè giờ hiện tại vào đó **ngay lúc lưu**, nên gán trên đối tượng Workbook
+       không có tác dụng; phải sửa sau khi lưu.
+
+    Không chặn thì mỗi lần chạy lại generate.py đều sinh ra một diff rác trong git
+    và chữ "tất định" trong README thành vô nghĩa.
     """
-    fixed = (1980, 1, 1, 0, 0, 0)
     with zipfile.ZipFile(path) as z:
         entries = [(i, z.read(i.filename)) for i in z.infolist()]
+
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as z:
         for info, data in entries:
-            new = zipfile.ZipInfo(info.filename, date_time=fixed)
+            if info.filename == "docProps/core.xml":
+                data = re.sub(
+                    rb"(<dcterms:(?:created|modified)[^>]*>)[^<]*(</dcterms:)",
+                    lambda m: m.group(1) + FROZEN_STAMP.encode() + m.group(2),
+                    data,
+                )
+            new = zipfile.ZipInfo(info.filename, date_time=FROZEN_ZIP_TIME)
             new.compress_type = info.compress_type
             new.external_attr = info.external_attr
             new.internal_attr = info.internal_attr
@@ -343,6 +366,7 @@ def write_xlsx(path: Path, rows: list[tuple], header: list[str] | None,
                     row[idx].number_format = DATE_FMT
     for col, width in zip("ABCD", (28, 14, 12, 26)):
         ws.column_dimensions[col].width = width
+    freeze_properties(wb)
     wb.save(path)
     normalize_zip(path)
 
@@ -425,6 +449,7 @@ def build_excel(core: list[Member], bulk: list[Member]) -> list[dict]:
 
     wb = Workbook()
     wb.active.title = "DanhSach"
+    freeze_properties(wb)
     wb.save(EXCEL / "loi-rong.xlsx")
     normalize_zip(EXCEL / "loi-rong.xlsx")
     rec("loi-rong.xlsx", 0, 0, "QT9 lỗi cấp file - sheet hoàn toàn rỗng, không có cả tiêu đề.")
