@@ -54,14 +54,10 @@ export function updateMember(id: string, payload: MemberPayload): Promise<PartyM
   return apiClient.put<PartyMemberResponse>(`/PartyMembers/${id}`, payload);
 }
 
-/** UC-23 — xóa một dòng. Xóa hẳn, không có thùng rác (QT10). */
-export function deleteMember(id: string): Promise<{ id: string }> {
-  return apiClient.delete<{ id: string }>(`/PartyMembers/${id}`);
-}
-
 /**
- * UC-23 — xóa nhiều dòng đã chọn. Trả về đúng các id đã xóa được;
- * id không còn tồn tại bị bỏ qua lặng lẽ.
+ * UC-23 — xóa các dòng đã chọn. Xóa hẳn, không có thùng rác (QT10).
+ * Đây là đường xóa duy nhất: xóa một người thì truyền mảng một phần tử.
+ * Trả về đúng các id đã xóa được; id không còn tồn tại bị bỏ qua lặng lẽ.
  */
 export function deleteManyMembers(ids: string[]): Promise<{ ids: string[] }> {
   return apiClient.post<{ ids: string[] }>('/PartyMembers/DeleteMany', { ids });
