@@ -84,12 +84,3 @@ public sealed class IdentifiersPayload
     [JsonPropertyName("ids")]
     public List<Guid> Ids { get; set; } = new();
 }
-
-/// <summary>
-/// Phần <c>data</c> của xóa một: <c>{ "id": "…" }</c>.
-/// </summary>
-public sealed class IdentifierPayload
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
-}

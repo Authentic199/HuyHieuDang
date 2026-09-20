@@ -228,7 +228,6 @@ public sealed class A9TechnicalTests
             await client.PostAsJsonAsync(QcEndpoints.PartyMembers, new { fullName = string.Empty, officialAdmissionDate = "1996-01-01" }),
             await client.PostAsJsonAsync(QcEndpoints.PartyMembers, new { fullName = "Người Tương Lai", officialAdmissionDate = "2030-01-01" }),
             await client.PostAsJsonAsync(QcEndpoints.PartyMembers, new { fullName = "Người Sinh Sau", dateOfBirth = "2000-01-01", officialAdmissionDate = "1996-01-01" }),
-            await client.DeleteAsync($"{QcEndpoints.PartyMembers}/{Guid.NewGuid()}"),
             await client.GetAsync($"{QcEndpoints.AwardPeriods}/{Guid.NewGuid()}"),
             await client.PostAsJsonAsync(QcEndpoints.AwardPeriods, new { name = "Đợt 7/11", fromDay = 1, fromMonth = 10, toDay = 7, toMonth = 11 }),
             await client.PostAsJsonAsync(QcEndpoints.AwardPeriods, new { name = "Đợt sai ngày", fromDay = 31, fromMonth = 4, toDay = 7, toMonth = 11 }),

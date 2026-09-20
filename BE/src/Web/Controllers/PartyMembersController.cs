@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace HuyHieuDang.Web.Controllers;
 
 /// <summary>
-/// Đảng viên: danh sách, lấy một, thêm, sửa, xóa một và xóa nhiều (UC-20 → UC-23).
+/// Đảng viên: danh sách, lấy một, thêm, sửa và xóa (UC-20 → UC-23). Mọi thao tác xóa
+/// đi qua <c>POST /api/PartyMembers/DeleteMany</c>, kể cả khi chỉ xóa một người (T34).
 /// </summary>
 public class PartyMembersController : BaseController
 {
@@ -84,22 +85,9 @@ public class PartyMembersController : BaseController
         => OkWrapper(await partyMemberService.UpdateAsync(id, request, cancellationToken), Messages<PartyMember>.Update());
 
     /// <summary>
-    /// Xóa hẳn một đảng viên (UC-23). Không có thùng rác (QT10).
-    /// </summary>
-    /// <param name="id">Id đảng viên.</param>
-    /// <param name="cancellationToken">Thẻ hủy.</param>
-    /// <returns>Id vừa xóa.</returns>
-    [HttpDelete("{id:guid}")]
-    [ProducesResponseType(typeof(SuccessResultWrapper<PartyMemberIdentifierResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResultWrapper), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<SuccessResultWrapper<PartyMemberIdentifierResponse>>> DeleteAsync(
-        Guid id, CancellationToken cancellationToken)
-        => OkWrapper(await partyMemberService.DeleteAsync(id, cancellationToken), Messages<PartyMember>.Delete());
-
-    /// <summary>
-    /// Xóa nhiều đảng viên (UC-23). Dùng <c>POST</c> vì <c>DELETE</c> có thân không phải quy ước
-    /// của bộ khung. Id không tồn tại bị bỏ qua lặng lẽ.
+    /// Xóa hẳn đảng viên, không có thùng rác (UC-23, QT10). Đây là đường xóa duy nhất: xóa một
+    /// người thì gửi mảng một phần tử. Dùng <c>POST</c> vì <c>DELETE</c> có thân không phải quy
+    /// ước của bộ khung. Id không tồn tại bị bỏ qua lặng lẽ.
     /// </summary>
     /// <param name="request">Danh sách id cần xóa.</param>
     /// <param name="cancellationToken">Thẻ hủy.</param>

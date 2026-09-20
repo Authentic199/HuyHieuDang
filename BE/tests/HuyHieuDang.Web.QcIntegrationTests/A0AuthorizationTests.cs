@@ -30,7 +30,7 @@ public sealed class A0AuthorizationTests
     }
 
     /// <summary>
-    /// Toàn bộ 27 endpoint nghiệp vụ của hợp đồng API, tức 28 endpoint trừ <c>Auth/Login</c>.
+    /// Toàn bộ 26 endpoint nghiệp vụ của hợp đồng API, tức 27 endpoint trừ <c>Auth/Login</c>.
     /// Danh sách này cũng là bảng đối chiếu độ phủ endpoint của báo cáo T27.
     /// </summary>
     /// <returns>Bộ dữ liệu cho lý thuyết kiểm thử.</returns>
