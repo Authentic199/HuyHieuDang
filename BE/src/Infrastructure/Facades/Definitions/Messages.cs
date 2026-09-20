@@ -20,6 +20,19 @@ public static partial class Messages
     {
         public const string IPAddressForbidden = "Mes.Middleware.IPAddress.Forbidden";
     }
+
+    /// <summary>
+    /// Khóa dùng chung cho mọi endpoint, không thuộc thực thể nào.
+    /// </summary>
+    [DisplayName("Common")]
+    public static class Common
+    {
+        /// <summary>
+        /// Tham số truy vấn hoặc thân yêu cầu sai kiểu, khung ASP.NET không đọc nổi (mục 1.5).
+        /// Không kèm tên tham số hay giá trị người dùng nhập.
+        /// </summary>
+        public const string InvalidParameter = "Mes.Common.Invalid.Parameter";
+    }
 }
 
 public enum MessagesType

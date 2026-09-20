@@ -1,7 +1,12 @@
 ﻿using AutoMapper.Internal;
 using HuyHieuDang.Core.Bases;
+using HuyHieuDang.Core.Common.Exceptions;
 using HuyHieuDang.Infrastructure.Facades.Common.Attributes;
+using HuyHieuDang.Infrastructure.Facades.Definitions;
+using Serilog;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 using System.Text;
@@ -11,6 +16,8 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
 {
     public static class QueryExpressionExtension
     {
+        private static readonly ILogger Logger = Log.ForContext(typeof(QueryExpressionExtension));
+
         private static readonly Dictionary<string, string> FilterOperators = new()
         {
             { FilterOperator.Eq, " ([PropName] == [Value])" },
@@ -127,12 +134,56 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
             return entities.AsQueryable().ApplyFilter(filter, true).AsEnumerable();
         }
 
+        /// <summary>
+        /// Áp bộ lọc vào truy vấn. Giá trị lọc không ép được về kiểu của trường là lỗi của bên gọi:
+        /// ném <see cref="BadRequestException"/> mang khóa <c>Mes.Common.Invalid.Parameter</c> thay vì
+        /// bỏ qua bộ lọc rồi trả về toàn bộ dữ liệu (QC-T27-05).
+        /// Tên trường không tồn tại vẫn được bỏ qua như trước.
+        /// </summary>
+        /// <typeparam name="T">Kiểu phần tử của truy vấn.</typeparam>
+        /// <param name="entities">Truy vấn gốc.</param>
+        /// <param name="filter">Bảng bộ lọc <c>tên trường → danh sách biểu thức</c>.</param>
+        /// <param name="checkNull">Bọc trường bằng <c>np(...)</c> khi lọc trên bộ nhớ.</param>
+        /// <returns>Truy vấn đã áp bộ lọc.</returns>
+        /// <exception cref="BadRequestException">Giá trị lọc sai kiểu, sai toán tử hoặc sai định dạng.</exception>
         public static IQueryable<T> ApplyFilter<T>(this IQueryable<T> entities, IDictionary<string, List<string>?>? filter, bool checkNull = false)
         {
-            if (!entities.Any() || filter == null || filter.Count == 0)
+            if (filter == null || filter.Count == 0)
             {
                 return entities;
             }
+
+            List<QueryFilterResult> queryFilterResults = BuildFilterQueries<T>(filter, checkNull);
+
+            if (queryFilterResults.Count == 0 || !entities.Any())
+            {
+                return entities;
+            }
+
+            foreach (QueryFilterResult queryFilterResult in queryFilterResults)
+            {
+                try
+                {
+                    Debug.WriteLine("----> Filter Query: " + queryFilterResult.Query);
+                    entities = entities.Where(queryFilterResult.Query, queryFilterResult.Params.ToArray());
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Không dựng được biểu thức lọc {FilterQuery}", queryFilterResult.Query);
+                    throw InvalidFilterValue();
+                }
+            }
+
+            return entities;
+        }
+
+        /// <summary>
+        /// Dựng sẵn mọi biểu thức lọc trước khi chạm vào dữ liệu, để giá trị sai kiểu bị từ chối
+        /// ngay cả khi bảng đang rỗng.
+        /// </summary>
+        private static List<QueryFilterResult> BuildFilterQueries<T>(IDictionary<string, List<string>?> filter, bool checkNull)
+        {
+            List<QueryFilterResult> queryFilterResults = new();
 
             foreach (KeyValuePair<string, List<string>?> filterItem in filter)
             {
@@ -146,20 +197,88 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
                 foreach (QueryFilterResult queryFilterResult in GenerateFilterQuery(filterItem!, propertyInfo.PropertyType, checkNull))
                 {
                     queryFilterResult.Query = queryFilterResult.Query.TrimEnd(' ', 'a', 'n', 'd', ' ');
-
-                    try
-                    {
-                        Debug.WriteLine("----> Filter Query: " + queryFilterResult.Query);
-                        entities = entities.Where(queryFilterResult.Query, queryFilterResult.Params.ToArray());
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("----> Filter Query Fail: " + ex.GetBaseException());
-                    }
+                    queryFilterResults.Add(queryFilterResult);
                 }
             }
 
-            return entities;
+            return queryFilterResults;
+        }
+
+        private static BadRequestException InvalidFilterValue() => new(Messages.Common.InvalidParameter);
+
+        /// <summary>
+        /// Ép giá trị lọc về kiểu của trường. Chuỗi giữ nguyên; enum chỉ nhận tên hằng số
+        /// (<c>Male</c>, <c>Female</c>) chứ không nhận số, vì hợp đồng API chỉ mô tả tên;
+        /// các kiểu còn lại ép theo văn hóa bất biến để không phụ thuộc máy chạy.
+        /// </summary>
+        private static bool TryConvertValue(string value, Type propertyType, out object? converted)
+        {
+            converted = null;
+            Type targetType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+            if (targetType == typeof(string))
+            {
+                converted = value;
+                return true;
+            }
+
+            if (targetType.IsEnum)
+            {
+                if (long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out _)
+                    || !Enum.TryParse(targetType, value, true, out object? parsed)
+                    || parsed is null)
+                {
+                    return false;
+                }
+
+                converted = parsed;
+                return true;
+            }
+
+            TypeConverter typeConverter = TypeDescriptor.GetConverter(targetType);
+            if (!typeConverter.CanConvertFrom(typeof(string)))
+            {
+                return false;
+            }
+
+            try
+            {
+                converted = typeConverter.ConvertFromInvariantString(value);
+                return converted is not null;
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException and not StackOverflowException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Ném 400 khi giá trị không ép được về kiểu của trường.
+        /// </summary>
+        private static object? ConvertOrThrow(string value, Type propertyType)
+        {
+            if (!TryConvertValue(value, propertyType, out object? converted))
+            {
+                throw InvalidFilterValue();
+            }
+
+            return converted;
+        }
+
+        /// <summary>
+        /// Dựng mảng đúng kiểu của trường cho toán tử <c>$in</c>; Dynamic LINQ không tự ép
+        /// mảng chuỗi sang enum hay số.
+        /// </summary>
+        private static Array ConvertValuesOrThrow(IReadOnlyList<string> values, Type propertyType)
+        {
+            Array typedValues = Array.CreateInstance(propertyType, values.Count);
+
+            for (int index = 0; index < values.Count; index++)
+            {
+                typedValues.SetValue(ConvertOrThrow(values[index], propertyType), index);
+            }
+
+            return typedValues;
         }
 
         private static IEnumerable<QueryFilterResult> GenerateFilterQuery(KeyValuePair<string, List<string>> filterItem, Type propertyType, bool checkNull)
@@ -190,47 +309,48 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
                     };
                 }
 
-                if (result.Count == 1
-                    && result[0].Equals(FilterOperator.Null, StringComparison.OrdinalIgnoreCase)
-                    && (propertyType.IsNullableType() || propertyType.IsClass))
+                if (result.Count == 1 && result[0].Equals(FilterOperator.Null, StringComparison.OrdinalIgnoreCase))
                 {
-                    queryFilterResult.IsValid = true;
+                    if (!propertyType.IsNullableType() && !propertyType.IsClass)
+                    {
+                        throw InvalidFilterValue();
+                    }
+
                     queryFilterResult.Query = $"({key} {FilterOperators[FilterOperator.Null]}) {suffix}";
                 }
                 else if (result.Count == 2 && FilterOperators.ContainsKey(result[0].ToLower()))
                 {
                     result[0] = result[0].ToLower();
-                    queryFilterResult.IsValid = true;
 
                     switch (result[0])
                     {
                         case FilterOperator.In:
                             queryFilterResult.Query = $"@{indexParam}{FilterOperators[FilterOperator.In]}";
-                            queryFilterResult.Params.Add(result[1].Split(','));
+                            queryFilterResult.Params.Add(ConvertValuesOrThrow(result[1].Split(','), propertyType));
                             break;
 
                         case FilterOperator.Btw:
                             string[] btwValue = result[1].Split(',');
                             if (btwValue.Length != 2 || string.IsNullOrEmpty(btwValue[0]) || string.IsNullOrEmpty(btwValue[1]))
                             {
-                                queryFilterResult.IsValid = false;
-                                break;
+                                throw InvalidFilterValue();
                             }
 
                             queryFilterResult.Query = FilterOperators[FilterOperator.Btw]
                                 .Replace("[First]", $"@{indexParam++}", StringComparison.OrdinalIgnoreCase)
                                 .Replace("[Last]", $"@{indexParam}", StringComparison.OrdinalIgnoreCase);
-                            queryFilterResult.Params.AddRange(btwValue);
+                            queryFilterResult.Params.Add(ConvertOrThrow(btwValue[0], propertyType)!);
+                            queryFilterResult.Params.Add(ConvertOrThrow(btwValue[1], propertyType)!);
                             break;
 
                         case FilterOperator.Ilike:
-                            queryFilterResult.Query = FilterOperators[FilterOperator.Ilike]
-                                .Replace("[Value]", $"@{indexParam}", StringComparison.OrdinalIgnoreCase);
-                            queryFilterResult.Params.Add(result[1]);
-                            break;
-
                         case FilterOperator.Sw:
-                            queryFilterResult.Query = FilterOperators[FilterOperator.Sw]
+                            if ((Nullable.GetUnderlyingType(propertyType) ?? propertyType) != typeof(string))
+                            {
+                                throw InvalidFilterValue();
+                            }
+
+                            queryFilterResult.Query = FilterOperators[result[0]]
                                 .Replace("[Value]", $"@{indexParam}", StringComparison.OrdinalIgnoreCase);
                             queryFilterResult.Params.Add(result[1]);
                             break;
@@ -238,12 +358,16 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
                         default:
                             queryFilterResult.Query = FilterOperators[result[0]]
                                 .Replace("[Value]", $"@{indexParam}", StringComparison.OrdinalIgnoreCase);
-                            queryFilterResult.Params.Add(result[1]);
+                            queryFilterResult.Params.Add(ConvertOrThrow(result[1], propertyType)!);
                             break;
                     }
                 }
+                else
+                {
+                    throw InvalidFilterValue();
+                }
 
-                if (isFilterPrefixNot && queryFilterResult.IsValid)
+                if (isFilterPrefixNot)
                 {
                     queryFilterResult.Query = $"!{queryFilterResult.Query}";
                 }
@@ -252,7 +376,7 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
                 queryFilterResults.Add(queryFilterResult);
             }
 
-            return queryFilterResults.Where(x => x.IsValid);
+            return queryFilterResults;
         }
     }
 
@@ -286,7 +410,5 @@ namespace HuyHieuDang.Infrastructure.Facades.Common.Extensions
         public string Query { get; set; } = string.Empty;
 
         public List<object> Params { get; set; } = new();
-
-        public bool IsValid { get; set; }
     }
 }
