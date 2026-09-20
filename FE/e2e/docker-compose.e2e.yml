@@ -1,0 +1,61 @@
+# Môi trường riêng cho kiểm thử end-to-end (T28).
+#
+# Cố ý KHÔNG dùng chung stack của docker-compose.yml ở gốc kho: bộ kiểm thử
+# xóa sạch dữ liệu trước mỗi luồng, nên phải có cơ sở dữ liệu riêng để không
+# chạm vào dữ liệu ai đang dùng. Cổng cũng lệch hẳn vì lý do đó.
+#
+# Ngày "hôm nay" của Backend bị ép bằng HUYHIEUDANG_TEST_TODAY theo T-FIX-4 của
+# docs/test-plan.md. Backend hiện CHƯA đọc biến này (lỗi QC-T27-01) — ca E0-01
+# phát hiện và báo ngay khi chạy.
+name: huyhieudang-e2e
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: huyhieudang-e2e-postgres
+    environment:
+      POSTGRES_DB: huyhieudang_e2e
+      POSTGRES_USER: huyhieudang_e2e
+      POSTGRES_PASSWORD: HuyHieuE2E@2026
+    ports:
+      - '55433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U huyhieudang_e2e -d huyhieudang_e2e']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  be:
+    build:
+      context: ../../BE
+      dockerfile: Dockerfile
+    container_name: huyhieudang-e2e-be
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      ASPNETCORE_ENVIRONMENT: Development
+      # T-FIX-4 — đóng băng "hôm nay" của Backend cho cả lần chạy.
+      HUYHIEUDANG_TEST_TODAY: ${E2E_TODAY:-2026-09-19}
+      DatabaseSettings__SqlSettings__ConnectionStrings__DefaultConnection: 'Host=postgres;Port=5432;Database=huyhieudang_e2e;Username=huyhieudang_e2e;Password=HuyHieuE2E@2026;Include Error Detail=true;'
+      DatabaseSettings__SqlSettings__UseAutoMigration: 'true'
+      SecuritySettings__JwtSettingOptions__Default__Key: khoa_ky_jwt_chi_dung_cho_kiem_thu_e2e_huyhieudang_2026
+      SecuritySettings__JwtSettingOptions__Default__RefreshKey: khoa_refresh_chi_dung_cho_kiem_thu_e2e_huyhieudang_2026
+      SwaggerSettings__Credentials__Username: admin
+      SwaggerSettings__Credentials__Password: KiemThu@2026
+      ADMIN_PASSWORD: Admin@123
+    ports:
+      - '18080:8080'
+
+  fe:
+    build:
+      context: ../../FE
+      dockerfile: Dockerfile
+    container_name: huyhieudang-e2e-fe
+    depends_on:
+      - be
+    environment:
+      API_UPSTREAM: http://be:8080
+    ports:
+      - '4174:80'
