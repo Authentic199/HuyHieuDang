@@ -84,11 +84,14 @@
     0 8px 20px -10px rgba(108, 15, 18, 0.35);
 }
 
-/* Khoảng chưa đợt nào phủ — màu cát nhạt như ô chú thích "Khoảng trống". */
+/* Khoảng chưa đợt nào phủ — màu cát nhạt như ô chú thích "Khoảng trống".
+   Bo tròn hai đầu như bar: khoảng trống nằm sát mép dải sẽ ôm đúng góc bo của
+   dải thay vì thò góc vuông ra ngoài. */
 .hhd-coverage__gap {
   position: absolute;
   top: 6px;
   bottom: 6px;
+  border-radius: 9999px;
   background: #f0e2c2;
 }
 
