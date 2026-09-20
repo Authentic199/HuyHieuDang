@@ -57,9 +57,6 @@ export function StartGuide({ currentStep }: StartGuideProps) {
     <div className="hhd-dashboard__guide">
       <div className="hhd-dashboard__guide-inner">
         <div className="hhd-dashboard__guide-title">Bắt đầu với ba bước</div>
-        <div className="hhd-dashboard__guide-lead">
-          Làm một lần, dùng nhiều năm. Sau đó mỗi đợt chỉ cần mở lên xem và xuất Excel.
-        </div>
 
         <div className="hhd-dashboard__steps">
           {STEPS.map((step, index) => {

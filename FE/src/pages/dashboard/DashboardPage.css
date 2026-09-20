@@ -40,10 +40,6 @@
   line-height: 22px;
 }
 
-.hhd-dashboard__alert-detail {
-  color: var(--hhd-text-secondary);
-}
-
 .hhd-dashboard__alert-action.ant-btn-link {
   color: var(--hhd-red-link);
   font-weight: 600;
@@ -291,14 +287,6 @@
 .hhd-dashboard__guide-title {
   font: 700 32px/42px var(--hhd-font-serif);
   letter-spacing: -0.005em;
-}
-
-.hhd-dashboard__guide-lead {
-  color: var(--hhd-text-secondary);
-  font-size: 16px;
-  line-height: 24px;
-  margin-top: var(--hhd-space-sm);
-  text-wrap: pretty;
 }
 
 .hhd-dashboard__steps {
