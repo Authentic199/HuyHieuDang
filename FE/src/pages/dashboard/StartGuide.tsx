@@ -21,7 +21,6 @@ interface StartGuideProps {
 interface Step {
   order: 1 | 2 | 3;
   title: string;
-  detail: string;
   actionLabel: string;
   to: string;
 }
@@ -30,21 +29,18 @@ const STEPS: Step[] = [
   {
     order: 1,
     title: 'Kiểm tra cài đặt mốc',
-    detail: 'Mặc định 30 / 90 / 5 → 30, 35 … 90 năm. Thường giữ nguyên.',
     actionLabel: 'Mở Cài đặt',
     to: paths.settings,
   },
   {
     order: 2,
     title: 'Tạo các đợt trong năm',
-    detail: 'Ví dụ 4 đợt quanh 3/2, 19/5, 2/9, 7/11. Chỉ lưu ngày/tháng.',
     actionLabel: 'Thêm đợt',
     to: paths.periods,
   },
   {
     order: 3,
     title: 'Nạp danh sách đảng viên',
-    detail: 'Tải file mẫu 4 cột, điền rồi import. Dòng lỗi được báo trước khi nạp.',
     actionLabel: 'Import Excel',
     to: paths.membersImport,
   },
@@ -69,7 +65,6 @@ export function StartGuide({ currentStep }: StartGuideProps) {
                 >
                   <span className="hhd-dashboard__step-order">{step.order}</span>
                   <div className="hhd-dashboard__step-title">{step.title}</div>
-                  <div className="hhd-dashboard__step-detail">{step.detail}</div>
                   <Button
                     type={active ? 'primary' : 'default'}
                     onClick={() => navigate(step.to)}

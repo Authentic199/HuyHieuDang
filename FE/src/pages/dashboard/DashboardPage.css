@@ -333,11 +333,6 @@
   font: 700 16px/24px var(--hhd-font-serif);
 }
 
-.hhd-dashboard__step-detail {
-  color: var(--hhd-text-secondary);
-  flex: 1;
-}
-
 .hhd-dashboard__step-arrow {
   align-self: center;
   color: var(--hhd-text-disabled);
