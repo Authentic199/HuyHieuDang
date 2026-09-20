@@ -10,6 +10,7 @@ Cần tìm thứ khác:
 
 | Muốn biết | Đọc |
 |---|---|
+| Cách dùng phần mềm, dành cho cán bộ | `docs/huong-dan-su-dung.md` |
 | Nghiệp vụ: quy tắc QT1–QT11, use case | `docs/2026-09-17-huyhieudang-business-design.md` |
 | Hợp đồng API giữa Backend và Frontend | `docs/api-contract.md` (bản máy đọc: `docs/openapi.yaml`) |
 | Kế hoạch kiểm thử và bộ dữ liệu biên | `docs/test-plan.md`, `tests/fixtures/README.md` |
@@ -66,11 +67,13 @@ docker compose ps
 Đủ ba container, `postgres` phải ở trạng thái `healthy`:
 
 ```
-NAME                   IMAGE                COMMAND                  SERVICE    STATUS                    PORTS
-huyhieudang-be         huyhieudang-be       "dotnet HuyHieuDang.…"   be         Up 5 seconds              0.0.0.0:8080->8080/tcp
-huyhieudang-fe         nginx:alpine         "/docker-entrypoint.…"   fe         Up 5 seconds              0.0.0.0:3000->80/tcp
-huyhieudang-postgres   postgres:16-alpine   "docker-entrypoint.s…"   postgres   Up 11 seconds (healthy)   0.0.0.0:5433->5432/tcp
+NAME                   IMAGE                      STATUS
+huyhieudang-fe         huyhieudang-local-fe       Up 12 seconds (healthy)
+huyhieudang-be         huyhieudang-local-be       Up 12 seconds
+huyhieudang-postgres   postgres:16-alpine         Up 3 minutes (healthy)
 ```
+
+Hai ảnh `be` và `fe` do máy bạn tự dựng, nên tên ảnh mang **tiền tố là tên cụm**. Ví dụ trên chạy với cụm tên `huyhieudang-local` nên ảnh là `huyhieudang-local-be`. Không truyền `-p` thì tên cụm lấy từ `docker-compose.yml` là `huyhieudang`, và ảnh sẽ là `huyhieudang-be`, `huyhieudang-fe`. Tiền tố khác nhau không phải là chạy sai. Riêng `postgres:16-alpine` là ảnh tải về nên tên luôn như nhau.
 
 ### Bước 3 — mở hệ thống
 
@@ -123,7 +126,16 @@ docker compose logs postgres
 docker compose restart be
 ```
 
-> **Service `fe`**: từ khi T06 merge, `fe` được dựng thẳng từ `./FE`. Trước đó nó chỉ là một trang nginx giữ chỗ — cụm vẫn lên đủ ba container, nhưng http://localhost:3000 chưa phải giao diện thật.
+### Đang chạy bản cũ?
+
+Chạy `docker compose ps` mà cột `IMAGE` của service `fe` hiện `nginx:alpine` thì bạn đang chạy bản cũ: hoặc kho mã chưa cập nhật, hoặc container còn sót lại từ lần dựng trước. `fe` bây giờ được dựng thẳng từ `./FE`, ảnh phải là `<tên-cụm>-fe`.
+
+Dựng lại:
+
+```bash
+git pull
+docker compose up -d --build
+```
 
 ---
 
