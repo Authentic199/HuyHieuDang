@@ -17,7 +17,7 @@ public sealed class Qc07Qt7MissedMilestoneTests
     public void U712_WithoutAnyPeriod_TwentySevenCoreMembersAreMissed()
     {
         int missed = QcFixtures.CoreMembers
-            .Count(x => sut.GetMissedMilestone(x.OfficialAdmissionDate, [], 2026, Default) is not null);
+            .Count(x => sut.GetMissedMilestone(x.OfficialAdmissionDate,[], 2026, Default) is not null);
 
         missed.ShouldBe(QcFixtures.Expected("scenarios", "core_default_T0_noPeriod", "badgeCurrentYear").GetInt32());
         missed.ShouldBe(27);
@@ -122,9 +122,6 @@ public sealed class Qc07Qt7MissedMilestoneTests
         loi.ShouldBeEmpty();
     }
 
-    // LỖI QC-02 — Khi chưa cài đợt nào, nhãn khoảng trống của service là "Trước đợt đầu tiên",
-    // trong khi oracle của QC (tests/fixtures/qt_reference.py) và expected.json ghi
-    // "Sau đợt cuối cùng". Hai bên phải thống nhất vì nhãn này hiện thẳng lên UC-40.
     [Fact(DisplayName = "QC-02 · Nhãn khoảng trống khi chưa cài đợt nào phải khớp expected.json")]
     public void Qc02_GapLabelWithoutAnyPeriod_MatchesTheExpectedFile()
     {
@@ -134,7 +131,7 @@ public sealed class Qc07Qt7MissedMilestoneTests
             .First();
 
         MissedMilestone? missed = sut.GetMissedMilestone(
-            QcFixtures.Member(row.GetProperty("code").GetString()!).OfficialAdmissionDate, [], 2026, Default);
+            QcFixtures.Member(row.GetProperty("code").GetString()!).OfficialAdmissionDate,[], 2026, Default);
 
         missed.ShouldNotBeNull();
         missed.Gap.Label.ShouldBe(row.GetProperty("gapLabel").GetString());
@@ -149,6 +146,6 @@ public sealed class Qc07Qt7MissedMilestoneTests
         "widened" => QcFixtures.MainPeriods
             .Select(x => x.Code == "P3" ? new AwardPeriod("Đợt 2/9", 15, 8, 30, 9) : x.Period)
             .ToList(),
-        _ => [],
+        _ =>[],
     };
 }

@@ -32,7 +32,7 @@ interface MemberFormModalProps {
 const DATE_FORMAT = 'DD/MM/YYYY';
 
 /**
- * Modal Thêm / Sửa đảng viên (UC-21, UC-22). Bộ artboard chưa có mockup cho
+ * Modal Thêm / Sửa đảng viên (UC-21, UC-22). Bộ artboard chưa có bản vẽ riêng cho
  * modal này nên dựng theo đúng ngôn ngữ thiết kế của 10 artboard: nhãn trên ô,
  * ô nhập cao 40px, chữ 14px, nút chính đỏ ở góc phải.
  *

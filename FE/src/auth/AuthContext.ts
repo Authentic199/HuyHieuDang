@@ -5,6 +5,13 @@ import type { SessionInfo } from '../api/auth';
 export interface AuthContextValue {
   /** Đang kiểm tra thẻ đăng nhập lúc mở ứng dụng */
   isInitializing: boolean;
+  /**
+   * Câu lỗi khi không hỏi được máy chủ lúc mở ứng dụng (máy chủ chưa lên, mất
+   * mạng). Thẻ đăng nhập vẫn được giữ — bấm "Thử lại" là vào tiếp.
+   */
+  startupError: string | null;
+  /** Hỏi lại máy chủ sau khi gặp startupError */
+  retryStartup: () => void;
   isAuthenticated: boolean;
   session: SessionInfo | null;
   /** Số người chưa thuộc đợt nào trong năm hiện tại — badge trên sider */
