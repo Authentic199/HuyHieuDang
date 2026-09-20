@@ -156,7 +156,7 @@ public sealed class Qc06Qt6PeriodTests
             .Select(x => (x.From, x.To, x.Label))
             .ShouldBe(QcOracle.GapRanges(spanning, 2027));
         sut.GetOverlaps(spanning, 2027)
-            .Select(x => (x.First.Name, x.Second.Name))
+            .Select(x => (x.First.Name, x.Second.Name, x.From, x.To))
             .ShouldBe(QcOracle.Overlaps(spanning, 2027));
         sut.GetUpcomingPeriod(spanning, new DateOnly(2027, 1, 15))!.Occurrence.Year
             .ShouldBe(QcOracle.UpcomingPeriod(spanning, new DateOnly(2027, 1, 15))!.Value.Year);

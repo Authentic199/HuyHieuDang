@@ -265,6 +265,20 @@ quả mong đợi; dữ liệu lấy từ `tests/fixtures/data/members-core.json
 | U-611 | Hai đợt phủ 01/01–30/06 và 01/07–31/12 | **Không** cảnh báo phủ kín |
 | U-612 | Hai đợt liền kề 01/10–07/11 và 08/11–31/12 | Không coi là chồng lấn (kề nhau ≠ chồng lấn) |
 
+Khối T54 — đợt vắt qua 31/12 (thêm ngày 20/09/2026). Mã bắt đầu từ U-620 vì U-610 → U-612 đã
+có chủ ở trên.
+
+| Ca | Vào | Mong đợi |
+|---|---|---|
+| U-620 | Đợt 01/12 – 30/11, Bước = 1 | Vẫn tối đa 1 mốc / người / đợt |
+| U-621 | Đợt 02/01 – 01/01 | Phủ trọn năm: không khoảng trống, không tự chồng lấn, không vòng lặp vô hạn |
+| U-622 | Đợt 01/12 – 29/02, năm kết thúc không nhuận | Đến ngày lùi về 28/02 |
+| U-623 | Tròn mốc đúng 01/12 và đúng 28/02 của đợt 01/12 – 28/02 | Đủ điều kiện cả hai biên, không ai bị xếp vào "chưa thuộc đợt nào" |
+| U-624a | Đợt vắt năm + đợt thường chồng lấn đầu năm | Đúng một cặp, đúng khoảng ngày dùng chung |
+| U-624b | Hai đợt vắt năm | Hai đoạn dùng chung rời nhau: đầu năm và cuối năm |
+| U-625 | Xóa đợt vắt năm | Khoảng trống mới phủ đúng hai đầu năm |
+| U-626 | 9 bộ đợt vắt năm × 7 năm, quét từng ngày 2026–2027 | Service khớp oracle độc lập của QC về độ phủ, khoảng trống, chồng lấn, đợt sắp tới, trạng thái |
+
 ### 4.8 QT7 — Chưa thuộc đợt nào
 
 | Ca | Vào (bộ 4 đợt chính, năm 2026) | Mong đợi |
@@ -420,6 +434,15 @@ nào chưa có.
 | A-219 | Đủ điều kiện của đợt không tồn tại | Lỗi nghiệp vụ rõ ràng |
 | A-220 | Nạp thêm bộ lớn rồi lấy lại A-214 | **Vẫn 6 người** — bộ lớn không gây nhiễu |
 
+Khối T54 — đợt vắt qua 31/12. Mã bắt đầu từ A-221 vì A-210 → A-213 đã có chủ ở trên.
+
+| Ca | Vào | Mong đợi |
+|---|---|---|
+| A-221 | `GET /AwardPeriods?year=Y` với đợt 01/12 – 28/02 | `toDate` thuộc `Y+1`, `spansNextYear = true`, `coverage.segments` có hai đoạn cùng `periodId`, không cảnh báo chồng lấn |
+| A-222 | `GET /Eligibility/Unassigned?year=Y` | Người tròn mốc 20/01 **không** bị xếp vào "chưa thuộc đợt nào"; badge bằng số dòng danh sách |
+| A-223 | `GET /Dashboard` ngày 15/01/2027 | `upcomingPeriod.year = 2026`, `status = Ongoing`, tổng người khớp danh sách đủ điều kiện |
+| A-224 | Xuất Excel đợt vắt năm | Tên file đúng quy ước, dòng tiêu đề ghi 01/12/Y – 28/02/(Y+1), số dòng khớp màn hình |
+
 ### 5.4 Dashboard (UC-10 → UC-13, QT8)
 
 | Ca | Vào | Mong đợi |
@@ -510,7 +533,7 @@ nào chưa có.
 
 ---
 
-## 6. Tầng 3 — Kiểm thử end-to-end (T28, `E1`–`E6`)
+## 6. Tầng 3 — Kiểm thử end-to-end (T28, `E1`–`E6`; T54, `E7`)
 
 Playwright, trình duyệt thật, BE + DB thật. Cấu hình bắt buộc theo T-FIX-5:
 `timezoneId: 'Asia/Ho_Chi_Minh'`, `locale: 'vi-VN'`, `page.clock.install` ở mốc T0, và
@@ -644,6 +667,29 @@ Trạng thái đầu: đã đăng nhập, 4 đợt, cài đặt 30/90/5, bộ l�
 | E6-16 | Bấm Xóa rồi **Hủy** trong hộp xác nhận | Tổng **không** đổi |
 | E6-17 | Xóa hết người vừa thêm, về lại 32 | Dashboard và badge trở về đúng E3-01 |
 
+### E2E-7 · Đợt trao huy hiệu vắt qua 31/12 (T54 — UC-31, UC-34, UC-36, UC-40, QT6, QT7)
+
+Trạng thái đầu: đã đăng nhập, kho sạch, cài đặt 30/90/5 kèm tên đơn vị, sáu đảng viên dựng
+riêng quanh hai đầu đợt. Mọi ngày suy từ năm máy chủ đang báo, không viết cứng.
+
+| Bước | Thao tác | Kết quả mong đợi |
+|---|---|---|
+| E7-01 | Tạo đợt Từ 01/12, Đến 28/02 qua modal | Lưu được, không dòng lỗi đỏ nào |
+| E7-02 | Đọc dòng nhắc lúc modal còn mở | Câu có chữ "vắt qua 31/12" và nêu đúng hai ngày |
+| E7-03 | Bảng đợt | Cột Đến ngày hiện `28/02` kèm chữ **năm sau** |
+| E7-04 | Dải độ phủ | Hai vạch: một sát mép trái, một sát mép phải; không cảnh báo chồng lấn |
+| E7-05 | Banner cảnh báo | Nêu đúng khoảng trống giữa năm 01/03–30/11 |
+| E7-06 | Chi tiết đợt, tab Thông tin | "01/12 – 28/02 năm sau, hằng năm" |
+| E7-07 | Tab Đủ điều kiện, năm giữa | Khoảng ngày 01/12/Y – 28/02/(Y+1); người tròn mốc tháng 02 năm sau có trong danh sách |
+| E7-08 | Màn Chưa thuộc đợt nào | Người tròn mốc 20/01 không xuất hiện; badge không tăng vì người đó |
+| E7-09 | Xuất Excel từ tab Đủ điều kiện | Tải về được, đủ số dòng, dòng tiêu đề ghi đúng khoảng ngày |
+| E7-10 | Sửa đợt về 01/10 – 07/11 | Mọi dấu hiệu vắt năm biến mất, các con số đổi theo |
+| E7-11 | Sửa ngược lại 01/12 – 28/02 | Mọi con số trở về đúng trạng thái ban đầu — đổi chiều được |
+
+Ca ép ngày `E2E_TODAY=2027-01-15` (bảng đợt đọc "Đang diễn ra", Dashboard chọn lần diễn ra
+khởi đầu từ 01/12/2026) chờ T53 gỡ nút `HUYHIEUDANG_TEST_TODAY`; phần nghiệp vụ đã nghiệm thu
+ở tầng API bằng A-223.
+
 ### E2E — ca chạy lại và độc lập
 
 | Ca | Mong đợi |
@@ -666,12 +712,12 @@ Trạng thái đầu: đã đăng nhập, 4 đợt, cài đặt 30/90/5, bộ l�
 | **QT3a** Mốc kế tiếp (`—`) | U-351 → U-357 | A-120 | E1-14, E6-09, E6-11, E3-09 |
 | **QT4** Đủ điều kiện theo đợt/năm | U-401 → U-419 | A-214 → A-220 | E1-15, E1-16, E3-05, E5-03 |
 | **QT5** Không lưu kết quả | U-501 → U-503 | A-120, A-212, A-502 | E3-05, E3-06, E4-06, E6-04 |
-| **QT6** Đợt trao huy hiệu | U-601 → U-612 | A-205 → A-213 | E1-09, E1-10, E4-04, E4-09, E4-11 |
-| **QT7** Chưa thuộc đợt nào | U-701 → U-712 | A-401 → A-406 | E1-17, E3-07, E3-08, E4-01, E4-08 |
-| **QT8** Đợt sắp tới | U-801 → U-809 | A-301 → A-304 | E1-15, E-903, E-904 |
+| **QT6** Đợt trao huy hiệu | U-601 → U-612, U-620 → U-626 | A-205 → A-213, A-221 → A-224 | E1-09, E1-10, E4-04, E4-09, E4-11, E7-01 → E7-11 |
+| **QT7** Chưa thuộc đợt nào | U-701 → U-712, U-623, U-625 | A-401 → A-406, A-222 | E1-17, E3-07, E3-08, E4-01, E4-08, E7-08 |
+| **QT8** Đợt sắp tới | U-801 → U-809, U-626 | A-301 → A-304, A-223 | E1-15, E-903, E-904, E7-11 |
 | **QT9** Import Excel | U-901 → U-921 | A-601 → A-620 | E2-01 → E2-15 |
 | **QT10** Xóa hẳn | U-1001, U-1002 | A-121 → A-124, A-213 | E6-15, E6-16, E4-12 |
-| **QT11** Trạng thái đợt | U-1101 → U-1107 | A-202, A-203 | E1-09, E-903 |
+| **QT11** Trạng thái đợt | U-1101 → U-1107, U-626 | A-202, A-203, A-223 | E1-09, E-903, E7-03 |
 
 Use case: UC-00/01 → A-005, A-006, E1-01 → E1-03, E1-19 · UC-10 → A-301, E1-15 ·
 UC-11 → A-214, E1-16, E5-01 · UC-12 → A-305 → A-308, E1-04, E1-18 · UC-13 → A-306, E1-04 ·

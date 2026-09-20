@@ -28,6 +28,8 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ### Thêm
 
+- **Nghiệm thu QC cho đợt vắt qua 31/12 (T54).** Luồng end-to-end mới `e7-dot-vat-qua-nam` chạy trên trình duyệt thật, 8 ca đơn vị `U-620 → U-626` và 4 ca API `A-221 → A-224`. Oracle của QC viết lại theo lối đi từng ngày để không còn là bản chép của service. Báo cáo: `docs/test-report/2026-09-20-qc-dot-vat-qua-nam.md`.
+
 - `README.md`: cách chạy bằng `docker compose`, cách chạy chế độ phát triển, cách sao lưu và khôi phục bằng `pg_dump` / `psql`.
 - `CHANGELOG.md` (tài liệu này).
 
