@@ -330,7 +330,7 @@ export default function MembersPage() {
               >
                 {isFiltered
                   ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Giới tính: Tất cả.'
-                  : 'Cách nhanh nhất là tải file mẫu 4 cột (Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức), điền rồi import. Hoặc thêm từng người bằng tay.'}
+                  : 'Tải file mẫu, điền sau đó import. Hoặc thêm từng người'}
               </span>
             }
             action={
