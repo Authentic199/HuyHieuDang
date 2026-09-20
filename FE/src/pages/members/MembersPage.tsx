@@ -227,14 +227,13 @@ export default function MembersPage() {
     },
   ];
 
+  // Chưa tải được thì không nói "0 người" — dễ khiến người xem tưởng mất dữ liệu.
+  // Danh sách rỗng cũng để trống: khối trạng thái rỗng giữa bảng đã nói đúng điều đó rồi.
   const headingDescription = loading
     ? 'Đang tải danh sách…'
-    : // Chưa tải được thì không nói "0 người" — dễ khiến người xem tưởng mất dữ liệu.
-      error
+    : error || isPristineEmpty
       ? null
-      : isPristineEmpty
-        ? 'Chưa có ai trong danh sách'
-        : `${formatNumber(totalCount)} người · Tuổi đảng tính đến hôm nay`;
+      : `${formatNumber(totalCount)} người · Tuổi đảng tính đến hôm nay`;
 
   return (
     <div className="hhd-members">
