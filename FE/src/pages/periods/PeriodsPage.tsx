@@ -181,7 +181,7 @@ export default function PeriodsPage() {
     : error
       ? null
       : isEmpty
-        ? 'Chưa có đợt nào'
+        ? null
         : `${formatNumber(totalCount)} đợt · dùng chung cho mọi năm, chỉ lưu ngày/tháng`;
 
   return (
@@ -219,20 +219,6 @@ export default function PeriodsPage() {
             // Cỡ chữ và kiểu chữ lấy theo khối giữa của các artboard trống.
             <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
               Chưa có đợt trao huy hiệu nào
-            </span>
-          }
-          hint={
-            <span
-              style={{
-                display: 'block',
-                maxWidth: 560,
-                margin: '8px auto 0',
-                fontSize: 16,
-                lineHeight: '24px',
-              }}
-            >
-              Bác thêm đợt đầu tiên để hệ thống biết ai sẽ được trao huy hiệu trong năm nay. Đợt chỉ
-              lưu ngày và tháng, dùng chung cho mọi năm.
             </span>
           }
           action={<Button onClick={openCreate}>+ Thêm đợt đầu tiên</Button>}
