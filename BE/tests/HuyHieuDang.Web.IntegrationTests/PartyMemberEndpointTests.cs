@@ -4,6 +4,7 @@ using HuyHieuDang.Infrastructure.Modules.Auth.Responses;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Enums;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Requests;
+using HuyHieuDang.Infrastructure.Modules.PartyMembers.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -157,7 +158,7 @@ public class PartyMemberEndpointTests
         }
     }
 
-    [Fact(DisplayName = "3.1 · Sắp xếp theo cột; cột tính ra bị bỏ qua và quay về mặc định")]
+    [Fact(DisplayName = "3.1 · Sắp xếp theo cột; cột lạ bị bỏ qua và quay về mặc định")]
     public async Task Search_SortsBySortableColumnsOnly()
     {
         HttpClient client = await CreateAuthenticatedClientAsync();
@@ -179,11 +180,143 @@ public class PartyMemberEndpointTests
             new[] { "Cao Van Phuc", "Do Thi Mai", "Bui Thi Lan" },
             byAdmission.PagedData.Select(x => x.FullName).ToArray());
 
-        PagedPayload<PartyMemberPayload> computed =
-            await GetPageAsync(client, $"{BasePath}?sortQuery=partyAgeYears%20asc");
+        PagedPayload<PartyMemberPayload> unknownColumn =
+            await GetPageAsync(client, $"{BasePath}?sortQuery=khongCoCot%20asc");
         Assert.Equal(
             new[] { "Bui Thi Lan", "Cao Van Phuc", "Do Thi Mai" },
-            computed.PagedData.Select(x => x.FullName).ToArray());
+            unknownColumn.PagedData.Select(x => x.FullName).ToArray());
+    }
+
+    [Fact(DisplayName = "T51 · Sắp xếp theo Tuổi đảng quy về Ngày chính thức theo chiều ngược lại")]
+    public async Task Search_SortsByPartyAge()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+        await ResetAsync();
+        await SeedAsync(
+            new PartyMember { FullName = "Bui Thi Lan", OfficialAdmissionDate = new DateOnly(1998, 6, 12) },
+            new PartyMember { FullName = "Cao Van Phuc", OfficialAdmissionDate = new DateOnly(1976, 9, 12) },
+            new PartyMember { FullName = "Do Thi Mai", OfficialAdmissionDate = new DateOnly(1990, 1, 1) });
+
+        // Tuổi đảng tăng dần ⟺ vào Đảng muộn nhất đứng đầu.
+        foreach (string column in new[] { "PartyAge", "partyAgeYears" })
+        {
+            PagedPayload<PartyMemberPayload> ascending =
+                await GetPageAsync(client, $"{BasePath}?sortQuery={column}%20asc");
+            Assert.Equal(
+                new[] { "Bui Thi Lan", "Do Thi Mai", "Cao Van Phuc" },
+                ascending.PagedData.Select(x => x.FullName).ToArray());
+            Assert.Equal(new[] { 28, 36, 50 }, ascending.PagedData.Select(x => x.PartyAgeYears).ToArray());
+        }
+
+        PagedPayload<PartyMemberPayload> descending =
+            await GetPageAsync(client, $"{BasePath}?sortQuery=PartyAge%20desc");
+        Assert.Equal(new[] { 50, 36, 28 }, descending.PagedData.Select(x => x.PartyAgeYears).ToArray());
+    }
+
+    [Fact(DisplayName = "T51 · Sắp xếp theo Mốc kế tiếp; nhóm không còn mốc đứng cuối khi tăng dần")]
+    public async Task Search_SortsByNextMilestone()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+        await ResetAsync();
+        await SeedAsync(
+            new PartyMember { FullName = "Moc 30", OfficialAdmissionDate = new DateOnly(1998, 6, 12) },
+            new PartyMember { FullName = "Moc 40", OfficialAdmissionDate = new DateOnly(1990, 1, 1) },
+            new PartyMember { FullName = "Moc 55", OfficialAdmissionDate = new DateOnly(1976, 9, 12) },
+            new PartyMember { FullName = "Khong con moc", OfficialAdmissionDate = new DateOnly(1930, 1, 1) });
+
+        PagedPayload<PartyMemberPayload> ascending =
+            await GetPageAsync(client, $"{BasePath}?sortQuery=NextMilestone%20asc");
+        Assert.Equal(
+            new int?[] { 30, 40, 55, null },
+            ascending.PagedData.Select(x => x.NextMilestone).ToArray());
+
+        PagedPayload<PartyMemberPayload> descending =
+            await GetPageAsync(client, $"{BasePath}?sortQuery=NextMilestone%20desc");
+        Assert.Equal(
+            new int?[] { null, 55, 40, 30 },
+            descending.PagedData.Select(x => x.NextMilestone).ToArray());
+    }
+
+    [Fact(DisplayName = "T51 · Lọc theo Mốc kế tiếp chạy trong SQL nên tổng số dòng đúng")]
+    public async Task Search_FiltersByNextMilestone()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+        await ResetAsync();
+
+        // "Moc 40 bien" tròn đúng 35 năm vào hôm nay nên mốc kế tiếp của người này đã là 40.
+        await SeedAsync(
+            new PartyMember { FullName = "Moc 30 A", OfficialAdmissionDate = new DateOnly(1998, 6, 12) },
+            new PartyMember { FullName = "Moc 30 B", OfficialAdmissionDate = new DateOnly(2020, 1, 1) },
+            new PartyMember { FullName = "Moc 40 bien", OfficialAdmissionDate = new DateOnly(1991, 9, 19) },
+            new PartyMember { FullName = "Moc 40", OfficialAdmissionDate = new DateOnly(1990, 1, 1) },
+            new PartyMember { FullName = "Khong con moc", OfficialAdmissionDate = new DateOnly(1930, 1, 1) });
+
+        PagedPayload<PartyMemberPayload> milestone40 =
+            await GetPageAsync(client, $"{BasePath}?pageSize=1&filter.NextMilestone=$eq:40");
+        Assert.Equal(2, milestone40.PageInfo.TotalCount);
+        Assert.Equal(40, Assert.Single(milestone40.PagedData).NextMilestone);
+
+        PagedPayload<PartyMemberPayload> milestone30 =
+            await GetPageAsync(client, $"{BasePath}?filter.NextMilestone=$eq:30");
+        Assert.Equal(2, milestone30.PageInfo.TotalCount);
+        Assert.All(milestone30.PagedData, x => Assert.Equal(30, x.NextMilestone));
+
+        PagedPayload<PartyMemberPayload> none =
+            await GetPageAsync(client, $"{BasePath}?filter.NextMilestone=$eq:None");
+        Assert.Equal(1, none.PageInfo.TotalCount);
+        Assert.Equal("Khong con moc", none.PagedData.Single().FullName);
+        Assert.Null(none.PagedData.Single().NextMilestone);
+
+        // Lọc và tìm kiếm cùng lúc vẫn cộng dồn trong một câu SQL.
+        PagedPayload<PartyMemberPayload> combined =
+            await GetPageAsync(client, $"{BasePath}?searchKeyword=bien&filter.NextMilestone=$eq:40");
+        Assert.Equal(1, combined.PageInfo.TotalCount);
+        Assert.Equal("Moc 40 bien", combined.PagedData.Single().FullName);
+    }
+
+    [Fact(DisplayName = "T51 · Lọc theo Mốc kế tiếp bám dãy mốc trong Cài đặt")]
+    public async Task Search_FiltersByNextMilestone_FollowsSettings()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+        await ResetAsync();
+        await SeedAsync(
+            new PartyMember { FullName = "Tuoi dang 36", OfficialAdmissionDate = new DateOnly(1990, 1, 1) });
+
+        // Bước 5: tuổi đảng 36 cho mốc kế tiếp 40.
+        Assert.Equal(1, (await GetPageAsync(client, $"{BasePath}?filter.NextMilestone=$eq:40")).PageInfo.TotalCount);
+
+        await UpdateMilestoneSettingsAsync(client, startYears: 30, endYears: 90, stepYears: 10);
+
+        try
+        {
+            // Bước 10: mốc 35 biến mất khỏi dãy nên là 400, còn mốc kế tiếp của người này vẫn 40.
+            Assert.Equal(1, (await GetPageAsync(client, $"{BasePath}?filter.NextMilestone=$eq:40")).PageInfo.TotalCount);
+
+            HttpResponseMessage removed = await client.GetAsync($"{BasePath}?filter.NextMilestone=$eq:35");
+            Assert.Equal(HttpStatusCode.BadRequest, removed.StatusCode);
+        }
+        finally
+        {
+            await UpdateMilestoneSettingsAsync(client, startYears: 30, endYears: 90, stepYears: 5);
+        }
+    }
+
+    [Theory(DisplayName = "T51 · Mốc không hợp lệ trả 400 kèm khóa Invalid.NextMilestone")]
+    [InlineData("$eq:33")]
+    [InlineData("$eq:abc")]
+    [InlineData("$eq:")]
+    [InlineData("$gt:30")]
+    [InlineData("40")]
+    public async Task Search_WithUnknownNextMilestone_ReturnsBadRequest(string value)
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+
+        HttpResponseMessage response = await client.GetAsync($"{BasePath}?filter.NextMilestone={value}");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(
+            Messages<PartyMember>.Invalid(nameof(PartyMemberResponse.NextMilestone)),
+            (await response.ReadApiResponseAsync<object>()).Message);
     }
 
     [Fact(DisplayName = "3.3 · Thêm mới trả 200 kèm bản ghi vừa tạo và khóa Create.Successfully")]
@@ -434,6 +567,16 @@ public class PartyMemberEndpointTests
         HttpResponseMessage response = await client.SendAsync(request);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    private static async Task UpdateMilestoneSettingsAsync(
+        HttpClient client, int startYears, int endYears, int stepYears)
+    {
+        HttpResponseMessage response = await client.PutAsJsonAsync(
+            "/api/Settings",
+            new { startYears, endYears, stepYears });
+
+        response.EnsureSuccessStatusCode();
     }
 
     private static async Task<PagedPayload<PartyMemberPayload>> GetPageAsync(HttpClient client, string url)

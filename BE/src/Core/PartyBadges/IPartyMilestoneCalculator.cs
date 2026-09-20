@@ -39,6 +39,27 @@ public interface IPartyMilestoneCalculator : IScopedService
     /// <returns>Ngày tròn mốc kế tiếp, hoặc <c>null</c> khi đã vượt mốc lớn nhất.</returns>
     DateOnly? GetNextAnniversary(DateOnly officialAdmissionDate, DateOnly today, IReadOnlyList<int> milestones);
 
+    /// <summary>
+    /// T51 — Ngày chính thức muộn nhất mà tuổi đảng hôm nay vẫn đạt <paramref name="age"/> năm.
+    /// Phép nghịch đảo của <see cref="GetPartyAge"/>: <c>GetPartyAge(D, today) >= age</c> đúng khi
+    /// và chỉ khi <c>D &lt;= GetLatestAdmissionDateForAge(today, age)</c>.
+    /// </summary>
+    /// <param name="today">Ngày hôm nay.</param>
+    /// <param name="age">Số năm tuổi đảng cần đạt.</param>
+    /// <returns>Ngày chính thức muộn nhất; 29/02 được tính vào theo đúng QT2.</returns>
+    DateOnly GetLatestAdmissionDateForAge(DateOnly today, int age);
+
+    /// <summary>
+    /// T51 — khoảng Ngày chính thức của những người có đúng một giá trị "Mốc kế tiếp" (QT3a),
+    /// để điều kiện lọc nằm được trong SQL thay vì lọc sau khi nạp.
+    /// </summary>
+    /// <param name="milestone">Mốc kế tiếp cần lọc; <c>null</c> nghĩa là đã vượt mốc lớn nhất.</param>
+    /// <param name="today">Ngày hôm nay.</param>
+    /// <param name="milestones">Dãy mốc của QT1.</param>
+    /// <returns>Khoảng nửa mở tương đương điều kiện lọc.</returns>
+    AdmissionDateRange GetAdmissionDateRangeForNextMilestone(
+        int? milestone, DateOnly today, IReadOnlyList<int> milestones);
+
     /// <summary>Gắn một năm cụ thể vào đợt (QT4).</summary>
     /// <param name="period">Đợt chỉ có ngày/tháng.</param>
     /// <param name="year">Năm cần gắn.</param>
