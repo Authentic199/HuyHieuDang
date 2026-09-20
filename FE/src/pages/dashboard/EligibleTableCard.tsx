@@ -29,8 +29,11 @@ import { EligibleMilestoneTag } from '../periods/detail/EligibleMilestoneTag';
 /** Các lựa chọn số dòng mỗi trang, lấy đúng bộ của màn Đảng viên. */
 const PAGE_SIZES = [10, 20, 50, 100];
 
-/** Số dòng mỗi trang mặc định, bằng màn Đảng viên (mục 1.7 hợp đồng API). */
-const DEFAULT_PAGE_SIZE = 20;
+/**
+ * Số dòng mỗi trang mặc định. Ít hơn màn Đảng viên (20) vì thẻ này nằm dưới
+ * thẻ đợt sắp tới — 10 dòng vừa đúng một màn, không phải cuộn.
+ */
+const DEFAULT_PAGE_SIZE = 10;
 
 /**
  * Bỏ dấu và hạ chữ thường để gõ "nguyen van" vẫn tìm ra "Nguyễn Văn" — cán bộ
