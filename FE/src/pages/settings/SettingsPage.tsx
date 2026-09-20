@@ -267,10 +267,8 @@ export default function SettingsPage() {
         </div>
 
         <div className="hhd-settings__card">
-          <div>
-            <div className="hhd-settings__card-title">Tên đơn vị</div>
-          </div>
-
+          {/* Thẻ mở thẳng bằng ô nhập; `label` của Form.Item là nhãn duy nhất
+              còn lại để nhận ra ô này, kể cả với trình đọc màn hình. */}
           <Form.Item
             name="unitName"
             label="Tên đơn vị"
