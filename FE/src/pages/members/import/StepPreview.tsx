@@ -133,7 +133,9 @@ interface StepPreviewProps {
   /** Lỗi khi nạp — câu tiếng Việt đã dịch, null khi không lỗi */
   error: string | null;
   onCommit: () => void;
+  /** Về bước 1, giữ nguyên file đã chọn */
   onBack: () => void;
+  /** Bỏ hẳn việc import và rời màn Import */
   onCancel: () => void;
 }
 
@@ -230,8 +232,8 @@ export function StepPreview({
           <span className="hhd-import__footer-note">
             Các dòng lỗi sẽ không được nạp. Sửa trong file gốc rồi import lại nếu cần.
           </span>
-          {/* "Hủy" bỏ luôn file đang xem và quay về bước 1; "Quay lại" giữ file
-              để bác xem lại phần mô tả 4 cột rồi tiếp tục. */}
+          {/* "Hủy" bỏ hẳn việc import và về thẳng danh sách đảng viên; "Quay
+              lại" giữ file để bác xem lại phần mô tả 4 cột rồi tiếp tục. */}
           <Button type="text" onClick={onCancel}>
             Hủy
           </Button>

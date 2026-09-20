@@ -47,8 +47,6 @@ export interface UseImportWizardResult {
   goCommit: () => Promise<void>;
   /** Bước 2 → bước 1, giữ nguyên file để chọn lại cho nhanh */
   backToChoose: () => void;
-  /** "Hủy" ở bước 2: về bước 1 và bỏ file */
-  cancelToChoose: () => void;
   /** "Import file khác" ở bước 3: làm lại từ đầu */
   restart: () => void;
 }
@@ -126,11 +124,6 @@ export function useImportWizard(): UseImportWizardResult {
     setStep('choose');
   }, []);
 
-  const cancelToChoose = useCallback(() => {
-    setStep('choose');
-    clearFile();
-  }, [clearFile]);
-
   const restart = useCallback(() => {
     setStep('choose');
     setResult(null);
@@ -151,7 +144,6 @@ export function useImportWizard(): UseImportWizardResult {
     goPreview,
     goCommit,
     backToChoose,
-    cancelToChoose,
     restart,
   };
 }

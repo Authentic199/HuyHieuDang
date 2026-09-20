@@ -22,6 +22,16 @@ export default function MembersImportPage() {
 
   const backToList = () => navigate(paths.members);
 
+  /**
+   * "Hủy" ở bước 2 là bỏ hẳn việc import: xóa file và kết quả xem trước rồi
+   * về thẳng danh sách đảng viên, để lần vào sau wizard bắt đầu từ bước 1
+   * trắng. Đường lùi về bước 1 mà vẫn giữ file là nút "‹ Quay lại".
+   */
+  const cancelImport = () => {
+    wizard.restart();
+    backToList();
+  };
+
   return (
     <div className="hhd-import">
       <div>
@@ -56,7 +66,7 @@ export default function MembersImportPage() {
           error={wizard.fileError}
           onCommit={wizard.goCommit}
           onBack={wizard.backToChoose}
-          onCancel={wizard.cancelToChoose}
+          onCancel={cancelImport}
         />
       ) : null}
 
