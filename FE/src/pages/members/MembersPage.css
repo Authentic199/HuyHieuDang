@@ -86,3 +86,8 @@
 .hhd-members .ant-table-thead th {
   white-space: nowrap;
 }
+
+/* Số thứ tự đọc như chú thích, giống cột STT ba bảng kia. */
+.hhd-members td.hhd-members__index {
+  color: var(--hhd-text-tertiary);
+}

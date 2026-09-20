@@ -96,6 +96,14 @@ export default function PeriodsPage() {
 
   const columns: ColumnsType<AwardPeriodResponse> = [
     {
+      key: 'index',
+      title: 'STT',
+      width: 72,
+      className: 'hhd-periods__index',
+      // Bảng này không phân trang nên số thứ tự chạy thẳng từ 1.
+      render: (_value, _record, index) => index + 1,
+    },
+    {
       key: 'name',
       title: 'Tên đợt',
       dataIndex: 'name',

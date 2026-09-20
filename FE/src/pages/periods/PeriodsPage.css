@@ -48,6 +48,11 @@
 
 /* Từ ngày / Đến ngày dùng chữ đều nét như artboard, cỡ 14px theo quy tắc
    "chữ trong bảng tối thiểu 14px" của CLAUDE.md. */
+/* Số thứ tự đọc như chú thích, giống cột STT các bảng kia. */
+.hhd-periods td.hhd-periods__index {
+  color: var(--hhd-text-tertiary);
+}
+
 .hhd-periods td.hhd-periods__daycell {
   font-family: var(--hhd-font-mono);
   font-size: 14px;
