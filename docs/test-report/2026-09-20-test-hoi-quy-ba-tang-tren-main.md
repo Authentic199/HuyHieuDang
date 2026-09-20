@@ -587,11 +587,11 @@ Mỗi dòng dưới đây là một ca kiểm thử; các biến thể `Theory` 
 ### A8DefectTests
 
 - QC-T27-04 · A-905 · Lỗi ép kiểu tham số do tầng gắn dữ liệu sinh ra trả câu tiếng Anh ("The value '2147483648' is not valid for Year.") thay vì một khóa Mes.*. Mục 1.5 hợp đồng API chốt Backend chỉ trả khóa, Frontend mới dựng chữ; câu tiếng Anh này hiện thẳng lên banner của người dùng — BỎ QUA (QC-T27-04 · đã sửa ở PR #35, xác minh xanh 20/09/2026, chờ PR vào main)
-- QC-T27-07 · A-905 · Ba khóa thông điệp Backend thật sự trả ra nhưng bảng mục 1.5 hợp đồng API không có, nên Frontend chỉ hiện câu mặc định "Thao tác không thực hiện được" thay vì nói rõ chỗ sai — BỎ QUA (QC-T27-07 · CÒN MỞ, hợp đồng API mục 1.5 vẫn thiếu khóa)
+- QC-T27-07 · A-905 · Ba khóa thông điệp Backend thật sự trả ra nhưng bảng mục 1.5 hợp đồng API không có, nên Frontend chỉ hiện câu mặc định "Thao tác không thực hiện được" thay vì nói rõ chỗ sai — BỎ QUA (QC-T27-07 · đã sửa ở PR #46 — contract v1.4, gỡ Skip khi #46 gộp)
 - QC-T27-06 · A-905 · GET /api/Settings/Milestones?start=1&end=1000000&step=1 trả 200 với một triệu mốc, gần 7 MB JSON. Ô xem trước gọi endpoint này sau mỗi lần gõ phím, nên một lần gõ nhầm là treo cả trình duyệt — BỎ QUA (QC-T27-06 · đã sửa ở PR #35, xác minh xanh 20/09/2026, chờ PR vào main)
 - QC-T27-03 · A-106 · Cỡ trang không có trần: gửi pageSize=1000000000 vẫn trả 200 kèm **toàn bộ** kho dữ liệu trong một phản hồi. Kế hoạch kiểm thử đòi "bị chặn hoặc kẹp về mức trần" — BỎ QUA (QC-T27-03 · đã sửa ở PR #35, xác minh xanh 20/09/2026, chờ PR vào main)
 - QC-T27-02 · A-104, A-106 · Số trang lớn làm tràn số nguyên khi nhân với cỡ trang: máy chủ trả 500 kèm nguyên văn Npgsql.PostgresException: OFFSET must not be negative và cả dấu vết ngăn xếp. Kế hoạch kiểm thử đòi trang vượt quá trang cuối trả danh sách rỗng, không phải lỗi 500 — BỎ QUA (QC-T27-02 · đã sửa ở PR #35, xác minh xanh 20/09/2026, chờ PR vào main)
-- QC-T27-05 · A-113 · Bộ lọc giới tính mang giá trị lạ (filter.Gender=$eq:Khac) hoặc rỗng bị bỏ qua lặng lẽ và trả **toàn bộ** danh sách. Người dùng tưởng đang lọc nhưng đang nhìn cả kho; hoặc phải trả 400, hoặc phải trả 0 dòng — BỎ QUA (QC-T27-05 · CÒN MỞ, chưa ai sửa)
+- QC-T27-05 · A-113 · Bộ lọc giới tính mang giá trị lạ (filter.Gender=$eq:Khac) hoặc rỗng bị bỏ qua lặng lẽ và trả **toàn bộ** danh sách. Người dùng tưởng đang lọc nhưng đang nhìn cả kho; hoặc phải trả 400, hoặc phải trả 0 dòng — BỎ QUA (QC-T27-05 · đang sửa ở T47 — HUYH-53, tại tầng lọc dùng chung)
 
 ### A4UnassignedTests
 
