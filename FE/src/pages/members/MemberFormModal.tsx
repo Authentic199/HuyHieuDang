@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { membersApi } from '../../api';
 import type { MemberPayload } from '../../api/members';
 import { FALLBACK_MESSAGE, messageText } from '../../api/messages';
+import { RequiredFieldNote, requiredMark } from '../../components/RequiredMark';
 import { ApiError } from '../../types/api';
 import type { Gender, IsoDate, PartyMemberResponse } from '../../types/domain';
 import { fromIsoDate, toIsoDate } from '../../utils/format';
@@ -91,6 +92,20 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
       okButtonProps={{ loading: submitting }}
       cancelButtonProps={{ disabled: submitting }}
       onOk={() => form.submit()}
+      // Chú thích dấu sao ở góc trái, cụm nút vẫn nằm bên phải.
+      footer={(originNode) => (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
+          <RequiredFieldNote />
+          <div>{originNode}</div>
+        </div>
+      )}
     >
       {errorMessage ? (
         <Alert
@@ -111,7 +126,7 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
           gender: member?.gender ?? 'Unknown',
           officialAdmissionDate: fromIsoDate(member?.officialAdmissionDate),
         }}
-        requiredMark={false}
+        requiredMark={requiredMark}
         onFinish={handleFinish}
         disabled={submitting}
       >

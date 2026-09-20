@@ -104,18 +104,15 @@
   align-items: center;
   gap: 12px;
   border-top: 1px solid #e6e8ec;
-  padding-top: 20px;
+  /* Thẻ đi theo nhịp 24px. Nút cao 40px nên chữ của nó nằm thụt vào trong hộp
+     12px; trừ đi phần thụt đó thì chữ mới cách đường kẻ đúng 24px như các
+     khối khác, thay vì 32px làm chân thẻ trông rỗng. */
+  padding-top: 12px;
 }
 
+/* Chân thẻ chỉ còn hai phần tử: chú thích dấu sao bên trái, nút Lưu bên phải. */
 .hhd-settings__card-foot--save {
-  justify-content: flex-end;
-}
-
-.hhd-settings__save-note {
-  margin-right: auto;
-  color: #55575c;
-  font-size: 14px;
-  line-height: 20px;
+  justify-content: space-between;
 }
 
 .hhd-settings__card-foot .ant-btn {

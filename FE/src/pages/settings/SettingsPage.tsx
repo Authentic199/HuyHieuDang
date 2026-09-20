@@ -5,6 +5,7 @@ import { FALLBACK_MESSAGE } from '../../api/messages';
 import type { SettingsPayload, SettingsResponse } from '../../api/settings';
 import { useAuth } from '../../auth/useAuth';
 import { PageHeading } from '../../components/PageHeading';
+import { RequiredFieldNote, requiredMark } from '../../components/RequiredMark';
 import { TableError } from '../../components/TableStates';
 import { ApiError } from '../../types/api';
 import { MilestonePreview } from './MilestonePreview';
@@ -193,7 +194,7 @@ export default function SettingsPage() {
       <Form<SettingsFormValues>
         form={form}
         layout="vertical"
-        requiredMark={false}
+        requiredMark={requiredMark}
         disabled={busy}
         initialValues={EMPTY_FORM}
         // Bác sửa lại ô nào thì bỏ câu lỗi máy chủ đang treo ở đó.
@@ -212,6 +213,8 @@ export default function SettingsPage() {
             <Form.Item
               name="startYears"
               label="Bắt đầu (năm)"
+              // Chỉ đánh dấu hiển thị: validate vẫn do máy chủ trả về qua fieldErrors.
+              required
               validateStatus={fieldErrors.startYears ? 'error' : ''}
               help={fieldErrors.startYears}
             >
@@ -221,6 +224,8 @@ export default function SettingsPage() {
             <Form.Item
               name="endYears"
               label="Kết thúc (năm)"
+              // Chỉ đánh dấu hiển thị: validate vẫn do máy chủ trả về qua fieldErrors.
+              required
               validateStatus={fieldErrors.endYears ? 'error' : ''}
               help={fieldErrors.endYears}
             >
@@ -230,6 +235,8 @@ export default function SettingsPage() {
             <Form.Item
               name="stepYears"
               label="Bước (năm)"
+              // Chỉ đánh dấu hiển thị: validate vẫn do máy chủ trả về qua fieldErrors.
+              required
               validateStatus={fieldErrors.stepYears ? 'error' : ''}
               help={fieldErrors.stepYears}
             >
@@ -244,7 +251,6 @@ export default function SettingsPage() {
             showIcon
             className="hhd-settings__impact"
             message="Thay đổi ảnh hưởng ngay đến mọi danh sách đủ điều kiện"
-            description="Áp dụng cho mọi năm và cho Dashboard."
           />
 
           <div className="hhd-settings__card-foot">
@@ -261,14 +267,8 @@ export default function SettingsPage() {
         </div>
 
         <div className="hhd-settings__card">
-          <div>
-            <div className="hhd-settings__card-title">Tên đơn vị</div>
-            <div className="hhd-settings__card-note">
-              Hiện trên header mọi màn và dòng tiêu đề file Excel. Để trống thì header chỉ hiện tên
-              hệ thống.
-            </div>
-          </div>
-
+          {/* Thẻ mở thẳng bằng ô nhập; `label` của Form.Item là nhãn duy nhất
+              còn lại để nhận ra ô này, kể cả với trình đọc màn hình. */}
           <Form.Item
             name="unitName"
             label="Tên đơn vị"
@@ -279,9 +279,7 @@ export default function SettingsPage() {
           </Form.Item>
 
           <div className="hhd-settings__card-foot hhd-settings__card-foot--save">
-            <span className="hhd-settings__save-note">
-              Nút Lưu lưu cả mốc tuổi đảng và tên đơn vị.
-            </span>
+            <RequiredFieldNote />
             <Button type="primary" loading={saving} disabled={!canSave} onClick={handleSave}>
               Lưu
             </Button>
