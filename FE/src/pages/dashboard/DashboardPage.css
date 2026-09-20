@@ -209,14 +209,19 @@
   min-width: 0;
 }
 
+/* Thanh phân trang của bảng nằm gọn trong thẻ, không dính sát mép. */
+.hhd-dashboard__panel .ant-pagination {
+  padding: 0 20px;
+}
+
 .hhd-dashboard__panel-title > span:first-child {
   font: 700 16px/24px var(--hhd-font-serif);
 }
 
-.hhd-dashboard__panel-hint {
-  color: var(--hhd-text-tertiary);
-  font-size: 13px;
-  white-space: nowrap;
+/* Ô tìm nằm giữa tên đợt và nút Xuất Excel, cùng hàng đầu thẻ. */
+.hhd-dashboard__search {
+  width: 280px;
+  margin-left: auto;
 }
 
 /* TableStates dựng sẵn một thẻ trắng có viền bằng style nội tuyến; ở đây nó đã
