@@ -24,8 +24,6 @@ interface DashboardAlertsProps {
 interface AlertItem {
   key: string;
   title: ReactNode;
-  /** Câu giải thích dưới tiêu đề; có cảnh báo chỉ một dòng nên để trống */
-  detail?: ReactNode;
   actionLabel: string;
   to: string;
 }
@@ -43,7 +41,6 @@ export function DashboardAlerts({ warnings }: DashboardAlertsProps) {
     items.push({
       key: 'no-members',
       title: <b>Chưa có đảng viên nào</b>,
-      detail: 'Nạp danh sách để bắt đầu tính.',
       actionLabel: 'Import Excel →',
       to: paths.membersImport,
     });
@@ -53,7 +50,6 @@ export function DashboardAlerts({ warnings }: DashboardAlertsProps) {
     items.push({
       key: 'no-periods',
       title: <b>Chưa cài đợt trao huy hiệu</b>,
-      detail: 'Hệ thống chưa biết gom người theo khoảng ngày nào.',
       actionLabel: 'Tạo đợt →',
       to: paths.periods,
     });
@@ -109,7 +105,6 @@ export function DashboardAlerts({ warnings }: DashboardAlertsProps) {
           <WarningFilled className="hhd-dashboard__alert-icon" />
           <div className="hhd-dashboard__alert-text">
             <div>{item.title}</div>
-            {item.detail ? <div className="hhd-dashboard__alert-detail">{item.detail}</div> : null}
           </div>
           <Button
             type="link"

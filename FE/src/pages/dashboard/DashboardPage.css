@@ -40,10 +40,6 @@
   line-height: 22px;
 }
 
-.hhd-dashboard__alert-detail {
-  color: var(--hhd-text-secondary);
-}
-
 .hhd-dashboard__alert-action.ant-btn-link {
   color: var(--hhd-red-link);
   font-weight: 600;
@@ -293,14 +289,6 @@
   letter-spacing: -0.005em;
 }
 
-.hhd-dashboard__guide-lead {
-  color: var(--hhd-text-secondary);
-  font-size: 16px;
-  line-height: 24px;
-  margin-top: var(--hhd-space-sm);
-  text-wrap: pretty;
-}
-
 .hhd-dashboard__steps {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -343,11 +331,6 @@
 
 .hhd-dashboard__step-title {
   font: 700 16px/24px var(--hhd-font-serif);
-}
-
-.hhd-dashboard__step-detail {
-  color: var(--hhd-text-secondary);
-  flex: 1;
 }
 
 .hhd-dashboard__step-arrow {
