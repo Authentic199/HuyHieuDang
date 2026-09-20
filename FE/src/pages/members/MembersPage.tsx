@@ -18,12 +18,7 @@ import { saveFile } from '../../utils/download';
 import { MemberFormModal } from './MemberFormModal';
 import { MilestoneTag } from './MilestoneTag';
 import './MembersPage.css';
-import {
-  DEFAULT_MEMBERS_QUERY,
-  MEMBERS_PAGE_SIZES,
-  useMembers,
-  type GenderFilter,
-} from './useMembers';
+import { MEMBERS_PAGE_SIZES, NO_SORT_QUERY, useMembers, type GenderFilter } from './useMembers';
 
 /** Chờ người dùng gõ xong rồi mới gọi máy chủ, đỡ giật bảng. */
 const SEARCH_DEBOUNCE_MS = 400;
@@ -67,6 +62,7 @@ export default function MembersPage() {
   const isPristineEmpty = isEmpty && !isFiltered && !loading && !error;
   const selectedRows = rows.filter((row) => selectedIds.includes(row.id));
 
+  // sortQuery rỗng thì sortField cũng rỗng, không khớp cột nào — cả bảng sạch mũi tên.
   const [sortField, sortDirection] = query.sortQuery.split(' ');
   const sortOrderOf = (field: string) =>
     sortField === field ? (sortDirection === 'desc' ? 'descend' : 'ascend') : null;
@@ -135,10 +131,12 @@ export default function MembersPage() {
   function handleTableChange(pagination: TablePaginationConfig, sorter: MemberSorter) {
     const single = Array.isArray(sorter) ? sorter[0] : sorter;
     const field = single?.columnKey as string | undefined;
+    // antd cho ba trạng thái: tăng -> giảm -> bỏ sắp xếp. Lần nhấn thứ ba trả
+    // về order rỗng, nghĩa là người dùng muốn thôi sắp xếp theo cột đó.
     const nextSort =
       field && single?.order
         ? `${field} ${single.order === 'descend' ? 'desc' : 'asc'}`
-        : DEFAULT_MEMBERS_QUERY.sortQuery;
+        : NO_SORT_QUERY;
     const sortChanged = nextSort !== query.sortQuery;
     changeQuery({
       sortQuery: nextSort,
@@ -368,7 +366,6 @@ export default function MembersPage() {
                 rowKey="id"
                 columns={columns}
                 dataSource={rows}
-                sortDirections={['ascend', 'descend', 'ascend']}
                 rowSelection={{
                   selectedRowKeys: selectedIds,
                   onChange: (keys) => setSelectedIds(keys as string[]),

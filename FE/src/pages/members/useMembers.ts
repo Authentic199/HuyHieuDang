@@ -20,9 +20,19 @@ export interface MembersQuery {
   gender: GenderFilter;
   current: number;
   pageSize: number;
-  /** Ví dụ 'FullName asc'. Chỉ nhận 4 cột trong SORTABLE_MEMBER_FIELDS. */
+  /**
+   * Ví dụ 'FullName asc'. Chỉ nhận 4 cột trong SORTABLE_MEMBER_FIELDS.
+   * Rỗng nghĩa là người dùng đã bỏ sắp xếp — xem NO_SORT_QUERY.
+   */
   sortQuery: string;
 }
+
+/**
+ * Trạng thái "bỏ sắp xếp": nhấn lần thứ ba vào tên cột thì về đây. Không gửi
+ * tham số nào lên máy chủ, để máy chủ tự dùng thứ tự mặc định `FullName asc`
+ * (mục 1.7 hợp đồng API) — thứ tự luôn xác định nên phân trang không nhảy dòng.
+ */
+export const NO_SORT_QUERY = '';
 
 /** Số dòng mỗi trang mặc định lấy theo mục 1.7 của hợp đồng API. */
 export const DEFAULT_MEMBERS_QUERY: MembersQuery = {
@@ -30,7 +40,7 @@ export const DEFAULT_MEMBERS_QUERY: MembersQuery = {
   gender: 'All',
   current: 1,
   pageSize: 20,
-  sortQuery: 'FullName asc',
+  sortQuery: NO_SORT_QUERY,
 };
 
 /** Các lựa chọn số dòng mỗi trang cho ô "… / trang" ở chân bảng. */
@@ -99,8 +109,9 @@ export function useMembers(): UseMembersResult {
     const payload: MemberSearchQuery = {
       current: query.current,
       pageSize: query.pageSize,
-      sortQuery: query.sortQuery,
       searchKeyword: query.keyword,
+      // Bỏ sắp xếp thì bỏ luôn tham số, không gửi chuỗi rỗng.
+      ...(query.sortQuery === NO_SORT_QUERY ? {} : { sortQuery: query.sortQuery }),
       ...(query.gender === 'All' ? {} : { gender: query.gender }),
     };
 
