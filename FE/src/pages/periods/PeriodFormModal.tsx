@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { periodsApi } from '../../api';
 import { FALLBACK_MESSAGE, messageText } from '../../api/messages';
+import { RequiredFieldNote, requiredMark } from '../../components/RequiredMark';
 import type { AwardPeriodPayload } from '../../api/periods';
 import { ApiError } from '../../types/api';
 import type { AwardPeriodResponse, CoverageWarnings } from '../../types/domain';
@@ -98,6 +99,20 @@ export function PeriodFormModal({ period, onCancel, onSaved }: PeriodFormModalPr
       okButtonProps={{ loading: submitting }}
       cancelButtonProps={{ disabled: submitting }}
       onOk={() => form.submit()}
+      // Chú thích dấu sao ở góc trái, cụm nút vẫn nằm bên phải.
+      footer={(originNode) => (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
+          <RequiredFieldNote />
+          <div>{originNode}</div>
+        </div>
+      )}
     >
       {errorMessage ? (
         <Alert
@@ -117,13 +132,7 @@ export function PeriodFormModal({ period, onCancel, onSaved }: PeriodFormModalPr
           from: toPickerValue(period?.fromDay, period?.fromMonth),
           to: toPickerValue(period?.toDay, period?.toMonth),
         }}
-        // Dấu sao đứng SAU nhãn, đúng bản vẽ "Tên đợt *" của artboard 5.
-        requiredMark={(label, { required }) => (
-          <>
-            {label}
-            {required ? <span style={{ color: '#8e1d3a' }}>{' *'}</span> : null}
-          </>
-        )}
+        requiredMark={requiredMark}
         onFinish={handleFinish}
         disabled={submitting}
       >

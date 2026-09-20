@@ -5,6 +5,7 @@ import { FALLBACK_MESSAGE } from '../../api/messages';
 import type { SettingsPayload, SettingsResponse } from '../../api/settings';
 import { useAuth } from '../../auth/useAuth';
 import { PageHeading } from '../../components/PageHeading';
+import { RequiredFieldNote, requiredMark } from '../../components/RequiredMark';
 import { TableError } from '../../components/TableStates';
 import { ApiError } from '../../types/api';
 import { MilestonePreview } from './MilestonePreview';
@@ -193,7 +194,7 @@ export default function SettingsPage() {
       <Form<SettingsFormValues>
         form={form}
         layout="vertical"
-        requiredMark={false}
+        requiredMark={requiredMark}
         disabled={busy}
         initialValues={EMPTY_FORM}
         // Bác sửa lại ô nào thì bỏ câu lỗi máy chủ đang treo ở đó.
@@ -212,6 +213,8 @@ export default function SettingsPage() {
             <Form.Item
               name="startYears"
               label="Bắt đầu (năm)"
+              // Chỉ đánh dấu hiển thị: validate vẫn do máy chủ trả về qua fieldErrors.
+              required
               validateStatus={fieldErrors.startYears ? 'error' : ''}
               help={fieldErrors.startYears}
             >
@@ -221,6 +224,8 @@ export default function SettingsPage() {
             <Form.Item
               name="endYears"
               label="Kết thúc (năm)"
+              // Chỉ đánh dấu hiển thị: validate vẫn do máy chủ trả về qua fieldErrors.
+              required
               validateStatus={fieldErrors.endYears ? 'error' : ''}
               help={fieldErrors.endYears}
             >
@@ -230,6 +235,8 @@ export default function SettingsPage() {
             <Form.Item
               name="stepYears"
               label="Bước (năm)"
+              // Chỉ đánh dấu hiển thị: validate vẫn do máy chủ trả về qua fieldErrors.
+              required
               validateStatus={fieldErrors.stepYears ? 'error' : ''}
               help={fieldErrors.stepYears}
             >
@@ -279,6 +286,7 @@ export default function SettingsPage() {
           </Form.Item>
 
           <div className="hhd-settings__card-foot hhd-settings__card-foot--save">
+            <RequiredFieldNote />
             <span className="hhd-settings__save-note">
               Nút Lưu lưu cả mốc tuổi đảng và tên đơn vị.
             </span>
