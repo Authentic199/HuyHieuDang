@@ -29,7 +29,7 @@ public sealed class A8DefectTests
     /// trả danh sách rỗng, không phải lỗi 500.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-02 · current lớn gây tràn số, trả 500 OFFSET must not be negative")]
+    [Fact(Skip = "QC-T27-02 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
     public async Task QcT2702_So_trang_lon_khong_duoc_lam_may_chu_loi_500()
     {
         await QcDb.SeedCoreAsync(factory);
@@ -53,7 +53,7 @@ public sealed class A8DefectTests
     /// chặn hoặc kẹp về mức trần".
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-03 · pageSize không có trần, một lời gọi kéo về cả kho dữ liệu")]
+    [Fact(Skip = "QC-T27-03 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
     public async Task QcT2703_Co_trang_phai_bi_chan_hoac_kep_ve_muc_tran()
     {
         await QcDb.SeedCoreAndBulkAsync(factory);
@@ -83,7 +83,7 @@ public sealed class A8DefectTests
     /// câu tiếng Anh này hiện thẳng lên banner của người dùng.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-04 · lỗi ép kiểu tham số trả câu tiếng Anh, không phải khóa Mes.*")]
+    [Fact(Skip = "QC-T27-04 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
     public async Task QcT2704_Loi_ep_kieu_tham_so_phai_tra_khoa_thong_diep()
     {
         await QcDb.SeedCoreAsync(factory);
@@ -114,7 +114,7 @@ public sealed class A8DefectTests
     /// nhưng đang nhìn cả kho; hoặc phải trả 400, hoặc phải trả 0 dòng.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-05 · giá trị lọc giới tính lạ bị bỏ qua lặng lẽ, trả toàn bộ danh sách")]
+    [Fact(Skip = "QC-T27-05 · CÒN MỞ — PR #35 chưa chạm tới; filter.Gender=$eq:Khac vẫn trả cả 32 người (xác minh 20/09/2026)")]
     public async Task QcT2705_Gia_tri_loc_la_khong_duoc_bo_qua_lang_le()
     {
         await QcDb.SeedCoreAsync(factory);
@@ -142,7 +142,7 @@ public sealed class A8DefectTests
     /// lần gõ phím, nên một lần gõ nhầm là treo cả trình duyệt.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-06 · xem trước dãy mốc không chặn dãy khổng lồ, trả gần 7 MB JSON")]
+    [Fact(Skip = "QC-T27-06 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
     public async Task QcT2706_Xem_truoc_day_moc_phai_co_tran()
     {
         await QcDb.ResetAsync(factory);
@@ -166,7 +166,7 @@ public sealed class A8DefectTests
     /// thay vì nói rõ chỗ sai.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-07 · ba khóa OverLength / Required.Ids thiếu trong bảng mục 1.5 hợp đồng API")]
+    [Fact(Skip = "QC-T27-07 · CÒN MỞ — hợp đồng API mục 1.5 vẫn thiếu Mes.PartyMember.OverLength.FullName (xác minh 20/09/2026)")]
     public async Task QcT2707_Moi_khoa_Backend_tra_ra_deu_phai_co_trong_hop_dong()
     {
         await QcDb.SeedCoreAsync(factory);
