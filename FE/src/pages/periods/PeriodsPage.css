@@ -27,10 +27,13 @@
 }
 
 /* TableStates dựng sẵn một thẻ trắng có viền cho trạng thái đang tải và trống.
-   Ở đây nó đã nằm trong thẻ của bảng nên bỏ viền, tránh thẻ lồng thẻ. */
-.hhd-periods__panel > div:not(.ant-alert) {
+   Ở đây nó đã nằm trong thẻ của bảng nên bỏ viền, tránh thẻ lồng thẻ, và cho
+   giãn hết chiều cao để vùng thân bảng có chỗ mà cuộn. */
+.hhd-periods__panel > div:not(.ant-alert):not(.hhd-table-filters):not(.hhd-periods__footnote) {
   border: 0;
   border-radius: 0;
+  flex: 1;
+  min-height: 0;
 }
 
 .hhd-periods__panel > .ant-alert {

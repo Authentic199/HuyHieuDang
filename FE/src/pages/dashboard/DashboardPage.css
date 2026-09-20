@@ -222,7 +222,9 @@
 /* TableStates dựng sẵn một thẻ trắng có viền bằng style nội tuyến; ở đây nó đã
    nằm trong thẻ của bảng nên bỏ viền và cho giãn hết chiều cao. */
 .hhd-dashboard__panel
-  > div:not(.ant-alert):not(.hhd-dashboard__panel-head):not(.hhd-dashboard__footnote) {
+  > div:not(.ant-alert):not(.hhd-dashboard__panel-head):not(.hhd-table-filters):not(
+    .hhd-dashboard__footnote
+  ) {
   border: 0 !important;
   border-radius: 0 !important;
   flex: 1;

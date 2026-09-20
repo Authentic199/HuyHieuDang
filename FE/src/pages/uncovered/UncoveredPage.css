@@ -64,7 +64,9 @@
    nằm trong thẻ của bảng nên bỏ viền (cần !important vì style nội tuyến) và cho
    giãn hết chiều cao, tránh thẻ lồng thẻ. */
 .hhd-uncovered__panel
-  > div:not(.ant-alert):not(.hhd-uncovered__head):not(.hhd-uncovered__footnote) {
+  > div:not(.ant-alert):not(.hhd-uncovered__head):not(.hhd-table-filters):not(
+    .hhd-uncovered__footnote
+  ) {
   border: 0 !important;
   border-radius: 0 !important;
   flex: 1;

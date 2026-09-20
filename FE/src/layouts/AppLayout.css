@@ -1,7 +1,11 @@
 /* Khung 1440x900 của artboard: header trên cùng trải hết bề ngang,
    sider 104px bên trái, nội dung bên phải, khe 16px. */
+/* Cao đúng bằng màn hình, KHÔNG phải min-height: cả chuỗi `flex: 1; min-height: 0`
+   của từng màn chỉ có tác dụng khi khung ngoài cùng bị chặn chiều cao. Để
+   min-height thì thẻ bảng cứ dài ra theo số dòng, thanh phân trang trôi khỏi
+   màn hình và phần dòng dư nằm ngoài tầm nhìn. */
 .hhd-shell {
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: var(--hhd-sider-width) 1fr;
   grid-template-rows: var(--hhd-header-height) 1fr;
@@ -18,6 +22,11 @@
 .hhd-main {
   grid-row: 2;
   min-width: 0;
+  /* Cho ô lưới co lại đúng chiều cao còn lại thay vì phình theo nội dung. */
+  min-height: 0;
+  /* Màn nào cao hơn màn hình (Cài đặt, Import) thì cuộn trong vùng này, còn các
+     màn có bảng thì bảng tự cuộn bên trong thẻ nên vùng này không cuộn. */
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: var(--hhd-space-xl);

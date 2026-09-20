@@ -1,0 +1,35 @@
+/* Thanh công cụ tìm — lọc dùng chung, cùng hình dáng với màn Đảng viên. */
+.hhd-table-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-md);
+  padding: var(--hhd-space-md) var(--hhd-space-lg);
+  border-bottom: 1px solid var(--hhd-border);
+  flex: none;
+  flex-wrap: wrap;
+}
+
+/* Chưa có dữ liệu thì hai ô này chưa dùng được — làm mờ như artboard màn Đảng viên. */
+.hhd-table-filters--muted {
+  opacity: 0.55;
+}
+
+.hhd-table-filters__search {
+  width: 320px;
+}
+
+.hhd-table-filters__milestone {
+  min-width: 220px;
+}
+
+/* Dòng đếm nằm bên phải thanh công cụ, đọc như chú thích. */
+.hhd-table-filters__count {
+  margin-left: auto;
+  color: var(--hhd-text-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.hhd-table-filters__count b {
+  color: var(--hhd-ink);
+}
