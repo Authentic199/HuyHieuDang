@@ -53,6 +53,14 @@
   font-size: 14px;
 }
 
+/* Nhãn "năm sau" cạnh Đến ngày của đợt vắt qua 31/12 (QT6). */
+.hhd-periods .hhd-periods__nextyear {
+  font-family: var(--hhd-font-sans);
+  font-size: 12px;
+  color: var(--hhd-text-secondary);
+  white-space: nowrap;
+}
+
 .hhd-periods__row--next > td {
   background: var(--hhd-gold-soft);
 }

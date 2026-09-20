@@ -16,14 +16,35 @@ public sealed record MilestoneSettings(int StartYears, int EndYears, int StepYea
 /// <param name="FromMonth">Tháng của Từ ngày.</param>
 /// <param name="ToDay">Ngày của Đến ngày.</param>
 /// <param name="ToMonth">Tháng của Đến ngày.</param>
-public sealed record AwardPeriod(string Name, int FromDay, int FromMonth, int ToDay, int ToMonth);
+public sealed record AwardPeriod(string Name, int FromDay, int FromMonth, int ToDay, int ToMonth)
+{
+    /// <summary>
+    /// QT6 — đợt vắt qua 31/12. Khi cặp ngày/tháng của Đến ngày đứng trước Từ ngày trong năm
+    /// (ví dụ 01/12 – 28/02) thì Đến ngày thuộc năm kế tiếp Từ ngày.
+    /// </summary>
+    public bool SpansNextYear =>
+        FromMonth > ToMonth || (FromMonth == ToMonth && FromDay > ToDay);
+}
 
 /// <summary>Một đợt đã được gắn năm cụ thể.</summary>
 /// <param name="Period">Đợt gốc.</param>
-/// <param name="Year">Năm được gắn.</param>
+/// <param name="Year">Năm neo của lần diễn ra — năm chứa Từ ngày.</param>
 /// <param name="From">Từ ngày sau khi gắn năm.</param>
-/// <param name="To">Đến ngày sau khi gắn năm.</param>
+/// <param name="To">Đến ngày sau khi gắn năm; thuộc <c>Year + 1</c> khi đợt vắt năm.</param>
 public sealed record PeriodOccurrence(AwardPeriod Period, int Year, DateOnly From, DateOnly To);
+
+/// <summary>
+/// Phần của một lần diễn ra rơi vào trong một năm dương lịch (QT6, QT7). Đợt vắt năm để lại
+/// hai phần trong cùng một năm: đuôi của lần neo năm trước và đầu của lần neo chính năm đó.
+/// </summary>
+/// <param name="Occurrence">Lần diễn ra sinh ra phần này.</param>
+/// <param name="From">Ngày đầu, đã cắt về trong năm.</param>
+/// <param name="To">Ngày cuối, đã cắt về trong năm.</param>
+public sealed record PeriodSlice(PeriodOccurrence Occurrence, DateOnly From, DateOnly To)
+{
+    /// <summary>Đợt gốc của phần này.</summary>
+    public AwardPeriod Period => Occurrence.Period;
+}
 
 /// <summary>Trạng thái một đợt so với hôm nay (QT11).</summary>
 public enum PeriodStatus
@@ -72,7 +93,9 @@ public sealed record MissedMilestone(int Milestone, DateOnly Anniversary, DateGa
 /// <summary>Một cặp đợt chồng lấn nhau — cảnh báo nhưng vẫn cho lưu (QT6).</summary>
 /// <param name="First">Đợt có Từ ngày sớm hơn.</param>
 /// <param name="Second">Đợt còn lại.</param>
-public sealed record PeriodOverlap(AwardPeriod First, AwardPeriod Second);
+/// <param name="From">Ngày đầu của phần dùng chung, đã cắt về trong năm đang xét.</param>
+/// <param name="To">Ngày cuối của phần dùng chung.</param>
+public sealed record PeriodOverlap(AwardPeriod First, AwardPeriod Second, DateOnly From, DateOnly To);
 
 /// <summary>Đợt sắp tới của Dashboard (QT8), kèm trạng thái của chính lần diễn ra đó.</summary>
 /// <param name="Occurrence">Đợt đã gắn năm.</param>

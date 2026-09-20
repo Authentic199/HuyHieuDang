@@ -119,7 +119,7 @@ Ba ô đều phải là **số nguyên dương**, và **Bắt đầu** không đ
 4. Bấm **Thêm đợt**.
 5. Làm lại cho từng đợt. Thông thường mỗi năm có 4 đợt, quanh các ngày **3/2**, **19/5**, **2/9** và **7/11**.
 
-Một đợt phải **nằm gọn trong một năm**: Từ ngày không được sau Đến ngày, và đợt không được vắt qua ngày 31/12 sang 01/01. Sai thì phần mềm báo *"Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm"*.
+Một đợt **được phép vắt qua ngày 31/12**. Nếu Đến ngày đứng trước Từ ngày trong vòng năm — ví dụ Từ 01/12, Đến 28/02 — phần mềm hiểu là đợt kết thúc ở **năm sau**, và dòng nhắc trong ô nhập ghi rõ điều đó. Bảng danh sách đợt cũng ghi "năm sau" cạnh Đến ngày.
 
 <!-- ảnh: cửa sổ "Thêm đợt trao huy hiệu" đang mở, Tên đợt "Đợt 7/11", Từ ngày 01/10, Đến ngày 07/11 -->
 > **[Ảnh 5]** Cửa sổ Thêm đợt trao huy hiệu — `docs/images/05-them-dot.png`

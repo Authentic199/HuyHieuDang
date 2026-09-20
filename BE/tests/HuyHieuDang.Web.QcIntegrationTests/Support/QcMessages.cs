@@ -41,9 +41,6 @@ public static class QcMessages
     /// <summary>Đến ngày không hợp lệ.</summary>
     public const string PeriodInvalidToDate = "Mes.AwardPeriod.Invalid.ToDate";
 
-    /// <summary>Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm.</summary>
-    public const string PeriodInvalidRange = "Mes.AwardPeriod.Invalid.Range";
-
     /// <summary>Mốc bắt đầu phải là số nguyên dương.</summary>
     public const string SettingInvalidStartYears = "Mes.AppSetting.Invalid.StartYears";
 
@@ -103,7 +100,6 @@ public static class QcMessages
         PeriodRepeatedName,
         PeriodInvalidFromDate,
         PeriodInvalidToDate,
-        PeriodInvalidRange,
         "Mes.AppSetting.Update.Successfully",
         SettingInvalidStartYears,
         SettingInvalidEndYears,

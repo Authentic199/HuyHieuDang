@@ -253,7 +253,7 @@ quả mong đợi; dữ liệu lấy từ `tests/fixtures/data/members-core.json
 | Ca | Vào | Mong đợi |
 |---|---|---|
 | U-601 | Từ 01/10, Đến 07/11 | Hợp lệ |
-| U-602 | Từ 07/11, Đến 01/10 | Từ chối — vắt qua 31/12 → 01/01 |
+| U-602 | Từ 01/12, Đến 28/02 | Chấp nhận — đợt vắt qua 31/12, Đến ngày thuộc năm sau |
 | U-603 | Từ = Đến = 01/10 | Hợp lệ — đợt một ngày |
 | U-604 | Từ 01/01, Đến 31/12 | Hợp lệ — trọn năm |
 | U-605 | Từ 29/02, Đến 05/03 | Hợp lệ — 29/02 là cặp ngày/tháng hợp lệ dù năm xét không nhuận |
@@ -403,7 +403,7 @@ nào chưa có.
 | A-202 | Trạng thái năm nay tại T0 | Đã qua · Đã qua · Đã qua · Sắp tới 12 ngày |
 | A-203 | Cùng dữ liệu tại T1 | Đợt 7/11 = Đang diễn ra |
 | A-204 | Số người đủ điều kiện năm nay trên từng dòng | 5 · 5 · 4 · 6 |
-| A-205 | Tạo đợt Từ > Đến | 400 |
+| A-205 | Tạo đợt Từ > Đến | 200 — đợt vắt qua 31/12, spansNextYear = true |
 | A-206 | Tạo đợt trùng tên | 400 |
 | A-207 | Tạo đợt ngày/tháng không tồn tại (31/02) | 400 |
 | A-208 | Tạo đợt 29/02–05/03 | Hợp lệ |

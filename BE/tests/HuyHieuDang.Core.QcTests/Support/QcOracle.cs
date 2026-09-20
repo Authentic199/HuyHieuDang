@@ -70,9 +70,47 @@ public static class QcOracle
         return null;
     }
 
-    /// <summary>Gắn năm vào một đợt.</summary>
+    /// <summary>QT6 — đợt vắt qua 31/12 khi Đến ngày đứng trước Từ ngày trong vòng năm.</summary>
+    public static bool SpansNextYear(AwardPeriod period) =>
+        period.FromMonth > period.ToMonth
+        || (period.FromMonth == period.ToMonth && period.FromDay > period.ToDay);
+
+    /// <summary>Gắn năm vào một đợt; đợt vắt năm có Đến ngày thuộc năm kế tiếp.</summary>
     public static (DateOnly From, DateOnly To) Bind(AwardPeriod period, int year) =>
-        (BindDayMonth(period.FromDay, period.FromMonth, year), BindDayMonth(period.ToDay, period.ToMonth, year));
+        (BindDayMonth(period.FromDay, period.FromMonth, year),
+            BindDayMonth(period.ToDay, period.ToMonth, year + (SpansNextYear(period) ? 1 : 0)));
+
+    /// <summary>QT6, QT7 — phần của từng đợt rơi vào trong một năm, đã sắp theo ngày bắt đầu.</summary>
+    public static IReadOnlyList<(AwardPeriod Period, DateOnly From, DateOnly To)> Slices(
+        IReadOnlyList<AwardPeriod> periods, int year)
+    {
+        DateOnly firstDay = new(year, 1, 1);
+        DateOnly lastDay = new(year, 12, 31);
+        List<(AwardPeriod Period, DateOnly From, DateOnly To)> slices = new();
+
+        foreach (AwardPeriod period in periods)
+        {
+            int[] anchors = SpansNextYear(period) ? [year - 1, year] : [year];
+
+            foreach (int anchor in anchors)
+            {
+                (DateOnly from, DateOnly to) = Bind(period, anchor);
+                DateOnly cut = from > firstDay ? from : firstDay;
+                DateOnly end = to < lastDay ? to : lastDay;
+
+                if (cut <= end)
+                {
+                    slices.Add((period, cut, end));
+                }
+            }
+        }
+
+        return slices
+            .OrderBy(x => x.From)
+            .ThenBy(x => x.To)
+            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
+            .ToList();
+    }
 
     /// <summary>QT4 — mốc được trao trong đợt/năm.</summary>
     public static int? EligibleMilestone(DateOnly d, AwardPeriod period, int year, IReadOnlyList<int> milestones)
@@ -96,23 +134,20 @@ public static class QcOracle
     public static IReadOnlyList<(DateOnly From, DateOnly To, string Label)> GapRanges(
         IReadOnlyList<AwardPeriod> periods, int year)
     {
-        List<AwardPeriod> ordered = periods
-            .OrderBy(x => x.FromMonth)
-            .ThenBy(x => x.FromDay)
-            .ToList();
+        IReadOnlyList<(AwardPeriod Period, DateOnly From, DateOnly To)> ordered = Slices(periods, year);
 
         List<(DateOnly From, DateOnly To, string Label)> gaps = new();
         DateOnly cursor = new(year, 1, 1);
 
         for (int index = 0; index < ordered.Count; index++)
         {
-            (DateOnly from, DateOnly to) = Bind(ordered[index], year);
+            (AwardPeriod _, DateOnly from, DateOnly to) = ordered[index];
 
             if (cursor < from)
             {
                 string label = index == 0
                     ? "Trước đợt đầu tiên"
-                    : $"Giữa {ordered[index - 1].Name} và {ordered[index].Name}";
+                    : $"Giữa {ordered[index - 1].Period.Name} và {ordered[index].Period.Name}";
 
                 gaps.Add((cursor, from.AddDays(-1), label));
             }
@@ -148,9 +183,7 @@ public static class QcOracle
                 continue;
             }
 
-            bool inside = periods
-                .Select(x => Bind(x, year))
-                .Any(x => x.From <= a && a <= x.To);
+            bool inside = Slices(periods, year).Any(x => x.From <= a && a <= x.To);
 
             if (inside)
             {
@@ -177,16 +210,31 @@ public static class QcOracle
         }
 
         int y = today.Year;
-        List<AwardPeriod> candidates = periods.Where(x => Bind(x, y).To >= today).ToList();
 
-        return candidates.Count > 0
-            ? (candidates.OrderBy(x => Bind(x, y).From).First(), y)
-            : (periods.OrderBy(x => Bind(x, y + 1).From).First(), y + 1);
+        return periods
+            .SelectMany(period => (SpansNextYear(period) ? new[] { y - 1, y, y + 1 } : [y, y + 1])
+                .Select(anchor => (Period: period, Year: anchor, Bound: Bind(period, anchor))))
+            .Where(x => x.Bound.To >= today)
+            .OrderBy(x => x.Bound.From)
+            .ThenBy(x => x.Bound.To)
+            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
+            .Select(x => ((AwardPeriod Period, int Year)?)(x.Period, x.Year))
+            .First();
     }
 
     /// <summary>QT11 — trạng thái đợt trong năm hiện tại.</summary>
     public static (PeriodStatus Status, int? DaysLeft) PeriodStatus(AwardPeriod period, DateOnly today)
     {
+        if (SpansNextYear(period))
+        {
+            (DateOnly previousFrom, DateOnly previousTo) = Bind(period, today.Year - 1);
+
+            if (previousFrom <= today && today <= previousTo)
+            {
+                return (HuyHieuDang.Core.PartyBadges.PeriodStatus.Ongoing, null);
+            }
+        }
+
         (DateOnly from, DateOnly to) = Bind(period, today.Year);
 
         if (to < today)
@@ -206,10 +254,7 @@ public static class QcOracle
     public static IReadOnlyList<(string First, string Second)> Overlaps(
         IReadOnlyList<AwardPeriod> periods, int year)
     {
-        List<AwardPeriod> ordered = periods
-            .OrderBy(x => x.FromMonth)
-            .ThenBy(x => x.FromDay)
-            .ToList();
+        IReadOnlyList<(AwardPeriod Period, DateOnly From, DateOnly To)> ordered = Slices(periods, year);
 
         List<(string First, string Second)> output = new();
 
@@ -217,12 +262,16 @@ public static class QcOracle
         {
             for (int j = i + 1; j < ordered.Count; j++)
             {
-                (DateOnly fa, DateOnly ta) = Bind(ordered[i], year);
-                (DateOnly fb, DateOnly tb) = Bind(ordered[j], year);
-
-                if (fa <= tb && fb <= ta)
+                // Hai phần của cùng một đợt vắt năm không phải hai đợt chồng lấn.
+                if (string.Equals(
+                        ordered[i].Period.Name, ordered[j].Period.Name, StringComparison.OrdinalIgnoreCase))
                 {
-                    output.Add((ordered[i].Name, ordered[j].Name));
+                    continue;
+                }
+
+                if (ordered[i].From <= ordered[j].To && ordered[j].From <= ordered[i].To)
+                {
+                    output.Add((ordered[i].Period.Name, ordered[j].Period.Name));
                 }
             }
         }

@@ -14,6 +14,12 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ### Đổi
 
+- **QT6 — đợt trao huy hiệu được phép vắt qua 31/12.** Từ ngày đứng sau Đến ngày (ví dụ `01/12 – 28/02`) nghĩa là đợt kết thúc ở năm sau, không còn bị từ chối. Năm của một đợt luôn là năm chứa Từ ngày.
+  - Bỏ khóa lỗi `Mes.AwardPeriod.Invalid.Range`. Chặn lưu chỉ còn: thiếu tên, trùng tên, ngày/tháng không có thật.
+  - `AwardPeriodResponse` thêm trường `spansNextYear`; `toDate` có thể thuộc `year + 1`.
+  - Độ phủ, khoảng trống và danh sách "Chưa thuộc đợt nào" của một năm tính trên **phần đợt nằm trong năm đó**, gồm cả đuôi của đợt vắt năm neo ở năm trước. `coverage.segments` vì vậy có thể có hai đoạn cùng `periodId`.
+  - QT8 (đợt sắp tới) xét thêm lần diễn ra neo ở năm trước; QT11 báo "Đang diễn ra" khi lần neo năm trước còn đang mở hôm nay.
+  - Giao diện: bỏ ràng buộc Đến ≥ Từ ở modal thêm/sửa, dòng nhắc nói rõ "vắt qua 31/12", bảng đợt ghi "năm sau" cạnh Đến ngày, tab Thông tin đọc "01/12 – 28/02 năm sau, hằng năm".
 - Hợp đồng API lên **v1.1**: chốt 10 điểm tài liệu nghiệp vụ chưa quy định (OQ-1…OQ-10) vào mục 12, ghi 8 quyết định kỹ thuật của bộ khung Backend vào mục 13. Chi tiết trong `docs/api-contract.md` mục 15.
   - Phản hồi xem trước import đổi hình dạng: `errorRows[*].errorCode` + `field` gộp thành mảng `errorRows[*].errors[]` — một dòng lỗi trả đủ mọi lý do thay vì chỉ lý do đầu tiên.
   - Thêm khóa `Mes.Import.Invalid.NoDataRows` cho file chỉ có dòng tiêu đề; `Mes.Import.Invalid.Empty` giờ chỉ dùng cho file rỗng.

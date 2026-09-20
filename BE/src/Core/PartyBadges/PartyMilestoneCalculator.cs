@@ -87,20 +87,51 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
         ThrowIfDayMonthDoesNotExist(period.FromDay, period.FromMonth, "Từ ngày", period.Name);
         ThrowIfDayMonthDoesNotExist(period.ToDay, period.ToMonth, "Đến ngày", period.Name);
 
-        // QT6 — đợt nằm trọn trong một năm dương lịch, không vắt qua 31/12 sang 01/01.
-        if (period.FromMonth > period.ToMonth
-            || (period.FromMonth == period.ToMonth && period.FromDay > period.ToDay))
-        {
-            throw new BadRequestException(
-                $"Đợt {period.Name} có Từ ngày lớn hơn Đến ngày; đợt phải nằm trọn trong một năm.");
-        }
-
+        // QT6 — Từ ngày đứng sau Đến ngày nghĩa là đợt vắt qua 31/12 (ví dụ 01/12 – 28/02):
+        // Từ ngày thuộc năm neo, Đến ngày thuộc năm kế tiếp.
         return new PeriodOccurrence(
             period,
             year,
             BindDayMonth(period.FromDay, period.FromMonth, year),
-            BindDayMonth(period.ToDay, period.ToMonth, year));
+            BindDayMonth(period.ToDay, period.ToMonth, year + (period.SpansNextYear ? 1 : 0)));
     }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<PeriodSlice> GetSlicesInYear(IReadOnlyList<AwardPeriod> periods, int year)
+    {
+        ArgumentNullException.ThrowIfNull(periods);
+
+        DateOnly firstDayOfYear = new(year, 1, 1);
+        DateOnly lastDayOfYear = new(year, 12, 31);
+        List<PeriodSlice> slices = new();
+
+        foreach (AwardPeriod period in periods)
+        {
+            foreach (int anchor in Anchors(period, year))
+            {
+                PeriodOccurrence occurrence = BindToYear(period, anchor);
+                DateOnly from = occurrence.From > firstDayOfYear ? occurrence.From : firstDayOfYear;
+                DateOnly to = occurrence.To < lastDayOfYear ? occurrence.To : lastDayOfYear;
+
+                if (from <= to)
+                {
+                    slices.Add(new PeriodSlice(occurrence, from, to));
+                }
+            }
+        }
+
+        return OrderDeterministically(slices);
+    }
+
+    /// <summary>
+    /// Các năm neo có thể để lại dấu vết trong <paramref name="year"/>: đợt vắt năm còn phần
+    /// đuôi của lần neo năm trước, đợt thường thì chỉ chính năm đó.
+    /// </summary>
+    /// <param name="period">Đợt trao huy hiệu.</param>
+    /// <param name="year">Năm đang xét.</param>
+    /// <returns>Danh sách năm neo cần gắn.</returns>
+    private static IEnumerable<int> Anchors(AwardPeriod period, int year) =>
+        period.SpansNextYear ? [year - 1, year] : [year];
 
     /// <inheritdoc/>
     public int? GetEligibleMilestone(
@@ -124,14 +155,14 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
         ArgumentNullException.ThrowIfNull(periods);
         ArgumentNullException.ThrowIfNull(milestones);
 
-        List<PeriodOccurrence> occurrences = periods.Select(x => BindToYear(x, year)).ToList();
+        IReadOnlyList<PeriodSlice> slices = GetSlicesInYear(periods, year);
         IReadOnlyList<DateGap> gaps = GetGaps(periods, year);
 
         foreach (int milestone in milestones)
         {
             DateOnly anniversary = GetAnniversary(officialAdmissionDate, milestone);
 
-            if (anniversary.Year != year || occurrences.Exists(x => IsWithin(anniversary, x)))
+            if (anniversary.Year != year || slices.Any(x => IsWithin(anniversary, x)))
             {
                 continue;
             }
@@ -150,9 +181,9 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
     /// <inheritdoc/>
     public IReadOnlyList<DateGap> GetGaps(IReadOnlyList<AwardPeriod> periods, int year)
     {
-        ArgumentNullException.ThrowIfNull(periods);
-
-        List<PeriodOccurrence> ordered = OrderDeterministically(periods.Select(x => BindToYear(x, year)));
+        // Đợt vắt năm góp hai phần vào cùng một năm nên độ phủ tính trên "phần trong năm",
+        // không phải trên lần diễn ra nguyên vẹn.
+        IReadOnlyList<PeriodSlice> ordered = GetSlicesInYear(periods, year);
 
         List<DateGap> gaps = new();
         DateOnly cursor = new(year, 1, 1);
@@ -160,22 +191,22 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
 
         for (int index = 0; index < ordered.Count; index++)
         {
-            PeriodOccurrence occurrence = ordered[index];
+            PeriodSlice slice = ordered[index];
 
-            if (cursor < occurrence.From)
+            if (cursor < slice.From)
             {
                 gaps.Add(index == 0
-                    ? new DateGap(cursor, occurrence.From.AddDays(-1), GapKind.BeforeFirstPeriod, "Trước đợt đầu tiên")
+                    ? new DateGap(cursor, slice.From.AddDays(-1), GapKind.BeforeFirstPeriod, "Trước đợt đầu tiên")
                     : new DateGap(
                         cursor,
-                        occurrence.From.AddDays(-1),
+                        slice.From.AddDays(-1),
                         GapKind.BetweenPeriods,
-                        $"Giữa {ordered[index - 1].Period.Name} và {occurrence.Period.Name}"));
+                        $"Giữa {ordered[index - 1].Period.Name} và {slice.Period.Name}"));
             }
 
-            if (occurrence.To >= cursor)
+            if (slice.To >= cursor)
             {
-                cursor = occurrence.To.AddDays(1);
+                cursor = slice.To.AddDays(1);
             }
         }
 
@@ -196,9 +227,7 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
     /// <inheritdoc/>
     public IReadOnlyList<PeriodOverlap> GetOverlaps(IReadOnlyList<AwardPeriod> periods, int year)
     {
-        ArgumentNullException.ThrowIfNull(periods);
-
-        List<PeriodOccurrence> ordered = OrderDeterministically(periods.Select(x => BindToYear(x, year)));
+        IReadOnlyList<PeriodSlice> ordered = GetSlicesInYear(periods, year);
 
         List<PeriodOverlap> overlaps = new();
 
@@ -206,9 +235,20 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
         {
             for (int j = i + 1; j < ordered.Count; j++)
             {
-                if (ordered[i].From <= ordered[j].To && ordered[j].From <= ordered[i].To)
+                // Hai phần của CÙNG một đợt vắt năm — đuôi đầu năm và đầu cuối năm — không phải
+                // hai đợt chồng lấn, không cảnh báo.
+                if (string.Equals(
+                        ordered[i].Period.Name, ordered[j].Period.Name, StringComparison.OrdinalIgnoreCase))
                 {
-                    overlaps.Add(new PeriodOverlap(ordered[i].Period, ordered[j].Period));
+                    continue;
+                }
+
+                DateOnly from = ordered[i].From > ordered[j].From ? ordered[i].From : ordered[j].From;
+                DateOnly to = ordered[i].To < ordered[j].To ? ordered[i].To : ordered[j].To;
+
+                if (from <= to)
+                {
+                    overlaps.Add(new PeriodOverlap(ordered[i].Period, ordered[j].Period, from, to));
                 }
             }
         }
@@ -226,39 +266,57 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
             return null;
         }
 
+        // Xét cả lần neo năm trước — đợt vắt năm có thể vẫn đang mở hôm nay — và lần neo năm sau
+        // khi mọi đợt của năm nay đã qua, rồi lấy lần chưa kết thúc có Từ ngày sớm nhất.
         // Hai đợt cùng Từ ngày thì chọn đợt kết thúc sớm hơn, vẫn bằng nhau thì theo Tên đợt
         // — OQ-9 của hợp đồng API, để Dashboard luôn chọn ra đúng một đợt tất định.
-        PeriodOccurrence? occurrence = Earliest(periods, today.Year, x => x.To >= today)
-            ?? Earliest(periods, today.Year + 1, _ => true)!;
+        PeriodOccurrence occurrence = periods
+            .SelectMany(period => UpcomingAnchors(period, today.Year)
+                .Select(anchor => BindToYear(period, anchor)))
+            .Where(x => x.To >= today)
+            .OrderBy(x => x.From)
+            .ThenBy(x => x.To)
+            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
+            .First();
 
         return new UpcomingPeriod(occurrence, GetStatus(occurrence, today));
     }
 
     /// <summary>
-    /// Lần diễn ra sớm nhất trong một năm trong số các đợt thỏa điều kiện, theo thứ tự
-    /// Từ ngày → Đến ngày → Tên đợt (OQ-9).
+    /// Các năm neo cần xét khi tìm đợt sắp tới: năm nay và năm sau với mọi đợt, thêm năm trước
+    /// với đợt vắt năm vì lần neo năm trước của nó có thể còn kéo dài tới hôm nay.
     /// </summary>
-    /// <param name="periods">Toàn bộ đợt đang cấu hình.</param>
-    /// <param name="year">Năm cần gắn.</param>
-    /// <param name="filter">Điều kiện lọc thêm trên lần diễn ra.</param>
-    /// <returns>Lần diễn ra được chọn, hoặc <c>null</c> khi không đợt nào thỏa.</returns>
-    private PeriodOccurrence? Earliest(
-        IReadOnlyList<AwardPeriod> periods, int year, Func<PeriodOccurrence, bool> filter)
-        => periods
-            .Select(x => BindToYear(x, year))
-            .Where(filter)
-            .OrderBy(x => x.From)
-            .ThenBy(x => x.To)
-            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
-            .FirstOrDefault();
+    /// <param name="period">Đợt trao huy hiệu.</param>
+    /// <param name="currentYear">Năm của hôm nay.</param>
+    /// <returns>Danh sách năm neo cần gắn.</returns>
+    private static IEnumerable<int> UpcomingAnchors(AwardPeriod period, int currentYear) =>
+        period.SpansNextYear
+            ? [currentYear - 1, currentYear, currentYear + 1]
+            : [currentYear, currentYear + 1];
 
     /// <inheritdoc/>
     public PeriodStatusResult GetPeriodStatus(AwardPeriod period, DateOnly today) =>
         GetPeriodStatus(period, today.Year, today);
 
     /// <inheritdoc/>
-    public PeriodStatusResult GetPeriodStatus(AwardPeriod period, int year, DateOnly today) =>
-        GetStatus(BindToYear(period, year), today);
+    public PeriodStatusResult GetPeriodStatus(AwardPeriod period, int year, DateOnly today)
+    {
+        ArgumentNullException.ThrowIfNull(period);
+
+        // Đợt vắt năm đang mở hôm nay bắt đầu từ NĂM TRƯỚC năm đang xét. Cán bộ mở bảng ngày
+        // 15/01 phải thấy "Đang diễn ra", không phải "Sắp tới · 320 ngày" của lần kế tiếp.
+        if (period.SpansNextYear)
+        {
+            PeriodOccurrence previous = BindToYear(period, year - 1);
+
+            if (previous.From <= today && today <= previous.To)
+            {
+                return new PeriodStatusResult(PeriodStatus.Ongoing, null);
+            }
+        }
+
+        return GetStatus(BindToYear(period, year), today);
+    }
 
     /// <summary>
     /// Gắn năm vào một cặp ngày/tháng. 29/02 ở năm không nhuận lùi về 28/02 (QT2, QT4).
@@ -269,10 +327,11 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
             : new DateOnly(year, month, day);
 
     /// <summary>
-    /// Sắp đợt theo Từ ngày, rồi Đến ngày, rồi Tên để kết quả không phụ thuộc thứ tự nạp danh sách.
+    /// Sắp các phần trong năm theo Từ ngày, rồi Đến ngày, rồi Tên để kết quả không phụ thuộc
+    /// thứ tự nạp danh sách.
     /// </summary>
-    private static List<PeriodOccurrence> OrderDeterministically(IEnumerable<PeriodOccurrence> occurrences) =>
-        occurrences
+    private static List<PeriodSlice> OrderDeterministically(IEnumerable<PeriodSlice> slices) =>
+        slices
             .OrderBy(x => x.From)
             .ThenBy(x => x.To)
             .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
@@ -291,6 +350,9 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
 
     private static bool IsWithin(DateOnly date, PeriodOccurrence occurrence) =>
         date >= occurrence.From && date <= occurrence.To;
+
+    private static bool IsWithin(DateOnly date, PeriodSlice slice) =>
+        date >= slice.From && date <= slice.To;
 
     private static PeriodStatusResult GetStatus(PeriodOccurrence occurrence, DateOnly today)
     {

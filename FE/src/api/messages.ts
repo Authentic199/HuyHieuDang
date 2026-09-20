@@ -33,7 +33,6 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.AwardPeriod.Repeated.Name': 'Tên đợt đã tồn tại',
   'Mes.AwardPeriod.Invalid.FromDate': 'Từ ngày không hợp lệ',
   'Mes.AwardPeriod.Invalid.ToDate': 'Đến ngày không hợp lệ',
-  'Mes.AwardPeriod.Invalid.Range': 'Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm',
 
   // Cài đặt
   'Mes.AppSetting.Update.Successfully': 'Đã lưu cài đặt',

@@ -60,7 +60,7 @@ Từ danh sách đảng viên đã import, hệ thống **tự động tính** a
 | Tuổi đảng | Số năm tròn tính từ Ngày chính thức đến hôm nay. |
 | Mốc huy hiệu (mốc) | Số năm tuổi đảng được trao huy hiệu (VD 30, 35, 40 …). Sinh ra từ cài đặt. |
 | Ngày tròn mốc | Ngày chính thức + N năm, với N là một mốc. |
-| Đợt trao huy hiệu (đợt) | Một khoảng ngày trong năm (chỉ ngày/tháng, không gắn năm) dùng để gom những người tròn mốc trong khoảng đó. |
+| Đợt trao huy hiệu (đợt) | Một khoảng ngày (chỉ ngày/tháng, không gắn năm) dùng để gom những người tròn mốc trong khoảng đó. Khoảng này được phép vắt qua 31/12 sang năm sau. |
 | Đủ điều kiện | Đảng viên có Ngày tròn mốc rơi vào khoảng ngày của một đợt trong một năm cụ thể. |
 | Chưa thuộc đợt nào | Đảng viên tròn mốc trong năm nhưng Ngày tròn mốc không rơi vào đợt nào. |
 
@@ -79,16 +79,20 @@ Ví dụ: 30 / 90 / 5 → 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90. Đ
 
 **QT3a – Mốc kế tiếp.** Mốc nhỏ nhất trong dãy QT1 lớn hơn tuổi đảng hiện tại. Nếu tuổi đảng đã vượt mốc lớn nhất (hoặc không còn mốc nào phía trước) → hiển thị `—` ở cả cột Mốc kế tiếp và Ngày tròn mốc kế tiếp. Chỉ dùng để hiển thị.
 
-**QT4 – Đủ điều kiện trong đợt, theo năm.** Với đợt `Đ` có Từ ngày `f` (ngày/tháng) và Đến ngày `t` (ngày/tháng), và năm `Y`: gắn năm để có `F = f/Y`, `T = t/Y` (29/02 ở năm không nhuận → 28/02). Đảng viên đủ điều kiện khi **tồn tại mốc `N`** trong dãy QT1 sao cho `F ≤ D + N năm ≤ T`. Mốc `N` đó là huy hiệu được trao. Vì các mốc cách nhau ≥ 1 năm và một đợt luôn ngắn hơn 1 năm, mỗi người có tối đa 1 mốc trong 1 đợt.
+**QT4 – Đủ điều kiện trong đợt, theo năm.** Với đợt `Đ` có Từ ngày `f` (ngày/tháng) và Đến ngày `t` (ngày/tháng), và năm `Y`: gắn năm để có `F = f/Y`; `T = t/Y` nếu đợt nằm gọn trong một năm, `T = t/(Y+1)` nếu đợt **vắt qua 31/12** (khi cặp `t` đứng trước cặp `f` trong vòng năm, ví dụ 01/12 – 28/02). 29/02 ở năm không nhuận → 28/02. Đảng viên đủ điều kiện khi **tồn tại mốc `N`** trong dãy QT1 sao cho `F ≤ D + N năm ≤ T`. Mốc `N` đó là huy hiệu được trao. Vì các mốc cách nhau ≥ 1 năm và một đợt luôn ngắn hơn 1 năm, mỗi người có tối đa 1 mốc trong 1 đợt.
+
+Năm `Y` của một đợt luôn là **năm chứa Từ ngày**. "Đợt Giao thừa 2026" nghĩa là lần diễn ra 01/12/2026 – 28/02/2027.
 
 **QT5 – Không lưu kết quả.** Danh sách đủ điều kiện được tính lại mỗi lần xem. Thêm người, sửa ngày, sửa đợt, đổi cài đặt → danh sách tự cập nhật, không cần thao tác gì thêm.
 
-**QT6 – Đợt trao huy hiệu.** Một danh sách duy nhất, dùng chung cho mọi năm. Mỗi đợt có Tên (duy nhất), Từ ngày, Đến ngày — chỉ lưu ngày/tháng. Ràng buộc: nằm trọn trong một năm dương lịch, `Từ ≤ Đến` (không cho vắt qua 31/12 → 01/01). Sửa đợt có hiệu lực ngay cho mọi năm, kể cả năm hiện tại.
-Hệ thống **cảnh báo nhưng vẫn cho lưu** khi: (a) hai đợt chồng lấn nhau; (b) các đợt không phủ kín 01/01–31/12.
+**QT6 – Đợt trao huy hiệu.** Một danh sách duy nhất, dùng chung cho mọi năm. Mỗi đợt có Tên (duy nhất), Từ ngày, Đến ngày — chỉ lưu ngày/tháng. Ràng buộc còn lại: tên không rỗng, không trùng; ngày/tháng phải có thật (29/02 hợp lệ).
+Đợt **được phép vắt qua 31/12**: khi cặp Đến ngày đứng trước cặp Từ ngày trong vòng năm (ví dụ 01/12 – 28/02) thì Đến ngày thuộc năm kế tiếp. Không còn ràng buộc `Từ ≤ Đến`. Sửa đợt có hiệu lực ngay cho mọi năm, kể cả năm hiện tại.
+Khi xét độ phủ của một năm `Y`, một đợt vắt năm để lại **hai phần** trong năm đó: đuôi của lần neo năm `Y-1` (từ 01/01) và đầu của lần neo năm `Y` (tới 31/12).
+Hệ thống **cảnh báo nhưng vẫn cho lưu** khi: (a) hai đợt khác nhau chồng lấn nhau; (b) các đợt không phủ kín 01/01–31/12. Hai phần của cùng một đợt vắt năm không bị coi là chồng lấn.
 
-**QT7 – Chưa thuộc đợt nào.** Với năm `Y`: đảng viên có ít nhất một mốc `N` sao cho `D + N năm` rơi trong năm `Y` nhưng không nằm trong khoảng của bất kỳ đợt nào (đã gắn năm `Y`).
+**QT7 – Chưa thuộc đợt nào.** Với năm `Y`: đảng viên có ít nhất một mốc `N` sao cho `D + N năm` rơi trong năm `Y` nhưng không nằm trong **phần thuộc năm `Y`** của bất kỳ đợt nào — kể cả phần đuôi của đợt vắt năm neo ở `Y-1`.
 
-**QT8 – Đợt sắp tới (Dashboard).** Gắn năm hiện tại vào tất cả đợt; chọn đợt có `Đến ≥ hôm nay` và `Từ` nhỏ nhất (nếu hôm nay đang nằm trong một đợt thì chính là đợt đó). Nếu mọi đợt trong năm đã qua → lấy đợt sớm nhất của **năm sau**. Không có đợt nào → Dashboard báo "Chưa cài đợt trao huy hiệu".
+**QT8 – Đợt sắp tới (Dashboard).** Xét mọi lần diễn ra neo ở năm nay và năm sau, thêm năm trước với đợt vắt năm (lần neo năm trước của nó có thể vẫn đang mở hôm nay); chọn lần có `Đến ≥ hôm nay` và `Từ` nhỏ nhất (nếu hôm nay đang nằm trong một lần diễn ra thì chính là lần đó). Không có đợt nào → Dashboard báo "Chưa cài đợt trao huy hiệu".
 
 **QT9 – Import Excel.** Mọi dòng hợp lệ đều được **thêm mới**, không kiểm tra trùng. Dòng lỗi được liệt kê kèm số dòng và lý do; người dùng chọn "Nạp các dòng hợp lệ" hoặc "Hủy".
 - Ràng buộc file: định dạng `.xlsx`, dung lượng ≤ 10 MB, đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức; dòng đầu là tiêu đề.
@@ -98,7 +102,8 @@ Hệ thống **cảnh báo nhưng vẫn cho lưu** khi: (a) hai đợt chồng l
 
 **QT10 – Xóa.** Xóa đảng viên và xóa đợt là xóa hẳn, có hộp xác nhận. Không có thùng rác.
 
-**QT11 – Trạng thái đợt trong năm hiện tại.** Gắn năm hiện tại vào đợt rồi so với hôm nay: `Đến < hôm nay` → **Đã qua**; `Từ ≤ hôm nay ≤ Đến` → **Đang diễn ra**; `Từ > hôm nay` → **Sắp tới**, kèm số ngày còn lại. Dùng ở bảng danh sách đợt và thẻ Dashboard.
+**QT11 – Trạng thái đợt trong năm hiện tại.** Gắn năm đang xét vào đợt rồi so với hôm nay: `Đến < hôm nay` → **Đã qua**; `Từ ≤ hôm nay ≤ Đến` → **Đang diễn ra**; `Từ > hôm nay` → **Sắp tới**, kèm số ngày còn lại.
+Ngoại lệ cho đợt vắt năm: nếu lần diễn ra neo ở năm **trước** năm đang xét còn đang mở hôm nay thì trạng thái là **Đang diễn ra**. Nhờ vậy ngày 15/01 cán bộ đọc được "Đang diễn ra" chứ không phải "Sắp tới · 320 ngày" của lần kế tiếp. Dùng ở bảng danh sách đợt và thẻ Dashboard.
 
 ---
 
