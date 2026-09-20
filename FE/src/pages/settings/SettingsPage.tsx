@@ -251,7 +251,6 @@ export default function SettingsPage() {
             showIcon
             className="hhd-settings__impact"
             message="Thay đổi ảnh hưởng ngay đến mọi danh sách đủ điều kiện"
-            description="Áp dụng cho mọi năm và cho Dashboard."
           />
 
           <div className="hhd-settings__card-foot">
@@ -270,10 +269,6 @@ export default function SettingsPage() {
         <div className="hhd-settings__card">
           <div>
             <div className="hhd-settings__card-title">Tên đơn vị</div>
-            <div className="hhd-settings__card-note">
-              Hiện trên header mọi màn và dòng tiêu đề file Excel. Để trống thì header chỉ hiện tên
-              hệ thống.
-            </div>
           </div>
 
           <Form.Item
@@ -287,9 +282,6 @@ export default function SettingsPage() {
 
           <div className="hhd-settings__card-foot hhd-settings__card-foot--save">
             <RequiredFieldNote />
-            <span className="hhd-settings__save-note">
-              Nút Lưu lưu cả mốc tuổi đảng và tên đơn vị.
-            </span>
             <Button type="primary" loading={saving} disabled={!canSave} onClick={handleSave}>
               Lưu
             </Button>

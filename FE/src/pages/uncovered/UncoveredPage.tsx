@@ -173,19 +173,6 @@ export default function UncoveredPage() {
               Không có ai bị sót trong năm {year ?? ''}.
             </span>
           }
-          hint={
-            <span
-              style={{
-                display: 'block',
-                maxWidth: 560,
-                margin: '8px auto 0',
-                fontSize: 16,
-                lineHeight: '24px',
-              }}
-            >
-              Mọi người tròn mốc năm này đều đã thuộc một đợt.
-            </span>
-          }
         >
           <Table<UnassignedMemberResponse>
             rowKey="partyMemberId"

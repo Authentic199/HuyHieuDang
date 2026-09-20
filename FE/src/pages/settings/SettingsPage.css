@@ -107,15 +107,9 @@
   padding-top: 20px;
 }
 
+/* Chân thẻ chỉ còn hai phần tử: chú thích dấu sao bên trái, nút Lưu bên phải. */
 .hhd-settings__card-foot--save {
-  justify-content: flex-end;
-}
-
-.hhd-settings__save-note {
-  margin-right: auto;
-  color: #55575c;
-  font-size: 14px;
-  line-height: 20px;
+  justify-content: space-between;
 }
 
 .hhd-settings__card-foot .ant-btn {
