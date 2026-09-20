@@ -519,6 +519,23 @@ BE chạy với `HUYHIEUDANG_TEST_TODAY` cùng mốc.
 Mỗi luồng **tự dựng trạng thái đầu** (reset DB, seed đúng những gì nó cần) và chạy được
 độc lập, theo thứ tự bất kỳ, chạy lại nhiều lần cho cùng kết quả.
 
+### Cổng bắt buộc của tầng 3 — chạy đủ ba lệnh, theo đúng thứ tự
+
+```bash
+cd FE && npm run typecheck:e2e                              # 1 · kiểm kiểu bộ e2e
+cd FE && docker compose -f e2e/docker-compose.e2e.yml up -d --build
+cd FE && npx playwright test -c e2e/playwright.e2e.config.ts  # 3 · sáu luồng
+```
+
+**Lệnh 1 là bắt buộc, không được bỏ.** Đây là chỗ duy nhất kiểm kiểu bộ e2e, và nó
+nằm ở đây có lý do: `npm run build` của sản phẩm **cố ý không** biên dịch `FE/e2e`
+nữa (PR #44, sau lỗi QC-T29-01). Nhờ vậy một spec e2e sai kiểu không còn làm gãy gói
+giao diện và không chặn được bản phát hành tới tay cán bộ. Cái giá của việc cắt phụ
+thuộc đó là bộ e2e mất lưới an toàn của `tsc -b`, nên QC phải tự giăng lại lưới ở
+cổng của mình: **không chạy lệnh 1 thì kết quả tầng 3 không được tính là hợp lệ**,
+vì Playwright nạp spec qua esbuild — esbuild xóa kiểu chứ không kiểm kiểu, nên một
+ca sai kiểu vẫn "xanh" mà không kiểm đúng thứ nó phải kiểm.
+
 ### E2E-1 · Lần dùng đầu tiên (UC-00, UC-13, UC-50, UC-31, UC-24, UC-10, UC-11)
 
 Trạng thái đầu: DB rỗng hoàn toàn (không đảng viên, không đợt, cài đặt chưa lưu).
@@ -653,6 +670,7 @@ Trạng thái đầu: đã đăng nhập, 4 đợt, cài đặt 30/90/5, bộ l�
 | E-903 | Chạy lại toàn bộ với mốc **T1** (15/10/2026): thẻ Dashboard hiện "đang diễn ra" |
 | E-904 | Chạy lại toàn bộ với mốc **T2** (01/12/2026): Dashboard hiện Đợt 3/2 của **2027** |
 | E-905 | Không ca nào dùng `waitForTimeout` cố định để "chờ cho chắc" — chỉ chờ theo điều kiện |
+| E-907 | `npm run typecheck:e2e` phải xanh trước khi chạy sáu luồng — lưới an toàn thay cho `tsc -b` mà build sản phẩm đã bỏ (QC-T29-01) |
 
 ---
 
