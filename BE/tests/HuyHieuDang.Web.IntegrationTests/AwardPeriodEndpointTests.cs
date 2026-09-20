@@ -93,6 +93,26 @@ public class AwardPeriodEndpointTests
         Assert.Null(gap.NextPeriodName);
     }
 
+    [Fact(DisplayName = "5.1 · Chưa cài đợt nào: cảnh báo gaps rỗng, dải vẫn phủ trọn 01/01–31/12")]
+    public async Task Search_WithoutPeriods_ReturnsEmptyGapsButFullYearCoverage()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+        await ResetAsync();
+
+        AwardPeriodListPayload data = await GetListAsync(client, BasePath);
+
+        Assert.Equal(0, data.TotalCount);
+        Assert.Empty(data.Warnings.Overlaps);
+
+        // Chưa có đợt nào thì không có gì để khuyên chỉnh lại, nên không báo khoảng trống.
+        Assert.Empty(data.Warnings.Gaps);
+
+        // Dải 12 tháng của UC-36 vẫn phải vẽ được: một đoạn trống phủ trọn năm.
+        CoverageSegmentPayload segment = Assert.Single(data.Coverage.Segments);
+        Assert.Equal(new DateOnly(2026, 1, 1), segment.FromDate);
+        Assert.Equal(new DateOnly(2026, 12, 31), segment.ToDate);
+    }
+
     [Fact(DisplayName = "5.1 · Dải độ phủ liền mạch 01/01–31/12, phần chồng lấn thuộc đợt đến trước")]
     public async Task Search_SamplePeriods_ReturnsContinuousCoverage()
     {
