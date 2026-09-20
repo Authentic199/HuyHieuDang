@@ -15,7 +15,7 @@ public static class AppSettingRules
 {
     /// <summary>
     /// Trần của cả ba mốc. Một đảng viên không thể có tuổi đảng quá con số này, nên đây vừa là ràng
-    /// buộc nghiệp vỹ vừa là trần chặn dãy mốc phình to: <c>start=1&amp;end=1000000&amp;step=1</c> từng làm
+    /// buộc nghiệp vụ vừa là trần chặn dãy mốc phình to: <c>start=1&amp;end=1000000&amp;step=1</c> từng làm
     /// ô xem trước trả gần 7 MB JSON sau mỗi lần gõ phím.
     /// </summary>
     public const int MaxYears = 200;
