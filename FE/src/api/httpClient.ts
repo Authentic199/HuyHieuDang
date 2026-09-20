@@ -29,6 +29,27 @@ http.interceptors.request.use((config) => {
 export const UNAUTHORIZED_EVENT = 'hhd:unauthorized';
 
 /**
+ * Sự kiện phát ra sau MỌI lời gọi làm đổi dữ liệu (thêm/sửa/xóa đảng viên, đổi
+ * đợt, nạp Excel, đổi cài đặt). Badge "Chưa thuộc đợt nào" trên menu trái nghe
+ * sự kiện này để lấy lại số thật, theo mục 6.4 của hợp đồng API — nhờ vậy màn
+ * hình không phải nhớ gọi lại sau từng thao tác.
+ */
+export const DATA_CHANGED_EVENT = 'hhd:data-changed';
+
+/**
+ * Lời gọi không đổi dữ liệu nghiệp vụ nên không cần đánh thức badge:
+ * đăng nhập / đăng xuất và chính endpoint đếm badge.
+ */
+const NON_MUTATING_PATHS = ['/Auth/Login', '/Auth/Logout', '/Eligibility/UnassignedCount'];
+
+function isMutation(method: string | undefined, url: string | undefined): boolean {
+  const verb = (method ?? 'get').toLowerCase();
+  if (verb === 'get') return false;
+  const path = url ?? '';
+  return !NON_MUTATING_PATHS.some((skipped) => path.endsWith(skipped));
+}
+
+/**
  * Màn Đăng nhập cũng trả 401 khi sai tài khoản — đó không phải hết phiên.
  * Chỉ 401 của các lời gọi khác mới đẩy người dùng ra ngoài.
  */
@@ -63,7 +84,12 @@ async function readBlobError(blob: Blob): Promise<ServerErrorBody | undefined> {
 }
 
 http.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (isMutation(response.config.method, response.config.url)) {
+      window.dispatchEvent(new CustomEvent(DATA_CHANGED_EVENT));
+    }
+    return response;
+  },
   async (error: unknown) => {
     if (!axios.isAxiosError(error)) {
       return Promise.reject(new ApiError(FALLBACK_MESSAGE, 0));

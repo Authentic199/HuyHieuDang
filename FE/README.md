@@ -19,11 +19,10 @@ npm run test:e2e
 
 ## Biến môi trường
 
-| Biến                 | Ý nghĩa                                        | Mặc định                |
-| -------------------- | ---------------------------------------------- | ----------------------- |
-| `VITE_API_BASE_URL`  | Địa chỉ gốc của API                            | `/api`                  |
-| `VITE_DEV_API_PROXY` | BE thật khi chạy `npm run dev`                 | `http://localhost:8080` |
-| `VITE_USE_MOCK`      | `true` thì chạy bằng dữ liệu giả, không cần BE | `false`                 |
+| Biến                 | Ý nghĩa                        | Mặc định                |
+| -------------------- | ------------------------------ | ----------------------- |
+| `VITE_API_BASE_URL`  | Địa chỉ gốc của API            | `/api`                  |
+| `VITE_DEV_API_PROXY` | BE thật khi chạy `npm run dev` | `http://localhost:8080` |
 
 Chạy bằng Docker thì `VITE_API_BASE_URL=/api` và nginx trong ảnh chuyển tiếp
 `/api/` sang service `be` — xem `nginx.conf`.
@@ -40,7 +39,6 @@ src/
 ├── auth/       Trạng thái đăng nhập dùng chung
 ├── components/ Thành phần dùng lại (Logo, PageHeading…)
 ├── layouts/    Khung chung: header + sider 5 mục (thu gọn được)
-├── mocks/      Dữ liệu giả — chỉ nạp khi VITE_USE_MOCK=true
 ├── pages/      Một thư mục một màn
 ├── routes/     Đường dẫn và lớp chặn khi chưa đăng nhập
 ├── theme/      Token thiết kế — NGUỒN MÀU DUY NHẤT
@@ -65,24 +63,25 @@ src/
 7. Dùng component của Ant Design (Layout, Table, Modal, Steps, Tabs, Statistic,
    Alert, Form, DatePicker, InputNumber, Tag, Empty, Segmented) thay vì tự chế.
 
-## Chạy bằng dữ liệu giả
+## Xử lý lỗi và hết phiên
 
-Chưa có Backend thì đặt `VITE_USE_MOCK=true` trong `.env.development` rồi `npm run dev`.
-Đăng nhập bằng `admin` / `admin`. Số liệu lấy từ bộ dữ liệu kiểm thử của QC
-(`tests/fixtures/data/`), ngày hôm nay của bộ dữ liệu là 19/09/2026.
+Mọi lỗi đi qua `src/api/httpClient.ts`, đổi sang câu tiếng Việt trong
+`src/api/messages.ts` rồi mới tới màn hình — không màn nào tự dựng chuỗi lỗi.
 
-Điểm bật/tắt nằm gọn ở một chỗ: khối `if (import.meta.env.VITE_USE_MOCK === 'true')`
-trong `src/main.tsx`. Khi nối Backend thật (T24), xóa khối đó và cả thư mục `src/mocks/`
-— tầng `src/api` và các màn hình không phải sửa gì.
+- **Bảng tải hỏng**: `TableStates` hiện "Chưa tải được danh sách" kèm nút **Thử lại**.
+- **Mất mạng / máy chủ chưa lên lúc mở ứng dụng**: giữ nguyên thẻ đăng nhập, hiện
+  "Chưa mở được hệ thống" kèm nút **Thử lại**. Không bắt đăng nhập lại.
+- **Hết phiên thật (401)**: xóa thẻ, báo một câu rồi về trang Đăng nhập. Riêng 401
+  của chính lời gọi đăng nhập là "sai tài khoản hoặc mật khẩu", không phải hết phiên.
+- **Badge "Chưa thuộc đợt nào"**: `httpClient` phát sự kiện `hhd:data-changed` sau
+  mỗi lời gọi đổi dữ liệu; `AuthProvider` nghe sự kiện đó và lấy lại số thật, nên
+  màn hình không phải tự nhớ gọi.
 
 ## Hiện trạng
 
-Task T00B dựng khung: theme, layout, định tuyến 5 màn, chặn route, trang Đăng nhập,
-tầng gọi API, Dockerfile. Task T15 chốt phần khung: sider thu gọn được, định tuyến
-thêm trang chi tiết đợt và trang nạp Excel, xử lý hết phiên (401), tầng dữ liệu giả,
-và bộ component ba trạng thái bảng (`src/components/TableStates.tsx`). Nội dung từng
-màn (bảng, form, wizard import) thuộc các task sau; hiện mỗi màn chỉ có tiêu đề và
-khối giữ chỗ.
+Task T24 nối toàn bộ giao diện vào Backend thật và gỡ hẳn tầng dữ liệu giả
+(`src/mocks/` cùng biến `VITE_USE_MOCK` đã bị xóa). Mọi màn đọc ghi qua `src/api/`,
+chạy được bằng `docker compose up -d` ở thư mục gốc kho mã.
 
 Tầng gọi API bám theo `docs/api-contract.md` v1: lớp vỏ `{ message, data }` được bóc
 trong `httpClient.ts`, khóa thông điệp tra sang tiếng Việt trong `messages.ts`, phân

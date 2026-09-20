@@ -52,7 +52,7 @@ function savedUnitName(settings: SettingsResponse | null): string {
  */
 export default function SettingsPage() {
   const { message } = AntApp.useApp();
-  const { setUnitName, refreshUncoveredCount } = useAuth();
+  const { setUnitName } = useAuth();
   const { settings, loading, error, saving, restoring, reload, save, restoreDefaults } =
     useSettings();
 
@@ -135,8 +135,8 @@ export default function SettingsPage() {
       const saved = await save(payload);
       // Header đọc tên đơn vị từ phiên làm việc, phải bảo nó đổi theo (UC-51).
       setUnitName(saved.unitName);
-      // Đổi mốc là đổi danh sách "chưa thuộc đợt nào" → badge phải tính lại.
-      void refreshUncoveredCount();
+      // Badge "chưa thuộc đợt nào" tự tính lại nhờ sự kiện DATA_CHANGED_EVENT
+      // mà tầng gọi API phát ra sau mỗi lời gọi đổi dữ liệu.
       message.success(milestoneMessages.saved);
     } catch (reason) {
       if (reason instanceof ApiError) {

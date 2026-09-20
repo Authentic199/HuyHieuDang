@@ -7,7 +7,7 @@ export * as membersApi from './members';
 export * as periodsApi from './periods';
 export * as settingsApi from './settings';
 export * as uncoveredApi from './uncovered';
-export { UNAUTHORIZED_EVENT, type DownloadedFile } from './httpClient';
+export { DATA_CHANGED_EVENT, UNAUTHORIZED_EVENT, type DownloadedFile } from './httpClient';
 export {
   FALLBACK_MESSAGE,
   NETWORK_MESSAGE,

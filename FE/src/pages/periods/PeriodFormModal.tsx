@@ -10,7 +10,7 @@ import { ApiError } from '../../types/api';
 import type { AwardPeriodResponse, CoverageWarnings } from '../../types/domain';
 
 /**
- * Modal Thêm / Sửa đợt trao huy hiệu (UC-31, UC-32) — bám mockup "Thêm đợt trao
+ * Modal Thêm / Sửa đợt trao huy hiệu (UC-31, UC-32) — bám bản vẽ "Thêm đợt trao
  * huy hiệu" đi kèm artboard 5: ô nhập cao 40px, hai ô ngày xếp hai cột, dòng
  * nhắc nền xám, nút chính đỏ ở góc phải.
  *
@@ -117,7 +117,7 @@ export function PeriodFormModal({ period, onCancel, onSaved }: PeriodFormModalPr
           from: toPickerValue(period?.fromDay, period?.fromMonth),
           to: toPickerValue(period?.toDay, period?.toMonth),
         }}
-        // Dấu sao đứng SAU nhãn, đúng mockup "Tên đợt *" của artboard 5.
+        // Dấu sao đứng SAU nhãn, đúng bản vẽ "Tên đợt *" của artboard 5.
         requiredMark={(label, { required }) => (
           <>
             {label}
