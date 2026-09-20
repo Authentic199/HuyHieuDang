@@ -253,7 +253,7 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
 
     // Ba người luồng này thêm đều là Nam hoặc để trống, nên số Nữ đúng bằng bộ lõi.
     const female = expected.counts.coreGenderNu;
-    await expect(page.locator('.ant-pagination-total-text')).toContainText(`/ ${female}`);
+    await expect(page.getByText(headingFor(female))).toBeVisible();
     const genders = (await readTable(page)).map((row) => row[MEMBER_COLUMN.gender]);
     expect(new Set(genders)).toEqual(new Set(['Nữ']));
 

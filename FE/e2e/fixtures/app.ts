@@ -99,19 +99,20 @@ export async function readHeaders(scope: Page | Locator): Promise<string[]> {
 /**
  * Chỉ số cột của từng bảng, đếm theo ô `<td>` thật sự có trong DOM.
  *
- * Bảng Đảng viên có ô đánh dấu chọn ở đầu mỗi dòng nên mọi cột lùi một ô; ba
- * bảng còn lại mở đầu bằng cột STT. Gom vào đây để ca kiểm thử không phải đếm
- * tay và không đếm nhầm.
+ * Mọi bảng đều mở đầu bằng cột STT; riêng bảng Đảng viên có thêm ô đánh dấu
+ * chọn đứng trước cột STT nên mọi cột lùi một ô. Gom vào đây để ca kiểm thử
+ * không phải đếm tay và không đếm nhầm.
  */
 export const MEMBER_COLUMN = {
   select: 0,
-  fullName: 1,
-  gender: 2,
-  dateOfBirth: 3,
-  admission: 4,
-  partyAge: 5,
-  nextMilestone: 6,
-  nextMilestoneDate: 7,
+  index: 1,
+  fullName: 2,
+  gender: 3,
+  dateOfBirth: 4,
+  admission: 5,
+  partyAge: 6,
+  nextMilestone: 7,
+  nextMilestoneDate: 8,
 } as const;
 
 export const ELIGIBLE_COLUMN = {
@@ -127,11 +128,12 @@ export const ELIGIBLE_COLUMN = {
 export const UNCOVERED_COLUMN = { ...ELIGIBLE_COLUMN, gap: 7 } as const;
 
 export const PERIOD_COLUMN = {
-  name: 0,
-  fromDisplay: 1,
-  toDisplay: 2,
-  status: 3,
-  eligibleCount: 4,
+  index: 0,
+  name: 1,
+  fromDisplay: 2,
+  toDisplay: 3,
+  status: 4,
+  eligibleCount: 5,
 } as const;
 
 /** Hộp thoại xác nhận của Ant Design đang mở. */

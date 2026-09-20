@@ -148,7 +148,18 @@ export default function MembersPage() {
     });
   }
 
+  // Bảng phân trang phía máy chủ nên số thứ tự phải chạy tiếp qua từng trang.
+  const rowOffset =
+    ((pageInfo?.current ?? query.current) - 1) * (pageInfo?.pageSize ?? query.pageSize);
+
   const columns: ColumnsType<PartyMemberResponse> = [
+    {
+      key: 'index',
+      title: 'STT',
+      width: 72,
+      className: 'hhd-members__index',
+      render: (_value, _record, index) => rowOffset + index + 1,
+    },
     {
       key: 'FullName',
       title: 'Họ tên',
@@ -380,8 +391,6 @@ export default function MembersPage() {
                   total: totalCount,
                   showSizeChanger: true,
                   pageSizeOptions: MEMBERS_PAGE_SIZES,
-                  showTotal: (total, range) =>
-                    `${formatNumber(range[0])}–${formatNumber(range[1])} / ${formatNumber(total)}`,
                 }}
               />
             </ConfigProvider>
