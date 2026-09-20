@@ -69,7 +69,14 @@
   margin: var(--hhd-space-lg);
 }
 
-/* Hai nút biểu tượng Sửa / Xóa ở cột Thao tác. */
+/* Nút thùng rác đỏ ở đầu trang — cán bộ lớn tuổi nên để ô bấm rộng rãi. */
+.hhd-members__delete.ant-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+/* Nút biểu tượng Sửa ở cột Thao tác. */
 .hhd-members__row-actions {
   display: inline-flex;
   gap: var(--hhd-space-xs);

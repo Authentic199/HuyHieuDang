@@ -88,7 +88,7 @@ export default function MembersPage() {
     reload();
   }
 
-  /** UC-23 — xóa một người hoặc nhiều người đã chọn, luôn hỏi lại trước. */
+  /** UC-23 — xóa những người đang đánh dấu, luôn hỏi lại trước. */
   function confirmDelete(targets: PartyMemberResponse[]) {
     const count = targets.length;
     if (count === 0) return;
@@ -108,11 +108,8 @@ export default function MembersPage() {
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
-          if (count === 1) {
-            await membersApi.deleteMember(targets[0].id);
-          } else {
-            await membersApi.deleteManyMembers(targets.map((row) => row.id));
-          }
+          // Chỉ còn một đường xóa duy nhất: một người cũng gửi mảng một phần tử.
+          await membersApi.deleteManyMembers(targets.map((row) => row.id));
           message.success(messageText('Mes.PartyMember.Delete.Successfully'));
           setSelectedIds([]);
           reloadAfterDelete(count);
@@ -213,7 +210,8 @@ export default function MembersPage() {
     {
       key: 'actions',
       title: 'Thao tác',
-      width: 120,
+      // Cột chỉ còn nút Sửa — mọi thao tác xóa đi qua nút thùng rác ở đầu trang.
+      width: 88,
       align: 'right',
       render: (_value, record) => (
         <span className="hhd-members__row-actions">
@@ -222,14 +220,6 @@ export default function MembersPage() {
               icon={<EditOutlined />}
               aria-label={`Sửa ${record.fullName}`}
               onClick={() => openEdit(record)}
-            />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              aria-label={`Xóa ${record.fullName}`}
-              onClick={() => confirmDelete([record])}
             />
           </Tooltip>
         </span>
@@ -253,11 +243,25 @@ export default function MembersPage() {
         description={headingDescription}
         extra={
           <>
-            {selectedRows.length > 0 ? (
-              <Button danger onClick={() => confirmDelete(selectedRows)}>
-                Xóa {formatNumber(selectedRows.length)} đã chọn
-              </Button>
-            ) : null}
+            {/* Luôn hiện để bác thấy trước là có chức năng xóa; chưa đánh dấu ai
+                thì nút mờ đi và bấm không được. */}
+            <Tooltip
+              title={
+                selectedRows.length > 0
+                  ? `Xóa ${formatNumber(selectedRows.length)} người đã chọn`
+                  : 'Xóa người đã chọn — bác đánh dấu vào ô vuông đầu dòng trước'
+              }
+            >
+              <Button
+                className="hhd-members__delete"
+                danger
+                type="primary"
+                icon={<DeleteOutlined />}
+                aria-label="Xóa người đã chọn"
+                disabled={selectedRows.length === 0}
+                onClick={() => confirmDelete(selectedRows)}
+              />
+            </Tooltip>
             <Button onClick={openCreate}>+ Thêm</Button>
             <Button type="primary" onClick={() => navigate(paths.membersImport)}>
               Import Excel
