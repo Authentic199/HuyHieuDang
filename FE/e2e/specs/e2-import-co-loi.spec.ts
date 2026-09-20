@@ -79,9 +79,9 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     await page.setInputFiles('input[type="file"]', templatePath);
     await page.getByRole('button', { name: 'Tiếp tục ›' }).click();
 
-    await expect(page.locator('.hhd-import__summary')).toContainText(
-      'Sẽ thêm 2 người mới · 0 dòng lỗi bị bỏ qua',
-    );
+    const summary = page.locator('.hhd-import__summary');
+    await expect(summary).toContainText('2 dòng hợp lệ');
+    await expect(summary).toContainText('0 dòng bị lỗi, bỏ qua');
     await page.getByRole('button', { name: 'Nạp 2 dòng hợp lệ' }).click();
     await expect(page.locator('.hhd-import__result')).toContainText('Đã thêm 2 người');
     expect((await api.dashboard()).memberCount).toBe(2);
@@ -93,13 +93,14 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
 
     await page.locator('.ant-table-thead input[type="checkbox"]').check();
     await expect(page.locator('.hhd-members__selected')).toContainText('Đang chọn 2 dòng');
-    await page.getByRole('button', { name: 'Xóa 2 đã chọn' }).click();
+    // T33 đổi nút xóa nhiều thành nút thùng rác chỉ có nhãn trợ năng.
+    await page.getByRole('button', { name: 'Xóa người đã chọn' }).click();
 
     const dialog = confirmDialog(page);
     await expect(dialog).toContainText('Xóa 2 người khỏi danh sách?');
     await dialog.getByRole('button', { name: 'Xóa 2 người' }).click();
 
-    await expect(page.getByText('Chưa có ai trong danh sách')).toBeVisible();
+    await expect(page.getByText('Chưa có đảng viên nào')).toBeVisible();
     expect((await api.dashboard()).memberCount).toBe(0);
     await dismissToasts(page);
   });
@@ -110,9 +111,8 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     await page.getByRole('button', { name: 'Tiếp tục ›' }).click();
 
     const summary = page.locator('.hhd-import__summary');
-    await expect(summary).toContainText(
-      `Sẽ thêm ${expectedValid} người mới · ${expectedErrors} dòng lỗi bị bỏ qua`,
-    );
+    await expect(summary).toContainText(`${expectedValid} dòng hợp lệ`);
+    await expect(summary).toContainText(`${expectedErrors} dòng bị lỗi, bỏ qua`);
     await expect(summary).toContainText('Hệ thống không kiểm tra trùng');
     // Xem trước tuyệt đối không ghi gì vào kho (QT9).
     expect((await api.dashboard()).memberCount).toBe(0);
@@ -128,6 +128,29 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
 
     await tabs.getByRole('tab', { name: `Lỗi ${expectedErrors}` }).click();
     await expect(tableRows(page.locator('.ant-tabs-tabpane-active'))).toHaveCount(expectedErrors);
+  });
+
+  await test.step('E2-06b · Ô tìm trong bảng xem trước lọc đúng một dòng, xóa ô tìm thì về đủ', async () => {
+    const tabs = page.locator('.hhd-import__tabs');
+    const search = page.getByLabel('Tìm trong danh sách xem trước');
+
+    await tabs.getByRole('tab', { name: `Hợp lệ ${expectedValid}` }).click();
+    await search.fill('Trần Hợp Lệ Hai');
+
+    const pane = page.locator('.ant-tabs-tabpane-active');
+    await expect(tableRows(pane)).toHaveCount(1);
+    await expect(tableRows(pane).first()).toContainText('Trần Hợp Lệ Hai');
+    // Viên đếm trên nhãn tab vẫn là con số của cả file, không đổi theo bộ lọc.
+    await expect(tabs.getByRole('tab', { name: `Hợp lệ ${expectedValid}` })).toBeVisible();
+
+    // Không khớp gì thì câu chữ phải khác hẳn trạng thái tab vốn không có dòng nào.
+    await search.fill('Không Có Ai Tên Này');
+    await expect(pane.getByText('Không tìm thấy dòng nào khớp')).toBeVisible();
+    await expect(pane.getByText('Bác thử bớt chữ')).toBeVisible();
+
+    await search.fill('');
+    await expect(tableRows(page.locator('.ant-tabs-tabpane-active'))).toHaveCount(expectedValid);
+    await tabs.getByRole('tab', { name: `Lỗi ${expectedErrors}` }).click();
   });
 
   await test.step('E2-07 · Bảng lỗi nêu đúng số dòng Excel và đúng lý do từng dòng', async () => {
@@ -164,7 +187,7 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
 
     await page.getByRole('button', { name: 'Hủy', exact: true }).click();
     await expect(page).toHaveURL(/\/dang-vien$/);
-    await expect(page.getByText('Chưa có ai trong danh sách')).toBeVisible();
+    await expect(page.getByText('Chưa có đảng viên nào')).toBeVisible();
     expect((await api.dashboard()).memberCount).toBe(0);
   });
 

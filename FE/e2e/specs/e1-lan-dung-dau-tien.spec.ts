@@ -212,7 +212,8 @@ test('E2E-1 · Lần dùng đầu tiên: đăng nhập → cài đặt → tạo
     await page.getByRole('button', { name: 'Tiếp tục ›' }).click();
 
     const summary = page.locator('.hhd-import__summary');
-    await expect(summary).toContainText('Sẽ thêm 32 người mới · 0 dòng lỗi bị bỏ qua');
+    await expect(summary).toContainText('32 dòng hợp lệ');
+    await expect(summary).toContainText('0 dòng bị lỗi, bỏ qua');
     await expect(summary).toContainText('Hệ thống không kiểm tra trùng');
 
     // Xem trước không được ghi gì vào kho (QT9).
