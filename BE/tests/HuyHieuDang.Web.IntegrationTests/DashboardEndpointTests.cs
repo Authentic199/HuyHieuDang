@@ -135,10 +135,9 @@ public class DashboardEndpointTests
         Assert.True(data.Warnings.NoPeriods);
         Assert.False(data.Warnings.NoMembers);
 
-        // Chưa có đợt thì cả năm là một khoảng trống và ai tròn mốc trong năm đều bị sót (QT7).
-        PeriodGapPayload gap = Assert.Single(data.Warnings.Gaps);
-        Assert.Equal(new DateOnly(2026, 1, 1), gap.FromDate);
-        Assert.Equal(new DateOnly(2026, 12, 31), gap.ToDate);
+        // Chưa có đợt nào thì không kèm cảnh báo "chưa phủ kín": chỉ còn "Chưa cài đợt trao
+        // huy hiệu". Người tròn mốc trong năm vẫn bị tính là sót (QT7).
+        Assert.Empty(data.Warnings.Gaps);
         Assert.Equal(
             CoreFixtures.Scenario("core_default_T0_noPeriod")
                 .GetProperty("missedByYear").GetProperty("2026").GetProperty("total").GetInt32(),
@@ -179,6 +178,9 @@ public class DashboardEndpointTests
         Assert.True(data.Warnings.NoPeriods);
         Assert.Equal(0, data.Warnings.UnassignedCount);
         Assert.Empty(data.Warnings.Overlaps);
+
+        // Đúng hai cảnh báo, không thừa dòng "trống 01/01-31/12".
+        Assert.Empty(data.Warnings.Gaps);
     }
 
     [Fact(DisplayName = "6.1 · Cảnh báo của Dashboard trùng khớp với cảnh báo màn Đợt")]

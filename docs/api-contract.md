@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.2 — 19/09/2026 |
-| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8 |
+| Phiên bản | 1.3 — 20/09/2026 |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
@@ -728,6 +728,10 @@ Một lời gọi trả đủ dữ liệu cho cả bảng, dải độ phủ và
 
 `coverage.segments` phủ liên tục từ `01/01` đến `31/12` của `year`, sắp theo `fromDate`, dùng để vẽ dải 12 tháng của UC-36. Khi hai đợt chồng lấn, phần chồng lấn vẫn nằm trong đoạn `Period` của đợt đến trước; chi tiết chồng lấn đọc ở `warnings.overlaps`.
 
+**Khi trong năm đang xem chưa có đợt nào (`totalCount = 0`):** `warnings.gaps` là **mảng rỗng**, còn `coverage.segments` **vẫn** phủ liên tục `01/01`–`31/12` bằng đúng một đoạn `Gap` để giao diện vẫn vẽ được dải 12 tháng của UC-36. Hai trường này cố tình lệch nhau, không phải lỗi. Lý do: cảnh báo "chưa phủ kín" là lời khuyên chỉnh lại các đợt đang có; khi chưa có đợt nào thì cảnh báo đúng là "Chưa cài đợt trao huy hiệu".
+
+Quy tắc này **không** đổi QT6. Phần sinh khoảng trống dùng cho màn "Chưa thuộc đợt nào" (QT7) giữ nguyên: khi chưa có đợt nào, khoảng trống vẫn phủ trọn năm và mang `type = "BeforeFirst"`, chữ hiển thị "Trước đợt đầu tiên" (mục 1.10). Chỉ tầng cảnh báo `warnings.gaps` của mục 5.1 và mục 6.1 là rỗng.
+
 `eligibleCount` của từng đợt là số người đủ điều kiện **trong `year`** (QT4) — cột "Đủ điều kiện năm nay".
 
 ### 5.2 `GET /api/AwardPeriods/{id}` — Lấy một đợt (UC-34 tab Thông tin)
@@ -849,6 +853,7 @@ Không tham số. Máy chủ tự lấy ngày hôm nay và năm hiện tại.
 | `eligibleMembers` | Sắp theo mục 1.8. Rỗng khi `upcomingPeriod = null` |
 | `warnings.noMembers` | `memberCount = 0` → giao diện hiện khối hướng dẫn 3 bước (UC-13) |
 | `warnings.unassignedCount` | Số người "chưa thuộc đợt nào" trong `unassignedYear` (QT7) |
+| `warnings.gaps` | **Rỗng khi `noPeriods = true`.** Lúc đó giao diện chỉ hiện hai cảnh báo "Chưa có đảng viên nào" và "Chưa cài đợt trao huy hiệu". Lý do và điểm khác `coverage.segments` đọc ở mục 5.1 |
 
 Một lời gọi này đủ dựng cả màn Dashboard, kể cả trạng thái trống.
 
@@ -1166,3 +1171,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 | 1.0 | 19/09/2026 | Bản đầu tiên. 28 endpoint, phủ toàn bộ UC-00 → UC-51 của tài liệu nghiệp vụ v1.1 |
 | 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
 | 1.2 | 19/09/2026 | **Mục 4 Import** khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. **Mục 5.2** làm rõ kiểm tra `year` (1900–2200, `Mes.Query.Invalid.Year`) cho khớp mã đã duyệt ở PR #18. **Mục 1.8** trong cùng mốc sắp theo Họ tên đầy đủ, bỏ quy ước sắp theo tên gọi (từ cuối); đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3, khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. **Mục 7 Cài đặt** khớp API đã duyệt ở PR #24: `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối, thêm khóa `Mes.AppSetting.OverLength.UnitName`, ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`, kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi. **Mục 8** ghi tên sheet `DanhSach` và cách ghi dòng tiêu đề (T14). Không đổi hình dạng request/response |
+| 1.3 | 20/09/2026 | **Mục 5.1 và 6.1**: khi năm đang xem chưa có đợt nào, `warnings.gaps` là mảng rỗng ở cả hai endpoint; `coverage.segments` vẫn phủ liên tục 01/01–31/12 bằng một đoạn `Gap`. Không đổi QT6: khoảng trống phủ trọn năm với nhãn "Trước đợt đầu tiên" và nhãn khoảng trống của màn "Chưa thuộc đợt nào" (QT7) giữ nguyên. Không đổi hình dạng request/response |

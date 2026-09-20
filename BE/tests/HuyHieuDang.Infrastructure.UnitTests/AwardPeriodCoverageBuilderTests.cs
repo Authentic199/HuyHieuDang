@@ -71,8 +71,8 @@ public class AwardPeriodCoverageBuilderTests
             x => AssertSegment(x, CoverageSegmentType.Period, "Đợt 7/11", "2026-09-11", "2026-12-31"));
     }
 
-    [Fact(DisplayName = "QT6 · Chưa cài đợt nào: cả năm là một khoảng trống")]
-    public void BuildCoverage_WithoutPeriods_ReturnsSingleGap()
+    [Fact(DisplayName = "QT6 · Chưa cài đợt nào: dải vẫn là một khoảng trống cả năm, cảnh báo gaps rỗng")]
+    public void BuildCoverage_WithoutPeriods_KeepsFullYearGapSegmentButReportsNoGapWarning()
     {
         IReadOnlyList<AwardPeriod> none = Array.Empty<AwardPeriod>();
 
@@ -82,9 +82,9 @@ public class AwardPeriodCoverageBuilderTests
         AssertContinuous(coverage, Year);
         AssertSegment(Assert.Single(coverage.Segments), CoverageSegmentType.Gap, null, "2026-01-01", "2026-12-31");
 
-        PeriodGapResponse gap = Assert.Single(warnings.Gaps);
-        Assert.Null(gap.PreviousPeriodName);
-        Assert.Null(gap.NextPeriodName);
+        // "Chưa phủ kín" là lời khuyên chỉnh lại các đợt đang có; chưa có đợt nào thì chỉ còn
+        // cảnh báo "Chưa cài đợt trao huy hiệu", nên không kèm khoảng trống 01/01-31/12 nữa.
+        Assert.Empty(warnings.Gaps);
         Assert.Empty(warnings.Overlaps);
     }
 

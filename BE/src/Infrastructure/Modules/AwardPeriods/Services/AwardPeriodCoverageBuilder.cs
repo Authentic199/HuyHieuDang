@@ -35,9 +35,13 @@ public static class AwardPeriodCoverageBuilder
                 .Select(overlap => ToOverlapResponse(calculator, overlap, byName, year))
                 .OrderBy(x => x.FromDate)
                 .ToList(),
-            Gaps = calculator.GetGaps(corePeriods, year)
-                .Select(gap => ToGapResponse(gap, ordered))
-                .ToList(),
+            // Chưa có đợt nào thì "chưa phủ kín" không còn là lời khuyên nào cả: màn hình đã báo
+            // "Chưa cài đợt trao huy hiệu". Chỉ chặn ở đây, tầng tính toán QT6 giữ nguyên.
+            Gaps = corePeriods.Count == 0
+                ? Array.Empty<PeriodGapResponse>()
+                : calculator.GetGaps(corePeriods, year)
+                    .Select(gap => ToGapResponse(gap, ordered))
+                    .ToList(),
         };
     }
 
