@@ -599,7 +599,7 @@ Trạng thái đầu: giống E2E-3 (4 đợt, 30/90/5, bộ lõi 32 người, T
 | E4-07 | Badge menu | Còn **6** |
 | E4-08 | Mở M4 năm 2026 | **6 dòng**, không còn Lê Văn Cường; khoảng trống "Giữa Đợt 2/9 và Đợt 7/11" **biến mất** khỏi banner |
 | E4-09 | Banner phủ kín ở màn Đợt | Còn **4** khoảng trống |
-| E4-10 | Dashboard | Đợt sắp tới **vẫn** là Đợt 7/11, vẫn 6 người |
+| E4-10 | Dashboard | Đợt sắp tới là **Đợt 2/9** trạng thái **"Đang diễn ra"** — E4-04 vừa nới Đến ngày sang 30/09 nên hôm nay rơi vào đợt đó (QT8). Đợt 7/11 không bị đụng tới, vẫn **6 người**. *(sửa ngày 20/09/2026 theo QC-T28-02: câu cũ "vẫn là Đợt 7/11" trái QT8)* |
 | E4-11 | Sửa Đợt 2/9 Đến ngày → **07/11** (chồng lấn Đợt 7/11) | **Lưu được** + cảnh báo chồng lấn nêu đúng cặp đợt (QT6) |
 | E4-12 | Hoàn nguyên Đến ngày về 10/09 | Mọi con số trở về đúng E4-01 |
 
@@ -636,7 +636,7 @@ Trạng thái đầu: đã đăng nhập, 4 đợt, cài đặt 30/90/5, bộ l�
 | E6-08 | Sửa "Kiểm Thử Vòng Đời": Ngày chính thức → **05/10/1991** | Lưu thành công |
 | E6-09 | Xem lại dòng đó | Tuổi đảng **34**, Mốc kế tiếp **35**, Ngày tròn mốc kế tiếp **05/10/2026** |
 | E6-10 | Dashboard | Người đó giờ thuộc mốc **35** của Đợt 7/11; phân bổ theo mốc đổi đúng |
-| E6-11 | Sửa Ngày chính thức → **01/05/1935** | Tuổi đảng 91, Mốc kế tiếp `—`, và người đó **rời** danh sách Đợt 7/11 |
+| E6-11 | Sửa Ngày chính thức → **01/05/1935**, đồng thời lùi Ngày sinh → **12/03/1915** | Tuổi đảng 91, Mốc kế tiếp `—`, và người đó **rời** danh sách Đợt 7/11. *(sửa ngày 20/09/2026 theo QC-T28-03: thiếu bước lùi Ngày sinh thì ràng buộc "Ngày sinh phải trước Ngày vào Đảng chính thức" chặn ngay, ca không chạy được)* |
 | E6-12 | Lọc Giới tính = Nữ, rồi bỏ lọc | Số dòng khớp `expected.json`; bỏ lọc trở về đủ |
 | E6-13 | Đổi số dòng/trang, sang trang 2, quay lại | Không mất người, không trùng người |
 | E6-14 | Chọn 3 dòng | Hiện "**Đang chọn 3 dòng**" |
