@@ -181,14 +181,27 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     expect(rows[0][1]).toBe('—');
   });
 
-  await test.step('E2-08 · Bấm Hủy thì không ghi gì vào kho, danh sách vẫn 0 người', async () => {
-    await page.getByRole('button', { name: 'Hủy', exact: true }).click();
-    await expect(page.getByText('Kéo thả file Excel vào đây')).toBeVisible();
+  await test.step('E2-08 · Quay lại giữ file, Hủy bỏ hẳn — cả hai đường đều không ghi gì vào kho', async () => {
+    // T45 tách hai đường lùi ở bước 2: "‹ Quay lại" giữ file và về bước 1,
+    // "Hủy" bỏ hẳn việc import rồi về thẳng danh sách đảng viên.
+    const dropzone = page.locator('.hhd-import__dropzone');
+    await page.getByRole('button', { name: 'Quay lại' }).click();
+    // Giữ file nghĩa là ô thả vẫn mang tên file, không trở về ô trắng.
+    await expect(dropzone).toContainText(ERROR_FILE);
+
+    await page.getByRole('button', { name: 'Tiếp tục ›' }).click();
+    await expect(page.locator('.hhd-import__summary')).toContainText(
+      `${expectedValid} dòng hợp lệ`,
+    );
 
     await page.getByRole('button', { name: 'Hủy', exact: true }).click();
     await expect(page).toHaveURL(/\/dang-vien$/);
     await expect(page.getByText('Chưa có đảng viên nào')).toBeVisible();
     expect((await api.dashboard()).memberCount).toBe(0);
+
+    // Bỏ hẳn nghĩa là lần vào sau bắt đầu lại từ bước 1 trắng, không còn file cũ.
+    await page.goto(importPage);
+    await expect(page.getByText('Kéo thả file Excel vào đây')).toBeVisible();
   });
 
   await test.step('E2-09 · Làm lại tới bước 2 rồi Nạp: báo đúng số thêm và số bỏ qua', async () => {

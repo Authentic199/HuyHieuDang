@@ -64,29 +64,36 @@ Mốc mặc định là **T0 = 19/09/2026**, đổi được bằng `E2E_TODAY`:
 E2E_TODAY=2026-10-15 npx playwright test -c e2e/playwright.e2e.config.ts
 ```
 
-> **Backend hiện CHƯA đọc `HUYHIEUDANG_TEST_TODAY`** — lỗi `QC-T28-01`
-> (cùng gốc với `QC-T27-01`, ca `A903b` trong `BE/tests/HuyHieuDang.Web.QcIntegrationTests`).
-> Vì vậy ca `E0-01` đang để `Skip`, và hai ca `E-903` / `E-904` (chạy lại ở mốc
-> T1, T2) chưa chạy được.
->
-> Trong lúc chờ, bộ kiểm thử vẫn tất định nhờ hai điều:
->
-> 1. `global-setup.ts` in rõ ngày máy chủ đang dùng ở đầu mỗi lần chạy.
-> 2. Ca `E0-02` bắt buộc ngày máy chủ nằm trong **khoảng an toàn
->    11/09/2026 – 29/09/2026** — khoảng mà mọi con số của bộ dữ liệu biên còn
->    nguyên (ngày tròn mốc gần nhất hai bên là 10/09 và 30/09). Ra ngoài khoảng
->    đó thì dừng ngay với một câu giải thích, thay vì để sáu luồng đỏ vì lý do khác.
->
+Backend đọc `HUYHIEUDANG_TEST_TODAY` từ PR #38, nên cả hai đồng hồ ép được về
+cùng một mốc. Ca `E0-01` canh đúng điều đó ở mỗi lần chạy, và `global-setup.ts`
+in mốc ra đầu màn hình để không ai phải đoán.
+
+**Chạy lại ở mốc khác (E-903, E-904).** Mốc của Backend nằm trong biến môi trường
+của container, nên một lần chạy chỉ kiểm được một mốc — đổi mốc phải dựng lại
+dịch vụ `be`:
+
+```bash
+# E-903 — thẻ Dashboard phải chuyển sang "Đang diễn ra"
+E2E_TODAY=2026-10-15 docker compose -f e2e/docker-compose.e2e.yml up -d --force-recreate be
+E2E_TODAY=2026-10-15 npx playwright test -c e2e/playwright.e2e.config.ts
+
+# E-904 — mọi đợt 2026 đã qua, đợt sắp tới là Đợt 3/2 của năm 2027
+E2E_TODAY=2026-12-01 docker compose -f e2e/docker-compose.e2e.yml up -d --force-recreate be
+E2E_TODAY=2026-12-01 npx playwright test -c e2e/playwright.e2e.config.ts
+```
+
+Chạy ở mốc nào thì hai ca của mốc kia tự bỏ qua kèm câu nhắc, và `E0-02` cũng tự
+bỏ qua — ra khỏi mốc mặc định thì bộ số **được phép** đổi, lúc đó oracle
+`core_default_T1` / `core_default_T2` mới là thước đo.
+
+Ở mốc mặc định `T0`, ca `E0-02` vẫn bắt ngày máy chủ nằm trong **khoảng an toàn
+11/09/2026 – 29/09/2026** — khoảng mà mọi con số của bộ dữ liệu biên còn nguyên
+(ngày tròn mốc gần nhất hai bên là 10/09 và 30/09).
+
 > Chỉ đúng **hai** giá trị phải suy theo ngày máy chủ báo về thay vì viết cứng:
 > số ngày đếm ngược tới Đợt 7/11, và dòng lỗi "ngày ở tương lai" của
 > `loi-4-dong.xlsx` (ngày 20/09/2026). Cả hai được chú thích tại chỗ trong
 > `fixtures/clock.ts`.
-
-> **Hai luồng `e2` và `e6` đang đỏ** — lỗi `QC-T54-02`, không liên quan đợt vắt
-> năm. Cả hai chờ nút tên `Xóa N đã chọn`, trong khi màn Đảng viên từ T33
-> (`27239da`) dùng nút thùng rác đỏ mang `aria-label="Xóa người đã chọn"`. Mã sản
-> phẩm không sai; sửa thì chỉ đổi cách định vị nút trong hai tệp luồng, và đang
-> chờ CEO phân người.
 
 ## Nguồn số liệu mong đợi
 

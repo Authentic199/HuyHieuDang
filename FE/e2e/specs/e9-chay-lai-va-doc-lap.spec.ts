@@ -2,8 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { expect, test } from '../fixtures/app';
-import { T1, T2 } from '../fixtures/expected';
+import { expect, loginThroughUi, navItem, test } from '../fixtures/app';
+import { FIXED_TODAY } from '../fixtures/clock';
+import { ADMIN } from '../fixtures/env';
+import { eligibility, scenario, T1, T2 } from '../fixtures/expected';
 
 /**
  * Các ca về tính chạy-lại-được của chính bộ kiểm thử (docs/test-plan.md mục 6,
@@ -19,23 +21,89 @@ import { T1, T2 } from '../fixtures/expected';
 const SPEC_DIR = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE_DIR = path.join(SPEC_DIR, '..', 'fixtures');
 
+/**
+ * Thẻ đợt sắp tới trên Dashboard phải khớp oracle của kịch bản tương ứng.
+ *
+ * Dùng chung cho E-903 và E-904 vì hai ca chỉ khác nhau ở mốc thời gian; mọi
+ * con số đều lấy từ `expected.json`, không viết cứng ở đây.
+ */
+async function assertUpcomingCard(
+  page: Parameters<typeof loginThroughUi>[0],
+  scenarioName: 'core_default_T1' | 'core_default_T2',
+  eligibilityYear: number,
+): Promise<void> {
+  const upcoming = scenario(scenarioName).upcomingPeriod!;
+  const list = eligibility(scenarioName, upcoming.code, eligibilityYear);
+
+  await page.goto('/');
+  await loginThroughUi(page, ADMIN.username, ADMIN.password);
+  await navItem(page, 'Dashboard').click();
+
+  const card = page.locator('.hhd-dashboard__card').first();
+  await expect(card.locator('.hhd-dashboard__period-name')).toHaveText(upcoming.name);
+
+  // `.first()` là cố ý: khi đợt chưa có ai tròn mốc, thẻ dùng lại đúng lớp này
+  // cho dòng "Đợt này chưa có ai tròn mốc…" ở dưới, nên có hai phần tử khớp.
+  await expect(card.locator('.hhd-dashboard__period-range').first()).toHaveText(
+    `${upcoming.boundFromDisplay} – ${upcoming.boundToDisplay}`,
+  );
+  await expect(card.locator('.hhd-dashboard__status')).toHaveText(
+    upcoming.status === 'Đang diễn ra' ? 'Đang diễn ra' : `Còn ${upcoming.daysLeft} ngày`,
+  );
+  await expect(card.locator('.hhd-dashboard__count-value')).toHaveText(String(list.total));
+
+  if (list.total === 0) {
+    await expect(card).toContainText(`Đợt này chưa có ai tròn mốc trong năm ${upcoming.year}.`);
+  }
+}
+
 test.describe('E9 · Chạy lại được và độc lập', () => {
   /**
    * E-903 · Chạy lại toàn bộ với mốc T1 = 15/10/2026 để thẻ Dashboard hiện
    * "Đang diễn ra" (QT11).
    *
-   * ĐANG CHẶN — lỗi QC-T28-01: Backend không đọc `HUYHIEUDANG_TEST_TODAY` nên
-   * không có cách nào đẩy máy chủ tới 15/10/2026. Bỏ `skip` khi T-FIX-4 xong.
+   * Hai ca E-903 và E-904 từng là chỗ trống để `skip`, vì lỗi QC-T28-01 làm
+   * không có cách nào đẩy máy chủ tới một ngày khác. Lỗi đã sửa: `E2E_TODAY`
+   * nay ép được cả hai đồng hồ, nên hai ca này có thân thật.
+   *
+   * Chúng chỉ chạy khi stack được dựng ở đúng mốc — mốc của Backend nằm trong
+   * biến môi trường của container nên một lần chạy chỉ kiểm được một mốc:
+   *
+   * ```bash
+   * E2E_TODAY=2026-10-15 docker compose -f e2e/docker-compose.e2e.yml up -d
+   * E2E_TODAY=2026-10-15 npx playwright test -c e2e/playwright.e2e.config.ts
+   * ```
+   *
+   * Chạy ở mốc khác thì ca tự bỏ qua kèm câu nhắc, thay vì đỏ oan.
    */
-  test.skip(`E-903 · Chạy lại ở mốc T1 = ${T1}: Dashboard báo "Đang diễn ra" [QC-T28-01]`, () => {});
+  test(`E-903 · Chạy lại ở mốc T1 = ${T1}: Dashboard báo "Đang diễn ra"`, async ({ api, page }) => {
+    test.skip(FIXED_TODAY !== T1, `Chỉ chạy khi stack dựng ở mốc T1 — đặt E2E_TODAY=${T1}.`);
+
+    await api.seedBaseline();
+    expect((await api.dashboard()).today, 'máy chủ phải đang ở đúng mốc T1').toBe(T1);
+
+    await assertUpcomingCard(page, 'core_default_T1', 2026);
+  });
 
   /**
    * E-904 · Chạy lại toàn bộ với mốc T2 = 01/12/2026: mọi đợt 2026 đã qua nên
    * đợt sắp tới là Đợt 3/2 của năm 2027 (QT8 nhánh năm sau).
    *
-   * ĐANG CHẶN vì cùng lý do với E-903.
+   * Cách chạy giống E-903, đổi mốc thành `2026-12-01`.
    */
-  test.skip(`E-904 · Chạy lại ở mốc T2 = ${T2}: Dashboard nhảy sang Đợt 3/2 năm 2027 [QC-T28-01]`, () => {});
+  test(`E-904 · Chạy lại ở mốc T2 = ${T2}: Dashboard nhảy sang Đợt 3/2 năm 2027`, async ({
+    api,
+    page,
+  }) => {
+    test.skip(FIXED_TODAY !== T2, `Chỉ chạy khi stack dựng ở mốc T2 — đặt E2E_TODAY=${T2}.`);
+
+    await api.seedBaseline();
+    expect((await api.dashboard()).today, 'máy chủ phải đang ở đúng mốc T2').toBe(T2);
+
+    // Năm của đợt sắp tới là 2027, không phải năm đang xem: đây chính là nhánh
+    // "mọi đợt trong năm đã qua thì nhìn sang năm sau" của QT8.
+    await assertUpcomingCard(page, 'core_default_T2', 2027);
+  });
 
   /**
    * E-905 · Không ca nào được chờ một quãng cố định "cho chắc". Chờ cố định làm
