@@ -357,8 +357,8 @@ public class PartyMemberEndpointTests
         Assert.Equal(Messages<PartyMember>.NotFound(), (await response.ReadApiResponseAsync<object>()).Message);
     }
 
-    [Fact(DisplayName = "3.5 · Xóa một trả id vừa xóa và bản ghi biến mất hẳn")]
-    public async Task Delete_RemovesMemberPermanently()
+    [Fact(DisplayName = "3.6 · Xóa một người qua mảng một phần tử trả đúng một id, bản ghi biến mất hẳn")]
+    public async Task DeleteMany_WithSingleId_RemovesMemberPermanently()
     {
         HttpClient client = await CreateAuthenticatedClientAsync();
         await ResetAsync();
@@ -368,26 +368,39 @@ public class PartyMemberEndpointTests
             officialAdmissionDate = "1990-05-05",
         });
 
-        HttpResponseMessage response = await client.DeleteAsync($"{BasePath}/{id}");
+        HttpResponseMessage response = await client.PostAsJsonAsync(DeleteManyPath, new { ids = new[] { id } });
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        ApiResponse<IdentifierPayload> body = await response.ReadApiResponseAsync<IdentifierPayload>();
+        ApiResponse<IdentifiersPayload> body = await response.ReadApiResponseAsync<IdentifiersPayload>();
         Assert.Equal(Messages<PartyMember>.Delete(), body.Message);
-        Assert.Equal(id, body.Data!.Id);
+        Assert.Equal(id, Assert.Single(body.Data!.Ids));
 
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"{BasePath}/{id}")).StatusCode);
         Assert.Equal(0, (await GetPageAsync(client, BasePath)).PageInfo.TotalCount);
     }
 
-    [Fact(DisplayName = "3.5 · Xóa id không tồn tại trả 400 Mes.PartyMember.NotFound")]
-    public async Task Delete_WithUnknownId_ReturnsNotFoundKey()
+    [Fact(DisplayName = "3.6 · Xóa mảng chỉ có id lạ trả danh sách rỗng chứ không phải lỗi")]
+    public async Task DeleteMany_WithUnknownIdOnly_ReturnsEmptyList()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+
+        HttpResponseMessage response =
+            await client.PostAsJsonAsync(DeleteManyPath, new { ids = new[] { Guid.NewGuid() } });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Empty((await response.ReadApiResponseAsync<IdentifiersPayload>()).Data!.Ids);
+    }
+
+    [Fact(DisplayName = "T34 · DELETE /api/PartyMembers/{id} đã bị gỡ, không ai dựng lại được")]
+    public async Task Delete_SingleRoute_NoLongerExists()
     {
         HttpClient client = await CreateAuthenticatedClientAsync();
 
         HttpResponseMessage response = await client.DeleteAsync($"{BasePath}/{Guid.NewGuid()}");
 
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Equal(Messages<PartyMember>.NotFound(), (await response.ReadApiResponseAsync<object>()).Message);
+        Assert.Contains(
+            response.StatusCode,
+            new[] { HttpStatusCode.NotFound, HttpStatusCode.MethodNotAllowed });
     }
 
     [Fact(DisplayName = "3.6 · Xóa nhiều trả đúng id đã xóa, id lạ bị bỏ qua lặng lẽ")]

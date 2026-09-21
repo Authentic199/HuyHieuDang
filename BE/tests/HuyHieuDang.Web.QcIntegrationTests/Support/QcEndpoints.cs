@@ -66,7 +66,7 @@ public static class QcEndpoints
     private static readonly Guid SampleId = new("00000000-0000-0000-0000-0000000000aa");
 
     /// <summary>
-    /// 27 endpoint nghiệp vụ — toàn bộ hợp đồng trừ <c>Auth/Login</c>. Những endpoint có
+    /// 26 endpoint nghiệp vụ — toàn bộ hợp đồng trừ <c>Auth/Login</c>. Những endpoint có
     /// <c>{id}</c> dùng một guid bất kỳ: ca A-001 chỉ quan tâm cổng xác thực chặn trước khi
     /// chạm tới nghiệp vụ.
     /// </summary>
@@ -78,7 +78,6 @@ public static class QcEndpoints
         ("GET", $"{PartyMembers}/{SampleId}"),
         ("POST", PartyMembers),
         ("PUT", $"{PartyMembers}/{SampleId}"),
-        ("DELETE", $"{PartyMembers}/{SampleId}"),
         ("POST", PartyMembersDeleteMany),
         ("GET", ImportTemplate),
         ("POST", ImportPreview),

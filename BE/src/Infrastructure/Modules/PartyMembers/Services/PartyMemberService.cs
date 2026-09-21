@@ -14,7 +14,8 @@ using Microsoft.EntityFrameworkCore;
 namespace HuyHieuDang.Infrastructure.Modules.PartyMembers.Services;
 
 /// <summary>
-/// Nghiệp vụ đảng viên: danh sách, lấy một, thêm, sửa, xóa một và xóa nhiều (UC-20 → UC-23).
+/// Nghiệp vụ đảng viên: danh sách, lấy một, thêm, sửa và xóa (UC-20 → UC-23).
+/// Xóa chỉ có một đường duy nhất là <see cref="IPartyMemberService.DeleteRangeAsync"/> (T34).
 /// </summary>
 public interface IPartyMemberService : IScopedService
 {
@@ -46,14 +47,11 @@ public interface IPartyMemberService : IScopedService
     Task<PartyMemberResponse> UpdateAsync(
         Guid id, UpdatePartyMemberRequest request, CancellationToken cancellationToken = default);
 
-    /// <summary>Xóa hẳn một đảng viên (UC-23, QT10).</summary>
-    /// <param name="id">Id đảng viên.</param>
-    /// <param name="cancellationToken">Thẻ hủy.</param>
-    /// <returns>Id vừa xóa.</returns>
-    Task<PartyMemberIdentifierResponse> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-
-    /// <summary>Xóa nhiều đảng viên trong một giao dịch (UC-23).</summary>
-    /// <param name="request">Danh sách id cần xóa.</param>
+    /// <summary>
+    /// Xóa hẳn đảng viên trong một giao dịch (UC-23, QT10). Đường xóa duy nhất: một phần tử
+    /// cũng đi qua đây.
+    /// </summary>
+    /// <param name="request">Danh sách id cần xóa, ít nhất một phần tử.</param>
     /// <param name="cancellationToken">Thẻ hủy.</param>
     /// <returns>Đúng những id đã xóa được; id không tồn tại bị bỏ qua.</returns>
     Task<MultipleIdentiferResponse> DeleteRangeAsync(
@@ -156,17 +154,6 @@ public class PartyMemberService : IPartyMemberService
         await repositoryWrapper.Repository<PartyMember>().UpdateAsync(entity, cancellationToken);
 
         return Project(entity, await LoadMilestoneContextAsync(cancellationToken));
-    }
-
-    /// <inheritdoc/>
-    public async Task<PartyMemberIdentifierResponse> DeleteAsync(
-        Guid id, CancellationToken cancellationToken = default)
-    {
-        PartyMember entity = await FindOrThrowAsync(id, isAsNoTracking: false, cancellationToken);
-
-        await repositoryWrapper.Repository<PartyMember>().DeleteAsync(entity, cancellationToken);
-
-        return new PartyMemberIdentifierResponse(id);
     }
 
     /// <inheritdoc/>
