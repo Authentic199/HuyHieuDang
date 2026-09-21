@@ -4,7 +4,7 @@ import type { ColumnsType, SorterResult, TablePaginationConfig } from 'antd/es/t
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { importsApi, membersApi } from '../../api';
+import { importsApi, membersApi, settingsApi } from '../../api';
 import { FALLBACK_MESSAGE, messageText } from '../../api/messages';
 import { PageHeading } from '../../components/PageHeading';
 import { TableStates } from '../../components/TableStates';
@@ -18,7 +18,13 @@ import { saveFile } from '../../utils/download';
 import { MemberFormModal } from './MemberFormModal';
 import { MilestoneTag } from './MilestoneTag';
 import './MembersPage.css';
-import { MEMBERS_PAGE_SIZES, NO_SORT_QUERY, useMembers, type GenderFilter } from './useMembers';
+import {
+  MEMBERS_PAGE_SIZES,
+  NO_SORT_QUERY,
+  useMembers,
+  type GenderFilter,
+  type NextMilestoneFilter,
+} from './useMembers';
 
 /** Chờ người dùng gõ xong rồi mới gọi máy chủ, đỡ giật bảng. */
 const SEARCH_DEBOUNCE_MS = 400;
@@ -38,6 +44,9 @@ export default function MembersPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<PartyMemberResponse | null>(null);
   const [downloadingTemplate, setDownloadingTemplate] = useState(false);
+  // Dãy mốc của QT1 lấy từ Cài đặt — Frontend không tự suy ra dãy này bao giờ.
+  // Chưa lấy được thì ô lọc chỉ còn "Tất cả" và "Đã vượt mốc lớn nhất", không đoán bừa.
+  const [milestones, setMilestones] = useState<number[]>([]);
 
   // Đổi trang hay đổi bộ lọc thì bỏ đánh dấu, tránh xóa nhầm người không còn
   // nhìn thấy trên màn hình.
@@ -48,6 +57,22 @@ export default function MembersPage() {
     },
     [setQuery],
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    settingsApi
+      .getSettings()
+      .then((settings) => {
+        if (!cancelled) setMilestones(settings.milestones);
+      })
+      .catch(() => {
+        // Lọc theo mốc là tiện ích thêm, hỏng thì im lặng — không dựng cảnh báo
+        // đỏ chắn ngang danh sách chỉ vì một ô lọc không nạp được.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(
@@ -194,22 +219,29 @@ export default function MembersPage() {
       render: (value: string) => formatDate(value),
     },
     {
-      // Tuổi đảng là giá trị tính ra nên không sắp xếp được (mục 1.7).
-      key: 'partyAgeYears',
+      // Tuổi đảng không có trong bảng, nhưng Backend nhận tên cột này rồi quy đổi
+      // về Ngày chính thức theo chiều ngược lại (T51, mục 1.7 hợp đồng v1.5).
+      key: 'PartyAge',
       title: 'Tuổi đảng',
       dataIndex: 'partyAgeYears',
       width: 110,
       align: 'right',
+      sorter: true,
+      sortOrder: sortOrderOf('PartyAge'),
       render: (value: number) => formatNumber(value),
     },
     {
-      key: 'nextMilestone',
+      key: 'NextMilestone',
       title: 'Mốc kế tiếp',
       dataIndex: 'nextMilestone',
       width: 140,
+      sorter: true,
+      sortOrder: sortOrderOf('NextMilestone'),
       render: (value: number | null) => <MilestoneTag milestone={value} />,
     },
     {
+      // Ngày tròn mốc không cùng thứ tự với Ngày chính thức nên không quy đổi được:
+      // cột này cố ý không có nút sắp xếp.
       key: 'nextMilestoneDate',
       title: 'Ngày tròn mốc kế tiếp',
       dataIndex: 'nextMilestoneDate',
@@ -307,6 +339,23 @@ export default function MembersPage() {
               { label: 'Nữ', value: 'Female' },
             ]}
           />
+          <Select<NextMilestoneFilter>
+            className="hhd-members__milestone"
+            size="large"
+            value={query.nextMilestone}
+            disabled={isPristineEmpty}
+            aria-label="Lọc theo mốc kế tiếp"
+            onChange={(value) => changeQuery({ nextMilestone: value })}
+            labelRender={({ label }) => <>Mốc kế tiếp: {label}</>}
+            options={[
+              { label: 'Tất cả', value: 'All' as NextMilestoneFilter },
+              ...milestones.map((milestone) => ({
+                label: `${formatNumber(milestone)} năm`,
+                value: milestone as NextMilestoneFilter,
+              })),
+              { label: 'Đã vượt mốc lớn nhất', value: 'None' as NextMilestoneFilter },
+            ]}
+          />
           {selectedRows.length > 0 ? (
             <span className="hhd-members__selected">
               Đang chọn <b>{formatNumber(selectedRows.length)}</b> dòng
@@ -338,7 +387,7 @@ export default function MembersPage() {
                 }}
               >
                 {isFiltered
-                  ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Giới tính: Tất cả.'
+                  ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Giới tính và Mốc kế tiếp: Tất cả.'
                   : 'Tải file mẫu, điền sau đó import. Hoặc thêm từng người'}
               </span>
             }
@@ -347,7 +396,7 @@ export default function MembersPage() {
                 <Button
                   onClick={() => {
                     setKeywordInput('');
-                    changeQuery({ keyword: '', gender: 'All' });
+                    changeQuery({ keyword: '', gender: 'All', nextMilestone: 'All' });
                   }}
                 >
                   Xem lại tất cả

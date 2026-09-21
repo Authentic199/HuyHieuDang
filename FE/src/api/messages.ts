@@ -19,10 +19,13 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.PartyMember.Import.Successfully': 'Đã nạp danh sách',
   'Mes.PartyMember.NotFound': 'Không tìm thấy đảng viên',
   'Mes.PartyMember.Required.FullName': 'Chưa nhập Họ tên',
+  'Mes.PartyMember.OverLength.FullName': 'Họ tên quá dài, tối đa 200 ký tự',
   'Mes.PartyMember.Required.OfficialAdmissionDate': 'Chưa nhập Ngày vào Đảng chính thức',
   'Mes.PartyMember.Invalid.OfficialAdmissionDate': 'Ngày chính thức không được ở tương lai',
   'Mes.PartyMember.Invalid.DateOfBirth': 'Ngày sinh phải trước Ngày vào Đảng chính thức',
   'Mes.PartyMember.Invalid.Gender': 'Giới tính chỉ nhận Nam hoặc Nữ',
+  'Mes.PartyMember.Invalid.NextMilestone': 'Mốc kế tiếp không hợp lệ',
+  'Mes.PartyMember.Required.Ids': 'Chưa chọn đảng viên nào',
 
   // Đợt trao huy hiệu
   'Mes.AwardPeriod.Create.Successfully': 'Đã thêm đợt trao huy hiệu',
@@ -30,16 +33,18 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.AwardPeriod.Delete.Successfully': 'Đã xóa đợt trao huy hiệu',
   'Mes.AwardPeriod.NotFound': 'Không tìm thấy đợt trao huy hiệu',
   'Mes.AwardPeriod.Required.Name': 'Chưa nhập Tên đợt',
+  'Mes.AwardPeriod.OverLength.Name': 'Tên đợt quá dài, tối đa 100 ký tự',
   'Mes.AwardPeriod.Repeated.Name': 'Tên đợt đã tồn tại',
   'Mes.AwardPeriod.Invalid.FromDate': 'Từ ngày không hợp lệ',
   'Mes.AwardPeriod.Invalid.ToDate': 'Đến ngày không hợp lệ',
 
   // Cài đặt
   'Mes.AppSetting.Update.Successfully': 'Đã lưu cài đặt',
-  'Mes.AppSetting.Invalid.StartYears': 'Mốc bắt đầu phải là số nguyên dương',
-  'Mes.AppSetting.Invalid.EndYears': 'Mốc kết thúc phải là số nguyên dương',
-  'Mes.AppSetting.Invalid.StepYears': 'Bước nhảy phải từ 1 trở lên',
+  'Mes.AppSetting.Invalid.StartYears': 'Mốc bắt đầu phải là số nguyên từ 1 đến 200',
+  'Mes.AppSetting.Invalid.EndYears': 'Mốc kết thúc phải là số nguyên từ 1 đến 200',
+  'Mes.AppSetting.Invalid.StepYears': 'Bước nhảy phải là số nguyên từ 1 đến 200',
   'Mes.AppSetting.Invalid.Range': 'Mốc bắt đầu phải nhỏ hơn hoặc bằng mốc kết thúc',
+  'Mes.AppSetting.OverLength.UnitName': 'Tên đơn vị quá dài, tối đa 200 ký tự',
 
   // Import Excel
   'Mes.Import.Invalid.Extension': 'Chỉ nhận file .xlsx',
@@ -52,6 +57,7 @@ const MESSAGE_TEXTS: Record<string, string> = {
   // Khác
   'Mes.Dashboard.NotFound.UpcomingPeriod': 'Chưa cài đợt trao huy hiệu',
   'Mes.Query.Invalid.Year': 'Năm không hợp lệ',
+  'Mes.Common.Invalid.Parameter': 'Tham số không hợp lệ',
 };
 
 /** Câu mặc định cho khóa lạ — không để lọt khóa kỹ thuật ra màn hình. */

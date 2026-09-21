@@ -6,17 +6,17 @@ trình duyệt thật với Backend và PostgreSQL thật. Không có tầng d�
 Mỗi luồng là **một ca Playwright**, bên trong chia thành các bước mang đúng mã ca
 của kế hoạch (`E1-01`, `E3-05`, `E6-15`…), nên đọc kết quả là biết ngay bước nào đỏ.
 
-| Tệp | Luồng | Phủ |
-|---|---|---|
-| `specs/e0-tien-de.spec.ts` | Tiền đề đóng băng thời gian | T-FIX-2, T-FIX-4, T-FIX-5 |
-| `specs/e1-lan-dung-dau-tien.spec.ts` | E2E-1 Lần dùng đầu tiên | UC-00, UC-13, UC-50, UC-31, UC-24, UC-10, UC-11 |
-| `specs/e2-import-co-loi.spec.ts` | E2E-2 Import có lỗi | UC-24, UC-25, QT9 |
-| `specs/e3-doi-cai-dat-lan-truyen.spec.ts` | E2E-3 Đổi cài đặt lan truyền | UC-50, QT1, QT5 |
-| `specs/e4-sua-dot-lan-truyen.spec.ts` | E2E-4 Sửa đợt lan truyền | UC-32, QT5, QT6, QT7 |
-| `specs/e5-xuat-excel.spec.ts` | E2E-5 Xuất Excel ba nơi | UC-11, UC-34, UC-40, UC-51 |
-| `specs/e6-vong-doi-dang-vien.spec.ts` | E2E-6 Vòng đời đảng viên | UC-20 → UC-23, QT3, QT3a, QT5 |
-| `specs/e7-dot-vat-qua-nam.spec.ts` | E2E-7 Đợt vắt qua 31/12 (T54) | UC-31, UC-34, UC-36, UC-40, QT6, QT7 |
-| `specs/e9-chay-lai-va-doc-lap.spec.ts` | Ca về chính bộ kiểm thử | E-903 → E-906 |
+| Tệp                                       | Luồng                         | Phủ                                             |
+| ----------------------------------------- | ----------------------------- | ----------------------------------------------- |
+| `specs/e0-tien-de.spec.ts`                | Tiền đề đóng băng thời gian   | T-FIX-2, T-FIX-4, T-FIX-5                       |
+| `specs/e1-lan-dung-dau-tien.spec.ts`      | E2E-1 Lần dùng đầu tiên       | UC-00, UC-13, UC-50, UC-31, UC-24, UC-10, UC-11 |
+| `specs/e2-import-co-loi.spec.ts`          | E2E-2 Import có lỗi           | UC-24, UC-25, QT9                               |
+| `specs/e3-doi-cai-dat-lan-truyen.spec.ts` | E2E-3 Đổi cài đặt lan truyền  | UC-50, QT1, QT5                                 |
+| `specs/e4-sua-dot-lan-truyen.spec.ts`     | E2E-4 Sửa đợt lan truyền      | UC-32, QT5, QT6, QT7                            |
+| `specs/e5-xuat-excel.spec.ts`             | E2E-5 Xuất Excel ba nơi       | UC-11, UC-34, UC-40, UC-51                      |
+| `specs/e6-vong-doi-dang-vien.spec.ts`     | E2E-6 Vòng đời đảng viên      | UC-20 → UC-23, QT3, QT3a, QT5                   |
+| `specs/e7-dot-vat-qua-nam.spec.ts`        | E2E-7 Đợt vắt qua 31/12 (T54) | UC-31, UC-34, UC-36, UC-40, QT6, QT7            |
+| `specs/e9-chay-lai-va-doc-lap.spec.ts`    | Ca về chính bộ kiểm thử       | E-903 → E-906                                   |
 
 ## Dựng môi trường rồi chạy
 
@@ -53,10 +53,10 @@ npx playwright show-report e2e/.artifacts/bao-cao
 Gần như mọi quy tắc trong hệ thống phụ thuộc "hôm nay" (QT3, QT3a, QT8, QT11).
 Kế hoạch kiểm thử vì vậy bắt buộc ép ngày ở **cả hai đầu**, cùng một mốc:
 
-| Đầu | Cách ép | Nơi đặt |
-|---|---|---|
-| Backend | biến môi trường `HUYHIEUDANG_TEST_TODAY` (T-FIX-4) | `docker-compose.e2e.yml` |
-| Trình duyệt | `page.clock.install` + `resume()` (T-FIX-5) | `fixtures/clock.ts` |
+| Đầu         | Cách ép                                            | Nơi đặt                  |
+| ----------- | -------------------------------------------------- | ------------------------ |
+| Backend     | biến môi trường `HUYHIEUDANG_TEST_TODAY` (T-FIX-4) | `docker-compose.e2e.yml` |
+| Trình duyệt | `page.clock.install` + `resume()` (T-FIX-5)        | `fixtures/clock.ts`      |
 
 Mốc mặc định là **T0 = 19/09/2026**, đổi được bằng `E2E_TODAY`:
 

@@ -2,10 +2,18 @@ import type { PagedQuery, PagedResult } from '../types/api';
 import type { Gender, IsoDate, PartyMemberResponse } from '../types/domain';
 import { apiClient } from './httpClient';
 
-/** UC-20 — tìm theo họ tên, lọc theo giới tính, sắp xếp, phân trang. */
+/**
+ * Giá trị lọc của cột Mốc kế tiếp: một mốc của dãy QT1, hoặc `'None'` cho nhóm
+ * đã vượt mốc lớn nhất (cột hiển thị dấu "—").
+ */
+export type NextMilestoneValue = number | 'None';
+
+/** UC-20 — tìm theo họ tên, lọc theo giới tính và mốc kế tiếp, sắp xếp, phân trang. */
 export interface MemberSearchQuery extends PagedQuery {
   /** Bỏ trống nghĩa là "Tất cả" */
   gender?: Gender;
+  /** Bỏ trống nghĩa là "Tất cả" (T51) */
+  nextMilestone?: NextMilestoneValue;
 }
 
 /** UC-21, UC-22 — 4 trường của modal thêm/sửa. Sửa phải gửi đủ cả 4. */
@@ -17,18 +25,24 @@ export interface MemberPayload {
 }
 
 /**
- * Cột sắp xếp được: FullName, DateOfBirth, Gender, OfficialAdmissionDate.
- * Tuổi đảng và mốc kế tiếp là giá trị tính ra nên không sắp xếp được (mục 1.7).
+ * Cột sắp xếp được (mục 1.7 hợp đồng API v1.5).
+ *
+ * Bốn cột đầu là cột thật của bảng. `PartyAge` và `NextMilestone` là giá trị tính ra;
+ * Backend nhận chúng rồi quy đổi về `OfficialAdmissionDate` theo chiều ngược lại (T51).
+ * Riêng `nextMilestoneDate` vẫn không sắp được — ngày tròn mốc không cùng thứ tự với
+ * ngày vào Đảng nên không quy đổi được.
  */
 export const SORTABLE_MEMBER_FIELDS = [
   'FullName',
   'DateOfBirth',
   'Gender',
   'OfficialAdmissionDate',
+  'PartyAge',
+  'NextMilestone',
 ] as const;
 
 export function searchMembers(query: MemberSearchQuery): Promise<PagedResult<PartyMemberResponse>> {
-  const { gender, searchKeyword, searchFields, ...rest } = query;
+  const { gender, nextMilestone, searchKeyword, searchFields, ...rest } = query;
   return apiClient.get<PagedResult<PartyMemberResponse>>('/PartyMembers', {
     params: {
       ...rest,
@@ -38,6 +52,7 @@ export function searchMembers(query: MemberSearchQuery): Promise<PagedResult<Par
         : {}),
       // "Tất cả" thì bỏ hẳn tham số lọc.
       ...(gender ? { 'filter.Gender': `$eq:${gender}` } : {}),
+      ...(nextMilestone === undefined ? {} : { 'filter.NextMilestone': `$eq:${nextMilestone}` }),
     },
   });
 }

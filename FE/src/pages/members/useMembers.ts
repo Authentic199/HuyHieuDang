@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { membersApi } from '../../api';
-import type { MemberSearchQuery } from '../../api/members';
+import type { MemberSearchQuery, NextMilestoneValue } from '../../api/members';
 import { FALLBACK_MESSAGE } from '../../api/messages';
 import { ApiError, type PageInfo } from '../../types/api';
 import type { Gender, PartyMemberResponse } from '../../types/domain';
@@ -14,14 +14,21 @@ import type { Gender, PartyMemberResponse } from '../../types/domain';
 /** 'All' là lựa chọn "Tất cả" của ô lọc giới tính, không gửi lên máy chủ. */
 export type GenderFilter = Gender | 'All';
 
+/**
+ * Lựa chọn của ô lọc Mốc kế tiếp (T51). 'All' là "Tất cả" và không gửi lên máy chủ;
+ * 'None' là nhóm đã vượt mốc lớn nhất, đúng những dòng đang hiện dấu "—".
+ */
+export type NextMilestoneFilter = NextMilestoneValue | 'All';
+
 /** Trạng thái tìm — lọc — sắp xếp — phân trang mà người dùng đang chọn. */
 export interface MembersQuery {
   keyword: string;
   gender: GenderFilter;
+  nextMilestone: NextMilestoneFilter;
   current: number;
   pageSize: number;
   /**
-   * Ví dụ 'FullName asc'. Chỉ nhận 4 cột trong SORTABLE_MEMBER_FIELDS.
+   * Ví dụ 'FullName asc'. Chỉ nhận các cột trong SORTABLE_MEMBER_FIELDS.
    * Rỗng nghĩa là người dùng đã bỏ sắp xếp — xem NO_SORT_QUERY.
    */
   sortQuery: string;
@@ -38,6 +45,7 @@ export const NO_SORT_QUERY = '';
 export const DEFAULT_MEMBERS_QUERY: MembersQuery = {
   keyword: '',
   gender: 'All',
+  nextMilestone: 'All',
   current: 1,
   pageSize: 20,
   sortQuery: NO_SORT_QUERY,
@@ -85,6 +93,7 @@ export function useMembers(): UseMembersResult {
   const token = JSON.stringify([
     query.keyword,
     query.gender,
+    query.nextMilestone,
     query.current,
     query.pageSize,
     query.sortQuery,
@@ -113,6 +122,7 @@ export function useMembers(): UseMembersResult {
       // Bỏ sắp xếp thì bỏ luôn tham số, không gửi chuỗi rỗng.
       ...(query.sortQuery === NO_SORT_QUERY ? {} : { sortQuery: query.sortQuery }),
       ...(query.gender === 'All' ? {} : { gender: query.gender }),
+      ...(query.nextMilestone === 'All' ? {} : { nextMilestone: query.nextMilestone }),
     };
 
     membersApi
@@ -145,6 +155,7 @@ export function useMembers(): UseMembersResult {
       const changesResultSet =
         ('keyword' in patch && patch.keyword !== previous.keyword) ||
         ('gender' in patch && patch.gender !== previous.gender) ||
+        ('nextMilestone' in patch && patch.nextMilestone !== previous.nextMilestone) ||
         ('pageSize' in patch && patch.pageSize !== previous.pageSize) ||
         ('sortQuery' in patch && patch.sortQuery !== previous.sortQuery);
       const next = { ...previous, ...patch };
@@ -177,7 +188,8 @@ export function useMembers(): UseMembersResult {
     pageInfo,
     loading,
     error,
-    isFiltered: query.keyword.trim() !== '' || query.gender !== 'All',
+    isFiltered:
+      query.keyword.trim() !== '' || query.gender !== 'All' || query.nextMilestone !== 'All',
     setQuery,
     reload,
     reloadAfterDelete,

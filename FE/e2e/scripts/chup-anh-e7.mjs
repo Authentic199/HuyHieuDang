@@ -18,7 +18,12 @@ import { chromium } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:4174';
 const API_URL = process.env.E2E_API_URL ?? `${BASE_URL}/api`;
-const OUT_DIR = path.join(path.dirname(new URL(import.meta.url).pathname.slice(1)), '..', '.artifacts', 'anh-t54');
+const OUT_DIR = path.join(
+  path.dirname(new URL(import.meta.url).pathname.slice(1)),
+  '..',
+  '.artifacts',
+  'anh-t54',
+);
 const PERIOD = 'Đợt Giao thừa';
 
 async function call(token, method, route, body) {
@@ -36,14 +41,19 @@ async function call(token, method, route, body) {
 }
 
 async function main() {
-  const login = await call(null, 'POST', '/Auth/Login', { username: 'admin', password: 'Admin@123' });
+  const login = await call(null, 'POST', '/Auth/Login', {
+    username: 'admin',
+    password: 'Admin@123',
+  });
   const token = login.accessToken;
 
   // Kho sạch: chỉ còn đúng đợt vắt năm và vài đảng viên hai đầu đợt.
   for (;;) {
     const page = await call(token, 'GET', '/PartyMembers?current=1&pageSize=500');
     if (page.pagedData.length === 0) break;
-    await call(token, 'POST', '/PartyMembers/DeleteMany', { ids: page.pagedData.map((row) => row.id) });
+    await call(token, 'POST', '/PartyMembers/DeleteMany', {
+      ids: page.pagedData.map((row) => row.id),
+    });
   }
   for (const period of (await call(token, 'GET', '/AwardPeriods')).periods) {
     await call(token, 'DELETE', `/AwardPeriods/${period.id}`);
@@ -86,7 +96,10 @@ async function main() {
 
   // Ảnh 1 — modal đang mở với dòng nhắc vắt năm.
   await page.goto(`${BASE_URL}/dot-trao-huy-hieu`);
-  await page.getByRole('button', { name: /^\+ Thêm đợt( đầu tiên)?$/ }).first().click();
+  await page
+    .getByRole('button', { name: /^\+ Thêm đợt( đầu tiên)?$/ })
+    .first()
+    .click();
   const form = page.locator('.ant-modal-content').last();
   await form.getByLabel('Tên đợt').fill(PERIOD);
   await pick(page, form.getByLabel('Từ ngày'), 1, 12);
@@ -96,12 +109,18 @@ async function main() {
 
   await form.getByRole('button', { name: 'Thêm đợt', exact: true }).click();
   await form.waitFor({ state: 'hidden' });
-  await page.locator('.ant-message-notice').first().waitFor({ state: 'detached' }).catch(() => {});
+  await page
+    .locator('.ant-message-notice')
+    .first()
+    .waitFor({ state: 'detached' })
+    .catch(() => {});
 
   // Ảnh 2 — bảng đợt có chữ "năm sau"; ảnh 3 — dải độ phủ hai vạch hai đầu.
   await page.locator('.hhd-periods__nextyear').waitFor();
   await page.screenshot({ path: path.join(OUT_DIR, '2-bang-dot-nam-sau.png') });
-  await page.locator('.hhd-coverage').screenshot({ path: path.join(OUT_DIR, '3-dai-do-phu-hai-vach.png') });
+  await page
+    .locator('.hhd-coverage')
+    .screenshot({ path: path.join(OUT_DIR, '3-dai-do-phu-hai-vach.png') });
 
   // Ảnh 4 — tab Thông tin của trang chi tiết đợt.
   const periodId = (await call(token, 'GET', '/AwardPeriods')).periods[0].id;
@@ -116,7 +135,20 @@ async function main() {
 
 /** Chọn ngày/tháng trong lịch khóa năm nhuận mẫu 2024 của modal Đợt. */
 async function pick(page, field, day, month) {
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const labels = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   await field.click();
   const panel = page.locator('.ant-picker-dropdown').last();
   await panel.waitFor();
