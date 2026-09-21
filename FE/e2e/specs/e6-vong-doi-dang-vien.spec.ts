@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 import {
   confirmDialog,
@@ -29,6 +29,20 @@ import { typeFullDate } from '../fixtures/pickers';
 const CASE = scenario('core_default_T0');
 const UPCOMING = CASE.upcomingPeriod!;
 const BASE_TOTAL = expected.counts.core;
+
+/**
+ * Nút xóa nhiều của màn Đảng viên là nút biểu tượng thùng rác (T33): chỉ
+ * `aria-label` là chỗ bám ổn định. Tooltip và hộp xác nhận mới mang con số, nên
+ * con số được khẳng định riêng ở đó chứ không nhét vào locator của nút.
+ */
+function deleteSelectedButton(page: Page): Locator {
+  return page.getByRole('button', { name: 'Xóa người đã chọn', exact: true });
+}
+
+/** Ô đánh dấu chọn của một dòng trong bảng Đảng viên. */
+function rowCheckbox(row: Locator): Locator {
+  return row.locator('input[type="checkbox"]');
+}
 
 /** Tiền tố dùng chung để lọc riêng những người do luồng này tạo ra. */
 const PREFIX = 'Kiểm Thử';
@@ -287,7 +301,7 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
   });
 
   await test.step('E6-15 · Xóa 3 dòng đã chọn: hộp xác nhận nêu rõ 3 người, tổng giảm đúng 3', async () => {
-    await page.getByRole('button', { name: 'Xóa 3 đã chọn' }).click();
+    await deleteSelectedButton(page).click();
     const dialog = confirmDialog(page);
     await expect(dialog).toContainText('Xóa 3 người khỏi danh sách?');
     await expect(dialog).toContainText('Cả 3 người đang chọn sẽ bị xóa hẳn');
@@ -301,13 +315,20 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
 
   await test.step('E6-16 · Bấm Xóa rồi Hủy trong hộp xác nhận thì tổng không đổi', async () => {
     const victim = (await readTable(page))[0][MEMBER_COLUMN.fullName];
-    await page.getByRole('button', { name: `Xóa ${victim}` }).click();
+    // T33 đã bỏ nút xóa từng dòng: xóa một người cũng đi qua nút thùng rác,
+    // và đánh dấu đúng một dòng thì hộp xác nhận gọi thẳng tên người đó.
+    const firstRow = tableRows(page).first();
+    await rowCheckbox(firstRow).check();
+    await expect(page.locator('.hhd-members__selected')).toContainText('Đang chọn 1 dòng');
+    await deleteSelectedButton(page).click();
 
     const dialog = confirmDialog(page);
     await expect(dialog).toContainText(`Xóa ${victim} khỏi danh sách?`);
     await dialog.getByRole('button', { name: 'Để lại' }).click();
     await expect(dialog).toBeHidden();
 
+    // Bấm Hủy thì dòng vẫn đang đánh dấu — bỏ đánh dấu để E6-17 bắt đầu sạch.
+    await rowCheckbox(firstRow).uncheck();
     await expect(page.getByText(headingFor(BASE_TOTAL))).toBeVisible();
     expect((await api.dashboard()).memberCount).toBe(BASE_TOTAL);
   });
