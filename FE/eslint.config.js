@@ -45,7 +45,7 @@ export default tseslint.config(
     rules: { 'no-restricted-imports': 'off' },
   },
   {
-    files: ['e2e/**/*.ts', '*.config.{ts,js}'],
+    files: ['e2e/**/*.ts', 'ui-tests/**/*.ts', '*.config.{ts,js}'],
     languageOptions: { globals: globals.node },
   },
 );

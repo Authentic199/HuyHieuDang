@@ -218,8 +218,6 @@ export function StepPreview({
           onChange,
           pageSize: PREVIEW_PAGE_SIZE,
           showSizeChanger: false,
-          showTotal: (count: number, range: [number, number]) =>
-            `${formatNumber(range[0])}–${formatNumber(range[1])} / ${formatNumber(count)}`,
         }
       : (false as const);
 

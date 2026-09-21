@@ -5,10 +5,13 @@ import { useState } from 'react';
 
 import { exportsApi } from '../../../api';
 import { FALLBACK_MESSAGE } from '../../../api/messages';
+import { MilestoneFilterSelect, TableSearchInput } from '../../../components/TableFilters';
 import { TableStates } from '../../../components/TableStates';
+import { useClientTable } from '../../../hooks/useClientTable';
 import { ApiError } from '../../../types/api';
 import type { EligibleMemberResponse, Gender, IsoDate } from '../../../types/domain';
 import { saveFile } from '../../../utils/download';
+import { ELIGIBLE_COMPARATORS, milestoneOfRow, nameOfRow } from '../../../utils/eligibleTable';
 import { formatDate, formatGender, formatNumber } from '../../../utils/format';
 import { EligibleMilestoneTag } from './EligibleMilestoneTag';
 import { useEligibility } from './useEligibility';
@@ -18,7 +21,10 @@ import { YearContextTag } from './YearContextTag';
 /**
  * Tab "Danh sách đủ điều kiện" của trang chi tiết đợt (UC-34), theo artboard
  * "Màn 5 — Chi tiết đợt": thanh công cụ (bộ chọn năm, khoảng ngày đã gắn năm,
- * nhãn ngữ cảnh, nút Xuất Excel) rồi bảng, cuối cùng là dòng chân thẻ.
+ * nhãn ngữ cảnh, nút Xuất Excel), thanh tìm — lọc, rồi bảng và dòng chân thẻ.
+ *
+ * Máy chủ trả trọn danh sách đã sắp theo Mốc rồi Họ tên; đó là thứ tự mặc định.
+ * Tìm, lọc theo mốc, sắp xếp và phân trang làm ngay ở máy khách.
  */
 
 interface EligibilityTabProps {
@@ -48,9 +54,19 @@ export function EligibilityTab({
   /** Tên file của lần xuất gần nhất, hiện ở chân thẻ như artboard. */
   const [lastFileName, setLastFileName] = useState<string | null>(null);
 
+  const table = useClientTable<EligibleMemberResponse>({
+    rows: members,
+    searchTextOf: nameOfRow,
+    milestoneOf: milestoneOfRow,
+    comparators: ELIGIBLE_COMPARATORS,
+  });
+
   const context = year !== null && serverYear !== null ? yearContextOf(year, serverYear) : null;
 
-  /** Xuất Excel theo đúng năm đang chọn; tên file do máy chủ đặt (mục 4). */
+  /**
+   * Xuất TRỌN danh sách của đúng năm đang chọn; tên file do máy chủ đặt (mục 4).
+   * Cố ý KHÔNG nối vào ô tìm hay ô lọc mốc — file Excel luôn đủ người.
+   */
   async function handleExport() {
     if (year === null || exporting) return;
     setExporting(true);
@@ -72,51 +88,68 @@ export function EligibilityTab({
       title: 'STT',
       width: 72,
       className: 'hhd-eligibility__index',
-      // Máy chủ đã sắp theo Mốc rồi Họ tên; số thứ tự chỉ đếm theo thứ tự đó.
-      render: (_value, _record, index) => index + 1,
+      // Số thứ tự chạy tiếp qua từng trang và theo đúng thứ tự đang hiện — người
+      // dùng tự bấm sắp xếp thì thứ tự máy chủ không còn là thứ tự trên màn hình.
+      render: (_value, _record, index) => table.indexOffset + index + 1,
     },
     {
       key: 'fullName',
       title: 'Họ tên',
       dataIndex: 'fullName',
+      sorter: true,
+      sortOrder: table.sortOrderOf('fullName'),
       onCell: () => ({ style: { whiteSpace: 'nowrap', fontWeight: 600 } }),
     },
     {
       key: 'gender',
       title: 'Giới tính',
       dataIndex: 'gender',
-      width: 110,
+      width: 130,
+      sorter: true,
+      sortOrder: table.sortOrderOf('gender'),
       render: (value: Gender | null) => formatGender(value),
     },
     {
       key: 'dateOfBirth',
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      width: 140,
+      width: 150,
+      sorter: true,
+      sortOrder: table.sortOrderOf('dateOfBirth'),
       render: (value: IsoDate | null) => formatDate(value),
     },
     {
       key: 'officialAdmissionDate',
       title: 'Ngày vào Đảng chính thức',
       dataIndex: 'officialAdmissionDate',
-      width: 220,
+      width: 230,
+      sorter: true,
+      sortOrder: table.sortOrderOf('officialAdmissionDate'),
       render: (value: IsoDate) => formatDate(value),
     },
     {
       key: 'milestoneDate',
       title: 'Ngày tròn mốc',
       dataIndex: 'milestoneDate',
-      width: 160,
+      width: 175,
+      sorter: true,
+      sortOrder: table.sortOrderOf('milestoneDate'),
       render: (value: IsoDate) => formatDate(value),
     },
     {
       key: 'milestone',
       title: 'Mốc huy hiệu',
       dataIndex: 'milestone',
-      width: 150,
+      width: 170,
+      sorter: true,
+      sortOrder: table.sortOrderOf('milestone'),
       render: (value: number) => <EligibleMilestoneTag milestone={value} />,
     },
   ];
+
+  const ready = !loading && !error;
+  /** Năm này không ai đủ điều kiện thì hai ô tìm — lọc chưa có gì để làm. */
+  const noData = members.length === 0;
 
   return (
     <div className="hhd-eligibility">
@@ -159,15 +192,39 @@ export function EligibilityTab({
         </Button>
       </div>
 
+      <div className={`hhd-table-filters${noData ? ' hhd-table-filters--muted' : ''}`}>
+        <TableSearchInput
+          value={table.keyword}
+          onChange={table.setKeyword}
+          placeholder="Tìm theo họ tên…"
+          ariaLabel="Tìm theo họ tên"
+          disabled={noData}
+        />
+        <MilestoneFilterSelect
+          value={table.milestone}
+          onChange={table.setMilestone}
+          options={table.milestoneOptions}
+          disabled={noData}
+        />
+        {ready && table.isFiltered ? (
+          <span className="hhd-table-filters__count">
+            Còn <b>{formatNumber(table.filteredCount)}</b> / {formatNumber(table.totalCount)} người
+          </span>
+        ) : null}
+      </div>
+
       <TableStates
         loading={loading}
         error={error}
         onRetry={reload}
-        isEmpty={members.length === 0}
+        isEmpty={table.filteredCount === 0}
         skeletonRows={5}
         description={
           <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
-            Không có đảng viên nào tròn mốc trong đợt này năm {year ?? ''}.
+            {/* Rỗng do tìm / lọc là chuyện khác hẳn rỗng do năm đó không ai tròn mốc. */}
+            {table.isFiltered
+              ? 'Không tìm thấy đảng viên nào khớp.'
+              : `Không có đảng viên nào tròn mốc trong đợt này năm ${year ?? ''}.`}
           </span>
         }
         hint={
@@ -180,16 +237,22 @@ export function EligibilityTab({
               lineHeight: '24px',
             }}
           >
-            Bác thử chọn năm khác ở trên, hoặc xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót.
+            {table.isFiltered
+              ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.'
+              : 'Bác thử chọn năm khác ở trên, hoặc xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót.'}
           </span>
         }
+        action={table.isFiltered ? <Button onClick={table.clearFilters}>Xóa bộ lọc</Button> : null}
       >
-        <Table<EligibleMemberResponse>
-          rowKey="partyMemberId"
-          columns={columns}
-          dataSource={members}
-          pagination={false}
-        />
+        <div className="hhd-table-scroll">
+          <Table<EligibleMemberResponse>
+            rowKey="partyMemberId"
+            columns={columns}
+            dataSource={table.pageRows}
+            pagination={table.pagination}
+            onChange={table.onTableChange}
+          />
+        </div>
       </TableStates>
 
       <div className="hhd-eligibility__footnote">

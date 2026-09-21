@@ -71,6 +71,60 @@ kbd,
   color: var(--hhd-text-disabled);
 }
 
+/* ------------------------------------------------------------------ */
+/* Bảng cuộn trong thẻ                                                 */
+/* ------------------------------------------------------------------ */
+/* Các thẻ bảng đều để `overflow: hidden` để giữ bo góc. Nếu bên trong không có
+   vùng cuộn riêng thì phần dòng vượt chiều cao thẻ bị CẮT và không cuộn tới
+   được — người dùng thấy như danh sách bị sót người. Bọc bảng trong một thẻ div
+   mang lớp này thì: thân bảng cuộn dọc được, hàng tiêu đề dính trên, còn thanh
+   phân trang dính đáy thẻ và luôn nhìn thấy dù chọn 100 dòng mỗi trang. */
+/* Màn Đảng viên chưa bọc bảng trong `.hhd-table-scroll` vì tệp `MembersPage.tsx`
+   đang do một task khác giữ; lớp bao sẵn có của nó (`.hhd-members__body`) nhận
+   cùng cách cuộn để năm bảng đọc như một hệ. */
+:is(.hhd-table-scroll, .hhd-members__body),
+:is(.hhd-table-scroll, .hhd-members__body) > .ant-table-wrapper,
+:is(.hhd-table-scroll, .hhd-members__body) .ant-spin-nested-loading,
+:is(.hhd-table-scroll, .hhd-members__body) .ant-spin-container,
+:is(.hhd-table-scroll, .hhd-members__body) .ant-table,
+:is(.hhd-table-scroll, .hhd-members__body) .ant-table-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+:is(.hhd-table-scroll, .hhd-members__body) .ant-table-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Cuộn tới dòng cuối vẫn còn thấy tên cột. Ant Design đặt sẵn
+   `position: relative` cho ô tiêu đề và chèn biểu mẫu của nó vào <head> lúc chạy,
+   nên phải mượn thêm một lớp (`.ant-table-wrapper`) cho đủ trọng số. */
+:is(.hhd-table-scroll, .hhd-members__body) .ant-table-wrapper .ant-table-thead > tr > th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Thanh phân trang đọc như chân thẻ: kẻ một vạch ngang, không lơ lửng giữa nền. */
+:is(.hhd-table-scroll, .hhd-members__body) .ant-table-pagination.ant-pagination {
+  flex: none;
+  margin: 0;
+  padding: 12px 20px;
+  border-top: 1px solid var(--hhd-border);
+  row-gap: var(--hhd-space-sm);
+}
+
+/* Cỡ chữ của thanh phân trang và ô "… / trang" — tối thiểu 14px cho dễ đọc. */
+:is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-total-text,
+:is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-item,
+:is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-options {
+  font-size: 14px;
+}
+
 /* Nút chính dùng gradient đỏ của thiết kế thay vì màu phẳng */
 .ant-btn-primary:not(:disabled):not(.ant-btn-dangerous) {
   background: var(--hhd-gradient-primary);

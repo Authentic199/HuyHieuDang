@@ -1,63 +1,29 @@
-import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { App as AntApp, Button, Input, Table } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { App as AntApp, Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import type { TablePaginationConfig } from 'antd/es/table/interface';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { exportsApi } from '../../api';
 import type { UpcomingPeriod } from '../../api/dashboard';
 import { FALLBACK_MESSAGE } from '../../api/messages';
+import { MilestoneFilterSelect, TableSearchInput } from '../../components/TableFilters';
 import { TableStates } from '../../components/TableStates';
+import { useClientTable } from '../../hooks/useClientTable';
 import { ApiError } from '../../types/api';
 import type { EligibleMemberResponse, Gender, IsoDate } from '../../types/domain';
 import { saveFile } from '../../utils/download';
+import { ELIGIBLE_COMPARATORS, milestoneOfRow, nameOfRow } from '../../utils/eligibleTable';
 import { formatDate, formatGender, formatNumber } from '../../utils/format';
 import { EligibleMilestoneTag } from '../periods/detail/EligibleMilestoneTag';
 
 /**
- * Bảng đủ điều kiện của đợt sắp tới (UC-11) — artboard 2: đầu thẻ có tên đợt,
- * ô tìm và nút Xuất Excel, giữa là bảng, chân thẻ là số người và tên file vừa tải về.
+ * Bảng đủ điều kiện của đợt sắp tới (UC-11) — artboard 2: đầu thẻ có tên đợt và
+ * nút Xuất Excel, giữa là bảng, chân thẻ là số người và tên file vừa tải về.
  *
- * Máy chủ đã sắp theo Mốc huy hiệu rồi Họ tên (mục 1.8 hợp đồng API) nên đó là
- * thứ tự mặc định. Cán bộ có thể tìm, sắp lại và lật trang ngay tại đây giống
- * màn Đảng viên; khác một điểm: cả danh sách đã nằm sẵn trong lời gọi
- * `GET /api/Dashboard` (mục 6.1) nên tìm — sắp — phân trang làm ngay ở giao
- * diện, không gọi thêm máy chủ. Bỏ sắp xếp (bấm lần thứ ba) thì về đúng thứ tự
- * máy chủ đã trả.
+ * Máy chủ trả trọn danh sách đã sắp theo Mốc huy hiệu rồi Họ tên (mục 1.8 hợp
+ * đồng API) và đó là thứ tự mặc định của bảng. Việc tìm, lọc theo mốc, sắp xếp
+ * và phân trang làm ngay ở máy khách trên chính mảng đó, không gọi lại máy chủ.
  */
-
-/** Các lựa chọn số dòng mỗi trang, lấy đúng bộ của màn Đảng viên. */
-const PAGE_SIZES = [10, 20, 50, 100];
-
-/**
- * Số dòng mỗi trang mặc định. Ít hơn màn Đảng viên (20) vì thẻ này nằm dưới
- * thẻ đợt sắp tới — 10 dòng vừa đúng một màn, không phải cuộn.
- */
-const DEFAULT_PAGE_SIZE = 10;
-
-/**
- * Bỏ dấu và hạ chữ thường để gõ "nguyen van" vẫn tìm ra "Nguyễn Văn" — cán bộ
- * lớn tuổi thường gõ không dấu.
- */
-function searchKey(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd');
-}
-
-/** Chữ dùng để sắp cột Giới tính; chưa ghi thì để trống cho xuống cuối bảng. */
-function genderText(value: Gender | null): string | null {
-  return value ? formatGender(value) : null;
-}
-
-/** So chữ theo tiếng Việt; ô trống luôn xuống cuối bảng khi sắp tăng dần. */
-function compareText(a: string | null, b: string | null): number {
-  if (!a) return b ? 1 : 0;
-  if (!b) return -1;
-  return a.localeCompare(b, 'vi');
-}
 
 interface EligibleTableCardProps {
   period: UpcomingPeriod | null;
@@ -79,13 +45,18 @@ export function EligibleTableCard({
   const [exporting, setExporting] = useState(false);
   /** Tên file của lần xuất gần nhất, hiện ở chân thẻ như artboard. */
   const [lastFileName, setLastFileName] = useState<string | null>(null);
-  const [keyword, setKeyword] = useState('');
-  const [page, setPage] = useState({ current: 1, pageSize: DEFAULT_PAGE_SIZE });
+
+  const table = useClientTable<EligibleMemberResponse>({
+    rows: members,
+    searchTextOf: nameOfRow,
+    milestoneOf: milestoneOfRow,
+    comparators: ELIGIBLE_COMPARATORS,
+  });
 
   /**
-   * Xuất đúng danh sách đang hiện (mục 8.2): endpoint không có tham số, máy chủ
-   * tự lấy lại đợt sắp tới theo QT8 và tự đặt tên file. Ô tìm chỉ lọc trên màn
-   * hình nên file Excel vẫn là CẢ danh sách đủ điều kiện của đợt.
+   * Xuất TRỌN danh sách của đợt sắp tới (mục 8.2): endpoint không có tham số,
+   * máy chủ tự lấy lại đợt theo QT8 và tự đặt tên file. Cố ý KHÔNG nối vào ô tìm
+   * hay ô lọc — file Excel luôn đủ người, không phải chỉ trang đang xem.
    */
   async function handleExport() {
     if (exporting) return;
@@ -102,92 +73,73 @@ export function EligibleTableCard({
     }
   }
 
-  const searching = keyword.trim() !== '';
-
-  const rows = useMemo(() => {
-    const needle = searchKey(keyword.trim());
-    if (!needle) return members;
-    return members.filter((member) => searchKey(member.fullName).includes(needle));
-  }, [keyword, members]);
-
-  // Danh sách vừa tải lại mà ngắn đi thì trang đang xem có thể không còn nữa —
-  // kẹp lại ngay khi dựng, tránh để cán bộ nhìn một trang trắng.
-  const pageCount = Math.max(1, Math.ceil(rows.length / page.pageSize));
-  const current = Math.min(page.current, pageCount);
-
   const columns: ColumnsType<EligibleMemberResponse> = [
     {
       key: 'index',
       title: 'STT',
       width: 72,
       className: 'hhd-dashboard__index',
-      // Đếm theo đúng thứ tự đang hiện, cộng thêm số dòng của các trang trước.
-      render: (_value, _record, index) => (current - 1) * page.pageSize + index + 1,
+      // Số thứ tự chạy tiếp qua từng trang và theo đúng thứ tự đang hiện.
+      render: (_value, _record, index) => table.indexOffset + index + 1,
     },
     {
       key: 'fullName',
       title: 'Họ tên',
       dataIndex: 'fullName',
-      sorter: (a, b) => compareText(a.fullName, b.fullName),
+      sorter: true,
+      sortOrder: table.sortOrderOf('fullName'),
       onCell: () => ({ style: { whiteSpace: 'nowrap', fontWeight: 600 } }),
     },
     {
       key: 'gender',
       title: 'Giới tính',
       dataIndex: 'gender',
-      width: 110,
-      // So theo chữ đang hiện (Nam / Nữ), người chưa ghi giới tính xuống cuối.
-      sorter: (a, b) => compareText(genderText(a.gender), genderText(b.gender)),
+      width: 130,
+      sorter: true,
+      sortOrder: table.sortOrderOf('gender'),
       render: (value: Gender | null) => formatGender(value),
     },
     {
       key: 'dateOfBirth',
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      width: 140,
-      // Ngày ở dạng yyyy-MM-dd nên so chuỗi cũng ra đúng thứ tự thời gian.
-      sorter: (a, b) => compareText(a.dateOfBirth, b.dateOfBirth),
+      width: 150,
+      sorter: true,
+      sortOrder: table.sortOrderOf('dateOfBirth'),
       render: (value: IsoDate | null) => formatDate(value),
     },
     {
       key: 'officialAdmissionDate',
       title: 'Ngày vào Đảng chính thức',
       dataIndex: 'officialAdmissionDate',
-      width: 220,
-      sorter: (a, b) => compareText(a.officialAdmissionDate, b.officialAdmissionDate),
+      width: 230,
+      sorter: true,
+      sortOrder: table.sortOrderOf('officialAdmissionDate'),
       render: (value: IsoDate) => formatDate(value),
     },
     {
       key: 'milestoneDate',
       title: 'Ngày tròn mốc',
       dataIndex: 'milestoneDate',
-      width: 160,
-      sorter: (a, b) => compareText(a.milestoneDate, b.milestoneDate),
+      width: 175,
+      sorter: true,
+      sortOrder: table.sortOrderOf('milestoneDate'),
       render: (value: IsoDate) => formatDate(value),
     },
     {
       key: 'milestone',
       title: 'Mốc huy hiệu',
       dataIndex: 'milestone',
-      width: 150,
-      // Mốc lớn hơn thì xếp sau; bằng nhau thì giữ thứ tự họ tên của máy chủ.
-      sorter: (a, b) => a.milestone - b.milestone || compareText(a.fullName, b.fullName),
+      width: 170,
+      sorter: true,
+      sortOrder: table.sortOrderOf('milestone'),
       render: (value: number) => <EligibleMilestoneTag milestone={value} />,
     },
   ];
 
-  function handleTableChange(
-    pagination: TablePaginationConfig,
-    action: 'paginate' | 'sort' | 'filter',
-  ) {
-    setPage({
-      pageSize: pagination.pageSize ?? DEFAULT_PAGE_SIZE,
-      // Đổi cách sắp xếp thì thứ tự cả danh sách đổi theo — xem lại từ trang 1.
-      current: action === 'sort' ? 1 : (pagination.current ?? 1),
-    });
-  }
-
   const ready = !loading && !error;
+  /** Máy chủ chưa trả ai thì hai ô tìm — lọc chưa có gì để làm. */
+  const noData = members.length === 0;
 
   return (
     <div className="hhd-dashboard__panel">
@@ -199,42 +151,50 @@ export function EligibleTableCard({
               : 'Danh sách đủ điều kiện'}
           </span>
         </div>
-        <Input
-          className="hhd-dashboard__search"
-          allowClear
-          prefix={<SearchOutlined />}
-          placeholder="Tìm theo họ tên…"
-          aria-label="Tìm theo họ tên trong danh sách đủ điều kiện"
-          value={keyword}
-          disabled={!ready || members.length === 0}
-          onChange={(event) => {
-            // Chữ tìm đổi thì danh sách đổi theo — xem lại từ trang 1.
-            setKeyword(event.target.value);
-            setPage((state) => ({ ...state, current: 1 }));
-          }}
-        />
         <Button
           type="primary"
           icon={<DownloadOutlined />}
           loading={exporting}
           // Chưa có đợt hoặc không ai đủ điều kiện thì không có gì để xuất.
-          disabled={!ready || period === null || members.length === 0}
+          disabled={!ready || period === null || noData}
           onClick={handleExport}
         >
           Xuất Excel
         </Button>
       </div>
 
+      <div className={`hhd-table-filters${noData ? ' hhd-table-filters--muted' : ''}`}>
+        <TableSearchInput
+          value={table.keyword}
+          onChange={table.setKeyword}
+          placeholder="Tìm theo họ tên…"
+          ariaLabel="Tìm theo họ tên"
+          disabled={noData}
+        />
+        <MilestoneFilterSelect
+          value={table.milestone}
+          onChange={table.setMilestone}
+          options={table.milestoneOptions}
+          disabled={noData}
+        />
+        {ready && table.isFiltered ? (
+          <span className="hhd-table-filters__count">
+            Còn <b>{formatNumber(table.filteredCount)}</b> / {formatNumber(table.totalCount)} người
+          </span>
+        ) : null}
+      </div>
+
       <TableStates
         loading={loading}
         error={error}
         onRetry={onRetry}
-        isEmpty={rows.length === 0}
+        isEmpty={table.filteredCount === 0}
         skeletonRows={7}
         description={
           <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
-            {searching
-              ? 'Không tìm thấy ai như vậy'
+            {/* Rỗng do tìm / lọc là chuyện khác hẳn rỗng do chưa có dữ liệu. */}
+            {table.isFiltered
+              ? 'Không tìm thấy đảng viên nào khớp.'
               : period === null
                 ? 'Chưa cài đợt trao huy hiệu.'
                 : `Không có đảng viên nào tròn mốc trong ${period.name} năm ${period.year}.`}
@@ -242,53 +202,28 @@ export function EligibleTableCard({
         }
         hint={
           <span className="hhd-dashboard__empty-hint">
-            {searching
-              ? 'Bác thử xóa bớt chữ trong ô tìm ở đầu bảng.'
+            {table.isFiltered
+              ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.'
               : period === null
                 ? 'Tạo đợt trao huy hiệu trước, danh sách sẽ tự hiện ra.'
                 : 'Bác xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót ngoài các đợt.'}
           </span>
         }
-        action={
-          searching ? (
-            <Button
-              onClick={() => {
-                setKeyword('');
-                setPage((state) => ({ ...state, current: 1 }));
-              }}
-            >
-              Xem lại tất cả
-            </Button>
-          ) : undefined
-        }
+        action={table.isFiltered ? <Button onClick={table.clearFilters}>Xóa bộ lọc</Button> : null}
       >
-        <Table<EligibleMemberResponse>
-          rowKey="partyMemberId"
-          columns={columns}
-          dataSource={rows}
-          onChange={(pagination, _filters, _sorter, extra) =>
-            handleTableChange(pagination, extra.action)
-          }
-          pagination={{
-            current,
-            pageSize: page.pageSize,
-            total: rows.length,
-            showSizeChanger: true,
-            pageSizeOptions: PAGE_SIZES,
-            showTotal: (total, range) =>
-              `${formatNumber(range[0])}–${formatNumber(range[1])} / ${formatNumber(total)}`,
-          }}
-        />
+        <div className="hhd-table-scroll">
+          <Table<EligibleMemberResponse>
+            rowKey="partyMemberId"
+            columns={columns}
+            dataSource={table.pageRows}
+            pagination={table.pagination}
+            onChange={table.onTableChange}
+          />
+        </div>
       </TableStates>
 
       <div className="hhd-dashboard__footnote">
-        <span>
-          {!ready
-            ? ''
-            : searching
-              ? `${formatNumber(rows.length)} / ${formatNumber(members.length)} người`
-              : `${formatNumber(members.length)} người`}
-        </span>
+        <span>{ready ? `${formatNumber(table.totalCount)} người` : ''}</span>
         {lastFileName ? (
           <span className="hhd-dashboard__filename">{lastFileName}</span>
         ) : (
