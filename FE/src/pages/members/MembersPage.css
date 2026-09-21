@@ -40,6 +40,11 @@
   width: 200px;
 }
 
+/* Rộng hơn ô giới tính vì nhãn dài nhất là "Mốc kế tiếp: Đã vượt mốc lớn nhất". */
+.hhd-members__milestone {
+  width: 280px;
+}
+
 .hhd-members__selected {
   margin-left: auto;
   color: var(--hhd-text-tertiary);

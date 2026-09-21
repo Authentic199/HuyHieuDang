@@ -28,6 +28,8 @@ public sealed class AwardPeriodPayload
 
     public DateOnly ToDate { get; set; }
 
+    public bool SpansNextYear { get; set; }
+
     public string Status { get; set; } = string.Empty;
 
     public int? DaysRemaining { get; set; }

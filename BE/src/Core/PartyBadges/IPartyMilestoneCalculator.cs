@@ -62,9 +62,21 @@ public interface IPartyMilestoneCalculator : IScopedService
 
     /// <summary>Gắn một năm cụ thể vào đợt (QT4).</summary>
     /// <param name="period">Đợt chỉ có ngày/tháng.</param>
-    /// <param name="year">Năm cần gắn.</param>
-    /// <returns>Đợt đã có ngày đầy đủ; 29/02 ở năm không nhuận lùi về 28/02.</returns>
+    /// <param name="year">Năm neo — năm chứa Từ ngày.</param>
+    /// <returns>
+    /// Đợt đã có ngày đầy đủ; 29/02 ở năm không nhuận lùi về 28/02. Đợt vắt năm (QT6) có
+    /// Đến ngày thuộc <paramref name="year"/> + 1.
+    /// </returns>
     PeriodOccurrence BindToYear(AwardPeriod period, int year);
+
+    /// <summary>QT6, QT7 — phần của các đợt rơi vào trong một năm dương lịch.</summary>
+    /// <param name="periods">Toàn bộ đợt đang cấu hình.</param>
+    /// <param name="year">Năm đang xét.</param>
+    /// <returns>
+    /// Các phần đã cắt về 01/01–31/12 của năm, sắp theo ngày bắt đầu. Một đợt vắt năm góp hai
+    /// phần: đuôi của lần neo năm trước và đầu của lần neo chính năm đó.
+    /// </returns>
+    IReadOnlyList<PeriodSlice> GetSlicesInYear(IReadOnlyList<AwardPeriod> periods, int year);
 
     /// <summary>QT4 — mốc được trao cho một đảng viên trong một đợt của một năm.</summary>
     /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>

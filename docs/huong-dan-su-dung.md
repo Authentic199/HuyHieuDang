@@ -119,7 +119,7 @@ Ba ô đều phải là **số nguyên dương**, và **Bắt đầu** không đ
 4. Bấm **Thêm đợt**.
 5. Làm lại cho từng đợt. Thông thường mỗi năm có 4 đợt, quanh các ngày **3/2**, **19/5**, **2/9** và **7/11**.
 
-Một đợt phải **nằm gọn trong một năm**: Từ ngày không được sau Đến ngày, và đợt không được vắt qua ngày 31/12 sang 01/01. Sai thì phần mềm báo *"Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm"*.
+Một đợt **được phép vắt qua ngày 31/12**. Nếu Đến ngày đứng trước Từ ngày trong vòng năm — ví dụ Từ 01/12, Đến 28/02 — phần mềm hiểu là đợt kết thúc ở **năm sau**, và dòng nhắc trong ô nhập ghi rõ điều đó. Bảng danh sách đợt cũng ghi "năm sau" cạnh Đến ngày.
 
 <!-- ảnh: cửa sổ "Thêm đợt trao huy hiệu" đang mở, Tên đợt "Đợt 7/11", Từ ngày 01/10, Đến ngày 07/11 -->
 > **[Ảnh 5]** Cửa sổ Thêm đợt trao huy hiệu — `docs/images/05-them-dot.png`
@@ -238,9 +238,11 @@ Một dòng sai nhiều chỗ thì cột **Lý do** ghi đủ cả, ngăn nhau b
 | Ngày tròn mốc kế tiếp | Ngày người đó tròn mốc kế tiếp |
 | Thao tác | Nút **Sửa** hình bút chì |
 
-Bấm vào tên cột để đổi cách sắp xếp. Cột **Tuổi đảng** là số phần mềm tự tính nên không sắp xếp được.
+Bấm vào tên cột để đổi cách sắp xếp: lần đầu tăng dần, lần thứ hai giảm dần, lần thứ ba thôi sắp xếp. Cột **Tuổi đảng** và **Mốc kế tiếp** cũng sắp xếp được. Riêng **Ngày tròn mốc kế tiếp** thì không.
 
-Phía trên bảng có ô **Tìm theo họ tên…** và ô lọc **Giới tính: Tất cả / Nam / Nữ**.
+Phía trên bảng có ô **Tìm theo họ tên…**, ô lọc **Giới tính: Tất cả / Nam / Nữ** và ô lọc **Mốc kế tiếp**.
+
+Ô **Mốc kế tiếp** liệt kê đúng các mốc bác đang cài ở màn Cài đặt, thêm một dòng **Đã vượt mốc lớn nhất** cho những người cột Mốc kế tiếp đang hiện dấu "—". Chọn một mốc là bảng chỉ còn những người sắp tròn đúng mốc đó — cách nhanh nhất để xem "năm nay ai sắp tròn 50 năm".
 
 **Sửa một người:** bấm nút bút chì ở cột **Thao tác**. Cửa sổ **Sửa đảng viên** hiện ra với dữ liệu cũ. Sửa xong bấm **Lưu thay đổi**.
 

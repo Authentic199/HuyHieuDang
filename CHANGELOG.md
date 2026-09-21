@@ -12,8 +12,26 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ## Chưa phát hành
 
+### Thêm
+
+- **Màn Đảng viên lọc được theo Mốc kế tiếp và sắp xếp được theo Tuổi đảng (T51 + T52).** Backend đã nhận `filter.NextMilestone=$eq:<mốc|None>` và `sortQuery=PartyAge|NextMilestone` từ trước, nhưng chưa có gì trên giao diện gọi tới. Nay ô lọc **Mốc kế tiếp** nằm cạnh ô Giới tính, dãy mốc lấy thẳng từ Cài đặt; hai cột **Tuổi đảng** và **Mốc kế tiếp** có nút sắp xếp. Cột **Ngày tròn mốc kế tiếp** cố ý vẫn không sắp xếp được.
+
+### Sửa lỗi
+
+- **`GET /api/AwardPeriods` không còn nuốt bộ lọc (QC-T27-05).** Endpoint này chưa từng đọc tham số `filter.*`, nên một giá trị lọc gõ sai bị bỏ qua lặng lẽ và người gọi nhận về cả kho — đúng lỗi mà T47 tưởng đã đóng ở tầng lọc dùng chung, nhưng bản sửa đó chỉ chạm tới danh sách đảng viên. Nay giá trị sai kiểu trả `400` kèm `Mes.Common.Invalid.Parameter`, kể cả khi kho rỗng. `totalCount` là số đợt sau lọc; `warnings` và `coverage` vẫn tính trên cả năm.
+- **Sáu ca hồi quy lỗi đã được gỡ `Skip`.** Cả sáu mang lời hẹn "gỡ Skip khi PR vào main"; các PR đó đã vào `main` từ 21/09 mà `Skip` vẫn còn, nên hai lỗi thật nằm im sau đó: QC-T27-05 ở trên, và QC-T27-07 — Backend trả `Mes.PartyMember.OverLength.FullName` trong khi bảng khóa hợp đồng của bộ kiểm thử vẫn là bản v1.3.
+- **Bảng tra khóa thông điệp của Frontend khớp lại hợp đồng.** `FE/src/api/messages.ts` thiếu sáu khóa (`Mes.Common.Invalid.Parameter`, ba khóa `OverLength.*`, `Mes.PartyMember.Required.Ids`, `Mes.PartyMember.Invalid.NextMilestone`) và lệch chữ ở ba khóa mốc — người dùng gặp mấy lỗi này chỉ thấy câu chung "Thao tác không thực hiện được".
+
 ### Đổi
 
+- **Hợp đồng API lên v1.5**, khớp lại với mã đã gộp: bỏ hẳn mục `DELETE /api/PartyMembers/{id}` (T34 đã gỡ endpoint này từ PR #45, tài liệu và `openapi.yaml` vẫn còn); mục 1.7 và 3.1 ghi đúng phần lọc/sắp xếp theo Mốc kế tiếp và Tuổi đảng của T51 thay vì câu "không lọc/sắp xếp được" đã sai; mục 5.1 ghi `filter.*` dùng chung.
+- **Ca kiểm thử mới chặn bảng khóa trôi lệch.** `A-906` đọc thẳng mục 1.5 của `docs/api-contract.md` và bắt bảng khóa trong mã kiểm thử phải trùng khít — thêm khóa vào hợp đồng mà quên chép sang là đỏ ngay.
+- **QT6 — đợt trao huy hiệu được phép vắt qua 31/12.** Từ ngày đứng sau Đến ngày (ví dụ `01/12 – 28/02`) nghĩa là đợt kết thúc ở năm sau, không còn bị từ chối. Năm của một đợt luôn là năm chứa Từ ngày.
+  - Bỏ khóa lỗi `Mes.AwardPeriod.Invalid.Range`. Chặn lưu chỉ còn: thiếu tên, trùng tên, ngày/tháng không có thật.
+  - `AwardPeriodResponse` thêm trường `spansNextYear`; `toDate` có thể thuộc `year + 1`.
+  - Độ phủ, khoảng trống và danh sách "Chưa thuộc đợt nào" của một năm tính trên **phần đợt nằm trong năm đó**, gồm cả đuôi của đợt vắt năm neo ở năm trước. `coverage.segments` vì vậy có thể có hai đoạn cùng `periodId`.
+  - QT8 (đợt sắp tới) xét thêm lần diễn ra neo ở năm trước; QT11 báo "Đang diễn ra" khi lần neo năm trước còn đang mở hôm nay.
+  - Giao diện: bỏ ràng buộc Đến ≥ Từ ở modal thêm/sửa, dòng nhắc nói rõ "vắt qua 31/12", bảng đợt ghi "năm sau" cạnh Đến ngày, tab Thông tin đọc "01/12 – 28/02 năm sau, hằng năm".
 - Hợp đồng API lên **v1.4**: bảng khóa thông điệp mục 1.5 có thêm cột “Khi nào Backend trả” và bảy khóa Backend đang trả mà tài liệu chưa ghi; ba mốc của Cài đặt có trần 200 năm.
   - Thêm vào bảng 1.5: `Mes.User.Required.Username`, `Mes.User.Required.Password`, `Mes.PartyMember.OverLength.FullName`, `Mes.PartyMember.Required.Ids`, `Mes.AwardPeriod.OverLength.Name`, `Mes.AppSetting.OverLength.UnitName`, `Mes.Common.Invalid.Parameter`. Frontend thiếu khóa nào thì chỉ hiện được câu mặc định (QC-T27-07).
   - **Mốc bắt đầu / Mốc kết thúc / Bước nhảy**: số nguyên **từ 1 đến 200** thay cho “từ 1 trở lên”, áp dụng cho cả `PUT /api/Settings` lẫn ô xem trước `GET /api/Settings/Milestones`. Vượt trần dùng đúng ba khóa sẵn có, không thêm khóa mới (QC-T27-06).
@@ -26,6 +44,8 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
   - Sửa cổng Backend khi chạy dev trong tài liệu: 5000 → **8080**, cho khớp `launchSettings.json` và `docker-compose.yml`.
 
 ### Thêm
+
+- **Nghiệm thu QC cho đợt vắt qua 31/12 (T54).** Luồng end-to-end mới `e7-dot-vat-qua-nam` chạy trên trình duyệt thật, 8 ca đơn vị `U-620 → U-626` và 4 ca API `A-221 → A-224`. Oracle của QC viết lại theo lối đi từng ngày để không còn là bản chép của service. Báo cáo: `docs/test-report/2026-09-20-qc-dot-vat-qua-nam.md`.
 
 - `README.md`: cách chạy bằng `docker compose`, cách chạy chế độ phát triển, cách sao lưu và khôi phục bằng `pg_dump` / `psql`.
 - `CHANGELOG.md` (tài liệu này).

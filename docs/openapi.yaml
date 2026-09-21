@@ -1,11 +1,11 @@
 openapi: 3.0.3
 
-# Bản máy đọc của docs/api-contract.md (v1.2 — 19/09/2026).
+# Bản máy đọc của docs/api-contract.md (v1.5 — 21/09/2026).
 # Tài liệu markdown là bản chuẩn; file này phải được sửa cùng lúc mỗi khi contract đổi.
 
 info:
   title: HuyHieuDang API
-  version: "1.2"
+  version: "1.5"
   description: |
     API của hệ thống hỗ trợ xét trao Huy hiệu Đảng.
     Mọi phản hồi thành công bọc trong `{ message, data }`; phần mô tả dưới đây chỉ nói về `data`.
@@ -119,6 +119,15 @@ paths:
           schema:
             type: string
             example: $eq:Male
+        - name: filter.NextMilestone
+          in: query
+          description: >-
+            Lọc theo Mốc kế tiếp (T51). Chỉ nhận toán tử `$eq` và đúng một giá trị:
+            một mốc của dãy QT1 đang hiệu lực (`$eq:40`), hoặc `$eq:None` cho nhóm đã
+            vượt mốc lớn nhất. Sai cách viết trả 400 kèm `Mes.PartyMember.Invalid.NextMilestone`.
+          schema:
+            type: string
+            example: $eq:40
       responses:
         '200':
           description: Trang kết quả
@@ -206,25 +215,6 @@ paths:
                         $ref: '#/components/schemas/PartyMemberResponse'
         '400':
           $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    delete:
-      tags: [PartyMembers]
-      summary: Xóa một đảng viên (UC-23)
-      responses:
-        '200':
-          description: Đã xóa
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/IdentifierResponse'
-        '400':
-          $ref: '#/components/responses/NotFoundAsBadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -336,6 +326,16 @@ paths:
       summary: Danh sách đợt kèm trạng thái, số người đủ điều kiện, cảnh báo và dải độ phủ (UC-30, UC-36)
       parameters:
         - $ref: '#/components/parameters/Year'
+        - name: filter.FromMonth
+          in: query
+          description: >-
+            Bộ lọc dùng chung `filter.<Tên trường>=$<toán tử>:<giá trị>`, áp lên danh sách đợt
+            đã gắn năm nên tên trường là tên trường của `AwardPeriodResponse`. Endpoint không
+            phân trang nên không nhận `current`, `pageSize` hay `sortQuery`. Giá trị sai kiểu
+            trả 400 kèm `Mes.Common.Invalid.Parameter`, không âm thầm trả cả kho.
+          schema:
+            type: string
+            example: $eq:12
       responses:
         '200':
           description: Danh sách đợt của năm đang xét
@@ -752,7 +752,11 @@ components:
     SortQuery:
       name: sortQuery
       in: query
-      description: 'Ví dụ: `FullName asc`, `OfficialAdmissionDate desc`. Không sắp được theo cột tính ra'
+      description: >-
+        Ví dụ `FullName asc`, `OfficialAdmissionDate desc`. Ngoài bốn cột của bảng còn nhận
+        `PartyAgeYears` (viết tắt `PartyAge`) và `NextMilestone` — Backend quy đổi về
+        `OfficialAdmissionDate` theo chiều ngược lại (T51). `nextMilestoneDate` không sắp được.
+        Tên cột lạ bị bỏ qua, không báo lỗi.
       schema:
         type: string
         default: FullName asc
@@ -1189,7 +1193,12 @@ components:
         toDate:
           type: string
           format: date
+          description: Thuộc year + 1 khi đợt vắt qua 31/12 (QT6)
           example: '2026-11-07'
+        spansNextYear:
+          type: boolean
+          description: Đợt vắt qua 31/12, Đến ngày rơi vào năm sau (QT6)
+          example: false
         status:
           $ref: '#/components/schemas/AwardPeriodStatus'
         daysRemaining:

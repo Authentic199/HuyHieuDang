@@ -1,6 +1,7 @@
 using HuyHieuDang.Core.Common.Exceptions;
 using HuyHieuDang.Core.Common.Interfaces;
 using HuyHieuDang.Core.PartyBadges;
+using HuyHieuDang.Infrastructure.Facades.Common.Extensions;
 using HuyHieuDang.Infrastructure.Facades.Definitions;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Repositories;
 using HuyHieuDang.Infrastructure.Modules.AppSettings.Entities;
@@ -89,16 +90,27 @@ public class AwardPeriodService : IAwardPeriodService
         List<PeriodEntity> periods = await LoadPeriodsAsync(cancellationToken);
         EligibilityContext context = await LoadEligibilityContextAsync(cancellationToken);
 
+        // Lọc trên danh sách đã gắn năm, không lọc trên bảng: tên trường mà người gọi nhìn thấy
+        // là tên trường của AwardPeriodResponse (FromMonth, SpansNextYear, Status…), và những
+        // trường đó là giá trị tính ra chứ không có trong cơ sở dữ liệu (QT5).
+        // Giá trị sai kiểu bị ApplyFilter ném 400 kèm Mes.Common.Invalid.Parameter thay vì
+        // bị bỏ qua lặng lẽ rồi trả về cả kho (QC-T27-05).
+        List<AwardPeriodResponse> rows = periods
+            .Select(period => Project(period, year, context))
+            .OrderBy(x => x.FromDate)
+            .ThenBy(x => x.ToDate)
+            .ApplyFilter(request.Filter)
+            .ToList();
+
         return new AwardPeriodListResponse
         {
             Year = year,
             Today = dateTimeProvider.Today,
-            TotalCount = periods.Count,
-            Periods = periods
-                .Select(period => Project(period, year, context))
-                .OrderBy(x => x.FromDate)
-                .ThenBy(x => x.ToDate)
-                .ToList(),
+            TotalCount = rows.Count,
+            Periods = rows,
+
+            // Cảnh báo và dải độ phủ luôn tính trên TOÀN BỘ đợt của năm: chúng mô tả độ phủ của
+            // năm chứ không mô tả kết quả lọc, lọc đi vài dòng không làm năm đó hở thêm ngày nào.
             Warnings = AwardPeriodCoverageBuilder.BuildWarnings(milestoneCalculator, periods, year),
             Coverage = AwardPeriodCoverageBuilder.BuildCoverage(milestoneCalculator, periods, year),
         };

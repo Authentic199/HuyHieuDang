@@ -7,8 +7,12 @@ namespace HuyHieuDang.Web.QcIntegrationTests;
 
 /// <summary>
 /// Các lỗi QC tìm được ở vòng T27. Mỗi ca mô tả **hành vi đúng** theo hợp đồng API và kế hoạch
-/// kiểm thử, hiện đang đỏ, nên để <c>Skip</c> kèm mã lỗi — đúng cách đã làm ở T26. Bỏ
-/// <c>Skip</c> là ca đỏ lại ngay, và đó cũng là cách xác nhận Backend đã sửa xong.
+/// kiểm thử. Cả sáu ca từng để <c>Skip</c> trong lúc chờ bản sửa; các bản sửa đã vào
+/// <c>main</c> nên <c>Skip</c> đã được gỡ hết và sáu ca này chạy thật mỗi lần kiểm thử.
+/// <para>
+/// Không thêm <c>Skip</c> mới vào lớp này. Một ca đỏ nằm im sau <c>Skip</c> là một lỗi
+/// không ai nhìn thấy — đúng thứ đã xảy ra với QC-T27-05 và QC-T27-07.
+/// </para>
 /// </summary>
 [Collection(QcApiCollection.Name)]
 public sealed class A8DefectTests
@@ -29,7 +33,7 @@ public sealed class A8DefectTests
     /// trả danh sách rỗng, không phải lỗi 500.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-02 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
+    [Fact]
     public async Task QcT2702_So_trang_lon_khong_duoc_lam_may_chu_loi_500()
     {
         await QcDb.SeedCoreAsync(factory);
@@ -53,7 +57,7 @@ public sealed class A8DefectTests
     /// chặn hoặc kẹp về mức trần".
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-03 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
+    [Fact]
     public async Task QcT2703_Co_trang_phai_bi_chan_hoac_kep_ve_muc_tran()
     {
         await QcDb.SeedCoreAndBulkAsync(factory);
@@ -83,7 +87,7 @@ public sealed class A8DefectTests
     /// câu tiếng Anh này hiện thẳng lên banner của người dùng.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-04 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
+    [Fact]
     public async Task QcT2704_Loi_ep_kieu_tham_so_phai_tra_khoa_thong_diep()
     {
         await QcDb.SeedCoreAsync(factory);
@@ -127,7 +131,7 @@ public sealed class A8DefectTests
     /// </para>
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-05 · đang sửa ở T47 (HUYH-53) tại tầng lọc dùng chung; hành vi đúng CEO chốt là 400 + Mes.Common.Invalid.Parameter. Gỡ Skip khi T47 gộp")]
+    [Fact]
     public async Task QcT2705_Gia_tri_loc_la_khong_duoc_bo_qua_lang_le()
     {
         await QcDb.SeedCoreAsync(factory);
@@ -172,7 +176,7 @@ public sealed class A8DefectTests
     /// lần gõ phím, nên một lần gõ nhầm là treo cả trình duyệt.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-06 · ĐÃ SỬA ở PR #35, xác minh xanh ngày 20/09/2026 — gỡ Skip ngay khi PR vào main")]
+    [Fact]
     public async Task QcT2706_Xem_truoc_day_moc_phai_co_tran()
     {
         await QcDb.ResetAsync(factory);
@@ -196,7 +200,7 @@ public sealed class A8DefectTests
     /// thay vì nói rõ chỗ sai.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-07 · đã sửa ở PR #46 (contract v1.4) — gỡ Skip khi #46 gộp")]
+    [Fact]
     public async Task QcT2707_Moi_khoa_Backend_tra_ra_deu_phai_co_trong_hop_dong()
     {
         await QcDb.SeedCoreAsync(factory);

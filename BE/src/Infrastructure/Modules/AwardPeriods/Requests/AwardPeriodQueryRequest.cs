@@ -1,6 +1,8 @@
 using FluentValidation;
 using HuyHieuDang.Infrastructure.Facades.Common.Attributes;
+using HuyHieuDang.Infrastructure.Facades.Common.Extensions;
 using HuyHieuDang.Infrastructure.Facades.Definitions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HuyHieuDang.Infrastructure.Modules.AwardPeriods.Requests;
 
@@ -31,6 +33,18 @@ public class AwardPeriodQueryRequest
     /// Năm đang xét.
     /// </summary>
     public int? Year { get; set; }
+
+    /// <summary>
+    /// Bộ lọc dùng chung, dạng <c>filter.&lt;Tên trường&gt;=$eq:&lt;giá trị&gt;</c>, áp lên danh
+    /// sách đợt đã gắn năm. Endpoint này không phân trang nên chỉ nhận bộ lọc, không nhận
+    /// <c>pageSize</c> hay <c>orderBy</c>.
+    /// <para>
+    /// Có mặt ở đây để tham số <c>filter.*</c> không còn bị nuốt lặng lẽ: giá trị sai kiểu
+    /// trả <c>400</c> kèm <c>Mes.Common.Invalid.Parameter</c> thay vì trả về cả kho (QC-T27-05).
+    /// </para>
+    /// </summary>
+    [ModelBinder(BinderType = typeof(CustomFilterBinder))]
+    public Dictionary<string, List<string>?>? Filter { get; set; }
 }
 
 /// <summary>

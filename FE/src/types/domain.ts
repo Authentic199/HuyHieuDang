@@ -75,7 +75,10 @@ export interface AwardPeriodResponse {
   year: number;
   /** Đã gắn year; 29/02 ở năm không nhuận lùi về 28/02 */
   fromDate: IsoDate;
+  /** Thuộc year + 1 khi đợt vắt qua 31/12 */
   toDate: IsoDate;
+  /** Đợt vắt qua 31/12, Đến ngày rơi vào năm sau (QT6) */
+  spansNextYear: boolean;
   status: AwardPeriodStatus;
   /** Chỉ khác null khi status = 'Upcoming' */
   daysRemaining: number | null;

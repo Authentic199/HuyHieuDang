@@ -18,6 +18,9 @@ import type { AwardPeriodResponse, CoverageWarnings } from '../../types/domain';
  * Đợt chỉ lưu NGÀY và THÁNG, không lưu năm (QT6). Để cán bộ vẫn chọn được
  * 29/02, lịch chạy trên một năm nhuận cố định và ô nhập chỉ hiện dd/MM — người
  * dùng không bao giờ nhìn thấy năm này.
+ *
+ * Đến ngày ĐƯỢC PHÉP đứng trước Từ ngày: đó là đợt vắt qua 31/12, ví dụ
+ * 01/12 – 28/02. Lúc đó dòng nhắc nói rõ Đến ngày rơi vào năm sau.
  */
 
 /** Năm nhuận cố định, chỉ để lịch có đủ ngày 29/02. Không gửi lên máy chủ. */
@@ -36,6 +39,16 @@ interface PeriodFormModalProps {
   onCancel: () => void;
   /** Lưu xong: màn hình đổi banner theo cảnh báo mới rồi tải lại bảng. */
   onSaved: (savedMessage: string, warnings: CoverageWarnings) => void;
+}
+
+/** Đến ngày đứng trước Từ ngày nghĩa là đợt kết thúc ở năm sau (QT6). */
+function spansNextYear(from: Dayjs | null, to: Dayjs | null): boolean {
+  return from !== null && to !== null && to.isBefore(from, 'day');
+}
+
+/** Ngày/tháng của đợt dạng dd/MM, dùng trong dòng nhắc. */
+function format(value: Dayjs | null): string {
+  return value ? value.format(DAY_MONTH_FORMAT) : '';
 }
 
 /** Ghép ngày/tháng của đợt thành giá trị cho lịch, luôn ở năm nhuận mẫu. */
@@ -173,19 +186,7 @@ export function PeriodFormModal({ period, onCancel, onSaved }: PeriodFormModalPr
           <Form.Item
             name="to"
             label="Đến ngày"
-            dependencies={['from']}
-            rules={[
-              { required: true, message: messageText('Mes.AwardPeriod.Invalid.ToDate') },
-              ({ getFieldValue }) => ({
-                validator: (_rule, value: Dayjs | null) => {
-                  const from = getFieldValue('from') as Dayjs | null;
-                  // Đợt vắt năm không có trong v1 — Đến ngày phải bằng hoặc sau
-                  // Từ ngày trong cùng một năm (QT6).
-                  if (!value || !from || !value.isBefore(from, 'day')) return Promise.resolve();
-                  return Promise.reject(new Error(messageText('Mes.AwardPeriod.Invalid.Range')));
-                },
-              }),
-            ]}
+            rules={[{ required: true, message: messageText('Mes.AwardPeriod.Invalid.ToDate') }]}
           >
             <DatePicker
               size="large"
@@ -200,10 +201,18 @@ export function PeriodFormModal({ period, onCancel, onSaved }: PeriodFormModalPr
           </Form.Item>
         </div>
 
-        <div className="hhd-period-form__note">
-          <InfoCircleOutlined style={{ color: '#2b466b', fontSize: 18, flex: 'none' }} />
-          <span>Chỉ lưu ngày/tháng. Thay đổi áp dụng ngay cho năm hiện tại và các năm sau.</span>
-        </div>
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => (
+            <div className="hhd-period-form__note">
+              <InfoCircleOutlined style={{ color: '#2b466b', fontSize: 18, flex: 'none' }} />
+              <span>
+                {spansNextYear(getFieldValue('from'), getFieldValue('to'))
+                  ? `Đợt vắt qua 31/12: ${format(getFieldValue('from'))} năm nay đến ${format(getFieldValue('to'))} năm sau. Chỉ lưu ngày/tháng, thay đổi áp dụng ngay cho năm hiện tại và các năm sau.`
+                  : 'Chỉ lưu ngày/tháng. Thay đổi áp dụng ngay cho năm hiện tại và các năm sau.'}
+              </span>
+            </div>
+          )}
+        </Form.Item>
       </Form>
     </Modal>
   );

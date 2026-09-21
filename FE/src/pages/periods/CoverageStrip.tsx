@@ -12,7 +12,9 @@ import './CoverageStrip.css';
  * tháng 2 ngắn hơn tháng 1 nên vạch tháng cũng hẹp hơn, bar mới nằm đúng chỗ.
  * Ngày "hôm nay" lấy từ máy chủ (mục 1.6 hợp đồng API), không đọc đồng hồ máy.
  *
- * Đợt vắt năm (Đến ngày sớm hơn Từ ngày) không có trong v1 nên không xử lý.
+ * Đợt vắt qua 31/12 được máy chủ cắt sẵn thành HAI đoạn trong cùng một năm —
+ * đuôi ở đầu năm và đầu ở cuối năm — mang cùng `periodId`, nên khóa của mỗi
+ * đoạn phải ghép thêm ngày bắt đầu.
  */
 
 interface CoverageStripProps {
@@ -93,7 +95,8 @@ export function CoverageStrip({ year, today, segments, overlaps, periods }: Cove
     segments
       .filter((item) => item.type === 'Period')
       .map((item, index) => ({
-        key: item.periodId ?? `period-${index}`,
+        // Đợt vắt năm cho hai đoạn cùng periodId nên khóa ghép thêm ngày bắt đầu.
+        key: `${item.periodId ?? `period-${index}`}#${item.fromDate}`,
         label: item.name ?? '',
         tooltip: `${item.name ?? ''}: ${dayjs(item.fromDate).format('DD/MM')} – ${dayjs(item.toDate).format('DD/MM')}`,
         highlighted: item.periodId !== null && highlightedIds.has(item.periodId),
