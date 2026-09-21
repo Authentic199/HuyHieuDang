@@ -121,6 +121,42 @@ public class AwardPeriodCoverageBuilderTests
         Assert.Equal(new DateOnly(2026, 2, 28), commonYear.Segments[1].FromDate);
     }
 
+    [Fact(DisplayName = "QT6 · Đợt vắt qua 31/12 để lại hai đoạn trong cùng một năm")]
+    public void BuildCoverage_PeriodSpanningNewYear_SplitsIntoTailAndHead()
+    {
+        IReadOnlyList<AwardPeriod> periods = new[] { Period("Đợt Giao thừa", 1, 12, 28, 2) };
+
+        CoverageResponse coverage = AwardPeriodCoverageBuilder.BuildCoverage(Calculator, periods, Year);
+
+        AssertContinuous(coverage, Year);
+
+        // Đuôi của lần neo năm 2025 phủ đầu năm, đầu của lần neo năm 2026 phủ cuối năm.
+        Assert.Collection(
+            coverage.Segments,
+            x => AssertSegment(x, CoverageSegmentType.Period, "Đợt Giao thừa", "2026-01-01", "2026-02-28"),
+            x => AssertSegment(x, CoverageSegmentType.Gap, null, "2026-03-01", "2026-11-30"),
+            x => AssertSegment(x, CoverageSegmentType.Period, "Đợt Giao thừa", "2026-12-01", "2026-12-31"));
+
+        // Hai đoạn cùng một đợt nên cùng một periodId — giao diện phải tự lo khóa của React.
+        Assert.Equal(coverage.Segments[0].PeriodId, coverage.Segments[^1].PeriodId);
+    }
+
+    [Fact(DisplayName = "QT6 · Đợt vắt năm một mình không tự chồng lấn, chỉ hở khoảng giữa năm")]
+    public void BuildWarnings_PeriodSpanningNewYear_ReportsOnlyTheMiddleGap()
+    {
+        IReadOnlyList<AwardPeriod> periods = new[] { Period("Đợt Giao thừa", 1, 12, 28, 2) };
+
+        CoverageWarningsResponse warnings = AwardPeriodCoverageBuilder.BuildWarnings(Calculator, periods, Year);
+
+        Assert.Empty(warnings.Overlaps);
+
+        PeriodGapResponse gap = Assert.Single(warnings.Gaps);
+        Assert.Equal(new DateOnly(2026, 3, 1), gap.FromDate);
+        Assert.Equal(new DateOnly(2026, 11, 30), gap.ToDate);
+        Assert.Equal("Đợt Giao thừa", gap.PreviousPeriodName);
+        Assert.Equal("Đợt Giao thừa", gap.NextPeriodName);
+    }
+
     /// <summary>
     /// Bộ đợt mẫu: bốn đợt, một cặp chồng lấn (Đợt 19/5 và Đợt 2/9 dùng chung 25/05–31/05)
     /// và hai khoảng trống (đầu năm, giữa Đợt 3/2 và Đợt 19/5).

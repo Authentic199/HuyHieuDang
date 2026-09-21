@@ -89,13 +89,14 @@ public sealed class Qt6PeriodWarningTests
     }
 
     [Fact]
-    public void BindToYear_WhenTheFromDateIsAfterTheToDate_ThrowsBadRequest()
+    public void BindToYear_WhenTheFromDateIsAfterTheToDate_EndsThePeriodInTheNextYear()
     {
-        // Act — QC-01: đợt vắt qua 31/12 bị QT6 cấm.
-        Action act = () => sut.BindToYear(new AwardPeriod("Đợt vắt năm", 7, 11, 1, 10), 2026);
+        // Act — QT6 cho phép đợt vắt qua 31/12: Đến ngày thuộc năm kế tiếp.
+        PeriodOccurrence occurrence = sut.BindToYear(new AwardPeriod("Đợt vắt năm", 7, 11, 1, 10), 2026);
 
         // Assert
-        act.ShouldThrow<BadRequestException>();
+        occurrence.From.ShouldBe(new DateOnly(2026, 11, 7));
+        occurrence.To.ShouldBe(new DateOnly(2027, 10, 1));
     }
 
     [Theory]

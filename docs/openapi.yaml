@@ -1189,7 +1189,12 @@ components:
         toDate:
           type: string
           format: date
+          description: Thuộc year + 1 khi đợt vắt qua 31/12 (QT6)
           example: '2026-11-07'
+        spansNextYear:
+          type: boolean
+          description: Đợt vắt qua 31/12, Đến ngày rơi vào năm sau (QT6)
+          example: false
         status:
           $ref: '#/components/schemas/AwardPeriodStatus'
         daysRemaining:

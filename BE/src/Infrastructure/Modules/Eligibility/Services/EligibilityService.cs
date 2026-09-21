@@ -262,11 +262,9 @@ public class EligibilityService : IEligibilityService
     /// <returns>Danh sách đã sắp xếp.</returns>
     private IReadOnlyList<UnassignedMemberResponse> BuildUnassignedMembers(EligibilityDataset dataset, int year)
     {
-        IReadOnlyList<PeriodOccurrence> ordered = dataset.CorePeriods
-            .Select(period => milestoneCalculator.BindToYear(period, year))
-            .OrderBy(x => x.From)
-            .ThenBy(x => x.To)
-            .ToList();
+        // Đợt vắt năm góp hai phần vào một năm nên tên đợt kề hai bên khoảng trống phải tra
+        // trên "phần trong năm", không phải trên lần diễn ra nguyên vẹn (QT6, QT7).
+        IReadOnlyList<PeriodSlice> ordered = milestoneCalculator.GetSlicesInYear(dataset.CorePeriods, year);
 
         List<UnassignedMemberResponse> rows = new();
 
@@ -310,9 +308,9 @@ public class EligibilityService : IEligibilityService
     /// Gắn tên hai đợt kề hai bên vào khoảng trống, đúng khuôn chữ của cột "Khoảng trống".
     /// </summary>
     /// <param name="gap">Khoảng trống do T07 tính.</param>
-    /// <param name="ordered">Các lần diễn ra trong năm, đã sắp theo ngày bắt đầu.</param>
+    /// <param name="ordered">Các phần đợt nằm trong năm, đã sắp theo ngày bắt đầu.</param>
     /// <returns>Khoảng trống đúng hình dạng hợp đồng API.</returns>
-    private static UnassignedGapResponse BuildGap(DateGap gap, IReadOnlyList<PeriodOccurrence> ordered)
+    private static UnassignedGapResponse BuildGap(DateGap gap, IReadOnlyList<PeriodSlice> ordered)
         => new()
         {
             Type = ToGapType(gap.Kind),

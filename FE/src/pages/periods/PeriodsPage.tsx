@@ -177,10 +177,19 @@ export default function PeriodsPage() {
       key: 'toDisplay',
       title: 'Đến ngày',
       dataIndex: 'toDisplay',
-      width: 150,
+      width: 160,
       className: 'hhd-periods__daycell',
       sorter: true,
       sortOrder: table.sortOrderOf('toDisplay'),
+      // Đợt vắt qua 31/12 phải đọc ra ngay là Đến ngày thuộc năm sau (QT6).
+      render: (value: string, record) =>
+        record.spansNextYear ? (
+          <>
+            {value} <span className="hhd-periods__nextyear">năm sau</span>
+          </>
+        ) : (
+          value
+        ),
     },
     {
       key: 'status',

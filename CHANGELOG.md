@@ -14,6 +14,12 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ### Đổi
 
+- **QT6 — đợt trao huy hiệu được phép vắt qua 31/12.** Từ ngày đứng sau Đến ngày (ví dụ `01/12 – 28/02`) nghĩa là đợt kết thúc ở năm sau, không còn bị từ chối. Năm của một đợt luôn là năm chứa Từ ngày.
+  - Bỏ khóa lỗi `Mes.AwardPeriod.Invalid.Range`. Chặn lưu chỉ còn: thiếu tên, trùng tên, ngày/tháng không có thật.
+  - `AwardPeriodResponse` thêm trường `spansNextYear`; `toDate` có thể thuộc `year + 1`.
+  - Độ phủ, khoảng trống và danh sách "Chưa thuộc đợt nào" của một năm tính trên **phần đợt nằm trong năm đó**, gồm cả đuôi của đợt vắt năm neo ở năm trước. `coverage.segments` vì vậy có thể có hai đoạn cùng `periodId`.
+  - QT8 (đợt sắp tới) xét thêm lần diễn ra neo ở năm trước; QT11 báo "Đang diễn ra" khi lần neo năm trước còn đang mở hôm nay.
+  - Giao diện: bỏ ràng buộc Đến ≥ Từ ở modal thêm/sửa, dòng nhắc nói rõ "vắt qua 31/12", bảng đợt ghi "năm sau" cạnh Đến ngày, tab Thông tin đọc "01/12 – 28/02 năm sau, hằng năm".
 - Hợp đồng API lên **v1.4**: bảng khóa thông điệp mục 1.5 có thêm cột “Khi nào Backend trả” và bảy khóa Backend đang trả mà tài liệu chưa ghi; ba mốc của Cài đặt có trần 200 năm.
   - Thêm vào bảng 1.5: `Mes.User.Required.Username`, `Mes.User.Required.Password`, `Mes.PartyMember.OverLength.FullName`, `Mes.PartyMember.Required.Ids`, `Mes.AwardPeriod.OverLength.Name`, `Mes.AppSetting.OverLength.UnitName`, `Mes.Common.Invalid.Parameter`. Frontend thiếu khóa nào thì chỉ hiện được câu mặc định (QC-T27-07).
   - **Mốc bắt đầu / Mốc kết thúc / Bước nhảy**: số nguyên **từ 1 đến 200** thay cho “từ 1 trở lên”, áp dụng cho cả `PUT /api/Settings` lẫn ô xem trước `GET /api/Settings/Milestones`. Vượt trần dùng đúng ba khóa sẵn có, không thêm khóa mới (QC-T27-06).
@@ -26,6 +32,8 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
   - Sửa cổng Backend khi chạy dev trong tài liệu: 5000 → **8080**, cho khớp `launchSettings.json` và `docker-compose.yml`.
 
 ### Thêm
+
+- **Nghiệm thu QC cho đợt vắt qua 31/12 (T54).** Luồng end-to-end mới `e7-dot-vat-qua-nam` chạy trên trình duyệt thật, 8 ca đơn vị `U-620 → U-626` và 4 ca API `A-221 → A-224`. Oracle của QC viết lại theo lối đi từng ngày để không còn là bản chép của service. Báo cáo: `docs/test-report/2026-09-20-qc-dot-vat-qua-nam.md`.
 
 - `README.md`: cách chạy bằng `docker compose`, cách chạy chế độ phát triển, cách sao lưu và khôi phục bằng `pg_dump` / `psql`.
 - `CHANGELOG.md` (tài liệu này).

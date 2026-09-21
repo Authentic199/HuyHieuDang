@@ -1,6 +1,6 @@
 # Kiểm thử đầu-cuối (T28)
 
-Sáu luồng nghiệp vụ **E2E-1 đến E2E-6** của `docs/test-plan.md` mục 6, chạy trên
+Bảy luồng nghiệp vụ **E2E-1 đến E2E-7** của `docs/test-plan.md` mục 6, chạy trên
 trình duyệt thật với Backend và PostgreSQL thật. Không có tầng dữ liệu giả nào.
 
 Mỗi luồng là **một ca Playwright**, bên trong chia thành các bước mang đúng mã ca
@@ -15,6 +15,7 @@ của kế hoạch (`E1-01`, `E3-05`, `E6-15`…), nên đọc kết quả là b
 | `specs/e4-sua-dot-lan-truyen.spec.ts` | E2E-4 Sửa đợt lan truyền | UC-32, QT5, QT6, QT7 |
 | `specs/e5-xuat-excel.spec.ts` | E2E-5 Xuất Excel ba nơi | UC-11, UC-34, UC-40, UC-51 |
 | `specs/e6-vong-doi-dang-vien.spec.ts` | E2E-6 Vòng đời đảng viên | UC-20 → UC-23, QT3, QT3a, QT5 |
+| `specs/e7-dot-vat-qua-nam.spec.ts` | E2E-7 Đợt vắt qua 31/12 (T54) | UC-31, UC-34, UC-36, UC-40, QT6, QT7 |
 | `specs/e9-chay-lai-va-doc-lap.spec.ts` | Ca về chính bộ kiểm thử | E-903 → E-906 |
 
 ## Dựng môi trường rồi chạy
@@ -31,7 +32,7 @@ docker compose -f e2e/docker-compose.e2e.yml up -d --build
 npm ci
 npx playwright install chromium
 
-# 3. Chạy sáu luồng.
+# 3. Chạy bảy luồng.
 npx playwright test -c e2e/playwright.e2e.config.ts
 
 # 4. Dọn.
@@ -81,6 +82,12 @@ E2E_TODAY=2026-10-15 npx playwright test -c e2e/playwright.e2e.config.ts
 > `loi-4-dong.xlsx` (ngày 20/09/2026). Cả hai được chú thích tại chỗ trong
 > `fixtures/clock.ts`.
 
+> **Hai luồng `e2` và `e6` đang đỏ** — lỗi `QC-T54-02`, không liên quan đợt vắt
+> năm. Cả hai chờ nút tên `Xóa N đã chọn`, trong khi màn Đảng viên từ T33
+> (`27239da`) dùng nút thùng rác đỏ mang `aria-label="Xóa người đã chọn"`. Mã sản
+> phẩm không sai; sửa thì chỉ đổi cách định vị nút trong hai tệp luồng, và đang
+> chờ CEO phân người.
+
 ## Nguồn số liệu mong đợi
 
 Bộ kiểm thử **không tự tính lại con số nghiệp vụ nào**. Mọi khẳng định đều so với
@@ -104,7 +111,9 @@ FE/e2e/
 │   ├── pickers.ts    Thao tác với ô chọn ngày của Ant Design
 │   ├── download.ts   Bắt tệp tải về rồi mở ra đọc
 │   └── xlsx.ts       Trình đọc .xlsx tối giản, chỉ dùng thư viện chuẩn Node
-└── specs/            Sáu luồng + ca tiền đề + ca về chính bộ kiểm thử
+├── scripts/
+│   └── chup-anh-e7.mjs   Chụp bốn ảnh bằng chứng của luồng E2E-7 (T54)
+└── specs/            Bảy luồng + ca tiền đề + ca về chính bộ kiểm thử
 ```
 
 `fixtures/xlsx.ts` tự giải nén ZIP và đọc XML vì `FE/package.json` không có gói đọc

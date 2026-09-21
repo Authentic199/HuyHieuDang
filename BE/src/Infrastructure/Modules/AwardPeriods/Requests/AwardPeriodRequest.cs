@@ -6,7 +6,7 @@ namespace HuyHieuDang.Infrastructure.Modules.AwardPeriods.Requests;
 
 /// <summary>
 /// Tên trường trong khóa thông điệp không trùng với tên cột của bảng: hợp đồng API gọi cặp
-/// ngày/tháng là <c>FromDate</c> / <c>ToDate</c> và gọi ràng buộc thứ tự là <c>Range</c>.
+/// ngày/tháng là <c>FromDate</c> / <c>ToDate</c>.
 /// </summary>
 public static class AwardPeriodMessageProperties
 {
@@ -15,9 +15,6 @@ public static class AwardPeriodMessageProperties
 
     /// <summary>Khóa lỗi của Đến ngày.</summary>
     public const string ToDate = "ToDate";
-
-    /// <summary>Khóa lỗi của ràng buộc Từ ≤ Đến.</summary>
-    public const string Range = "Range";
 }
 
 /// <summary>
@@ -101,15 +98,8 @@ public abstract class AwardPeriodRequestValidator<TRequest> : AbstractValidator<
             .Must((request, _) => AwardPeriodRequest.IsRealDayMonth(request.ToDay, request.ToMonth))
             .WithMessage(Messages<AwardPeriod>.Invalid(AwardPeriodMessageProperties.ToDate));
 
-        // QT6 — đợt phải nằm trọn trong một năm: (fromMonth, fromDay) ≤ (toMonth, toDay).
-        RuleFor(x => x.ToMonth)
-            .Must((request, _) => IsOrderedWithinOneYear(request))
-            .When(request => AwardPeriodRequest.IsRealDayMonth(request.FromDay, request.FromMonth)
-                && AwardPeriodRequest.IsRealDayMonth(request.ToDay, request.ToMonth))
-            .WithMessage(Messages<AwardPeriod>.Invalid(AwardPeriodMessageProperties.Range));
+        // QT6 không còn buộc (fromMonth, fromDay) ≤ (toMonth, toDay): Từ ngày đứng sau Đến ngày
+        // là đợt vắt qua 31/12, ví dụ 01/12 – 28/02. Chỉ còn ba thứ chặn lưu: thiếu tên, trùng
+        // tên, ngày/tháng không có thật.
     }
-
-    private static bool IsOrderedWithinOneYear(TRequest request)
-        => request.FromMonth!.Value < request.ToMonth!.Value
-            || (request.FromMonth.Value == request.ToMonth.Value && request.FromDay!.Value <= request.ToDay!.Value);
 }

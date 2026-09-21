@@ -69,17 +69,18 @@ public sealed class A2AwardPeriodTests
         }
     }
 
-    /// <summary>A-205 → A-207 · Ba thứ chặn lưu: Từ sau Đến, trùng tên, ngày/tháng không có thật.</summary>
+    /// <summary>A-205 → A-207 · Từ sau Đến nay là đợt vắt năm; chặn lưu còn trùng tên và ngày không có thật.</summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
     [Fact]
     public async Task A205_A206_A207_Ba_rang_buoc_chan_luu()
     {
         using HttpClient client = await SeedCoreAndLoginAsync();
 
-        using HttpResponseMessage reversed = await client.PostAsJsonAsync(
+        // CEO chốt ngày 20/09/2026: Từ ngày sau Đến ngày là đợt vắt qua 31/12, được lưu.
+        using HttpResponseMessage spanning = await client.PostAsJsonAsync(
             QcEndpoints.AwardPeriods,
-            new { name = "Đợt ngược", fromDay = 10, fromMonth = 9, toDay = 15, toMonth = 8 });
-        await QcApi.AssertErrorAsync(reversed, HttpStatusCode.BadRequest, QcMessages.PeriodInvalidRange);
+            new { name = "Đợt vắt năm", fromDay = 10, fromMonth = 9, toDay = 15, toMonth = 8 });
+        spanning.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         using HttpResponseMessage duplicate = await client.PostAsJsonAsync(
             QcEndpoints.AwardPeriods,

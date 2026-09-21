@@ -133,16 +133,33 @@ public sealed class Qc06Qt6PeriodTests
         sut.GetUpcomingPeriod(overlap, QcFixtures.T0).ShouldNotBeNull();
     }
 
-    // LỖI QC-01 — Tầng logic chưa có chỗ nào kiểm ràng buộc QT6 của đợt.
-    // Hai ca dưới đây mô tả hành vi ĐÚNG theo U-602, U-606, U-607 và đang đỏ:
-    //  - Từ ngày > Đến ngày: service nhận bừa, GetGaps trả ra các khoảng trống chồng lên nhau.
-    //  - Ngày/tháng không tồn tại (31/02, 31/04): BindToYear ném ArgumentOutOfRangeException
-    //    (lỗi kỹ thuật → 500) thay vì lỗi nghiệp vụ 400.
-    // Để [Skip] cho tới khi Backend bổ sung ràng buộc; xem báo cáo bàn giao T26.
-    [Fact(DisplayName = "U-602 · Đợt có Từ ngày > Đến ngày phải bị từ chối")]
-    public void U602_PeriodWithFromAfterTo_MustBeRejected()
+    // U-602 đổi nghĩa từ 20/09/2026: CEO cho phép đợt vắt qua 31/12 (ca thật 01/12 – 28/02),
+    // nên Từ ngày > Đến ngày không còn là lỗi mà là đợt kết thúc ở năm sau.
+    [Fact(DisplayName = "U-602 · Đợt có Từ ngày > Đến ngày kết thúc ở năm sau")]
+    public void U602_PeriodWithFromAfterTo_EndsInTheNextYear()
     {
-        Should.Throw<BadRequestException>(() => sut.BindToYear(new AwardPeriod("Đợt vắt năm", 7, 11, 1, 10), 2026));
+        PeriodOccurrence occurrence = sut.BindToYear(new AwardPeriod("Đợt vắt năm", 1, 12, 28, 2), 2026);
+
+        occurrence.From.ShouldBe(new DateOnly(2026, 12, 1));
+        occurrence.To.ShouldBe(new DateOnly(2027, 2, 28));
+    }
+
+    [Fact(DisplayName = "U-602b · Oracle của QC và service của Backend khớp nhau trên đợt vắt năm")]
+    public void U602b_SpanningPeriod_MatchesTheOracle()
+    {
+        List<AwardPeriod> spanning =
+        [
+            new("Đợt Giao thừa", 1, 12, 28, 2),
+        ];
+
+        sut.GetGaps(spanning, 2027)
+            .Select(x => (x.From, x.To, x.Label))
+            .ShouldBe(QcOracle.GapRanges(spanning, 2027));
+        sut.GetOverlaps(spanning, 2027)
+            .Select(x => (x.First.Name, x.Second.Name, x.From, x.To))
+            .ShouldBe(QcOracle.Overlaps(spanning, 2027));
+        sut.GetUpcomingPeriod(spanning, new DateOnly(2027, 1, 15))!.Occurrence.Year
+            .ShouldBe(QcOracle.UpcomingPeriod(spanning, new DateOnly(2027, 1, 15))!.Value.Year);
     }
 
     [Fact(DisplayName = "U-606/U-607 · Ngày/tháng không tồn tại phải báo lỗi nghiệp vụ")]

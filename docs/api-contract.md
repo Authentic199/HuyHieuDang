@@ -148,7 +148,6 @@ Lý do: bộ khung Backend sinh khóa tự động; để chữ tiếng Việt n
 | `Mes.AwardPeriod.Repeated.Name` | Tên đợt đã tồn tại | Trùng tên một đợt khác, không phân biệt hoa thường |
 | `Mes.AwardPeriod.Invalid.FromDate` | Từ ngày không hợp lệ | Ngày/tháng bắt đầu không có thật, ví dụ `31/04` |
 | `Mes.AwardPeriod.Invalid.ToDate` | Đến ngày không hợp lệ | Ngày/tháng kết thúc không có thật |
-| `Mes.AwardPeriod.Invalid.Range` | Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm | `(fromMonth, fromDay)` sau `(toMonth, toDay)` |
 | `Mes.AppSetting.Update.Successfully` | Đã lưu cài đặt | Lưu cài đặt hoặc khôi phục mặc định thành công |
 | `Mes.AppSetting.Invalid.StartYears` | Mốc bắt đầu phải là số nguyên từ 1 đến 200 | `startYears` (hoặc `start` khi xem trước) ngoài khoảng 1–200 |
 | `Mes.AppSetting.Invalid.EndYears` | Mốc kết thúc phải là số nguyên từ 1 đến 200 | `endYears` (hoặc `end` khi xem trước) ngoài khoảng 1–200 |
@@ -365,6 +364,7 @@ Khi chưa cài đợt nào, mọi người tròn mốc trong năm đều có `ty
   "year": 2026,
   "fromDate": "2026-10-01",
   "toDate": "2026-11-07",
+  "spansNextYear": false,
   "status": "Upcoming",
   "daysRemaining": 14,
   "eligibleCount": 12
@@ -375,8 +375,9 @@ Khi chưa cài đợt nào, mọi người tròn mốc trong năm đều có `ty
 |---|---|
 | `fromDay`…`toMonth` | Dữ liệu lưu thật — **không có năm** (QT6) |
 | `fromDisplay` / `toDisplay` | Tiện cho bảng, dạng `dd/MM` |
-| `year` | Năm đang xét, lấy từ tham số truy vấn |
-| `fromDate` / `toDate` | Đã gắn `year`; 29/02 ở năm không nhuận → `28/02` |
+| `year` | Năm neo đang xét — năm chứa Từ ngày, lấy từ tham số truy vấn |
+| `fromDate` / `toDate` | Đã gắn `year`; 29/02 ở năm không nhuận → `28/02`. Đợt vắt qua 31/12 có `toDate` thuộc `year + 1` |
+| `spansNextYear` | `true` khi đợt vắt qua 31/12 (QT6) — giao diện dùng để viết "28/02 năm sau" |
 | `status` | QT11, so với hôm nay theo lịch máy chủ |
 | `daysRemaining` | Chỉ khác `null` khi `status = "Upcoming"` |
 | `eligibleCount` | Số người đủ điều kiện của đợt trong `year` (QT4) |
@@ -403,7 +404,7 @@ Khi chưa cài đợt nào, mọi người tròn mốc trong năm đều có `ty
 }
 ```
 
-> **Cảnh báo không bao giờ chặn lưu.** Tạo hay sửa đợt chồng lấn / để hở khoảng trống vẫn trả `200`; cảnh báo đi kèm trong `data` để giao diện hiện banner. Chỉ ba thứ chặn lưu: thiếu tên, trùng tên, `Từ > Đến`.
+> **Cảnh báo không bao giờ chặn lưu.** Tạo hay sửa đợt chồng lấn / để hở khoảng trống vẫn trả `200`; cảnh báo đi kèm trong `data` để giao diện hiện banner. Chỉ ba thứ chặn lưu: thiếu tên, trùng tên, ngày/tháng không có thật. `Từ > Đến` **không** còn là lỗi — đó là đợt vắt qua 31/12.
 
 ---
 
@@ -737,6 +738,8 @@ Một lời gọi trả đủ dữ liệu cho cả bảng, dải độ phủ và
 
 `coverage.segments` phủ liên tục từ `01/01` đến `31/12` của `year`, sắp theo `fromDate`, dùng để vẽ dải 12 tháng của UC-36. Khi hai đợt chồng lấn, phần chồng lấn vẫn nằm trong đoạn `Period` của đợt đến trước; chi tiết chồng lấn đọc ở `warnings.overlaps`.
 
+Một đợt **vắt qua 31/12** sinh **hai** đoạn `Period` mang cùng `periodId` trong một năm: đuôi của lần neo năm trước (bắt đầu 01/01) và đầu của lần neo năm này (kết thúc 31/12). Giao diện phải ghép thêm `fromDate` vào khóa của đoạn. Hai đoạn ấy không sinh cảnh báo chồng lấn.
+
 **Khi trong năm đang xem chưa có đợt nào (`totalCount = 0`):** `warnings.gaps` là **mảng rỗng**, còn `coverage.segments` **vẫn** phủ liên tục `01/01`–`31/12` bằng đúng một đoạn `Gap` để giao diện vẫn vẽ được dải 12 tháng của UC-36. Hai trường này cố tình lệch nhau, không phải lỗi. Lý do: cảnh báo "chưa phủ kín" là lời khuyên chỉnh lại các đợt đang có; khi chưa có đợt nào thì cảnh báo đúng là "Chưa cài đợt trao huy hiệu".
 
 Quy tắc này **không** đổi QT6. Phần sinh khoảng trống dùng cho màn "Chưa thuộc đợt nào" (QT7) giữ nguyên: khi chưa có đợt nào, khoảng trống vẫn phủ trọn năm và mang `type = "BeforeFirst"`, chữ hiển thị "Trước đợt đầu tiên" (mục 1.10). Chỉ tầng cảnh báo `warnings.gaps` của mục 5.1 và mục 6.1 là rỗng.
@@ -766,7 +769,7 @@ Quy tắc này **không** đổi QT6. Phần sinh khoảng trống dùng cho mà
 | `fromDay` / `toDay` | int | ✔ | 1–31, phải là ngày có thật của tháng tương ứng (cho phép `29/02`) |
 | `fromMonth` / `toMonth` | int | ✔ | 1–12 |
 
-Ràng buộc chung: `(fromMonth, fromDay) ≤ (toMonth, toDay)` — đợt phải nằm trọn trong một năm, không vắt qua 31/12 → 01/01 (QT6).
+Không còn ràng buộc thứ tự giữa hai cặp ngày/tháng: `(toMonth, toDay) < (fromMonth, fromDay)` nghĩa là đợt **vắt qua 31/12** — Đến ngày thuộc năm kế tiếp Từ ngày, ví dụ `01/12 – 28/02` (QT6). Phản hồi báo lại bằng `spansNextYear = true`.
 
 **Phản hồi `data`**
 
@@ -787,7 +790,6 @@ Cảnh báo tính cho **năm hiện tại**, trả kèm để giao diện cập 
 | `Mes.AwardPeriod.Repeated.Name` | Trùng tên đợt khác |
 | `Mes.AwardPeriod.Invalid.FromDate` | Ngày/tháng không có thật, ví dụ `31/04` |
 | `Mes.AwardPeriod.Invalid.ToDate` | Như trên |
-| `Mes.AwardPeriod.Invalid.Range` | `Từ` sau `Đến` |
 
 ### 5.4 `PUT /api/AwardPeriods/{id}` — Sửa đợt (UC-32)
 

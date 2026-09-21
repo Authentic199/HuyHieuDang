@@ -215,11 +215,10 @@ public class AwardPeriodEndpointTests
         Assert.Equal(5, list.TotalCount);
     }
 
-    [Theory(DisplayName = "5.3 · Ba lỗi chặn lưu: thiếu tên, ngày không có thật, đợt vắt qua năm")]
+    [Theory(DisplayName = "5.3 · Hai lỗi chặn lưu: thiếu tên, ngày không có thật")]
     [InlineData(null, 1, 10, 7, 11, "Mes.AwardPeriod.Required.Name")]
     [InlineData("Đợt 31/04", 31, 4, 7, 11, "Mes.AwardPeriod.Invalid.FromDate")]
     [InlineData("Đợt đến 31/11", 1, 10, 31, 11, "Mes.AwardPeriod.Invalid.ToDate")]
-    [InlineData("Đợt vắt qua năm", 15, 12, 20, 1, "Mes.AwardPeriod.Invalid.Range")]
     public async Task Create_WithInvalidBody_ReturnsExpectedKey(
         string? name, int fromDay, int fromMonth, int toDay, int toMonth, string expectedKey)
     {
@@ -231,6 +230,28 @@ public class AwardPeriodEndpointTests
             new { name, fromDay, fromMonth, toDay, toMonth });
 
         await AssertErrorAsync(response, expectedKey);
+    }
+
+    [Fact(DisplayName = "5.3 · Đợt vắt qua 31/12 được lưu, Đến ngày rơi vào năm sau")]
+    public async Task Create_WithPeriodSpanningNewYear_SavesItAndEndsNextYear()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+        await ResetAsync();
+
+        HttpResponseMessage response = await client.PostAsJsonAsync(
+            BasePath,
+            new { name = "Đợt Giao thừa", fromDay = 1, fromMonth = 12, toDay = 28, toMonth = 2 });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        ApiResponse<AwardPeriodMutationPayload> body =
+            await response.ReadApiResponseAsync<AwardPeriodMutationPayload>();
+
+        AwardPeriodPayload period = body.Data!.Period;
+        Assert.True(period.SpansNextYear);
+        Assert.Equal("01/12", period.FromDisplay);
+        Assert.Equal("28/02", period.ToDisplay);
+        Assert.Equal(new DateOnly(period.Year, 12, 1), period.FromDate);
+        Assert.Equal(period.Year + 1, period.ToDate.Year);
     }
 
     [Fact(DisplayName = "5.3 · Trùng tên không phân biệt hoa thường trả Mes.AwardPeriod.Repeated.Name")]

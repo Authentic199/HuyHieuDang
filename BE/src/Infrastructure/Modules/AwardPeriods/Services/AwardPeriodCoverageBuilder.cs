@@ -27,14 +27,15 @@ public static class AwardPeriodCoverageBuilder
 
         IReadOnlyDictionary<string, PeriodEntity> byName = IndexByName(periods);
         IReadOnlyList<CorePeriod> corePeriods = byName.Values.Select(ToCorePeriod).ToList();
-        List<PeriodOccurrence> ordered = Order(calculator, corePeriods, year);
+        IReadOnlyList<PeriodSlice> ordered = calculator.GetSlicesInYear(corePeriods, year);
 
         return new CoverageWarningsResponse
         {
             Overlaps = calculator.GetOverlaps(corePeriods, year)
-                .Select(overlap => ToOverlapResponse(calculator, overlap, byName, year))
+                .Select(overlap => ToOverlapResponse(overlap, byName))
                 .OrderBy(x => x.FromDate)
                 .ToList(),
+
             // Chưa có đợt nào thì "chưa phủ kín" không còn là lời khuyên nào cả: màn hình đã báo
             // "Chưa cài đợt trao huy hiệu". Chỉ chặn ở đây, tầng tính toán QT6 giữ nguyên.
             Gaps = corePeriods.Count == 0
@@ -47,7 +48,8 @@ public static class AwardPeriodCoverageBuilder
 
     /// <summary>
     /// Dải độ phủ liên tục 01/01–31/12 của năm. Phần chồng lấn thuộc đoạn của đợt đến trước,
-    /// nên một đợt nằm lọt hẳn trong đợt khác không sinh đoạn nào.
+    /// nên một đợt nằm lọt hẳn trong đợt khác không sinh đoạn nào. Đợt vắt năm sinh hai đoạn
+    /// mang cùng <c>periodId</c>: đuôi ở đầu năm và đầu ở cuối năm (QT6).
     /// </summary>
     /// <param name="calculator">Service thuần tính mốc tuổi đảng (T07).</param>
     /// <param name="periods">Toàn bộ đợt đang cấu hình.</param>
@@ -60,28 +62,29 @@ public static class AwardPeriodCoverageBuilder
         ArgumentNullException.ThrowIfNull(periods);
 
         IReadOnlyDictionary<string, PeriodEntity> byName = IndexByName(periods);
-        List<PeriodOccurrence> ordered = Order(calculator, byName.Values.Select(ToCorePeriod).ToList(), year);
+        IReadOnlyList<PeriodSlice> ordered =
+            calculator.GetSlicesInYear(byName.Values.Select(ToCorePeriod).ToList(), year);
 
         List<CoverageSegmentResponse> segments = new();
         DateOnly cursor = new(year, 1, 1);
         DateOnly lastDayOfYear = new(year, 12, 31);
 
-        foreach (PeriodOccurrence occurrence in ordered)
+        foreach (PeriodSlice slice in ordered)
         {
-            if (cursor < occurrence.From)
+            if (cursor < slice.From)
             {
-                segments.Add(GapSegment(cursor, occurrence.From.AddDays(-1)));
-                cursor = occurrence.From;
+                segments.Add(GapSegment(cursor, slice.From.AddDays(-1)));
+                cursor = slice.From;
             }
 
-            if (occurrence.To < cursor)
+            if (slice.To < cursor)
             {
-                // Đợt đã nằm trọn trong đoạn của một đợt đến trước.
+                // Đoạn đã nằm trọn trong đoạn của một đợt đến trước.
                 continue;
             }
 
-            segments.Add(PeriodSegment(byName[occurrence.Period.Name], cursor, occurrence.To));
-            cursor = occurrence.To.AddDays(1);
+            segments.Add(PeriodSegment(byName[slice.Period.Name], cursor, slice.To));
+            cursor = slice.To.AddDays(1);
         }
 
         if (cursor <= lastDayOfYear)
@@ -119,25 +122,13 @@ public static class AwardPeriodCoverageBuilder
         return byName;
     }
 
-    private static List<PeriodOccurrence> Order(
-        IPartyMilestoneCalculator calculator, IReadOnlyList<CorePeriod> periods, int year)
-        => periods
-            .Select(period => calculator.BindToYear(period, year))
-            .OrderBy(x => x.From)
-            .ThenByDescending(x => x.To)
-            .ThenBy(x => x.Period.Name, StringComparer.Ordinal)
-            .ToList();
-
     private static PeriodOverlapResponse ToOverlapResponse(
-        IPartyMilestoneCalculator calculator,
-        PeriodOverlap overlap,
-        IReadOnlyDictionary<string, PeriodEntity> byName,
-        int year)
+        PeriodOverlap overlap, IReadOnlyDictionary<string, PeriodEntity> byName)
     {
-        PeriodOccurrence first = calculator.BindToYear(overlap.First, year);
-        PeriodOccurrence second = calculator.BindToYear(overlap.Second, year);
-        DateOnly from = first.From > second.From ? first.From : second.From;
-        DateOnly to = first.To < second.To ? first.To : second.To;
+        // Phần dùng chung do tầng tính toán cắt sẵn — đợt vắt năm không cho phép dựng lại
+        // khoảng này chỉ từ cặp ngày/tháng.
+        DateOnly from = overlap.From;
+        DateOnly to = overlap.To;
 
         return new PeriodOverlapResponse
         {
@@ -152,7 +143,7 @@ public static class AwardPeriodCoverageBuilder
         };
     }
 
-    private static PeriodGapResponse ToGapResponse(DateGap gap, IReadOnlyList<PeriodOccurrence> ordered)
+    private static PeriodGapResponse ToGapResponse(DateGap gap, IReadOnlyList<PeriodSlice> ordered)
         => new()
         {
             FromDate = gap.From,

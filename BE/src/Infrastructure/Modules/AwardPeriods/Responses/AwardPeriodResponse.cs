@@ -60,9 +60,14 @@ public class AwardPeriodResponse
     public DateOnly FromDate { get; set; }
 
     /// <summary>
-    /// Đến ngày đã gắn năm.
+    /// Đến ngày đã gắn năm; thuộc <see cref="Year"/> + 1 khi đợt vắt qua 31/12 (QT6).
     /// </summary>
     public DateOnly ToDate { get; set; }
+
+    /// <summary>
+    /// Đợt vắt qua 31/12 hay không (QT6) — giao diện dùng để viết "28/02 năm sau".
+    /// </summary>
+    public bool SpansNextYear { get; set; }
 
     /// <summary>
     /// Trạng thái của đợt so với hôm nay (QT11).
@@ -102,6 +107,7 @@ public class AwardPeriodResponse
             Year = occurrence.Year,
             FromDate = occurrence.From,
             ToDate = occurrence.To,
+            SpansNextYear = occurrence.Period.SpansNextYear,
             Status = status.Status,
             DaysRemaining = status.DaysLeft,
             EligibleCount = eligibleCount,
