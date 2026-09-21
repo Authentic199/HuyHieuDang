@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.4 — 20/09/2026 |
-| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào; v1.4 bổ sung bảy khóa thông điệp còn thiếu ở mục 1.5 và trần 200 năm của ba mốc ở mục 7.2 và 7.4 |
+| Phiên bản | 1.5 — 21/09/2026 |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào; v1.4 bổ sung bảy khóa thông điệp còn thiếu ở mục 1.5 và trần 200 năm của ba mốc ở mục 7.2 và 7.4; v1.5 khớp lại tài liệu với mã đã gộp — bỏ endpoint xóa một đảng viên, mở lọc/sắp xếp theo Mốc kế tiếp và Tuổi đảng, QT6 cho đợt vắt qua 31/12 |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
@@ -138,6 +138,7 @@ Lý do: bộ khung Backend sinh khóa tự động; để chữ tiếng Việt n
 | `Mes.PartyMember.Invalid.OfficialAdmissionDate` | Ngày chính thức không được ở tương lai | Ngày vào Đảng chính thức sau ngày hôm nay của máy chủ |
 | `Mes.PartyMember.Invalid.DateOfBirth` | Ngày sinh phải trước Ngày vào Đảng chính thức | Ngày sinh bằng hoặc sau ngày vào Đảng chính thức |
 | `Mes.PartyMember.Invalid.Gender` | Giới tính chỉ nhận Nam hoặc Nữ | Giới tính ngoài hai giá trị Nam và Nữ |
+| `Mes.PartyMember.Invalid.NextMilestone` | Mốc kế tiếp không hợp lệ | `filter.NextMilestone` không phải `$eq:<một mốc của QT1>` hoặc `$eq:None`, hoặc gửi hai giá trị cùng lúc |
 | `Mes.PartyMember.Required.Ids` | Chưa chọn đảng viên nào | Gọi xóa nhiều mà `ids` thiếu hoặc rỗng |
 | `Mes.AwardPeriod.Create.Successfully` | Đã thêm đợt trao huy hiệu | Thêm đợt thành công |
 | `Mes.AwardPeriod.Update.Successfully` | Đã lưu thay đổi | Sửa đợt thành công |
@@ -219,9 +220,12 @@ GET /api/PartyMembers?current=1&pageSize=20&searchKeyword=an&searchFields=FullNa
 ```
 
 **Cột sắp xếp được** (`sortQuery`): `FullName`, `DateOfBirth`, `Gender`, `OfficialAdmissionDate`.
-**Cột KHÔNG sắp xếp được:** `partyAgeYears`, `nextMilestone`, `nextMilestoneDate` — là giá trị tính ra, không có trong cơ sở dữ liệu.
-- Muốn sắp theo **Tuổi đảng tăng dần** → gửi `sortQuery=OfficialAdmissionDate desc` (vào Đảng muộn thì tuổi đảng nhỏ). Ngược lại cho giảm dần.
-- Hai cột "Mốc kế tiếp" và "Ngày tròn mốc kế tiếp" **không có nút sắp xếp** trên giao diện v1.
+
+**Ba tên cột tính ra cũng nhận được** (T51): `PartyAgeYears` (viết tắt `PartyAge`) và `NextMilestone`. Cả ba không có trong cơ sở dữ liệu, nên Backend **quy đổi** chúng về `OfficialAdmissionDate` với chiều ngược lại — vào Đảng muộn thì tuổi đảng nhỏ, và mốc kế tiếp cũng đi theo cùng thứ tự đó.
+
+- `sortQuery=PartyAge asc` cho kết quả hệt `sortQuery=OfficialAdmissionDate desc`; gửi cách nào cũng được.
+- `nextMilestoneDate` **không** sắp xếp được: ngày tròn mốc không cùng thứ tự với ngày vào Đảng nên không quy đổi được.
+- Tên cột lạ bị bỏ qua lặng lẽ (không phải lỗi); cùng một cột gửi hai lần thì lấy lần đầu.
 
 **Đối chiếu tiếng Việt.** Cột `FullName` dùng collation ICU `vi` (trên PostgreSQL là `vi-x-icu`), nên `Đào Văn Ân` đứng **trước** `Nguyễn Văn An` — đúng bảng chữ cái tiếng Việt, không theo mã Unicode. Xem mục 12, OQ-3.
 
@@ -488,7 +492,11 @@ Tham số truy vấn theo mục 1.7.
 | Lọc giới tính Nam | `filter.Gender=$eq:Male` |
 | Lọc giới tính Nữ | `filter.Gender=$eq:Female` |
 | Lọc "Tất cả" | bỏ hẳn tham số `filter.Gender` |
+| Lọc theo Mốc kế tiếp | `filter.NextMilestone=$eq:40` |
+| Lọc nhóm đã vượt mốc lớn nhất (cột hiện "—") | `filter.NextMilestone=$eq:None` |
 | Sắp xếp | `sortQuery=FullName asc` |
+| Sắp theo Tuổi đảng | `sortQuery=PartyAge asc` |
+| Sắp theo Mốc kế tiếp | `sortQuery=NextMilestone asc` |
 | Phân trang | `current=1&pageSize=20` |
 
 **Phản hồi `data`**
@@ -502,7 +510,9 @@ Tham số truy vấn theo mục 1.7.
 
 Dòng tóm tắt "1.248 người" lấy từ `pageInfo.totalCount`.
 
-**Lỗi:** `400` khi `pageSize` hoặc `current` ≤ 0.
+**Lỗi:** `400` khi `pageSize` hoặc `current` ≤ 0. `filter.NextMilestone` sai cách viết trả `Mes.PartyMember.Invalid.NextMilestone`; giá trị lọc sai kiểu của mọi trường khác trả `Mes.Common.Invalid.Parameter` (không bao giờ âm thầm bỏ vế lọc rồi trả cả kho).
+
+`filter.NextMilestone` chỉ nhận **một** giá trị và chỉ nhận toán tử `$eq`. Mốc phải là một mốc của dãy QT1 đang hiệu lực — đổi Cài đặt là dãy mốc đổi theo, nên giá trị hợp lệ hôm nay có thể không còn hợp lệ ngày mai.
 
 **Ví dụ**
 
@@ -571,14 +581,7 @@ Thân yêu cầu và ràng buộc giống `POST`. Gửi **đủ cả 4 trường
 **Phản hồi `data`:** `PartyMemberResponse` sau khi sửa.
 **Lỗi:** như `POST`, thêm `Mes.PartyMember.NotFound`.
 
-### 3.5 `DELETE /api/PartyMembers/{id}` — Xóa một (UC-23)
-
-**Phản hồi `data`:** `{ "id": "5a1f0b3c-…" }`
-**Lỗi:** `Mes.PartyMember.NotFound`.
-
-Xóa hẳn, không có thùng rác (QT10). Hộp xác nhận là việc của Frontend.
-
-### 3.6 `POST /api/PartyMembers/DeleteMany` — Xóa nhiều (UC-23)
+### 3.5 `POST /api/PartyMembers/DeleteMany` — Xóa nhiều (UC-23)
 
 **Thân yêu cầu**
 
@@ -597,6 +600,8 @@ Xóa hẳn, không có thùng rác (QT10). Hộp xác nhận là việc của Fr
 Trả đúng danh sách id **đã xóa được**. Id không tồn tại bị bỏ qua lặng lẽ, không làm hỏng cả lời gọi — người dùng vừa chọn trên màn hình thì không có lý do báo lỗi. Frontend hiển thị "Đã xóa {ids.length} đảng viên".
 
 Dùng `POST` thay vì `DELETE` có thân — theo quy ước sẵn có của bộ khung Backend.
+
+**Đây là đường xóa duy nhất.** `DELETE /api/PartyMembers/{id}` đã bị bỏ ở T34: xóa một người là gọi endpoint này với mảng một phần tử. Giữ hai đường xóa nghĩa là hai chỗ phải sửa mỗi khi luật xóa đổi, mà màn hình chỉ dùng một.
 
 ---
 
@@ -715,8 +720,15 @@ Frontend hiển thị: "Đã thêm 125 người, bỏ qua 4 dòng lỗi".
 | Tham số | Kiểu | Mặc định |
 |---|---|---|
 | `year` | int, 1900–2200 | Năm hiện tại theo lịch máy chủ |
+| `filter.<Tên trường>` | chuỗi `$<toán tử>:<giá trị>` | Không lọc |
 
 Một lời gọi trả đủ dữ liệu cho cả bảng, dải độ phủ và banner cảnh báo.
+
+Endpoint này **không phân trang**, nên không nhận `current`, `pageSize` hay `sortQuery` — bảng đợt trên giao diện sắp xếp và phân trang ngay ở trình duyệt.
+
+`filter.*` áp lên danh sách đợt **đã gắn năm**, nên tên trường là tên trường của `AwardPeriodResponse` (`FromMonth`, `SpansNextYear`, `Status`…). Giá trị sai kiểu trả `400` kèm `Mes.Common.Invalid.Parameter`, **không** âm thầm bỏ vế lọc rồi trả cả kho. Tên trường không tồn tại vẫn được bỏ qua.
+
+`totalCount` là số đợt **sau khi lọc**. `warnings` và `coverage` thì luôn tính trên toàn bộ đợt của năm: chúng mô tả độ phủ của năm chứ không mô tả kết quả lọc — lọc bớt vài dòng không làm năm đó hở thêm ngày nào.
 
 **Phản hồi `data`**
 
@@ -1069,7 +1081,7 @@ Khi không có ai bị sót, vẫn trả file hợp lệ chỉ có phần tiêu 
 | UC-20 | Danh sách đảng viên | `GET /api/PartyMembers` |
 | UC-21 | Thêm thủ công | `POST /api/PartyMembers` |
 | UC-22 | Sửa | `GET /api/PartyMembers/{id}` + `PUT /api/PartyMembers/{id}` |
-| UC-23 | Xóa | `DELETE /api/PartyMembers/{id}` · `POST /api/PartyMembers/DeleteMany` |
+| UC-23 | Xóa | `POST /api/PartyMembers/DeleteMany` (xóa một người là mảng một phần tử) |
 | UC-24 | Import Excel | `POST /api/PartyMembers/Import/Preview` + `POST /api/PartyMembers/Import/Commit` |
 | UC-25 | Tải file mẫu | `GET /api/PartyMembers/Import/Template` |
 | UC-30 | Danh sách đợt | `GET /api/AwardPeriods` |
@@ -1094,14 +1106,14 @@ Tổng: **28 endpoint**. Mọi use case trong tài liệu nghiệp vụ v1.1 đ�
 |---|---|
 | **QT1** dãy mốc sinh từ cài đặt | `GET /api/Settings` → `milestones`; `GET /api/Settings/Milestones` để xem trước. Không endpoint nào nhận dãy mốc viết cứng |
 | **QT2** ngày tròn mốc, 29/02 | `milestoneDate` trong `EligibleMemberResponse`; `fromDate`/`toDate` của đợt khi gắn năm không nhuận |
-| **QT3 / QT3a** tuổi đảng, mốc kế tiếp | `partyAgeYears`, `nextMilestone`, `nextMilestoneDate` — chỉ để hiển thị, không lọc/sắp xếp được |
+| **QT3 / QT3a** tuổi đảng, mốc kế tiếp | `partyAgeYears`, `nextMilestone`, `nextMilestoneDate` — tính lại mỗi lần gọi, không lưu vào bảng. Lọc theo `filter.NextMilestone` và sắp theo `PartyAge` / `NextMilestone` được, nhờ quy đổi về `OfficialAdmissionDate` (mục 1.7, 3.1) |
 | **QT4** đủ điều kiện theo đợt và năm | `GET /api/Eligibility?awardPeriodId=&year=` |
 | **QT5** không lưu kết quả | Không có endpoint nào tạo/sửa/xóa "bản ghi đủ điều kiện". Các dòng đủ điều kiện **không có `id`**, chỉ có `partyMemberId`. Mọi endpoint nhóm 5 đều là `GET` |
 | **QT6** đợt chỉ có ngày/tháng | Thân yêu cầu chỉ có `fromDay/fromMonth/toDay/toMonth`. Năm luôn là **tham số truy vấn**, không bao giờ là dữ liệu lưu |
 | **QT7** chưa thuộc đợt nào | `GET /api/Eligibility/Unassigned?year=` |
 | **QT8** đợt sắp tới | `GET /api/Dashboard` → `upcomingPeriod`, có cờ `isNextYear` |
 | **QT9** import không chống trùng | Hai endpoint riêng cho xem trước và nạp; nạp là một giao dịch; không có tham số nào bật chống trùng |
-| **QT10** xóa hẳn | `DELETE` trả về id đã xóa, không có endpoint khôi phục |
+| **QT10** xóa hẳn | Endpoint xóa trả về id đã xóa, không có endpoint khôi phục |
 | **QT11** trạng thái đợt trong năm | `status` + `daysRemaining` trong `AwardPeriodResponse` |
 | Cảnh báo **không chặn lưu** | `POST`/`PUT`/`DELETE` đợt vẫn trả `200` kèm `warnings`; cảnh báo không bao giờ xuất hiện dưới dạng lỗi `400` |
 
@@ -1190,3 +1202,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 | 1.2 | 19/09/2026 | **Mục 4 Import** khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. **Mục 5.2** làm rõ kiểm tra `year` (1900–2200, `Mes.Query.Invalid.Year`) cho khớp mã đã duyệt ở PR #18. **Mục 1.8** trong cùng mốc sắp theo Họ tên đầy đủ, bỏ quy ước sắp theo tên gọi (từ cuối); đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3, khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. **Mục 7 Cài đặt** khớp API đã duyệt ở PR #24: `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối, thêm khóa `Mes.AppSetting.OverLength.UnitName`, ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`, kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi. **Mục 8** ghi tên sheet `DanhSach` và cách ghi dòng tiêu đề (T14). Không đổi hình dạng request/response |
 | 1.3 | 20/09/2026 | **Mục 5.1 và 6.1**: khi năm đang xem chưa có đợt nào, `warnings.gaps` là mảng rỗng ở cả hai endpoint; `coverage.segments` vẫn phủ liên tục 01/01–31/12 bằng một đoạn `Gap`. Không đổi QT6: khoảng trống phủ trọn năm với nhãn "Trước đợt đầu tiên" và nhãn khoảng trống của màn "Chưa thuộc đợt nào" (QT7) giữ nguyên. Không đổi hình dạng request/response |
 | 1.4 | 20/09/2026 | **Mục 1.5**: bảng khóa thêm cột "Khi nào Backend trả" và bảy khóa Backend đang trả mà bảng chưa có: `Mes.User.Required.Username`, `Mes.User.Required.Password`, `Mes.PartyMember.OverLength.FullName`, `Mes.PartyMember.Required.Ids`, `Mes.AwardPeriod.OverLength.Name`, `Mes.AppSetting.OverLength.UnitName`, `Mes.Common.Invalid.Parameter` (QC-T27-07, QC-T27-04). Ghi thêm hai khóa `401` của tầng phiên (`Mes.User.NotFound`, `Mes.User.Blocked`) mà Frontend không hiển thị. **Mục 7.2 và 7.4**: `startYears` / `endYears` / `stepYears` là số nguyên **từ 1 đến 200** thay cho “≥ 1”; vượt trần dùng đúng bộ khóa sẵn có, không thêm khóa mới; ô xem trước `GET /api/Settings/Milestones` validate bằng đúng bộ luật của `PUT /api/Settings` (QC-T27-06); tham số sai kiểu nay trả `Mes.Common.Invalid.Parameter` chứ không còn câu tiếng Anh của khung ASP.NET. Khớp mã đã duyệt ở PR #35 (T36). Không đổi hình dạng request/response |
+| 1.5 | 21/09/2026 | Khớp lại tài liệu với mã đã gộp vào `main`. **Mục 3.5**: bỏ hẳn `DELETE /api/PartyMembers/{id}`, `POST /api/PartyMembers/DeleteMany` là đường xóa duy nhất (T34, PR #45); mục 3.6 cũ dồn lên thành 3.5; bảng đối chiếu UC-23 và dòng QT10 sửa theo. **Mục 1.7 và 3.1**: `PartyAgeYears` (viết tắt `PartyAge`) và `NextMilestone` sắp xếp được nhờ quy đổi về `OfficialAdmissionDate` chiều ngược lại; thêm `filter.NextMilestone=$eq:<mốc|None>` và khóa lỗi `Mes.PartyMember.Invalid.NextMilestone` (T51, PR #54). **Mục 5.1**: `GET /api/AwardPeriods` nhận `filter.*` dùng chung; giá trị sai kiểu trả `Mes.Common.Invalid.Parameter` thay vì bị nuốt lặng lẽ (QC-T27-05). **Mục 1.5**: bỏ `Mes.AwardPeriod.Invalid.Range` theo QT6 đợt vắt qua 31/12. Không đổi hình dạng response của endpoint nào còn lại |

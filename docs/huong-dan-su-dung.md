@@ -238,9 +238,11 @@ Một dòng sai nhiều chỗ thì cột **Lý do** ghi đủ cả, ngăn nhau b
 | Ngày tròn mốc kế tiếp | Ngày người đó tròn mốc kế tiếp |
 | Thao tác | Nút **Sửa** hình bút chì |
 
-Bấm vào tên cột để đổi cách sắp xếp. Cột **Tuổi đảng** là số phần mềm tự tính nên không sắp xếp được.
+Bấm vào tên cột để đổi cách sắp xếp: lần đầu tăng dần, lần thứ hai giảm dần, lần thứ ba thôi sắp xếp. Cột **Tuổi đảng** và **Mốc kế tiếp** cũng sắp xếp được. Riêng **Ngày tròn mốc kế tiếp** thì không.
 
-Phía trên bảng có ô **Tìm theo họ tên…** và ô lọc **Giới tính: Tất cả / Nam / Nữ**.
+Phía trên bảng có ô **Tìm theo họ tên…**, ô lọc **Giới tính: Tất cả / Nam / Nữ** và ô lọc **Mốc kế tiếp**.
+
+Ô **Mốc kế tiếp** liệt kê đúng các mốc bác đang cài ở màn Cài đặt, thêm một dòng **Đã vượt mốc lớn nhất** cho những người cột Mốc kế tiếp đang hiện dấu "—". Chọn một mốc là bảng chỉ còn những người sắp tròn đúng mốc đó — cách nhanh nhất để xem "năm nay ai sắp tròn 50 năm".
 
 **Sửa một người:** bấm nút bút chì ở cột **Thao tác**. Cửa sổ **Sửa đảng viên** hiện ra với dữ liệu cũ. Sửa xong bấm **Lưu thay đổi**.
 
