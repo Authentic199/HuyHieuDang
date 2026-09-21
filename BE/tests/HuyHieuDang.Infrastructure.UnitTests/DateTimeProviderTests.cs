@@ -43,4 +43,43 @@ public class DateTimeProviderTests
         Assert.InRange(today, expected.AddDays(-1), expected.AddDays(1));
         Assert.Equal(DateOnly.FromDateTime(provider.Now.DateTime), today);
     }
+
+    [Fact]
+    public void Today_ShouldFollowTestVariable_OutsideProduction()
+    {
+        IDateTimeProvider provider = new DateTimeProvider("Development", "2026-10-15");
+
+        Assert.Equal(new DateOnly(2026, 10, 15), provider.Today);
+        Assert.Equal(new DateOnly(2026, 10, 15), DateOnly.FromDateTime(provider.Now.DateTime));
+        Assert.Equal(VietnamOffset, provider.Now.Offset);
+    }
+
+    [Fact]
+    public void Today_ShouldIgnoreTestVariable_InProduction()
+    {
+        IDateTimeProvider forced = new DateTimeProvider("Production", "2026-10-15");
+        IDateTimeProvider real = new DateTimeProvider();
+
+        Assert.Equal(real.Today, forced.Today);
+    }
+
+    [Theory]
+    [InlineData("khong-phai-ngay")]
+    [InlineData("15/10/2026")]
+    [InlineData("2026-13-40")]
+    [InlineData("2026-10-15T00:00:00")]
+    [InlineData("   ")]
+    public void Today_ShouldIgnoreMalformedTestVariable(string value)
+    {
+        IDateTimeProvider forced = new DateTimeProvider("Development", value);
+        IDateTimeProvider real = new DateTimeProvider();
+
+        Assert.Equal(real.Today, forced.Today);
+    }
+
+    [Fact]
+    public void TestTodayVariable_ShouldKeepTheAgreedName()
+    {
+        Assert.Equal("HUYHIEUDANG_TEST_TODAY", DateTimeProvider.TestTodayVariable);
+    }
 }

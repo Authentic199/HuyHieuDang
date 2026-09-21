@@ -13,7 +13,11 @@ test.describe('E0 · Tiền đề đóng băng thời gian (T-FIX)', () => {
    * E0-01 · T-FIX-4 — Backend phải đọc `HUYHIEUDANG_TEST_TODAY` khi không chạy
    * ở Production, để Playwright ép được "hôm nay".
    *
-   * ĐANG ĐỎ — lỗi QC-T28-01 (trùng gốc với QC-T27-01, ca A-903b ở
+   * ĐÃ SỬA ở PR #38 — xác minh ngày 20/09/2026: dựng lại stack e2e từ nhánh
+   * đó thì máy chủ báo đúng 2026-09-19 và ca này xanh. Gỡ `skip` ngay khi PR
+   * vào `main`; giữ `skip` lúc này để `main` không đỏ.
+   *
+   * Gốc lỗi QC-T28-01 (trùng gốc với QC-T27-01, ca A-903b ở
    * `BE/tests/HuyHieuDang.Web.QcIntegrationTests/A9TechnicalTests.cs`).
    * `BE/src` không đọc biến này ở bất cứ đâu, nên `docker-compose.e2e.yml` đặt
    * biến mà máy chủ vẫn trả ngày thật của máy. Bỏ `skip` là ca đỏ lại ngay.

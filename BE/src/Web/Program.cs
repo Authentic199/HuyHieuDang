@@ -1,9 +1,8 @@
 using HuyHieuDang.Infrastructure;
 using HuyHieuDang.Infrastructure.Facades.Common.Converters;
 using HuyHieuDang.Infrastructure.Facades.Logging;
+using HuyHieuDang.Infrastructure.Facades.Validations;
 using HuyHieuDang.Web.Configurations;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -33,7 +32,10 @@ try
         // khong phai so thu tu cua enum.
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     })
-    .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new { message = context.ModelState?.FirstOrDefault(x => x.Value.ValidationState is ModelValidationState.Invalid).Value?.Errors[0].ErrorMessage }));
+
+    // Loi doc tham so cua khung tra cau tieng Anh kem gia tri nguoi dung nhap; hop dong muc 1.5
+    // chot Backend chi tra khoa, nen quy ve ModelStateErrorFactory.
+    .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = ModelStateErrorFactory.Build);
 
     var app = builder.Build();
 

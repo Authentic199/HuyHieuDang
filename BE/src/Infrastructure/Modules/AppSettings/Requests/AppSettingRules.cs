@@ -14,18 +14,25 @@ namespace HuyHieuDang.Infrastructure.Modules.AppSettings.Requests;
 public static class AppSettingRules
 {
     /// <summary>
-    /// Mốc bắt đầu và mốc kết thúc phải là số nguyên dương.
+    /// Trần của cả ba mốc. Một đảng viên không thể có tuổi đảng quá con số này, nên đây vừa là ràng
+    /// buộc nghiệp vụ vừa là trần chặn dãy mốc phình to: <c>start=1&amp;end=1000000&amp;step=1</c> từng làm
+    /// ô xem trước trả gần 7 MB JSON sau mỗi lần gõ phím.
     /// </summary>
-    /// <param name="value">Giá trị cần kiểm tra.</param>
-    /// <returns><see langword="true"/> khi giá trị có mặt và ≥ 1.</returns>
-    public static bool IsPositive(int? value) => value is >= 1;
+    public const int MaxYears = 200;
 
     /// <summary>
-    /// Bước nhảy phải từ 1 trở lên.
+    /// Mốc bắt đầu và mốc kết thúc phải là số nguyên dương, không vượt <see cref="MaxYears"/>.
     /// </summary>
     /// <param name="value">Giá trị cần kiểm tra.</param>
-    /// <returns><see langword="true"/> khi giá trị có mặt và ≥ 1.</returns>
-    public static bool IsPositiveStep(int? value) => value is >= 1;
+    /// <returns><see langword="true"/> khi giá trị có mặt và nằm trong 1 → <see cref="MaxYears"/>.</returns>
+    public static bool IsPositive(int? value) => value is >= 1 and <= MaxYears;
+
+    /// <summary>
+    /// Bước nhảy phải từ 1 trở lên, không vượt <see cref="MaxYears"/>.
+    /// </summary>
+    /// <param name="value">Giá trị cần kiểm tra.</param>
+    /// <returns><see langword="true"/> khi giá trị có mặt và nằm trong 1 → <see cref="MaxYears"/>.</returns>
+    public static bool IsPositiveStep(int? value) => value is >= 1 and <= MaxYears;
 
     /// <summary>
     /// Kiểm tra ba mốc và dựng <see cref="MilestoneSettings"/> cho service tính toán của T07.

@@ -8,11 +8,14 @@ import { exportsApi } from '../../api';
 import { FALLBACK_MESSAGE } from '../../api/messages';
 import { gapLabel } from '../../api/uncovered';
 import { PageHeading } from '../../components/PageHeading';
+import { MilestoneFilterSelect, TableSearchInput } from '../../components/TableFilters';
 import { TableStates } from '../../components/TableStates';
+import { compareText, useClientTable, type RowComparators } from '../../hooks/useClientTable';
 import { paths } from '../../routes/paths';
 import { ApiError } from '../../types/api';
 import type { Gender, IsoDate, UnassignedGap, UnassignedMemberResponse } from '../../types/domain';
 import { saveFile } from '../../utils/download';
+import { ELIGIBLE_COMPARATORS, milestoneOfRow, nameOfRow } from '../../utils/eligibleTable';
 import { formatDate, formatGender, formatNumber } from '../../utils/format';
 // Viên thuốc mốc dùng chung với tab Danh sách đủ điều kiện của màn chi tiết đợt.
 import { EligibleMilestoneTag } from '../periods/detail/EligibleMilestoneTag';
@@ -29,7 +32,18 @@ import { useUnassigned } from './useUnassigned';
  * Đây là những người TRÒN MỐC trong năm nhưng ngày tròn mốc rơi ra ngoài mọi
  * đợt. Màn này chỉ để nhìn ra và xuất Excel; việc sửa khoảng ngày làm bên màn
  * Đợt trao huy hiệu, nên khối gợi ý dẫn thẳng sang đó.
+ *
+ * Máy chủ trả trọn danh sách đã sắp theo Ngày tròn mốc rồi Họ tên và đó là thứ
+ * tự mặc định; tìm, lọc theo mốc, sắp xếp và phân trang làm ở máy khách.
  */
+
+/** Thêm cột "Khoảng trống" vào bộ so sánh dùng chung của ba màn đủ điều kiện. */
+const UNCOVERED_COMPARATORS: RowComparators<UnassignedMemberResponse> = {
+  ...ELIGIBLE_COMPARATORS,
+  // Sắp theo đúng câu đang hiện trong ô, không theo mã loại khoảng trống.
+  gap: (a, b) => compareText(gapLabel(a.gap), gapLabel(b.gap)),
+};
+
 export default function UncoveredPage() {
   const { message } = AntApp.useApp();
   const navigate = useNavigate();
@@ -40,11 +54,21 @@ export default function UncoveredPage() {
   /** Tên file của lần xuất gần nhất, hiện ở chân thẻ như artboard. */
   const [lastFileName, setLastFileName] = useState<string | null>(null);
 
+  const table = useClientTable<UnassignedMemberResponse>({
+    rows: members,
+    searchTextOf: nameOfRow,
+    milestoneOf: milestoneOfRow,
+    comparators: UNCOVERED_COMPARATORS,
+  });
+
   /** Năm nào phủ kín thì không còn gì để xuất và cũng không cần nhắc gì. */
-  const isEmpty = members.length === 0;
+  const noData = members.length === 0;
   const ready = !loading && !error;
 
-  /** Xuất Excel theo đúng năm đang chọn; tên file do máy chủ đặt (mục 4). */
+  /**
+   * Xuất TRỌN danh sách của đúng năm đang chọn; tên file do máy chủ đặt (mục 4).
+   * Cố ý KHÔNG nối vào ô tìm hay ô lọc mốc — file Excel luôn đủ người.
+   */
   async function handleExport() {
     if (year === null || exporting) return;
     setExporting(true);
@@ -66,48 +90,60 @@ export default function UncoveredPage() {
       title: 'STT',
       width: 72,
       className: 'hhd-uncovered__index',
-      // Máy chủ đã sắp theo Ngày tròn mốc rồi Họ tên; STT chỉ đếm theo thứ tự đó.
-      render: (_value, _record, index) => index + 1,
+      // Số thứ tự chạy tiếp qua từng trang và theo đúng thứ tự đang hiện.
+      render: (_value, _record, index) => table.indexOffset + index + 1,
     },
     {
       key: 'fullName',
       title: 'Họ tên',
       dataIndex: 'fullName',
+      sorter: true,
+      sortOrder: table.sortOrderOf('fullName'),
       onCell: () => ({ style: { whiteSpace: 'nowrap', fontWeight: 600 } }),
     },
     {
       key: 'gender',
       title: 'Giới tính',
       dataIndex: 'gender',
-      width: 110,
+      width: 130,
+      sorter: true,
+      sortOrder: table.sortOrderOf('gender'),
       render: (value: Gender | null) => formatGender(value),
     },
     {
       key: 'dateOfBirth',
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      width: 140,
+      width: 150,
+      sorter: true,
+      sortOrder: table.sortOrderOf('dateOfBirth'),
       render: (value: IsoDate | null) => formatDate(value),
     },
     {
       key: 'officialAdmissionDate',
       title: 'Ngày vào Đảng chính thức',
       dataIndex: 'officialAdmissionDate',
-      width: 220,
+      width: 230,
+      sorter: true,
+      sortOrder: table.sortOrderOf('officialAdmissionDate'),
       render: (value: IsoDate) => formatDate(value),
     },
     {
       key: 'milestoneDate',
       title: 'Ngày tròn mốc',
       dataIndex: 'milestoneDate',
-      width: 160,
+      width: 175,
+      sorter: true,
+      sortOrder: table.sortOrderOf('milestoneDate'),
       render: (value: IsoDate) => formatDate(value),
     },
     {
       key: 'milestone',
       title: 'Mốc huy hiệu',
       dataIndex: 'milestone',
-      width: 150,
+      width: 170,
+      sorter: true,
+      sortOrder: table.sortOrderOf('milestone'),
       render: (value: number) => <EligibleMilestoneTag milestone={value} />,
     },
     {
@@ -116,6 +152,8 @@ export default function UncoveredPage() {
       dataIndex: 'gap',
       width: 260,
       className: 'hhd-uncovered__gap',
+      sorter: true,
+      sortOrder: table.sortOrderOf('gap'),
       render: (value: UnassignedGap) => gapLabel(value),
     },
   ];
@@ -155,31 +193,77 @@ export default function UncoveredPage() {
             type="primary"
             icon={<DownloadOutlined />}
             loading={exporting}
-            disabled={year === null || !ready || isEmpty}
+            disabled={year === null || !ready || noData}
             onClick={handleExport}
           >
             Xuất Excel
           </Button>
         </div>
 
+        <div className={`hhd-table-filters${noData ? ' hhd-table-filters--muted' : ''}`}>
+          <TableSearchInput
+            value={table.keyword}
+            onChange={table.setKeyword}
+            placeholder="Tìm theo họ tên…"
+            ariaLabel="Tìm theo họ tên"
+            disabled={noData}
+          />
+          <MilestoneFilterSelect
+            value={table.milestone}
+            onChange={table.setMilestone}
+            options={table.milestoneOptions}
+            disabled={noData}
+          />
+          {ready && table.isFiltered ? (
+            <span className="hhd-table-filters__count">
+              Còn <b>{formatNumber(table.filteredCount)}</b> / {formatNumber(table.totalCount)}{' '}
+              người
+            </span>
+          ) : null}
+        </div>
+
         <TableStates
           loading={loading}
           error={error}
           onRetry={reload}
-          isEmpty={isEmpty}
+          isEmpty={table.filteredCount === 0}
           skeletonRows={5}
           description={
             <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
-              Không có ai bị sót trong năm {year ?? ''}.
+              {/* Rỗng do tìm / lọc là chuyện khác hẳn năm đó không ai bị sót. */}
+              {table.isFiltered
+                ? 'Không tìm thấy đảng viên nào khớp.'
+                : `Không có ai bị sót trong năm ${year ?? ''}.`}
             </span>
           }
+          hint={
+            table.isFiltered ? (
+              <span
+                style={{
+                  display: 'block',
+                  maxWidth: 560,
+                  margin: '8px auto 0',
+                  fontSize: 16,
+                  lineHeight: '24px',
+                }}
+              >
+                Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.
+              </span>
+            ) : null
+          }
+          action={
+            table.isFiltered ? <Button onClick={table.clearFilters}>Xóa bộ lọc</Button> : null
+          }
         >
-          <Table<UnassignedMemberResponse>
-            rowKey="partyMemberId"
-            columns={columns}
-            dataSource={members}
-            pagination={false}
-          />
+          <div className="hhd-table-scroll">
+            <Table<UnassignedMemberResponse>
+              rowKey="partyMemberId"
+              columns={columns}
+              dataSource={table.pageRows}
+              pagination={table.pagination}
+              onChange={table.onTableChange}
+            />
+          </div>
         </TableStates>
 
         <div className="hhd-uncovered__footnote">

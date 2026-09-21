@@ -1,3 +1,4 @@
+using System.Globalization;
 using HuyHieuDang.Core.Common.Exceptions;
 using HuyHieuDang.Core.Common.Interfaces;
 using HuyHieuDang.Core.PartyBadges;
@@ -14,7 +15,8 @@ using Microsoft.EntityFrameworkCore;
 namespace HuyHieuDang.Infrastructure.Modules.PartyMembers.Services;
 
 /// <summary>
-/// Nghiệp vụ đảng viên: danh sách, lấy một, thêm, sửa, xóa một và xóa nhiều (UC-20 → UC-23).
+/// Nghiệp vụ đảng viên: danh sách, lấy một, thêm, sửa và xóa (UC-20 → UC-23).
+/// Xóa chỉ có một đường duy nhất là <see cref="IPartyMemberService.DeleteRangeAsync"/> (T34).
 /// </summary>
 public interface IPartyMemberService : IScopedService
 {
@@ -46,14 +48,11 @@ public interface IPartyMemberService : IScopedService
     Task<PartyMemberResponse> UpdateAsync(
         Guid id, UpdatePartyMemberRequest request, CancellationToken cancellationToken = default);
 
-    /// <summary>Xóa hẳn một đảng viên (UC-23, QT10).</summary>
-    /// <param name="id">Id đảng viên.</param>
-    /// <param name="cancellationToken">Thẻ hủy.</param>
-    /// <returns>Id vừa xóa.</returns>
-    Task<PartyMemberIdentifierResponse> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-
-    /// <summary>Xóa nhiều đảng viên trong một giao dịch (UC-23).</summary>
-    /// <param name="request">Danh sách id cần xóa.</param>
+    /// <summary>
+    /// Xóa hẳn đảng viên trong một giao dịch (UC-23, QT10). Đường xóa duy nhất: một phần tử
+    /// cũng đi qua đây.
+    /// </summary>
+    /// <param name="request">Danh sách id cần xóa, ít nhất một phần tử.</param>
     /// <param name="cancellationToken">Thẻ hủy.</param>
     /// <returns>Đúng những id đã xóa được; id không tồn tại bị bỏ qua.</returns>
     Task<MultipleIdentiferResponse> DeleteRangeAsync(
@@ -69,7 +68,18 @@ public class PartyMemberService : IPartyMemberService
     private const string DefaultSortQuery = nameof(PartyMember.FullName) + " asc";
 
     /// <summary>
-    /// Bốn cột được phép sắp xếp. Ba cột tuổi đảng là giá trị tính ra nên không có mặt ở đây.
+    /// Khóa lọc theo Mốc kế tiếp (T51). Không phải cột của bảng nên được quy đổi thành khoảng
+    /// <see cref="PartyMember.OfficialAdmissionDate"/> trước khi vào <c>ApplyFilter</c>.
+    /// </summary>
+    private const string NextMilestoneKey = nameof(PartyMemberResponse.NextMilestone);
+
+    /// <summary>
+    /// Giá trị lọc của những người đã vượt mốc lớn nhất — giao diện hiển thị dấu "—".
+    /// </summary>
+    private const string NoneValue = "None";
+
+    /// <summary>
+    /// Bốn cột được phép sắp xếp thẳng trên bảng.
     /// </summary>
     private static readonly string[] SortableColumns =
     {
@@ -77,6 +87,19 @@ public class PartyMemberService : IPartyMemberService
         nameof(PartyMember.DateOfBirth),
         nameof(PartyMember.Gender),
         nameof(PartyMember.OfficialAdmissionDate),
+    };
+
+    /// <summary>
+    /// Ba tên cột tính ra sắp xếp được nhờ quy đổi (T51). Tuổi đảng và Mốc kế tiếp đều KHÔNG tăng
+    /// theo Ngày chính thức, nên cả ba đổi thành <see cref="PartyMember.OfficialAdmissionDate"/>
+    /// với chiều ngược lại. <c>PartyAgeYears</c> là tên trường trên phản hồi, <c>PartyAge</c> là
+    /// tên ngắn trong yêu cầu của CEO — nhận cả hai để Frontend khỏi phải nhớ hai cách viết.
+    /// </summary>
+    private static readonly string[] InvertedSortColumns =
+    {
+        NextMilestoneKey,
+        nameof(PartyMemberResponse.PartyAgeYears),
+        "PartyAge",
     };
 
     /// <summary>
@@ -108,16 +131,18 @@ public class PartyMemberService : IPartyMemberService
     public async Task<PaginationResponse<PartyMemberResponse>> SearchAsync(
         PartyMemberQueryRequest request, CancellationToken cancellationToken = default)
     {
-        IQueryable<PartyMember> query = repositoryWrapper.Repository<PartyMember>()
-            .Find(isAsNoTracking: true)
-            .ApplyFilter(request.Filter)
+        MilestoneContext context = await LoadMilestoneContextAsync(cancellationToken);
+
+        IQueryable<PartyMember> query = ApplyNextMilestoneFilter(
+                repositoryWrapper.Repository<PartyMember>().Find(isAsNoTracking: true),
+                request.Filter,
+                context)
+            .ApplyFilter(WithoutNextMilestone(request.Filter))
             .ApplySearch(request.SearchKeyword, SearchableColumns)
             .ApplySort(DefaultSortQuery, SanitizeSortQuery(request.SortQuery));
 
         PaginationResponse<PartyMember> page =
             await query.ToPagedListAsync(request.Current, request.PageSize, cancellationToken);
-
-        MilestoneContext context = await LoadMilestoneContextAsync(cancellationToken);
 
         return new PaginationResponse<PartyMemberResponse>(
             page.PagedData.Select(entity => Project(entity, context)).ToList(),
@@ -159,17 +184,6 @@ public class PartyMemberService : IPartyMemberService
     }
 
     /// <inheritdoc/>
-    public async Task<PartyMemberIdentifierResponse> DeleteAsync(
-        Guid id, CancellationToken cancellationToken = default)
-    {
-        PartyMember entity = await FindOrThrowAsync(id, isAsNoTracking: false, cancellationToken);
-
-        await repositoryWrapper.Repository<PartyMember>().DeleteAsync(entity, cancellationToken);
-
-        return new PartyMemberIdentifierResponse(id);
-    }
-
-    /// <inheritdoc/>
     public async Task<MultipleIdentiferResponse> DeleteRangeAsync(
         DeletePartyMemberRangeRequest request, CancellationToken cancellationToken = default)
     {
@@ -192,10 +206,11 @@ public class PartyMemberService : IPartyMemberService
     }
 
     /// <summary>
-    /// Bỏ những cột không sắp xếp được để một <c>sortQuery</c> lạ không âm thầm đổi thứ tự.
+    /// Bỏ những cột không sắp xếp được, và quy đổi Tuổi đảng / Mốc kế tiếp thành Ngày chính thức
+    /// theo chiều ngược lại (T51), để mệnh đề sắp xếp nằm trọn trong SQL.
     /// </summary>
     /// <param name="sortQuery">Chuỗi sắp xếp Frontend gửi lên.</param>
-    /// <returns>Chuỗi chỉ còn cột hợp lệ, hoặc <see langword="null"/> để dùng mặc định.</returns>
+    /// <returns>Chuỗi chỉ còn cột của bảng, hoặc <see langword="null"/> để dùng mặc định.</returns>
     private static string? SanitizeSortQuery(string? sortQuery)
     {
         if (string.IsNullOrWhiteSpace(sortQuery))
@@ -203,14 +218,80 @@ public class PartyMemberService : IPartyMemberService
             return null;
         }
 
-        string[] terms = sortQuery
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Where(term => Array.Exists(
-                SortableColumns,
-                column => string.Equals(column, term.Split(' ')[0], StringComparison.OrdinalIgnoreCase)))
-            .ToArray();
+        List<string> terms = new();
 
-        return terms.Length == 0 ? null : string.Join(',', terms);
+        foreach (string term in sortQuery.Split(
+            ',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            string[] parts = term.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string column = parts[0];
+            bool isDescending = parts.Length > 1
+                && string.Equals(parts[1], OrderTypeAcronym.Desc, StringComparison.OrdinalIgnoreCase);
+
+            if (Array.Exists(InvertedSortColumns, x => string.Equals(x, column, StringComparison.OrdinalIgnoreCase)))
+            {
+                column = nameof(PartyMember.OfficialAdmissionDate);
+                isDescending = !isDescending;
+            }
+            else if (!Array.Exists(SortableColumns, x => string.Equals(x, column, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            // Cùng một cột xuất hiện hai lần thì lần sau không đổi được thứ tự, giữ lần đầu cho gọn.
+            if (!terms.Exists(x => x.StartsWith(column + ' ', StringComparison.OrdinalIgnoreCase)))
+            {
+                terms.Add($"{column} {(isDescending ? OrderTypeAcronym.Desc : OrderTypeAcronym.Asc)}");
+            }
+        }
+
+        return terms.Count == 0 ? null : string.Join(',', terms);
+    }
+
+    /// <summary>
+    /// Bản sao bộ lọc đã bỏ khóa Mốc kế tiếp — khóa này đã được quy đổi thành khoảng ngày nên
+    /// không còn việc gì cho <c>ApplyFilter</c>.
+    /// </summary>
+    /// <param name="filter">Bộ lọc Frontend gửi lên.</param>
+    /// <returns>Bộ lọc còn lại, hoặc chính nó khi không có khóa Mốc kế tiếp.</returns>
+    private static Dictionary<string, List<string>?>? WithoutNextMilestone(Dictionary<string, List<string>?>? filter)
+        => filter is null
+            ? null
+            : filter
+                .Where(x => !string.Equals(x.Key, NextMilestoneKey, StringComparison.OrdinalIgnoreCase))
+                .ToDictionary(x => x.Key, x => x.Value);
+
+    /// <summary>
+    /// Đọc giá trị lọc Mốc kế tiếp: <c>$eq:40</c> ra mốc 40, <c>$eq:None</c> ra
+    /// <see langword="null"/>. Mọi cách viết khác là lỗi <c>400</c>.
+    /// </summary>
+    /// <param name="value">Giá trị thô của tham số truy vấn.</param>
+    /// <param name="milestones">Dãy mốc của QT1 tại thời điểm gọi.</param>
+    /// <returns>Mốc cần lọc, hoặc <see langword="null"/> cho nhóm đã vượt mốc lớn nhất.</returns>
+    /// <exception cref="BadRequestException">Toán tử hoặc mốc không hợp lệ.</exception>
+    private static int? ParseNextMilestone(string value, IReadOnlyList<int> milestones)
+    {
+        string[] parts = value.Split(':', 2);
+
+        if (parts.Length != 2 || !string.Equals(parts[0], FilterOperator.Eq, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BadRequestException(Messages<PartyMember>.Invalid(NextMilestoneKey));
+        }
+
+        string raw = parts[1].Trim();
+
+        if (string.Equals(raw, NoneValue, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (!int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int milestone)
+            || !milestones.Contains(milestone))
+        {
+            throw new BadRequestException(Messages<PartyMember>.Invalid(NextMilestoneKey));
+        }
+
+        return milestone;
     }
 
     /// <summary>
@@ -225,6 +306,50 @@ public class PartyMemberService : IPartyMemberService
         entity.DateOfBirth = request.DateOfBirth;
         entity.Gender = request.ToGender();
         entity.OfficialAdmissionDate = request.OfficialAdmissionDate!.Value;
+    }
+
+    /// <summary>
+    /// Quy đổi <c>filter.NextMilestone=$eq:&lt;mốc|None&gt;</c> thành hai bất đẳng thức trên
+    /// <see cref="PartyMember.OfficialAdmissionDate"/> (T51), để điều kiện nằm trong <c>WHERE</c>.
+    /// </summary>
+    /// <param name="query">Truy vấn đang dựng.</param>
+    /// <param name="filter">Bộ lọc Frontend gửi lên.</param>
+    /// <param name="context">Hôm nay và dãy mốc huy hiệu.</param>
+    /// <returns>Truy vấn đã thêm điều kiện; giữ nguyên khi không lọc theo mốc kế tiếp.</returns>
+    /// <exception cref="BadRequestException">Giá trị lọc không phải một mốc của dãy hiện hành.</exception>
+    private IQueryable<PartyMember> ApplyNextMilestoneFilter(
+        IQueryable<PartyMember> query, Dictionary<string, List<string>?>? filter, MilestoneContext context)
+    {
+        List<string>? values = filter?
+            .FirstOrDefault(x => string.Equals(x.Key, NextMilestoneKey, StringComparison.OrdinalIgnoreCase))
+            .Value;
+
+        if (values is null || values.Count == 0)
+        {
+            return query;
+        }
+
+        // Một đảng viên chỉ có đúng một mốc kế tiếp, nên hai giá trị lọc cùng lúc là vô nghĩa:
+        // báo lỗi thay vì lặng lẽ trả danh sách rỗng.
+        if (values.Count > 1)
+        {
+            throw new BadRequestException(Messages<PartyMember>.Invalid(NextMilestoneKey));
+        }
+
+        AdmissionDateRange range = milestoneCalculator.GetAdmissionDateRangeForNextMilestone(
+            ParseNextMilestone(values[0], context.Milestones), context.Today, context.Milestones);
+
+        if (range.FromExclusive is DateOnly from)
+        {
+            query = query.Where(x => x.OfficialAdmissionDate > from);
+        }
+
+        if (range.ToInclusive is DateOnly to)
+        {
+            query = query.Where(x => x.OfficialAdmissionDate <= to);
+        }
+
+        return query;
     }
 
     /// <summary>

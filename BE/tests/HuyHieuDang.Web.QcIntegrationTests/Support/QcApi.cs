@@ -25,7 +25,19 @@ public static class QcApi
     {
         ArgumentNullException.ThrowIfNull(factory);
 
-        WebApplicationFactory<Program> host = factory.At(today ?? QcClock.T0);
+        return await LoginToHostAsync(factory.At(today ?? QcClock.T0));
+    }
+
+    /// <summary>
+    /// Client đã đăng nhập vào một host dựng sẵn bất kỳ. Dùng cho ca cần một host khác host
+    /// dùng chung — ví dụ A-903b chạy trên host giữ nguyên provider thời gian thật.
+    /// </summary>
+    /// <param name="host">Host cần đăng nhập vào.</param>
+    /// <returns>Client đã gắn header <c>Authorization</c>.</returns>
+    public static async Task<HttpClient> LoginToHostAsync(WebApplicationFactory<Program> host)
+    {
+        ArgumentNullException.ThrowIfNull(host);
+
         HttpClient client = host.CreateClient();
 
         HttpResponseMessage login = await client.PostAsJsonAsync(

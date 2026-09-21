@@ -1,6 +1,12 @@
-import { Alert, Button, Table, Tabs } from 'antd';
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  ExclamationCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { Alert, Button, Input, Table, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   importErrorFields,
@@ -117,6 +123,20 @@ function errorColumns(): ColumnsType<ImportErrorRow> {
   ];
 }
 
+/**
+ * Chuẩn hóa chữ trước khi so khớp: bỏ phân biệt hoa thường, GIỮ dấu — đúng như
+ * ô tìm màn Đảng viên đang chạy trên citext của Postgres, để cùng một từ khóa
+ * cho ra cùng kết quả ở hai màn. Tìm bỏ dấu là chuyện của v2.
+ */
+function normalize(text: string): string {
+  return text.toLocaleLowerCase('vi');
+}
+
+/** Từ khóa toàn chữ số thì tìm thêm theo số dòng trong file Excel. */
+function matchesRowNumber(rowNumber: number, keyword: string): boolean {
+  return /^\d+$/.test(keyword) && String(rowNumber).includes(keyword);
+}
+
 /** Nhãn tab kèm viên đếm, đúng hình của artboard 4. */
 function tabLabel(text: string, count: number, tone: 'valid' | 'invalid') {
   return (
@@ -133,7 +153,9 @@ interface StepPreviewProps {
   /** Lỗi khi nạp — câu tiếng Việt đã dịch, null khi không lỗi */
   error: string | null;
   onCommit: () => void;
+  /** Về bước 1, giữ nguyên file đã chọn */
   onBack: () => void;
+  /** Bỏ hẳn việc import và rời màn Import */
   onCancel: () => void;
 }
 
@@ -147,16 +169,69 @@ export function StepPreview({
   onCancel,
 }: StepPreviewProps) {
   const [tab, setTab] = useState(preview.errorCount > 0 ? 'error' : 'valid');
+  // Một từ khóa dùng chung cho cả hai tab, đổi tab thì giữ nguyên từ khóa.
+  const [keyword, setKeyword] = useState('');
+  // Giữ trang hiện tại để đổi từ khóa là kéo bảng về trang 1 — lọc còn 3 dòng
+  // mà bảng vẫn đứng ở trang 12 thì nhìn như mất dữ liệu.
+  const [validPage, setValidPage] = useState(1);
+  const [errorPage, setErrorPage] = useState(1);
 
-  const pagination = (total: number) =>
+  const needle = normalize(keyword.trim());
+  const filtering = needle.length > 0;
+
+  // Lọc ngay tại máy khách trên mảng đã có, không gọi lại máy chủ.
+  const validRows = useMemo(
+    () =>
+      filtering
+        ? preview.validRows.filter(
+            (row) =>
+              normalize(row.fullName).includes(needle) || matchesRowNumber(row.rowNumber, needle),
+          )
+        : preview.validRows,
+    [preview.validRows, needle, filtering],
+  );
+
+  // Tab Lỗi tìm thêm trong cột "Lý do" để bác lọc ra mọi dòng "Thiếu họ tên".
+  const errorRows = useMemo(
+    () =>
+      filtering
+        ? preview.errorRows.filter(
+            (row) =>
+              normalize(row.fullName).includes(needle) ||
+              normalize(importErrorText(row)).includes(needle) ||
+              matchesRowNumber(row.rowNumber, needle),
+          )
+        : preview.errorRows,
+    [preview.errorRows, needle, filtering],
+  );
+
+  const changeKeyword = (value: string) => {
+    setKeyword(value);
+    setValidPage(1);
+    setErrorPage(1);
+  };
+
+  const pagination = (total: number, current: number, onChange: (page: number) => void) =>
     total > PREVIEW_PAGE_SIZE
       ? {
+          current,
+          onChange,
           pageSize: PREVIEW_PAGE_SIZE,
           showSizeChanger: false,
-          showTotal: (count: number, range: [number, number]) =>
-            `${formatNumber(range[0])}–${formatNumber(range[1])} / ${formatNumber(count)}`,
         }
       : (false as const);
+
+  /** Câu chữ bảng trống: lọc không ra gì khác hẳn tab vốn không có dòng nào. */
+  const emptyState = (description: string, hint: string) =>
+    filtering
+      ? {
+          description: 'Không tìm thấy dòng nào khớp',
+          hint: 'Bác thử bớt chữ, hoặc xóa ô tìm để xem lại cả danh sách.',
+        }
+      : { description, hint };
+
+  const hasValid = preview.validCount > 0;
+  const hasError = preview.errorCount > 0;
 
   return (
     <>
@@ -164,16 +239,32 @@ export function StepPreview({
         <Alert type="error" showIcon message="Chưa nạp được danh sách" description={error} />
       ) : null}
 
-      <div className="hhd-import__summary">
-        <div className="hhd-import__summary-number">{formatNumber(preview.validCount)}</div>
-        <div>
-          <b>
-            Sẽ thêm {formatNumber(preview.validCount)} người mới ·{' '}
-            {formatNumber(preview.errorCount)} dòng lỗi bị bỏ qua
-          </b>
-          <div className="hhd-import__summary-note">
-            Hệ thống không kiểm tra trùng — nếu đã nạp file này trước đó, hãy Hủy.
-          </div>
+      {/* role="status" để trình đọc màn hình đọc kết quả ngay khi dải hiện ra.
+          Cả file đều lỗi thì dải phải đỏ: lúc đó không có gì để nạp. */}
+      <div
+        className={`hhd-import__summary hhd-import__summary--${hasValid ? 'ok' : 'bad'}`}
+        role="status"
+      >
+        <div className="hhd-import__summary-stats">
+          <span
+            className={`hhd-import__stat hhd-import__stat--ok${
+              hasValid ? '' : ' hhd-import__stat--muted'
+            }`}
+          >
+            <CheckCircleFilled /> <b>{formatNumber(preview.validCount)}</b> dòng hợp lệ
+          </span>
+          {/* Không lỗi nào thì dấu ✕ để xám — bôi đỏ số 0 là báo động giả. */}
+          <span
+            className={`hhd-import__stat hhd-import__stat--err${
+              hasError ? '' : ' hhd-import__stat--off'
+            }`}
+          >
+            <CloseCircleFilled /> <b>{formatNumber(preview.errorCount)}</b> dòng bị lỗi, bỏ qua
+          </span>
+        </div>
+        <div className="hhd-import__summary-note">
+          <ExclamationCircleOutlined /> Hệ thống không kiểm tra trùng — nếu đã nạp file này trước
+          đó, hãy Hủy.
         </div>
       </div>
 
@@ -182,23 +273,39 @@ export function StepPreview({
           className="hhd-import__tabs"
           activeKey={tab}
           onChange={setTab}
+          tabBarExtraContent={{
+            right: (
+              <Input
+                className="hhd-import__search"
+                allowClear
+                prefix={<SearchOutlined />}
+                placeholder="Tìm theo họ tên…"
+                aria-label="Tìm trong danh sách xem trước"
+                value={keyword}
+                onChange={(event) => changeKeyword(event.target.value)}
+              />
+            ),
+          }}
           items={[
             {
               key: 'valid',
+              // Viên đếm là con số của cả file, không đổi theo bộ lọc.
               label: tabLabel('Hợp lệ', preview.validCount, 'valid'),
               children: (
                 <TableStates
                   loading={false}
                   error={null}
-                  isEmpty={preview.validRows.length === 0}
-                  description="Không có dòng nào hợp lệ"
-                  hint="Cả file đều vướng lỗi. Bác sửa trong file gốc rồi nạp lại giúp."
+                  isEmpty={validRows.length === 0}
+                  {...emptyState(
+                    'Không có dòng nào hợp lệ',
+                    'Cả file đều vướng lỗi. Bác sửa trong file gốc rồi nạp lại giúp.',
+                  )}
                 >
                   <Table<ImportValidRow>
                     rowKey="rowNumber"
                     columns={VALID_COLUMNS}
-                    dataSource={preview.validRows}
-                    pagination={pagination(preview.validRows.length)}
+                    dataSource={validRows}
+                    pagination={pagination(validRows.length, validPage, setValidPage)}
                   />
                 </TableStates>
               ),
@@ -210,15 +317,17 @@ export function StepPreview({
                 <TableStates
                   loading={false}
                   error={null}
-                  isEmpty={preview.errorRows.length === 0}
-                  description="Không có dòng lỗi nào"
-                  hint="Cả file đều đọc được. Bác bấm nạp là xong."
+                  isEmpty={errorRows.length === 0}
+                  {...emptyState(
+                    'Không có dòng lỗi nào',
+                    'Cả file đều đọc được. Bác bấm nạp là xong.',
+                  )}
                 >
                   <Table<ImportErrorRow>
                     rowKey="rowNumber"
                     columns={errorColumns()}
-                    dataSource={preview.errorRows}
-                    pagination={pagination(preview.errorRows.length)}
+                    dataSource={errorRows}
+                    pagination={pagination(errorRows.length, errorPage, setErrorPage)}
                   />
                 </TableStates>
               ),
@@ -230,8 +339,8 @@ export function StepPreview({
           <span className="hhd-import__footer-note">
             Các dòng lỗi sẽ không được nạp. Sửa trong file gốc rồi import lại nếu cần.
           </span>
-          {/* "Hủy" bỏ luôn file đang xem và quay về bước 1; "Quay lại" giữ file
-              để bác xem lại phần mô tả 4 cột rồi tiếp tục. */}
+          {/* "Hủy" bỏ hẳn việc import và về thẳng danh sách đảng viên; "Quay
+              lại" giữ file để bác xem lại phần mô tả 4 cột rồi tiếp tục. */}
           <Button type="text" onClick={onCancel}>
             Hủy
           </Button>

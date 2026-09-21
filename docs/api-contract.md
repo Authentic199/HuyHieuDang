@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.3 — 20/09/2026 |
-| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào |
+| Phiên bản | 1.4 — 20/09/2026 |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào; v1.4 bổ sung bảy khóa thông điệp còn thiếu ở mục 1.5 và trần 200 năm của ba mốc ở mục 7.2 và 7.4 |
 | Chủ sở hữu | Technical Writer |
 | Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
@@ -120,44 +120,53 @@ Lý do: bộ khung Backend sinh khóa tự động; để chữ tiếng Việt n
 
 **Bảng khóa bắt buộc phải có trong Frontend**
 
-| Khóa | Chữ hiển thị |
-|---|---|
-| `Mes.User.Login.Successfully` | Đăng nhập thành công |
-| `Mes.User.Login.Failed` | Sai tài khoản hoặc mật khẩu |
-| `Mes.User.Logout.Successfully` | Đã đăng xuất |
-| `Mes.PartyMember.Create.Successfully` | Đã thêm đảng viên |
-| `Mes.PartyMember.Update.Successfully` | Đã lưu thay đổi |
-| `Mes.PartyMember.Delete.Successfully` | Đã xóa |
-| `Mes.PartyMember.Import.Successfully` | Đã nạp danh sách |
-| `Mes.PartyMember.NotFound` | Không tìm thấy đảng viên |
-| `Mes.PartyMember.Required.FullName` | Chưa nhập Họ tên |
-| `Mes.PartyMember.Required.OfficialAdmissionDate` | Chưa nhập Ngày vào Đảng chính thức |
-| `Mes.PartyMember.Invalid.OfficialAdmissionDate` | Ngày chính thức không được ở tương lai |
-| `Mes.PartyMember.Invalid.DateOfBirth` | Ngày sinh phải trước Ngày vào Đảng chính thức |
-| `Mes.PartyMember.Invalid.Gender` | Giới tính chỉ nhận Nam hoặc Nữ |
-| `Mes.AwardPeriod.Create.Successfully` | Đã thêm đợt trao huy hiệu |
-| `Mes.AwardPeriod.Update.Successfully` | Đã lưu thay đổi |
-| `Mes.AwardPeriod.Delete.Successfully` | Đã xóa đợt trao huy hiệu |
-| `Mes.AwardPeriod.NotFound` | Không tìm thấy đợt trao huy hiệu |
-| `Mes.AwardPeriod.Required.Name` | Chưa nhập Tên đợt |
-| `Mes.AwardPeriod.Repeated.Name` | Tên đợt đã tồn tại |
-| `Mes.AwardPeriod.Invalid.FromDate` | Từ ngày không hợp lệ |
-| `Mes.AwardPeriod.Invalid.ToDate` | Đến ngày không hợp lệ |
-| `Mes.AwardPeriod.Invalid.Range` | Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm |
-| `Mes.AppSetting.Update.Successfully` | Đã lưu cài đặt |
-| `Mes.AppSetting.Invalid.StartYears` | Mốc bắt đầu phải là số nguyên dương |
-| `Mes.AppSetting.Invalid.EndYears` | Mốc kết thúc phải là số nguyên dương |
-| `Mes.AppSetting.Invalid.StepYears` | Bước nhảy phải từ 1 trở lên |
-| `Mes.AppSetting.Invalid.Range` | Mốc bắt đầu phải nhỏ hơn hoặc bằng mốc kết thúc |
-| `Mes.Import.Invalid.Extension` | Chỉ nhận file .xlsx |
-| `Mes.Import.Invalid.FileSize` | File vượt quá 10 MB |
-| `Mes.Import.Invalid.Columns` | File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức |
-| `Mes.Import.Invalid.Empty` | File rỗng, không đọc được dữ liệu |
-| `Mes.Import.Invalid.NoDataRows` | File không có dòng dữ liệu nào |
-| `Mes.Dashboard.NotFound.UpcomingPeriod` | Chưa cài đợt trao huy hiệu |
-| `Mes.Query.Invalid.Year` | Năm không hợp lệ |
+| Khóa | Chữ hiển thị | Khi nào Backend trả |
+|---|---|---|
+| `Mes.User.Login.Successfully` | Đăng nhập thành công | Đăng nhập đúng tài khoản và mật khẩu |
+| `Mes.User.Login.Failed` | Sai tài khoản hoặc mật khẩu | Sai tài khoản, sai mật khẩu, hoặc tài khoản bị khóa |
+| `Mes.User.Logout.Successfully` | Đã đăng xuất | Gọi đăng xuất thành công |
+| `Mes.User.Required.Username` | Chưa nhập Tài khoản | Đăng nhập mà bỏ trống ô Tài khoản |
+| `Mes.User.Required.Password` | Chưa nhập Mật khẩu | Đăng nhập mà bỏ trống ô Mật khẩu |
+| `Mes.PartyMember.Create.Successfully` | Đã thêm đảng viên | Thêm đảng viên thủ công thành công |
+| `Mes.PartyMember.Update.Successfully` | Đã lưu thay đổi | Sửa đảng viên thành công |
+| `Mes.PartyMember.Delete.Successfully` | Đã xóa | Xóa một hoặc xóa nhiều đảng viên thành công |
+| `Mes.PartyMember.Import.Successfully` | Đã nạp danh sách | Nạp file Excel thành công (bước 3 của wizard) |
+| `Mes.PartyMember.NotFound` | Không tìm thấy đảng viên | Lấy, sửa hoặc xóa bằng id không tồn tại |
+| `Mes.PartyMember.Required.FullName` | Chưa nhập Họ tên | Thêm hoặc sửa mà bỏ trống Họ tên |
+| `Mes.PartyMember.OverLength.FullName` | Họ tên quá dài, tối đa 200 ký tự | Họ tên vượt 200 ký tự |
+| `Mes.PartyMember.Required.OfficialAdmissionDate` | Chưa nhập Ngày vào Đảng chính thức | Thêm hoặc sửa mà bỏ trống ngày vào Đảng chính thức |
+| `Mes.PartyMember.Invalid.OfficialAdmissionDate` | Ngày chính thức không được ở tương lai | Ngày vào Đảng chính thức sau ngày hôm nay của máy chủ |
+| `Mes.PartyMember.Invalid.DateOfBirth` | Ngày sinh phải trước Ngày vào Đảng chính thức | Ngày sinh bằng hoặc sau ngày vào Đảng chính thức |
+| `Mes.PartyMember.Invalid.Gender` | Giới tính chỉ nhận Nam hoặc Nữ | Giới tính ngoài hai giá trị Nam và Nữ |
+| `Mes.PartyMember.Required.Ids` | Chưa chọn đảng viên nào | Gọi xóa nhiều mà `ids` thiếu hoặc rỗng |
+| `Mes.AwardPeriod.Create.Successfully` | Đã thêm đợt trao huy hiệu | Thêm đợt thành công |
+| `Mes.AwardPeriod.Update.Successfully` | Đã lưu thay đổi | Sửa đợt thành công |
+| `Mes.AwardPeriod.Delete.Successfully` | Đã xóa đợt trao huy hiệu | Xóa đợt thành công |
+| `Mes.AwardPeriod.NotFound` | Không tìm thấy đợt trao huy hiệu | Lấy, sửa, xóa hoặc xem danh sách đủ điều kiện bằng id đợt không tồn tại |
+| `Mes.AwardPeriod.Required.Name` | Chưa nhập Tên đợt | Thêm hoặc sửa mà bỏ trống Tên đợt |
+| `Mes.AwardPeriod.OverLength.Name` | Tên đợt quá dài, tối đa 100 ký tự | Tên đợt vượt 100 ký tự |
+| `Mes.AwardPeriod.Repeated.Name` | Tên đợt đã tồn tại | Trùng tên một đợt khác, không phân biệt hoa thường |
+| `Mes.AwardPeriod.Invalid.FromDate` | Từ ngày không hợp lệ | Ngày/tháng bắt đầu không có thật, ví dụ `31/04` |
+| `Mes.AwardPeriod.Invalid.ToDate` | Đến ngày không hợp lệ | Ngày/tháng kết thúc không có thật |
+| `Mes.AwardPeriod.Invalid.Range` | Đến ngày phải bằng hoặc sau Từ ngày trong cùng một năm | `(fromMonth, fromDay)` sau `(toMonth, toDay)` |
+| `Mes.AppSetting.Update.Successfully` | Đã lưu cài đặt | Lưu cài đặt hoặc khôi phục mặc định thành công |
+| `Mes.AppSetting.Invalid.StartYears` | Mốc bắt đầu phải là số nguyên từ 1 đến 200 | `startYears` (hoặc `start` khi xem trước) ngoài khoảng 1–200 |
+| `Mes.AppSetting.Invalid.EndYears` | Mốc kết thúc phải là số nguyên từ 1 đến 200 | `endYears` (hoặc `end` khi xem trước) ngoài khoảng 1–200 |
+| `Mes.AppSetting.Invalid.StepYears` | Bước nhảy phải là số nguyên từ 1 đến 200 | `stepYears` (hoặc `step` khi xem trước) ngoài khoảng 1–200 |
+| `Mes.AppSetting.Invalid.Range` | Mốc bắt đầu phải nhỏ hơn hoặc bằng mốc kết thúc | Mốc bắt đầu lớn hơn mốc kết thúc |
+| `Mes.AppSetting.OverLength.UnitName` | Tên đơn vị quá dài, tối đa 200 ký tự | Tên đơn vị vượt 200 ký tự |
+| `Mes.Import.Invalid.Extension` | Chỉ nhận file .xlsx | File không phải `.xlsx`, hoặc mang đuôi `.xlsx` nhưng nội dung không đọc được |
+| `Mes.Import.Invalid.FileSize` | File vượt quá 10 MB | File lớn hơn 10 MB |
+| `Mes.Import.Invalid.Columns` | File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức | Dòng tiêu đề không đúng 4 cột quy định |
+| `Mes.Import.Invalid.Empty` | File rỗng, không đọc được dữ liệu | File không có sheet nào hoặc không có ô nào |
+| `Mes.Import.Invalid.NoDataRows` | File không có dòng dữ liệu nào | File chỉ có dòng tiêu đề |
+| `Mes.Dashboard.NotFound.UpcomingPeriod` | Chưa cài đợt trao huy hiệu | Xuất Excel danh sách đợt sắp tới khi chưa có đợt nào |
+| `Mes.Query.Invalid.Year` | Năm không hợp lệ | Tham số `year` ngoài khoảng 1900–2200 |
+| `Mes.Common.Invalid.Parameter` | Tham số không hợp lệ | Tham số truy vấn hoặc thân yêu cầu sai kiểu, khung ASP.NET không đọc nổi — ví dụ `?year=abc`, `?awardPeriodId` không phải GUID, `startYears` là chữ |
 
 Các khóa `*.Search.Successfully`, `*.Detail.Successfully` không cần hiển thị gì; Frontend bỏ qua.
+
+Ngoài bảng trên, tầng xác thực phiên còn trả `Mes.User.NotFound` và `Mes.User.Blocked` kèm mã `401` khi token còn hạn nhưng tài khoản đã bị xóa hoặc bị khóa. Frontend **không** hiển thị hai khóa này: theo mục 1.4, mọi `401` đều xóa token và đưa về màn đăng nhập.
 
 ### 1.6 Định dạng ngày và số
 
@@ -949,16 +958,18 @@ Khi bảng cài đặt chưa có bản ghi nào, API trả mặc định 30 / 90
 
 | Trường | Kiểu | Bắt buộc | Ràng buộc |
 |---|---|---|---|
-| `startYears` | int | ✔ | ≥ 1 |
-| `endYears` | int | ✔ | ≥ 1, ≥ `startYears` |
-| `stepYears` | int | ✔ | ≥ 1 |
+| `startYears` | int | ✔ | Số nguyên từ 1 đến 200 |
+| `endYears` | int | ✔ | Số nguyên từ 1 đến 200, và ≥ `startYears` |
+| `stepYears` | int | ✔ | Số nguyên từ 1 đến 200 |
 | `unitName` | string \| null | – | ≤ 200 ký tự; `null`, chuỗi rỗng hoặc toàn khoảng trắng đều là bỏ trống và lưu thành `null`; khoảng trắng đầu/cuối bị cắt bớt trước khi lưu |
 
 **Phản hồi `data`:** như `GET /api/Settings` sau khi lưu.
 
-**Lỗi:** `Mes.AppSetting.Invalid.StartYears`, `.EndYears`, `.StepYears`, `.Range`, `Mes.AppSetting.OverLength.UnitName` (tên đơn vị quá 200 ký tự).
+**Trần 200 năm.** Mốc tuổi đảng có nghĩa trong nghiệp vụ nằm trong khoảng 30–90, nên cả ba giá trị bị chặn ở 200. Không có trần thì `start=1&end=1000000&step=1` sinh một triệu mốc, gần 7 MB JSON mỗi lần gõ phím ở ô xem trước của màn Cài đặt. Vượt trần bị từ chối `400` với **đúng bộ khóa sẵn có** — `Mes.AppSetting.Invalid.StartYears`, `.EndYears`, `.StepYears`; **không có khóa riêng cho trường hợp vượt trần**.
 
-Giá trị `startYears` / `endYears` / `stepYears` không phải số nguyên (rỗng `""`, chữ, số thập phân) bị từ chối 400 ngay ở bước đọc JSON, với thông điệp của khung ASP.NET chứ **không** mang khóa `Mes.*`; Frontend chặn trước bằng ô số nên không cần dịch.
+**Lỗi:** `Mes.AppSetting.Invalid.StartYears`, `.EndYears`, `.StepYears`, `.Range`, `Mes.AppSetting.OverLength.UnitName` (tên đơn vị quá 200 ký tự), `Mes.Common.Invalid.Parameter`.
+
+Giá trị `startYears` / `endYears` / `stepYears` không phải số nguyên (rỗng `""`, chữ, số thập phân) bị từ chối `400` ngay ở bước đọc JSON, mang khóa chung `Mes.Common.Invalid.Parameter` (mục 1.5) chứ không phải khóa riêng của từng trường. Frontend chặn trước bằng ô số nên người dùng hầu như không gặp câu này.
 
 Đổi cài đặt làm mọi danh sách đủ điều kiện thay đổi ngay (QT5) → Frontend nên tải lại Dashboard và badge sau khi lưu.
 
@@ -976,9 +987,11 @@ Dùng cho ô "Xem trước dãy mốc" cập nhật ngay khi người dùng gõ,
 
 | Tham số | Kiểu | Mặc định |
 |---|---|---|
-| `start` | int | Giá trị đang lưu |
-| `end` | int | Giá trị đang lưu |
-| `step` | int | Giá trị đang lưu |
+| `start` | int, 1–200 | Giá trị đang lưu |
+| `end` | int, 1–200 | Giá trị đang lưu |
+| `step` | int, 1–200 | Giá trị đang lưu |
+
+Bỏ trống tham số nào thì lấy giá trị đang lưu của tham số đó; kho cài đặt còn trống thì lấy mặc định 30 / 90 / 5.
 
 **Phản hồi `data`**
 
@@ -988,7 +1001,9 @@ Dùng cho ô "Xem trước dãy mốc" cập nhật ngay khi người dùng gõ,
 
 Không ghi gì vào cơ sở dữ liệu. Giữ QT1 ở một chỗ duy nhất (Backend), Frontend không cài lại công thức. Frontend nên hoãn 300 ms sau mỗi lần gõ rồi mới gọi.
 
-**Lỗi:** như `PUT /api/Settings`.
+**Xem trước dùng đúng bộ luật của `PUT /api/Settings`**, kể cả trần 200 năm ở mục 7.2, và trả cùng bộ khóa lỗi. Hai đường dùng chung một bảng luật trong mã nguồn: xem trước mà chấp nhận tham số `PUT` sẽ từ chối là vô nghĩa.
+
+**Lỗi:** `Mes.AppSetting.Invalid.StartYears`, `.EndYears`, `.StepYears`, `.Range` — đúng như `PUT /api/Settings`; tham số sai kiểu (`?start=abc`) trả `Mes.Common.Invalid.Parameter`.
 
 ---
 
@@ -1172,3 +1187,4 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 | 1.1 | 19/09/2026 | Thêm mục 12 (10 quyết định OQ-1…OQ-10) và mục 13 (8 ghi chú kỹ thuật bộ khung Backend). **Đổi hình dạng:** `errorRows[*].errorCode` + `field` → mảng `errorRows[*].errors[]` (OQ-2). Thêm khóa `Mes.Import.Invalid.NoDataRows`, đổi nghĩa `Mes.Import.Invalid.Empty` (OQ-7). Sửa cổng Backend khi chạy dev: 5000 → 8080 |
 | 1.2 | 19/09/2026 | **Mục 4 Import** khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. **Mục 5.2** làm rõ kiểm tra `year` (1900–2200, `Mes.Query.Invalid.Year`) cho khớp mã đã duyệt ở PR #18. **Mục 1.8** trong cùng mốc sắp theo Họ tên đầy đủ, bỏ quy ước sắp theo tên gọi (từ cuối); đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3, khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. **Mục 7 Cài đặt** khớp API đã duyệt ở PR #24: `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối, thêm khóa `Mes.AppSetting.OverLength.UnitName`, ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`, kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi. **Mục 8** ghi tên sheet `DanhSach` và cách ghi dòng tiêu đề (T14). Không đổi hình dạng request/response |
 | 1.3 | 20/09/2026 | **Mục 5.1 và 6.1**: khi năm đang xem chưa có đợt nào, `warnings.gaps` là mảng rỗng ở cả hai endpoint; `coverage.segments` vẫn phủ liên tục 01/01–31/12 bằng một đoạn `Gap`. Không đổi QT6: khoảng trống phủ trọn năm với nhãn "Trước đợt đầu tiên" và nhãn khoảng trống của màn "Chưa thuộc đợt nào" (QT7) giữ nguyên. Không đổi hình dạng request/response |
+| 1.4 | 20/09/2026 | **Mục 1.5**: bảng khóa thêm cột "Khi nào Backend trả" và bảy khóa Backend đang trả mà bảng chưa có: `Mes.User.Required.Username`, `Mes.User.Required.Password`, `Mes.PartyMember.OverLength.FullName`, `Mes.PartyMember.Required.Ids`, `Mes.AwardPeriod.OverLength.Name`, `Mes.AppSetting.OverLength.UnitName`, `Mes.Common.Invalid.Parameter` (QC-T27-07, QC-T27-04). Ghi thêm hai khóa `401` của tầng phiên (`Mes.User.NotFound`, `Mes.User.Blocked`) mà Frontend không hiển thị. **Mục 7.2 và 7.4**: `startYears` / `endYears` / `stepYears` là số nguyên **từ 1 đến 200** thay cho “≥ 1”; vượt trần dùng đúng bộ khóa sẵn có, không thêm khóa mới; ô xem trước `GET /api/Settings/Milestones` validate bằng đúng bộ luật của `PUT /api/Settings` (QC-T27-06); tham số sai kiểu nay trả `Mes.Common.Invalid.Parameter` chứ không còn câu tiếng Anh của khung ASP.NET. Khớp mã đã duyệt ở PR #35 (T36). Không đổi hình dạng request/response |

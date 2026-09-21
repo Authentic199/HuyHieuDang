@@ -77,7 +77,24 @@ public static class QcMessages
     /// <summary>Năm không hợp lệ.</summary>
     public const string QueryInvalidYear = "Mes.Query.Invalid.Year";
 
-    /// <summary>Toàn bộ bảng khóa bắt buộc của mục 1.5 hợp đồng API.</summary>
+    /// <summary>
+    /// Tham số truy vấn sai kiểu hoặc sai giá trị. Khóa này CEO chốt cho QC-T27-05 ngày
+    /// 20/09/2026 và hợp đồng v1.4 (PR #46) đã có; ca <c>QcT2705</c> dùng nó, và ca đó còn
+    /// để <c>Skip</c> tới khi T47 gộp.
+    /// </summary>
+    public const string CommonInvalidParameter = "Mes.Common.Invalid.Parameter";
+
+    /// <summary>
+    /// Bảng khóa bắt buộc của mục 1.5 hợp đồng API — hiện là <b>bản chép tay</b>.
+    /// <para>
+    /// QC-T29-02: bản chép này đã trôi khỏi hợp đồng. Nó có <c>Mes.User.Required.Username</c>
+    /// và <c>Mes.User.Required.Password</c> trong khi mục 1.5 trên <c>main</c> chưa có, nên ca
+    /// A-905 xanh nhờ bản chép chứ không nhờ hợp đồng. Hợp đồng v1.4 (PR #46) bổ sung đúng hai
+    /// khóa đó cùng năm khóa khác. Khi #46 gộp, QC thay bảng chép tay này bằng bản đọc thẳng
+    /// <c>docs/api-contract.md</c> để nó không trôi được nữa, rồi gỡ <c>Skip</c> của QcT2707.
+    /// Chưa làm ngay ở T29 vì đọc thẳng hợp đồng lúc này làm A-905 đỏ trên <c>main</c>.
+    /// </para>
+    /// </summary>
     public static IReadOnlySet<string> ContractKeys { get; } = new HashSet<string>(StringComparer.Ordinal)
     {
         "Mes.User.Login.Successfully",

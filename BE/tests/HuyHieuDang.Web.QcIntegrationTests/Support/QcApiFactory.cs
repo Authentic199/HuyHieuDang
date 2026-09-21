@@ -84,6 +84,37 @@ public sealed class QcApiFactory : WebApplicationFactory<Program>, IAsyncLifetim
                 builder.ConfigureTestServices(services =>
                     services.AddSingleton<IDateTimeProvider>(new QcClock(date)))));
 
+    /// <summary>
+    /// Host **không** thay <see cref="IDateTimeProvider"/>: gỡ đúng những đăng ký trỏ tới
+    /// <see cref="QcClock"/> nên đăng ký thật của <c>Facades/Common/Startup.cs</c> là cái còn
+    /// lại và là cái được dùng. Nhờ vậy ca A-903b đo được provider thật đọc biến môi trường,
+    /// thay vì đo lại đồng hồ giả của chính bộ kiểm thử.
+    /// <para>
+    /// Provider là singleton nên chỉ đọc biến đúng một lần, lúc bộ chứa phụ thuộc tạo ra nó —
+    /// người gọi phải đặt biến môi trường **trước** khi gọi hàm này.
+    /// </para>
+    /// </summary>
+    /// <returns>Host mới; người gọi tự giải phóng.</returns>
+    public WebApplicationFactory<Program> WithRealDateTimeProvider()
+        => WithWebHostBuilder(builder =>
+            builder.ConfigureTestServices(services =>
+            {
+                List<ServiceDescriptor> fakeClocks = services
+                    .Where(descriptor => descriptor.ServiceType == typeof(IDateTimeProvider)
+                        && descriptor.ImplementationInstance is QcClock)
+                    .ToList();
+
+                // Không có gì để gỡ nghĩa là ConfigureWebHost đã đổi cách thay đồng hồ và ca
+                // A-903b sẽ lặng lẽ đo nhầm — dừng ngay còn hơn cho một màu xanh vô nghĩa.
+                fakeClocks.ShouldNotBeEmpty(
+                    "không tìm thấy đăng ký QcClock nào để gỡ — A-903b sẽ không đo được provider thật");
+
+                foreach (ServiceDescriptor descriptor in fakeClocks)
+                {
+                    services.Remove(descriptor);
+                }
+            }));
+
     /// <summary>Cấp một phạm vi dịch vụ trỏ vào đúng cơ sở dữ liệu của container.</summary>
     /// <returns>Phạm vi dịch vụ; người gọi tự giải phóng.</returns>
     public IServiceScope CreateScope() => Services.CreateScope();

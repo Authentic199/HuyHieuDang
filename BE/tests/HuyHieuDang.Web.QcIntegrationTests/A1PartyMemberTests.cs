@@ -402,7 +402,10 @@ public sealed class A1PartyMemberTests
         (await EligibleCountAsync(client, periodId, 2026)).ShouldBe(before + 1);
     }
 
-    /// <summary>A-121 · Xóa một người làm tổng giảm đúng 1.</summary>
+    /// <summary>
+    /// A-121 · Xóa một người qua <c>DeleteMany</c> với mảng một phần tử làm tổng giảm đúng 1.
+    /// Từ T34 đây là đường xóa duy nhất.
+    /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
     [Fact]
     public async Task A121_Xoa_mot_nguoi_giam_dung_mot()
@@ -412,9 +415,10 @@ public sealed class A1PartyMemberTests
 
         JsonElement target = await FindMemberAsync(client, "Nguyễn Văn An");
 
-        using HttpResponseMessage response = await client.DeleteAsync($"{QcEndpoints.PartyMembers}/{target.Str("id")}");
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        JsonElement data = await QcApi.PostDataAsync(
+            client, QcEndpoints.PartyMembersDeleteMany, new { ids = new[] { target.Str("id") } });
 
+        data.Array("ids").Count.ShouldBe(1);
         (await QcDb.CountMembersAsync(factory)).ShouldBe(before - 1);
     }
 
@@ -435,16 +439,28 @@ public sealed class A1PartyMemberTests
         (await QcDb.CountMembersAsync(factory)).ShouldBe(before - ids.Count);
     }
 
-    /// <summary>A-123 · Xóa id không tồn tại trả lỗi nghiệp vụ rõ ràng, không phải lỗi 500.</summary>
+    /// <summary>
+    /// A-123 · Xóa id không tồn tại không làm hỏng lời gọi: trả danh sách rỗng chứ không phải
+    /// lỗi 500. Kèm khẳng định đường xóa một <c>DELETE /api/PartyMembers/{id}</c> đã bị gỡ ở
+    /// T34, để không ai vô tình dựng lại.
+    /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
     [Fact]
-    public async Task A123_Xoa_id_khong_ton_tai_tra_loi_nghiep_vu()
+    public async Task A123_Xoa_id_khong_ton_tai_va_duong_xoa_mot_da_bi_go()
     {
         using HttpClient client = await SeedCoreAndLoginAsync();
+        int before = await QcDb.CountMembersAsync(factory);
 
-        using HttpResponseMessage response = await client.DeleteAsync($"{QcEndpoints.PartyMembers}/{Guid.NewGuid()}");
+        JsonElement data = await QcApi.PostDataAsync(
+            client, QcEndpoints.PartyMembersDeleteMany, new { ids = new[] { Guid.NewGuid().ToString() } });
 
-        await QcApi.AssertErrorAsync(response, HttpStatusCode.BadRequest, QcMessages.MemberNotFound);
+        data.Array("ids").Count.ShouldBe(0);
+        (await QcDb.CountMembersAsync(factory)).ShouldBe(before);
+
+        using HttpResponseMessage removed =
+            await client.DeleteAsync($"{QcEndpoints.PartyMembers}/{Guid.NewGuid()}");
+
+        removed.StatusCode.ShouldBeOneOf(HttpStatusCode.NotFound, HttpStatusCode.MethodNotAllowed);
     }
 
     /// <summary>

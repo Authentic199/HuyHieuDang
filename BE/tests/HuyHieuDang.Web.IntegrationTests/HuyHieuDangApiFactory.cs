@@ -1,10 +1,14 @@
 using HuyHieuDang.Core.Common.Interfaces;
 using HuyHieuDang.Infrastructure;
+using HuyHieuDang.Infrastructure.Facades.Persistence.Contexts;
+using HuyHieuDang.Infrastructure.Facades.Persistence.Interceptors;
 using HuyHieuDang.Infrastructure.Modules.Users.Seeders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 
 namespace HuyHieuDang.Web.IntegrationTests;
@@ -34,6 +38,12 @@ public sealed class HuyHieuDangApiFactory : WebApplicationFactory<Program>, IAsy
     /// Ngày "hôm nay" mà mọi bài kiểm thử trong bộ này nhìn thấy.
     /// </summary>
     public static readonly DateOnly FixedToday = new(2026, 9, 19);
+
+    /// <summary>
+    /// Câu lệnh SQL mà EF Core đã gửi xuống PostgreSQL trên host này (T51). Bài kiểm thử gọi
+    /// <see cref="SqlCapture.Clear"/> ngay trước lời gọi cần đo.
+    /// </summary>
+    public SqlCapture CapturedSql { get; } = new();
 
     private const string JwtRefreshKey = "khoa-refresh-chi-dung-cho-kiem-thu-tich-hop-du-dai-256-bit";
 
@@ -74,6 +84,20 @@ public sealed class HuyHieuDangApiFactory : WebApplicationFactory<Program>, IAsy
         builder.UseEnvironment("Development");
 
         builder.ConfigureTestServices(services =>
-            services.AddSingleton<IDateTimeProvider>(new FixedDateTimeProvider(FixedToday)));
+        {
+            services.AddSingleton<IDateTimeProvider>(new FixedDateTimeProvider(FixedToday));
+
+            // EF Core 8 chưa lấy IInterceptor từ DI, mà AddDbContextPool lại đăng ký
+            // DbContextOptions bằng TryAdd, nên phải gỡ bản cũ rồi dựng lại kèm bộ ghi câu lệnh (T51).
+            services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
+            services.RemoveAll<DbContextOptions>();
+            services.AddDbContextPool<ApplicationDbContext>((provider, options) => options
+                .UseNpgsql(
+                    database.GetConnectionString(),
+                    npgsql => npgsql.MigrationsAssembly("HuyHieuDang.Migrators.PostgreSql"))
+                .AddInterceptors(
+                    provider.GetRequiredService<UpdatedAtInterceptor>(),
+                    new SqlCaptureInterceptor(CapturedSql)));
+        });
     }
 }

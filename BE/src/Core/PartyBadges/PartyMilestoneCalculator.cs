@@ -80,6 +80,77 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
     }
 
     /// <inheritdoc/>
+    public DateOnly GetLatestAdmissionDateForAge(DateOnly today, int age)
+    {
+        if (age < 0)
+        {
+            throw new BadRequestException("Tuổi đảng không được là số âm.");
+        }
+
+        int year = today.Year - age;
+
+        if (year < 1)
+        {
+            throw new BadRequestException($"Mốc {age} năm vượt quá lịch dương.");
+        }
+
+        DateOnly latest = BindDayMonth(today.Day, today.Month, year);
+
+        // BindDayMonth không bao giờ sinh ra 29/02, nhưng một người vào Đảng ngày 29/02 vẫn có thể
+        // tròn `age` năm đúng hôm nay khi năm đích không nhuận (QT2 lùi kỷ niệm về 28/02).
+        if (DateTime.IsLeapYear(year))
+        {
+            DateOnly leapDay = new(year, 2, 29);
+
+            if (leapDay > latest && GetAnniversary(leapDay, age) <= today)
+            {
+                latest = leapDay;
+            }
+        }
+
+        return latest;
+    }
+
+    /// <inheritdoc/>
+    public AdmissionDateRange GetAdmissionDateRangeForNextMilestone(
+        int? milestone, DateOnly today, IReadOnlyList<int> milestones)
+    {
+        ArgumentNullException.ThrowIfNull(milestones);
+
+        if (milestones.Count == 0)
+        {
+            throw new BadRequestException("Dãy mốc huy hiệu đang rỗng nên không lọc theo mốc kế tiếp được.");
+        }
+
+        // Không còn mốc kế tiếp ⟺ tuổi đảng đã đạt mốc lớn nhất ⟺ vào Đảng đủ sớm.
+        if (milestone is null)
+        {
+            return new AdmissionDateRange(null, GetLatestAdmissionDateForAge(today, milestones[^1]));
+        }
+
+        int index = -1;
+
+        for (int i = 0; i < milestones.Count && index < 0; i++)
+        {
+            if (milestones[i] == milestone.Value)
+            {
+                index = i;
+            }
+        }
+
+        if (index < 0)
+        {
+            throw new BadRequestException($"Mốc {milestone} không nằm trong dãy mốc huy hiệu hiện hành.");
+        }
+
+        // Mốc kế tiếp là `mi` ⟺ tuổi đảng thuộc [m(i-1), mi). Mốc đầu tiên không có cận trên:
+        // người có ngày chính thức ở tương lai vẫn được tính tuổi đảng 0 (QT3) nên phải nằm trong đó.
+        return new AdmissionDateRange(
+            GetLatestAdmissionDateForAge(today, milestones[index]),
+            index == 0 ? null : GetLatestAdmissionDateForAge(today, milestones[index - 1]));
+    }
+
+    /// <inheritdoc/>
     public PeriodOccurrence BindToYear(AwardPeriod period, int year)
     {
         ArgumentNullException.ThrowIfNull(period);

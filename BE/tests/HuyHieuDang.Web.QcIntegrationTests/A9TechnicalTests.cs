@@ -7,6 +7,12 @@ using System.Text.RegularExpressions;
 using HuyHieuDang.Core.Common.Interfaces;
 using HuyHieuDang.Infrastructure.Facades.Common.Services;
 using HuyHieuDang.Web.QcIntegrationTests.Support;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using PartyMemberEntity = HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities.PartyMember;
 
 namespace HuyHieuDang.Web.QcIntegrationTests;
@@ -106,38 +112,93 @@ public sealed class A9TechnicalTests
     }
 
     /// <summary>
-    /// A-903 · Biến môi trường ép ngày **không** được có hiệu lực ở Production. Hiện <c>BE/src</c>
-    /// không đọc biến này ở bất cứ đâu, nên yêu cầu bảo mật của T-FIX-4 đang được thỏa mãn.
+    /// A-903 · Biến môi trường ép ngày **không** được có hiệu lực ở Production (T-FIX-4). Ca này
+    /// kiểm **hành vi** của provider thời gian, không kiểm sự vắng mặt của một chuỗi: một hệ thống
+    /// sản phẩm cho phép bên ngoài dịch chuyển "hôm nay" là lỗi bảo mật, và chỉ hành vi mới nói
+    /// được điều đó. Ba khẳng định bắt buộc — Production bỏ qua biến, ngoài Production biến có
+    /// hiệu lực, giá trị sai định dạng bị bỏ qua mà không làm sập ứng dụng — cộng một phần quét
+    /// tĩnh đã thu hẹp lại thành đúng thứ nó bảo vệ: không ai được rải đường ép ngày ra ngoài
+    /// tầng provider.
     /// </summary>
     [Fact]
     public void A903_Bien_ep_ngay_khong_co_hieu_luc_o_Production()
     {
+        // Một ngày đã qua hẳn: không bao giờ trùng "hôm nay" thật, nên khẳng định "Production đã
+        // bỏ qua biến" không đổi kết quả theo ngày chạy ca.
+        const string pastDay = "1999-01-04";
+
+        // 1 · Production + biến đặt đúng định dạng → vẫn là ngày thật, kèm cảnh báo mức Warning.
+        QcClockReading production = ReadProvider(Environments.Production, pastDay);
+
+        production.Today.ShouldBe(production.RealToday);
+        production.Today.ShouldNotBe(new DateOnly(1999, 1, 4));
+        production.Warnings.ShouldContain(
+            warning => warning.Contains(TestTodayVariable, StringComparison.Ordinal),
+            $"Production bỏ qua {TestTodayVariable} thì phải ghi log mức Warning (T-FIX-4)");
+
+        // 2 · Ngoài Production + biến đặt đúng định dạng → ngày bị ép, cả Today lẫn Now.
+        QcClockReading development = ReadProvider(Environments.Development, "2026-10-15");
+
+        development.Today.ShouldBe(new DateOnly(2026, 10, 15));
+        DateOnly.FromDateTime(development.Now.DateTime).ShouldBe(new DateOnly(2026, 10, 15));
+        development.Warnings.ShouldContain(
+            warning => warning.Contains(TestTodayVariable, StringComparison.Ordinal));
+
+        // 3 · Giá trị sai định dạng → bỏ qua, dùng ngày thật, không ném ngoại lệ.
+        foreach (string malformed in new[] { "15/10/2026", "hôm nay", "2026-13-45", "2026-10-15T09:30:00" })
+        {
+            QcClockReading broken = ReadProvider(Environments.Development, malformed);
+
+            broken.Today.ShouldBe(broken.RealToday, $"giá trị \"{malformed}\" phải bị bỏ qua");
+            broken.Warnings.ShouldContain(
+                warning => warning.Contains(TestTodayVariable, StringComparison.Ordinal), malformed);
+        }
+
+        // 4 · Phần tĩnh đã thu hẹp: chỉ hai file của tầng provider được nhắc tới biến này. Danh
+        // sách viết cứng, không ký tự đại diện — thêm một nơi đọc biến là phải qua mắt QC.
+        string[] allowed =
+        {
+            Path.Combine("BE", "src", "Infrastructure", "Facades", "Common", "Startup.cs"),
+            Path.Combine("BE", "src", "Infrastructure", "Facades", "Common", "Services", "DateTimeProvider.cs"),
+        };
+
         List<string> readers = Directory
             .EnumerateFiles(QcPaths.BackendSource, "*.cs", SearchOption.AllDirectories)
             .Where(file => File.ReadAllText(file).Contains(TestTodayVariable, StringComparison.Ordinal))
             .Select(file => Path.GetRelativePath(QcPaths.RepositoryRoot, file))
+            .Where(file => !allowed.Contains(file, StringComparer.Ordinal))
             .ToList();
 
         readers.ShouldBeEmpty(
-            $"{TestTodayVariable} được đọc ở đây — phải chứng minh thêm rằng Production bỏ qua nó");
+            $"chỉ tầng provider được đọc {TestTodayVariable}; thêm nơi khác là mở thêm đường ép ngày");
     }
 
     /// <summary>
-    /// A-903b · Mặt còn lại của T-FIX-4: ngoài Production, biến môi trường phải ép được "hôm nay"
-    /// để Playwright chạy được ở T28. Hiện chưa cài đặt nên ca này để <c>Skip</c> kèm mã lỗi.
+    /// A-903b · Mặt còn lại của T-FIX-4, đo qua HTTP trên host thật: ngoài Production, biến môi
+    /// trường phải ép được "hôm nay" cho cả tiến trình để Playwright chạy được ở T28. Ca này cố ý
+    /// **không** dùng host dùng chung — host đó thay <see cref="IDateTimeProvider"/> bằng
+    /// <c>QcClock</c> nên sẽ luôn trả ngày của đồng hồ giả, tức đo nhầm thứ khác.
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
-    [Fact(Skip = "QC-T27-01 · BE chưa đọc HUYHIEUDANG_TEST_TODAY nên T-FIX-4 chưa dùng được cho T28")]
+    [Fact]
     public async Task A903b_Ngoai_Production_bien_ep_ngay_phai_co_hieu_luc()
     {
-        Environment.SetEnvironmentVariable(TestTodayVariable, "2026-10-15");
+        const string forcedDay = "2026-10-15";
+
+        await QcDb.SeedCoreAsync(factory);
+
+        // Provider là singleton, đọc biến đúng một lần lúc được tạo — đặt biến trước khi dựng host.
+        Environment.SetEnvironmentVariable(TestTodayVariable, forcedDay);
 
         try
         {
-            using HttpClient client = await QcApi.LoginAsync(factory);
+            using WebApplicationFactory<Program> host = factory.WithRealDateTimeProvider();
+            using HttpClient client = await QcApi.LoginToHostAsync(host);
+
             JsonElement data = await QcApi.GetDataAsync(client, QcEndpoints.Dashboard);
 
-            data.Str("today").ShouldBe("2026-10-15");
+            data.Str("today").ShouldBe(forcedDay);
+            data.Int("currentYear").ShouldBe(2026);
         }
         finally
         {
@@ -228,7 +289,6 @@ public sealed class A9TechnicalTests
             await client.PostAsJsonAsync(QcEndpoints.PartyMembers, new { fullName = string.Empty, officialAdmissionDate = "1996-01-01" }),
             await client.PostAsJsonAsync(QcEndpoints.PartyMembers, new { fullName = "Người Tương Lai", officialAdmissionDate = "2030-01-01" }),
             await client.PostAsJsonAsync(QcEndpoints.PartyMembers, new { fullName = "Người Sinh Sau", dateOfBirth = "2000-01-01", officialAdmissionDate = "1996-01-01" }),
-            await client.DeleteAsync($"{QcEndpoints.PartyMembers}/{Guid.NewGuid()}"),
             await client.GetAsync($"{QcEndpoints.AwardPeriods}/{Guid.NewGuid()}"),
             await client.PostAsJsonAsync(QcEndpoints.AwardPeriods, new { name = "Đợt 7/11", fromDay = 1, fromMonth = 10, toDay = 7, toMonth = 11 }),
             await client.PostAsJsonAsync(QcEndpoints.AwardPeriods, new { name = "Đợt sai ngày", fromDay = 31, fromMonth = 4, toDay = 7, toMonth = 11 }),
@@ -309,6 +369,37 @@ public sealed class A9TechnicalTests
         }
     }
 
+    /// <summary>
+    /// Dựng provider thật qua đúng hàm khởi tạo mà <c>Facades/Common/Startup.cs</c> dùng — nhận
+    /// <see cref="IHostEnvironment"/> rồi tự đọc biến môi trường của tiến trình — và thu lại mọi
+    /// dòng log mức <c>Warning</c> nó ghi ra. Cố ý không đi tắt qua hàm khởi tạo nhận hai chuỗi:
+    /// ca A-903 phải chứng minh cả đường dây mà bộ chứa phụ thuộc thật sự chạy.
+    /// </summary>
+    /// <param name="environmentName">Tên môi trường của host.</param>
+    /// <param name="testTodayValue">Giá trị đặt cho biến ép ngày.</param>
+    /// <returns>Ngày, mốc thời gian và các cảnh báo provider ghi ra.</returns>
+    private static QcClockReading ReadProvider(string environmentName, string? testTodayValue)
+    {
+        Serilog.ILogger previousLogger = Log.Logger;
+        WarningCapture capture = new();
+
+        Environment.SetEnvironmentVariable(TestTodayVariable, testTodayValue);
+        Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Sink(capture).CreateLogger();
+
+        try
+        {
+            IDateTimeProvider provider = new DateTimeProvider(new FixedHostEnvironment(environmentName));
+
+            // Ngày thật đọc trong cùng một nhịp, để phép so "bằng ngày thật" không vướng nửa đêm.
+            return new QcClockReading(provider.Today, provider.Now, new DateTimeProvider().Today, capture.Warnings);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(TestTodayVariable, null);
+            Log.Logger = previousLogger;
+        }
+    }
+
     private static IEnumerable<(string Field, string Value)> FindDates(JsonElement element, string[] fields)
     {
         switch (element.ValueKind)
@@ -343,6 +434,61 @@ public sealed class A9TechnicalTests
 
             default:
                 break;
+        }
+    }
+
+    /// <summary>Kết quả một lần đọc provider thời gian trong ca A-903.</summary>
+    /// <param name="Today">Ngày provider trả về.</param>
+    /// <param name="Now">Mốc thời gian provider trả về.</param>
+    /// <param name="RealToday">Ngày thật, đọc từ provider không ép.</param>
+    /// <param name="Warnings">Các dòng log mức <c>Warning</c> ghi được trong lần đọc đó.</param>
+    private sealed record QcClockReading(
+        DateOnly Today, DateTimeOffset Now, DateOnly RealToday, IReadOnlyList<string> Warnings);
+
+    /// <summary>Môi trường host giả, chỉ để đổi <c>EnvironmentName</c>.</summary>
+    private sealed class FixedHostEnvironment : IHostEnvironment
+    {
+        public FixedHostEnvironment(string environmentName)
+        {
+            EnvironmentName = environmentName;
+        }
+
+        public string EnvironmentName { get; set; }
+
+        public string ApplicationName { get; set; } = "HuyHieuDang.Web.QcIntegrationTests";
+
+        public string ContentRootPath { get; set; } = AppContext.BaseDirectory;
+
+        public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
+    }
+
+    /// <summary>Sink Serilog thu lại mọi dòng log từ mức <c>Warning</c> trở lên.</summary>
+    private sealed class WarningCapture : ILogEventSink
+    {
+        private readonly List<string> warnings = new();
+
+        public IReadOnlyList<string> Warnings
+        {
+            get
+            {
+                lock (warnings)
+                {
+                    return warnings.ToList();
+                }
+            }
+        }
+
+        public void Emit(LogEvent logEvent)
+        {
+            ArgumentNullException.ThrowIfNull(logEvent);
+
+            if (logEvent.Level >= LogEventLevel.Warning)
+            {
+                lock (warnings)
+                {
+                    warnings.Add(logEvent.RenderMessage());
+                }
+            }
         }
     }
 }
