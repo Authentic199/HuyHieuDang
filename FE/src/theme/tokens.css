@@ -13,8 +13,12 @@
   --hhd-ink: #1c1c1e;
   --hhd-canvas: #f7f8fa;
   --hhd-success: #1f6b4a;
+  --hhd-success-soft: #e9f4ee;
+  --hhd-success-border: #a8cdbb;
   --hhd-warning: #9a6b1f;
   --hhd-danger: #8e1d3a;
+  --hhd-danger-soft: #fdecef;
+  --hhd-danger-border: #e6b3bf;
   --hhd-info: #2f4f7a;
 
   --hhd-text-secondary: #55575c;

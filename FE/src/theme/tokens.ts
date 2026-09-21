@@ -29,8 +29,14 @@ export const color = {
   /** Vàng nhạt — nền nhấn nhẹ, số thứ tự bước */
   goldSoft: '#fdf5d8',
   success: '#1f6b4a',
+  /** Nền và viền của dải báo kết quả đọc file thành công */
+  successSoft: '#e9f4ee',
+  successBorder: '#a8cdbb',
   warning: '#9a6b1f',
   danger: '#8e1d3a',
+  /** Nền và viền của dải báo cả file đều lỗi */
+  dangerSoft: '#fdecef',
+  dangerBorder: '#e6b3bf',
   info: '#2f4f7a',
 } as const;
 

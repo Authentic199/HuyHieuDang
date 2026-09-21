@@ -277,25 +277,93 @@
 /* Bước 2 — Xem trước                                                */
 /* ---------------------------------------------------------------- */
 
+/* Dải tổng kết: nói ngay "đọc file xong" bằng hai vế ✓ / ✕. Nền xanh khi còn
+   dòng nạp được, nền đỏ khi cả file đều lỗi — lúc đó không có gì để nạp. */
 .hhd-import__summary {
   display: flex;
-  gap: var(--hhd-space-md);
+  flex-wrap: wrap;
   align-items: center;
+  gap: var(--hhd-space-md);
   padding: 14px 20px;
-  background: var(--hhd-gold-soft);
-  border: 1px solid #a9790a;
+  border: 1px solid transparent;
   border-radius: var(--hhd-radius-card);
   font-size: 14px;
 }
 
-.hhd-import__summary-number {
-  font: 700 24px/32px var(--hhd-font-serif);
-  color: #7a5a00;
+.hhd-import__summary--ok {
+  background: var(--hhd-success-soft);
+  border-color: var(--hhd-success-border);
+}
+
+.hhd-import__summary--bad {
+  background: var(--hhd-danger-soft);
+  border-color: var(--hhd-danger-border);
+}
+
+.hhd-import__summary-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hhd-space-xl);
+}
+
+.hhd-import__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+  font-size: 14px;
+}
+
+.hhd-import__stat b {
+  font-weight: 700;
+  font-size: 22px;
   font-variant-numeric: tabular-nums;
 }
 
-.hhd-import__summary-note {
+.hhd-import__stat .anticon {
+  font-size: 18px;
+}
+
+/* Vách ngăn giữa hai vế, đặt trên vế thứ hai. */
+.hhd-import__stat + .hhd-import__stat {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  padding-left: var(--hhd-space-xl);
+}
+
+.hhd-import__stat--ok {
+  color: var(--hhd-success);
+}
+
+.hhd-import__stat--err {
+  color: var(--hhd-danger);
+}
+
+/* Không có dòng nào hợp lệ: con số 0 vẫn phải đọc được nhưng không xưng thành công. */
+.hhd-import__stat--muted {
   color: var(--hhd-text-secondary);
+}
+
+.hhd-import__stat--muted .anticon {
+  color: var(--hhd-text-tertiary);
+}
+
+/* Không có dòng lỗi nào: dấu ✕ để xám. Bôi đỏ một con số 0 là báo động giả. */
+.hhd-import__stat--off,
+.hhd-import__stat--off .anticon {
+  color: var(--hhd-text-tertiary);
+}
+
+.hhd-import__summary-note {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+  margin-left: auto;
+  color: var(--hhd-text-secondary);
+}
+
+.hhd-import__summary-note .anticon {
+  font-size: 18px;
+  color: var(--hhd-warning);
 }
 
 .hhd-import__panel {
@@ -326,6 +394,12 @@
 
 .hhd-import__tabs.ant-tabs .ant-tabs-content-holder {
   overflow: auto;
+}
+
+/* Ô tìm nằm ngay hàng tab (tabBarExtraContent) — panel đang thấp, bảng cần chỗ. */
+.hhd-import__search {
+  width: 280px;
+  margin-right: 20px;
 }
 
 .hhd-import__tab {
