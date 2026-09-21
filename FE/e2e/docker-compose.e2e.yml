@@ -5,8 +5,8 @@
 # chạm vào dữ liệu ai đang dùng. Cổng cũng lệch hẳn vì lý do đó.
 #
 # Ngày "hôm nay" của Backend bị ép bằng HUYHIEUDANG_TEST_TODAY theo T-FIX-4 của
-# docs/test-plan.md. Backend hiện CHƯA đọc biến này (lỗi QC-T27-01) — ca E0-01
-# phát hiện và báo ngay khi chạy.
+# docs/test-plan.md. Đổi mốc thì phải dựng lại dịch vụ `be` — biến nằm trong
+# container, đổi E2E_TODAY một mình không tới được máy chủ đang chạy.
 name: huyhieudang-e2e
 
 services:

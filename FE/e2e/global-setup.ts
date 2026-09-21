@@ -75,8 +75,9 @@ export default async function globalSetup(): Promise<void> {
     lines.push('  Đồng hồ        : ĐÃ ĐÓNG BĂNG đúng mốc (T-FIX-4 hoạt động)');
   } else if (isInSafeWindow(serverToday)) {
     lines.push(
-      '  Đồng hồ        : CHƯA đóng băng được — Backend bỏ qua HUYHIEUDANG_TEST_TODAY',
-      '                   (lỗi QC-T27-01 / QC-T28-01, ca E0-01 báo chi tiết).',
+      '  Đồng hồ        : CHƯA đóng băng — máy chủ không nhận HUYHIEUDANG_TEST_TODAY.',
+      '                   Thường là do dịch vụ `be` chưa dựng lại sau khi đổi E2E_TODAY;',
+      '                   ca E0-01 sẽ đỏ và nói rõ mốc lệch bao nhiêu.',
       `                   Ngày máy chủ vẫn nằm trong khoảng an toàn ${SAFE_WINDOW.from} … ${SAFE_WINDOW.to}`,
       '                   nên mọi con số của bộ dữ liệu biên còn nguyên giá trị;',
       '                   riêng số ngày đếm ngược tính theo ngày máy chủ báo về.',

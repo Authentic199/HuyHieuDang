@@ -1,5 +1,6 @@
 import { expect, test } from '../fixtures/app';
 import { FIXED_TODAY, SAFE_WINDOW, isInSafeWindow } from '../fixtures/clock';
+import { T0 } from '../fixtures/expected';
 
 /**
  * Tiền đề của cả sáu luồng — kiểm ràng buộc T-FIX trước khi kiểm nghiệp vụ.
@@ -10,21 +11,15 @@ import { FIXED_TODAY, SAFE_WINDOW, isInSafeWindow } from '../fixtures/clock';
  */
 test.describe('E0 · Tiền đề đóng băng thời gian (T-FIX)', () => {
   /**
-   * E0-01 · T-FIX-4 — Backend phải đọc `HUYHIEUDANG_TEST_TODAY` khi không chạy
-   * ở Production, để Playwright ép được "hôm nay".
+   * E0-01 · T-FIX-4 — Backend đọc `HUYHIEUDANG_TEST_TODAY` khi không chạy ở
+   * Production, để Playwright ép được "hôm nay".
    *
-   * ĐÃ SỬA ở PR #38 — xác minh ngày 20/09/2026: dựng lại stack e2e từ nhánh
-   * đó thì máy chủ báo đúng 2026-09-19 và ca này xanh. Gỡ `skip` ngay khi PR
-   * vào `main`; giữ `skip` lúc này để `main` không đỏ.
-   *
-   * Gốc lỗi QC-T28-01 (trùng gốc với QC-T27-01, ca A-903b ở
-   * `BE/tests/HuyHieuDang.Web.QcIntegrationTests/A9TechnicalTests.cs`).
-   * `BE/src` không đọc biến này ở bất cứ đâu, nên `docker-compose.e2e.yml` đặt
-   * biến mà máy chủ vẫn trả ngày thật của máy. Bỏ `skip` là ca đỏ lại ngay.
+   * Ca này từng để `skip` vì lỗi QC-T28-01 (cùng gốc với QC-T27-01). Lỗi đã sửa
+   * ở PR #38 và mặt Backend có ca A-903b canh; `skip` giữ lại sau đó chỉ là nợ
+   * chưa dọn. Đã xác minh trên stack e2e ngày 21/09/2026: máy chủ báo đúng
+   * 2026-09-19. Nay ca chạy thật.
    */
-  test.skip('E0-01 · Backend đóng băng "hôm nay" theo HUYHIEUDANG_TEST_TODAY [QC-T28-01]', async ({
-    api,
-  }) => {
+  test('E0-01 · Backend đóng băng "hôm nay" theo HUYHIEUDANG_TEST_TODAY', async ({ api }) => {
     const dashboard = await api.dashboard();
     expect(
       dashboard.today,
@@ -33,11 +28,20 @@ test.describe('E0 · Tiền đề đóng băng thời gian (T-FIX)', () => {
   });
 
   /**
-   * E0-02 · Chừng nào T-FIX-4 chưa có, bộ kiểm thử vẫn phải tất định: ngày máy
-   * chủ bắt buộc nằm trong khoảng mà mọi con số của bộ dữ liệu biên còn nguyên.
-   * Ra ngoài khoảng đó thì dừng ngay, thay vì để sáu luồng đỏ vì lý do khác.
+   * E0-02 · Lưới an toàn cho mốc mặc định: mọi con số của bộ dữ liệu biên chỉ
+   * đúng nguyên khi ngày máy chủ nằm trong một khoảng hẹp quanh T0. Ra ngoài
+   * khoảng đó thì dừng ngay ở đây, thay vì để sáu luồng đỏ vì lý do khác.
+   *
+   * Chạy có chủ đích ở mốc khác (`E2E_TODAY=2026-10-15` cho E-903,
+   * `2026-12-01` cho E-904) thì ca này tự bỏ qua: lúc đó bộ số ĐƯỢC PHÉP đổi,
+   * và oracle `core_default_T1` / `core_default_T2` mới là thước đo.
    */
   test('E0-02 · Ngày máy chủ nằm trong khoảng an toàn của bộ dữ liệu biên', async ({ api }) => {
+    test.skip(
+      FIXED_TODAY !== T0,
+      `Đang chạy có chủ đích ở mốc ${FIXED_TODAY}, không phải mốc mặc định ${T0}.`,
+    );
+
     const dashboard = await api.dashboard();
     expect(
       isInSafeWindow(dashboard.today),

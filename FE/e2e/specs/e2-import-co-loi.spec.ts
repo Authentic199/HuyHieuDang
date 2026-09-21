@@ -190,7 +190,9 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     await expect(dropzone).toContainText(ERROR_FILE);
 
     await page.getByRole('button', { name: 'Tiếp tục ›' }).click();
-    await expect(page.locator('.hhd-import__summary')).toContainText(`${expectedValid} dòng hợp lệ`);
+    await expect(page.locator('.hhd-import__summary')).toContainText(
+      `${expectedValid} dòng hợp lệ`,
+    );
 
     await page.getByRole('button', { name: 'Hủy', exact: true }).click();
     await expect(page).toHaveURL(/\/dang-vien$/);
