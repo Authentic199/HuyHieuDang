@@ -17,6 +17,12 @@ public static class QcMessages
     /// <summary>Chưa nhập Họ tên.</summary>
     public const string MemberRequiredFullName = "Mes.PartyMember.Required.FullName";
 
+    /// <summary>Họ tên vượt 200 ký tự.</summary>
+    public const string MemberOverLengthFullName = "Mes.PartyMember.OverLength.FullName";
+
+    /// <summary>Gọi xóa nhiều mà danh sách id rỗng.</summary>
+    public const string MemberRequiredIds = "Mes.PartyMember.Required.Ids";
+
     /// <summary>Chưa nhập Ngày vào Đảng chính thức.</summary>
     public const string MemberRequiredAdmissionDate = "Mes.PartyMember.Required.OfficialAdmissionDate";
 
@@ -26,11 +32,17 @@ public static class QcMessages
     /// <summary>Ngày sinh phải trước Ngày vào Đảng chính thức.</summary>
     public const string MemberInvalidDateOfBirth = "Mes.PartyMember.Invalid.DateOfBirth";
 
+    /// <summary>Giá trị lọc Mốc kế tiếp không hợp lệ (T51).</summary>
+    public const string MemberInvalidNextMilestone = "Mes.PartyMember.Invalid.NextMilestone";
+
     /// <summary>Không tìm thấy đợt trao huy hiệu.</summary>
     public const string PeriodNotFound = "Mes.AwardPeriod.NotFound";
 
     /// <summary>Chưa nhập Tên đợt.</summary>
     public const string PeriodRequiredName = "Mes.AwardPeriod.Required.Name";
+
+    /// <summary>Tên đợt vượt 100 ký tự.</summary>
+    public const string PeriodOverLengthName = "Mes.AwardPeriod.OverLength.Name";
 
     /// <summary>Tên đợt đã tồn tại.</summary>
     public const string PeriodRepeatedName = "Mes.AwardPeriod.Repeated.Name";
@@ -52,6 +64,9 @@ public static class QcMessages
 
     /// <summary>Mốc bắt đầu phải nhỏ hơn hoặc bằng mốc kết thúc.</summary>
     public const string SettingInvalidRange = "Mes.AppSetting.Invalid.Range";
+
+    /// <summary>Tên đơn vị vượt 200 ký tự.</summary>
+    public const string SettingOverLengthUnitName = "Mes.AppSetting.OverLength.UnitName";
 
     /// <summary>Chỉ nhận file .xlsx.</summary>
     public const string ImportInvalidExtension = "Mes.Import.Invalid.Extension";
@@ -105,15 +120,19 @@ public static class QcMessages
         "Mes.PartyMember.Import.Successfully",
         MemberNotFound,
         MemberRequiredFullName,
+        MemberOverLengthFullName,
         MemberRequiredAdmissionDate,
         MemberInvalidAdmissionDate,
         MemberInvalidDateOfBirth,
         "Mes.PartyMember.Invalid.Gender",
+        MemberInvalidNextMilestone,
+        MemberRequiredIds,
         "Mes.AwardPeriod.Create.Successfully",
         "Mes.AwardPeriod.Update.Successfully",
         "Mes.AwardPeriod.Delete.Successfully",
         PeriodNotFound,
         PeriodRequiredName,
+        PeriodOverLengthName,
         PeriodRepeatedName,
         PeriodInvalidFromDate,
         PeriodInvalidToDate,
@@ -122,6 +141,7 @@ public static class QcMessages
         SettingInvalidEndYears,
         SettingInvalidStepYears,
         SettingInvalidRange,
+        SettingOverLengthUnitName,
         ImportInvalidExtension,
         ImportInvalidFileSize,
         ImportInvalidColumns,
@@ -129,6 +149,7 @@ public static class QcMessages
         ImportInvalidNoDataRows,
         DashboardNoUpcomingPeriod,
         QueryInvalidYear,
+        CommonInvalidParameter,
     };
 
     /// <summary>
