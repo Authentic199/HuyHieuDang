@@ -8,6 +8,9 @@ import type { AwardPeriodResponse } from '../../../types/domain';
 /**
  * Đầu trang chi tiết đợt theo artboard "Màn 5 — Chi tiết đợt": breadcrumb, tên
  * đợt cỡ lớn kèm khoảng ngày hằng năm, nút Sửa đợt và Xóa ở bên phải.
+ *
+ * Đợt vắt qua 31/12 phải đọc "năm sau" đúng như tab Thông tin ngay bên dưới
+ * (QT6, UC-34) — một màn hình không được nói hai kiểu về cùng một khoảng ngày.
  */
 
 interface PeriodDetailHeaderProps {
@@ -46,7 +49,8 @@ export function PeriodDetailHeader({ period, onEdit, onDelete }: PeriodDetailHea
             <>
               {period.name}{' '}
               <span className="hhd-period-detail__range">
-                {period.fromDisplay} – {period.toDisplay} hằng năm
+                {period.fromDisplay} – {period.toDisplay}
+                {period.spansNextYear ? ' năm sau, hằng năm' : ' hằng năm'}
               </span>
             </>
           ) : (

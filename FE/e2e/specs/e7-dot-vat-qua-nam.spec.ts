@@ -399,16 +399,13 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
  * hằng năm". Bảng đợt và tab Thông tin đều đã gắn chữ "năm sau" theo QT6, chỉ
  * `PeriodDetailHeader` còn sót.
  *
- * Ca này gắn `test.fail()`: nó ĐANG đỏ đúng như mô tả, nên cả bộ vẫn xanh và
- * vẫn giữ được bằng chứng. Khi Frontend sửa xong, Playwright sẽ báo "đáng lẽ
- * hỏng mà lại đạt" — đó là lúc bỏ dòng `test.fail()` này đi.
+ * Đã sửa ở T55 (`PeriodDetailHeader.tsx` xét `spansNextYear`), nên ca này bỏ
+ * `test.fail()` và trở thành ca canh hồi quy bình thường.
  */
 test('QC-T54-01 · Tiêu đề trang chi tiết đợt phải nói rõ Đến ngày thuộc năm sau', async ({
   page,
   api,
 }) => {
-  test.fail();
-
   await api.resetAll();
   await api.post('/AwardPeriods', { name: PERIOD, ...SPANNING });
   await signIn(page, api);
