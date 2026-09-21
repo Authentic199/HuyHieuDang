@@ -14,6 +14,11 @@ Ai merge một thay đổi đáng ghi thì ghi luôn một dòng vào mục **Ch
 
 ### Đổi
 
+- Hợp đồng API lên **v1.4**: bảng khóa thông điệp mục 1.5 có thêm cột “Khi nào Backend trả” và bảy khóa Backend đang trả mà tài liệu chưa ghi; ba mốc của Cài đặt có trần 200 năm.
+  - Thêm vào bảng 1.5: `Mes.User.Required.Username`, `Mes.User.Required.Password`, `Mes.PartyMember.OverLength.FullName`, `Mes.PartyMember.Required.Ids`, `Mes.AwardPeriod.OverLength.Name`, `Mes.AppSetting.OverLength.UnitName`, `Mes.Common.Invalid.Parameter`. Frontend thiếu khóa nào thì chỉ hiện được câu mặc định (QC-T27-07).
+  - **Mốc bắt đầu / Mốc kết thúc / Bước nhảy**: số nguyên **từ 1 đến 200** thay cho “từ 1 trở lên”, áp dụng cho cả `PUT /api/Settings` lẫn ô xem trước `GET /api/Settings/Milestones`. Vượt trần dùng đúng ba khóa sẵn có, không thêm khóa mới (QC-T27-06).
+  - Tham số sai kiểu (`?year=abc`) trả khóa `Mes.Common.Invalid.Parameter` thay cho câu tiếng Anh của khung ASP.NET (QC-T27-04).
+  - Chữ tiếng Việt của ba khóa `Mes.AppSetting.Invalid.StartYears` / `.EndYears` / `.StepYears` đổi theo trần mới — Frontend cập nhật bảng tra cho khớp.
 - Hợp đồng API lên **v1.1**: chốt 10 điểm tài liệu nghiệp vụ chưa quy định (OQ-1…OQ-10) vào mục 12, ghi 8 quyết định kỹ thuật của bộ khung Backend vào mục 13. Chi tiết trong `docs/api-contract.md` mục 15.
   - Phản hồi xem trước import đổi hình dạng: `errorRows[*].errorCode` + `field` gộp thành mảng `errorRows[*].errors[]` — một dòng lỗi trả đủ mọi lý do thay vì chỉ lý do đầu tiên.
   - Thêm khóa `Mes.Import.Invalid.NoDataRows` cho file chỉ có dòng tiêu đề; `Mes.Import.Invalid.Empty` giờ chỉ dùng cho file rỗng.
