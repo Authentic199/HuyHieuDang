@@ -10,9 +10,8 @@ import { T0 } from './expected';
  *    `docker-compose.e2e.yml`.
  *  - Trình duyệt: `page.clock.install` (T-FIX-5), đặt trong fixture `app.ts`.
  *
- * Backend hiện CHƯA đọc biến môi trường đó — lỗi QC-T27-01, ca A-903b của
- * `BE/tests/HuyHieuDang.Web.QcIntegrationTests/A9TechnicalTests.cs` đang để
- * `Skip` vì đúng lý do này. Ca E0-01 của bộ này phát hiện lại ở tầng E2E.
+ * Backend đọc biến đó từ PR #38; ca A-903b ở tầng tích hợp và ca E0-01 ở tầng
+ * này cùng canh, nên một lần chạy mà đồng hồ trôi là biết ngay.
  */
 
 /** Mốc thời gian bộ kiểm thử muốn ép. Mặc định T0 = 19/09/2026. */
@@ -30,8 +29,8 @@ export const FIXED_INSTANT = `${FIXED_TODAY}T08:00:00+07:00`;
  * không đợt nào đổi trạng thái, danh sách đủ điều kiện và badge giữ nguyên —
  * chỉ số ngày đếm ngược tới Đợt 7/11 là thay đổi.
  *
- * Nhờ vậy bộ kiểm thử vẫn chạy được khi Backend chưa đọc được biến ép ngày,
- * và chỉ đúng một giá trị duy nhất phải tính theo ngày máy chủ báo về.
+ * Khoảng này là lưới an toàn cho mốc mặc định T0. Chạy có chủ đích ở mốc khác
+ * (E-903, E-904) thì ca E0-02 tự bỏ qua — lúc đó bộ số được phép đổi.
  */
 export const SAFE_WINDOW = { from: '2026-09-11', to: '2026-09-29' } as const;
 

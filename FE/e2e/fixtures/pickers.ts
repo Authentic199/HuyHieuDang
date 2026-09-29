@@ -7,23 +7,10 @@ import { expect, type Locator, type Page } from '@playwright/test';
  * mở lịch rồi bấm đúng ô ngày, đúng như cán bộ thao tác thật. Lịch của modal
  * Đợt bị khóa trong năm nhuận mẫu 2024 (chỉ lưu ngày/tháng theo QT6), nên mọi
  * ô ngày ở đó mang thuộc tính `title` dạng `2024-MM-dd`.
+ *
+ * Mọi thứ ở đây bám vào `title`, không bám vào chữ hiển thị: giao diện chạy
+ * locale `vi_VN`, đầu lịch in "Th 01" chứ không phải "Jan".
  */
-
-/** Chữ viết tắt tháng mà rc-picker in ra ở đầu bảng lịch. */
-const MONTH_LABELS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
@@ -32,6 +19,18 @@ function pad(value: number): string {
 /** Bảng lịch đang mở. */
 function openPanel(page: Page): Locator {
   return page.locator('.ant-picker-dropdown').last();
+}
+
+/**
+ * Tháng đang hiển thị, đọc từ thuộc tính `title` của một ô ngày bất kỳ trong bảng.
+ *
+ * Cố ý KHÔNG đọc chữ ở đầu lịch: giao diện chạy locale `vi_VN` nên chỗ đó in
+ * "Th 01", không phải "Jan". `title` luôn là `yyyy-MM-dd` bất kể ngôn ngữ.
+ */
+async function currentMonthOf(panel: Locator): Promise<number> {
+  const title = await panel.locator('td.ant-picker-cell-in-view').first().getAttribute('title');
+
+  return title ? Number(title.slice(5, 7)) : 0;
 }
 
 /**
@@ -49,14 +48,17 @@ export async function pickDayMonth(
   const panel = openPanel(page);
   await expect(panel).toBeVisible();
 
-  const header = panel.locator('.ant-picker-header-view');
-  const current = (await header.innerText()).trim();
-  const currentMonth = MONTH_LABELS.findIndex((label) => current.startsWith(label)) + 1;
+  // Bấm từng nhịp một rồi đọc lại tháng, thay vì tính một lần rồi bấm mù: lịch
+  // bị khóa trong năm 2024 nên nhịp ở hai đầu năm có thể không nhúc nhích.
+  for (let guard = 0; guard < 12; guard += 1) {
+    const current = await currentMonthOf(panel);
+    if (current === month) {
+      break;
+    }
 
-  const steps = currentMonth > 0 ? month - currentMonth : 0;
-  const button = steps >= 0 ? '.ant-picker-header-next-btn' : '.ant-picker-header-prev-btn';
-  for (let index = 0; index < Math.abs(steps); index += 1) {
+    const button = current < month ? '.ant-picker-header-next-btn' : '.ant-picker-header-prev-btn';
     await panel.locator(button).click();
+    await expect.poll(async () => currentMonthOf(panel), { timeout: 5_000 }).not.toBe(current);
   }
 
   const cell = panel.locator(
