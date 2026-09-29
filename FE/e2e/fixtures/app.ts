@@ -152,13 +152,22 @@ export function modal(page: Page): Locator {
  * Ô tìm hoãn 400 ms rồi mới gọi máy chủ, nên ngay sau khi gõ bảng vẫn còn kết
  * quả cũ. Chờ đúng dòng mong đợi hiện ra thay vì chờ một quãng cố định — ca
  * E-905 cấm dùng `waitForTimeout`.
+ *
+ * Gõ xong phải KIỂM LẠI ô có giữ được chữ không rồi mới chờ bảng: chuyển menu
+ * sang màn Đảng viên xong là màn này còn dựng lại một nhịp nữa, và chữ gõ trúng
+ * vào nhịp đó bị lần dựng lại xóa sạch — ô rỗng thì bảng không bao giờ lọc và
+ * ca kiểm thử đứng chờ tới hết giờ (QC-T56-01). Gõ lại cho tới khi chữ bám được.
  */
 export async function searchMember(
   page: Page,
   keyword: string,
   expectedName: string,
 ): Promise<void> {
-  await page.getByLabel('Tìm theo họ tên').fill(keyword);
+  const box = page.getByLabel('Tìm theo họ tên');
+  await expect(async () => {
+    await box.fill(keyword);
+    await expect(box).toHaveValue(keyword, { timeout: 1_000 });
+  }).toPass({ timeout: 15_000 });
   await expect(tableRows(page).first()).toContainText(expectedName);
 }
 
