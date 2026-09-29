@@ -1,0 +1,98 @@
+# Render Blueprint — triển khai HuyHieuDang lên Render (gói Free).
+# Hướng dẫn chi tiết: docs/deploy-render.md
+#
+#   huyhieudang-api : ASP.NET Core Web API, build từ BE/Dockerfile
+#   huyhieudang-web : React + Vite, phục vụ dạng Static Site
+#   Cơ sở dữ liệu   : Neon PostgreSQL (nằm ngoài Render) — không dùng Postgres Free của Render vì bị xoá sau 30 ngày
+#
+# Biến có "sync: false" là bí mật hoặc phụ thuộc URL thật: Render hỏi giá trị ở lần tạo Blueprint đầu tiên,
+# sau đó sửa trong Dashboard > service > Environment. KHÔNG ghi giá trị bí mật vào tệp này.
+
+services:
+  # ---------------------------------------------------------------- Backend
+  - type: web
+    name: huyhieudang-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerContext: ./BE
+    dockerfilePath: ./BE/Dockerfile
+    healthCheckPath: /livez
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - BE/**
+      ignoredPaths:
+        - BE/tests/**
+        - BE/**/*.md
+    envVars:
+      # --- Môi trường chạy ---
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      # Ứng dụng nghe cổng 8080 (appsettings.json > Urls); báo cho Render định tuyến vào cổng này.
+      - key: PORT
+        value: "8080"
+      - key: TZ
+        value: Asia/Ho_Chi_Minh
+
+      # --- Cơ sở dữ liệu (Neon) ---
+      # Dạng key=value của Npgsql, KHÔNG dán nguyên URI postgresql://...
+      # Host=<ep-xxx>.<region>.aws.neon.tech;Port=5432;Database=<db>;Username=<user>;Password=<pass>;SSL Mode=Require
+      - key: DatabaseSettings__SqlSettings__ConnectionStrings__DefaultConnection
+        sync: false
+      # true: mỗi lần khởi động tự áp migration còn thiếu (xem mục Migration trong docs/deploy-render.md).
+      - key: DatabaseSettings__SqlSettings__UseAutoMigration
+        value: "true"
+
+      # --- JWT: Render tự sinh chuỗi ngẫu nhiên 256-bit ở lần tạo đầu, không đổi ở các lần deploy sau ---
+      - key: SecuritySettings__JwtSettingOptions__Default__Key
+        generateValue: true
+      - key: SecuritySettings__JwtSettingOptions__Default__RefreshKey
+        generateValue: true
+
+      # --- Tài khoản admin seed sẵn (tên đăng nhập: admin) — chỉ có tác dụng khi DB chưa có admin ---
+      - key: ADMIN_PASSWORD
+        sync: false
+
+      # --- CORS: URL của Static Site, không có dấu / ở cuối. Nhiều URL cách nhau bằng dấu ; ---
+      - key: CorsSettings__AllowedOrigins
+        sync: false
+
+      # --- Trang tài liệu API /docs (Basic Auth) ---
+      - key: SwaggerSettings__Enable
+        value: "true"
+      - key: SwaggerSettings__Credentials__Username
+        value: admin
+      - key: SwaggerSettings__Credentials__Password
+        sync: false
+
+  # ---------------------------------------------------------------- Frontend
+  - type: web
+    name: huyhieudang-web
+    runtime: static
+    buildCommand: cd FE && npm ci && npm run build
+    staticPublishPath: ./FE/dist
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - FE/**
+      ignoredPaths:
+        - FE/e2e/**
+        - FE/ui-tests/**
+        - FE/**/*.md
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Đọc lúc BUILD (Vite nhúng vào gói JS). Đổi giá trị thì phải deploy lại Static Site.
+      # Ví dụ: https://huyhieudang-api.onrender.com/api
+      - key: VITE_API_BASE_URL
+        sync: false
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      # Ứng dụng một trang: mọi đường dẫn không phải tệp tĩnh đều trả index.html
+      - type: rewrite
+        source: /*
+        destination: /index.html
