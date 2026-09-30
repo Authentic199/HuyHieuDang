@@ -220,7 +220,9 @@ export function EligibilityTab({
         isEmpty={table.filteredCount === 0}
         skeletonRows={5}
         description={
-          <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
+          <span
+            style={{ font: "700 var(--hhd-fs-22)/var(--hhd-lh-22) 'Noto Serif', Georgia, serif" }}
+          >
             {/* Rỗng do tìm / lọc là chuyện khác hẳn rỗng do năm đó không ai tròn mốc. */}
             {table.isFiltered
               ? 'Không tìm thấy đảng viên nào khớp.'

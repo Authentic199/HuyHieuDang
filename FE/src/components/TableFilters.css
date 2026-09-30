@@ -26,7 +26,7 @@
 .hhd-table-filters__count {
   margin-left: auto;
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   white-space: nowrap;
 }
 

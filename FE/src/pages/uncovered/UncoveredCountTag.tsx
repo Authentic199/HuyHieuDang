@@ -17,14 +17,14 @@ export function UncoveredCountTag({ count }: { count: number }) {
         display: 'inline-flex',
         alignItems: 'center',
         gap: 6,
-        height: 24,
+        height: 'var(--hhd-tag-height)',
         padding: '0 10px',
         borderRadius: 9999,
         whiteSpace: 'nowrap',
         background: tone.background,
         color: tone.text,
         // Artboard dùng 12px; để 14px theo quy tắc chữ tối thiểu của CLAUDE.md.
-        font: "600 14px/20px 'Noto Sans', sans-serif",
+        font: "600 var(--hhd-fs-14)/var(--hhd-lh-14) 'Noto Sans', sans-serif",
       }}
     >
       <i

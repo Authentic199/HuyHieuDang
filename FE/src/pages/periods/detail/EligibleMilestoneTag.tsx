@@ -18,16 +18,16 @@ export function EligibleMilestoneTag({ milestone }: { milestone: number }) {
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        height: 24,
+        height: 'var(--hhd-tag-height)',
         padding: '0 10px',
         borderRadius: 9999,
         whiteSpace: 'nowrap',
         background: step.background,
         boxShadow: shadow.pill,
         color: step.text,
-        // Artboard dùng 12px; ở đây để 14px theo quy tắc chữ trong bảng không
-        // nhỏ hơn 14px cho cán bộ lớn tuổi (quy tắc 1 trong CLAUDE.md).
-        font: "600 14px/20px 'Noto Sans', sans-serif",
+        // Artboard dùng 12px; ở đây đi theo thang chữ của bảng (14px ở màn cao,
+        // 13px ở thang gọn) để nhãn và chữ trong ô cùng một cỡ.
+        font: "600 var(--hhd-fs-14)/var(--hhd-lh-14) 'Noto Sans', sans-serif",
       }}
     >
       {milestone} năm

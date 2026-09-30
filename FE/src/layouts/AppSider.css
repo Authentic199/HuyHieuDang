@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 64px;
+  min-height: var(--hhd-sider-item-height);
   padding: 10px 4px;
   border: 0;
   border-radius: var(--hhd-radius-card);
@@ -51,12 +51,12 @@
 }
 
 .hhd-sider__icon {
-  font-size: 20px;
+  font-size: var(--hhd-fs-20);
   line-height: 1;
 }
 
 .hhd-sider__label {
-  font: 500 11px/14px var(--hhd-font-sans);
+  font: 500 var(--hhd-fs-11)/14px var(--hhd-font-sans);
 }
 
 .hhd-sider__item--active .hhd-sider__label {
@@ -74,7 +74,7 @@
   border-radius: var(--hhd-radius-pill);
   background: var(--hhd-gold);
   color: var(--hhd-ink);
-  font: 700 11px/18px var(--hhd-font-sans);
+  font: 700 var(--hhd-fs-11)/18px var(--hhd-font-sans);
   text-align: center;
 }
 
@@ -93,7 +93,7 @@
   border-radius: var(--hhd-radius-card);
   background: transparent;
   color: #f2c4c2;
-  font-size: 16px;
+  font-size: var(--hhd-fs-16);
   cursor: pointer;
 }
 

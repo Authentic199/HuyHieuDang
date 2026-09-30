@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { font, neutral, typography } from '../theme/tokens';
+import './PageHeading.css';
 
 interface PageHeadingProps {
   title: string;
@@ -10,27 +10,15 @@ interface PageHeadingProps {
   extra?: ReactNode;
 }
 
-/** Tiêu đề màn hình, chữ có chân 32px theo artboard. */
+/** Tiêu đề màn hình, chữ có chân 32px theo artboard (24px ở thang gọn). */
 export function PageHeading({ title, description, extra }: PageHeadingProps) {
   return (
-    <div
-      style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}
-    >
+    <div className="hhd-page-heading">
       <div>
-        <h1
-          style={{
-            margin: 0,
-            font: `${typography.headingXl.weight} ${typography.headingXl.size}px/${typography.headingXl.line}px ${font.serif}`,
-            letterSpacing: '-0.005em',
-          }}
-        >
-          {title}
-        </h1>
-        {description ? (
-          <div style={{ color: neutral.textSecondary, marginTop: 2 }}>{description}</div>
-        ) : null}
+        <h1 className="hhd-page-heading__title">{title}</h1>
+        {description ? <div className="hhd-page-heading__description">{description}</div> : null}
       </div>
-      {extra ? <div style={{ display: 'flex', gap: 8 }}>{extra}</div> : null}
+      {extra ? <div className="hhd-page-heading__extra">{extra}</div> : null}
     </div>
   );
 }

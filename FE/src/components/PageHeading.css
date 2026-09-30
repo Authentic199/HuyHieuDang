@@ -1,0 +1,27 @@
+/* Tiêu đề màn hình — chữ có chân cỡ lớn theo artboard, dùng chung cho mọi màn
+   và cho cả đầu trang chi tiết đợt. Cỡ chữ lấy từ thang trong `theme/tokens.css`
+   nên khung nhìn thấp tự lùi một nấc (32px -> 24px) mà vẫn cân với phần dưới. */
+
+.hhd-page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--hhd-space-lg);
+}
+
+.hhd-page-heading__title {
+  margin: 0;
+  font: 700 var(--hhd-fs-32) / var(--hhd-lh-32) var(--hhd-font-serif);
+  letter-spacing: -0.005em;
+}
+
+.hhd-page-heading__description {
+  color: var(--hhd-text-secondary);
+  margin-top: 2px;
+}
+
+.hhd-page-heading__extra {
+  display: flex;
+  gap: var(--hhd-space-sm);
+  flex: none;
+}

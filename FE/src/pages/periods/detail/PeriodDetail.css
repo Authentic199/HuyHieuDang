@@ -9,7 +9,9 @@
 
 /* Khoảng ngày đứng cùng dòng với tên đợt nhưng nhẹ hơn, đúng artboard. */
 .hhd-period-detail__range {
-  font: 500 16px/38px var(--hhd-font-sans);
+  /* 38px không phải nhịp chữ mà là chiều cao để chữ này căn thẳng hàng với tên
+     đợt cỡ 32px bên cạnh; ở thang gọn tên đợt còn 24px nên số này thu theo. */
+  font: 500 var(--hhd-fs-16)/var(--hhd-lh-range) var(--hhd-font-sans);
   color: var(--hhd-text-secondary);
   white-space: nowrap;
 }
@@ -35,7 +37,7 @@
 }
 
 .hhd-period-detail__tabs .ant-tabs-tab {
-  font-size: 15px;
+  font-size: var(--hhd-fs-15);
 }
 
 /* Thẻ trắng bao quanh nội dung của cả hai tab. */
@@ -58,7 +60,7 @@
 
 .hhd-period-info .ant-descriptions-item-label,
 .hhd-period-info .ant-descriptions-item-content {
-  font-size: 15px;
+  font-size: var(--hhd-fs-15);
 }
 
 /* Thanh công cụ: bộ chọn năm, khoảng ngày + nhãn ngữ cảnh, nút Xuất Excel. */
@@ -82,13 +84,13 @@
 }
 
 .hhd-eligibility__dates {
-  font: 700 16px/24px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-16)/var(--hhd-lh-16) var(--hhd-font-serif);
   white-space: nowrap;
 }
 
 .hhd-eligibility__count {
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   white-space: nowrap;
 }
 
@@ -109,6 +111,14 @@
   margin: var(--hhd-space-lg);
 }
 
+/* Bề ngang tối thiểu của bảng = tổng bề rộng các cột khai báo trong
+   `detail/EligibilityTab.tsx`, cộng 220 px cho cột Họ tên (cột duy nhất không
+   khai bề rộng). Dưới 1440 px, `theme/responsive.css` dùng biến này để bảng
+   cuộn ngang trong thẻ thay vì nén cột làm chữ gãy dòng. */
+.hhd-eligibility {
+  --hhd-table-min-width: 1147px;
+}
+
 .hhd-eligibility .ant-table-thead th {
   white-space: nowrap;
 }
@@ -124,7 +134,7 @@
   padding: 12px 16px;
   border-top: 1px solid var(--hhd-border);
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   display: flex;
   justify-content: space-between;
   gap: var(--hhd-space-lg);
@@ -132,5 +142,5 @@
 
 .hhd-eligibility__filename {
   font-family: var(--hhd-font-mono);
-  font-size: 13px;
+  font-size: var(--hhd-fs-13);
 }

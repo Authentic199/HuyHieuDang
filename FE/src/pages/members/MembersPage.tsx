@@ -372,7 +372,11 @@ export default function MembersPage() {
             skeletonRows={8}
             description={
               // Cỡ chữ và kiểu chữ lấy đúng khối giữa của artboard "3 Đảng viên trống".
-              <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
+              <span
+                style={{
+                  font: "700 var(--hhd-fs-22)/var(--hhd-lh-22) 'Noto Serif', Georgia, serif",
+                }}
+              >
                 {isFiltered ? 'Không tìm thấy ai như vậy' : 'Chưa có đảng viên nào'}
               </span>
             }
