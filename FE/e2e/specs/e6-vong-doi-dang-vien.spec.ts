@@ -63,7 +63,7 @@ async function openAddForm(page: Page) {
 async function addMember(page: Page, member: NewMember) {
   const form = await openAddForm(page);
   await form.getByLabel('Họ tên').fill(member.fullName);
-  await typeFullDate(page, form.getByLabel('Ngày vào Đảng chính thức'), member.admission);
+  await typeFullDate(page, form.getByLabel('Ngày vào Đảng (dự bị)'), member.admission);
   if (member.dateOfBirth) {
     await typeFullDate(page, form.getByLabel('Ngày sinh'), member.dateOfBirth);
   }
@@ -75,7 +75,7 @@ async function addMember(page: Page, member: NewMember) {
   await dismissToasts(page);
 }
 
-/** Sửa Ngày vào Đảng chính thức của một người đang hiện trên bảng. */
+/** Sửa Ngày vào Đảng (dự bị) của một người đang hiện trên bảng. */
 async function editAdmissionDate(
   page: Page,
   fullName: string,
@@ -84,10 +84,10 @@ async function editAdmissionDate(
 ) {
   await page.getByRole('button', { name: `Sửa ${fullName}` }).click();
   const form = modal(page);
-  // Ngày sinh phải trước Ngày chính thức, nên khi lùi ngày chính thức rất xa
+  // Ngày sinh phải trước Ngày vào Đảng (dự bị), nên khi lùi ngày vào Đảng (dự bị) rất xa
   // thì phải lùi ngày sinh theo — nếu không biểu mẫu chặn đúng theo quy tắc.
   if (dateOfBirth) await typeFullDate(page, form.getByLabel('Ngày sinh'), dateOfBirth);
-  await typeFullDate(page, form.getByLabel('Ngày vào Đảng chính thức'), admission);
+  await typeFullDate(page, form.getByLabel('Ngày vào Đảng (dự bị)'), admission);
   await form.getByRole('button', { name: 'Lưu thay đổi' }).click();
   await expect(form).toBeHidden();
   await expect(page.getByText('Đã lưu thay đổi')).toBeVisible();
@@ -146,13 +146,13 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
     await expect(page.locator('.hhd-dashboard__panel')).toContainText(SUBJECT);
   });
 
-  await test.step('E6-05 · Ngày chính thức ở tương lai bị chặn ở cả giao diện lẫn máy chủ', async () => {
+  await test.step('E6-05 · Ngày vào Đảng (dự bị) ở tương lai bị chặn ở cả giao diện lẫn máy chủ', async () => {
     const tomorrow = tomorrowOf(serverToday);
     await navItem(page, 'Đảng viên').click();
 
     const form = await openAddForm(page);
     await form.getByLabel('Họ tên').fill(`${PREFIX} Ngày Tương Lai`);
-    await form.getByLabel('Ngày vào Đảng chính thức').click();
+    await form.getByLabel('Ngày vào Đảng (dự bị)').click();
 
     const panel = page.locator('.ant-picker-dropdown').last();
     const cell = panel.locator(`td[title="${tomorrow}"]`);
@@ -173,7 +173,7 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
       })
       .then(() => null)
       .catch((reason: { status: number; body: string }) => reason);
-    expect(rejected, 'Máy chủ phải từ chối ngày chính thức ở tương lai').not.toBeNull();
+    expect(rejected, 'Máy chủ phải từ chối ngày vào Đảng (dự bị) ở tương lai').not.toBeNull();
     expect(rejected!.status).toBe(400);
     expect(rejected!.body).toContain('Mes.PartyMember.Invalid.OfficialAdmissionDate');
     expect((await api.dashboard()).memberCount).toBe(BASE_TOTAL + 1);
@@ -181,7 +181,7 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
 
   await test.step('E6-06 · Bỏ trống Họ tên thì bị chặn ngay tại biểu mẫu', async () => {
     const form = await openAddForm(page);
-    await typeFullDate(page, form.getByLabel('Ngày vào Đảng chính thức'), '01/10/1996');
+    await typeFullDate(page, form.getByLabel('Ngày vào Đảng (dự bị)'), '01/10/1996');
     await form.getByRole('button', { name: 'Thêm vào danh sách' }).click();
 
     await expect(form.getByText('Chưa nhập Họ tên')).toBeVisible();
@@ -191,7 +191,7 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
     expect((await api.dashboard()).memberCount).toBe(BASE_TOTAL + 1);
   });
 
-  await test.step('E6-07 · Thêm người chỉ có Họ tên và Ngày chính thức: hai ô còn lại hiện —', async () => {
+  await test.step('E6-07 · Thêm người chỉ có Họ tên và Ngày vào Đảng (dự bị): hai ô còn lại hiện —', async () => {
     // Thêm hai người tối giản: một người cho chính ca này, một người để ca
     // E6-14 có đủ ba dòng do luồng tạo ra mà chọn.
     await addMember(page, { fullName: `${PREFIX} Thiếu Thông Tin`, admission: '15/01/1996' });
@@ -203,7 +203,7 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
     expect(row[MEMBER_COLUMN.dateOfBirth]).toBe('—');
   });
 
-  await test.step('E6-08 · Sửa Ngày chính thức của người đang theo dõi sang 05/10/1991', async () => {
+  await test.step('E6-08 · Sửa Ngày vào Đảng (dự bị) của người đang theo dõi sang 05/10/1991', async () => {
     await searchMember(page, SUBJECT, SUBJECT);
     await editAdmissionDate(page, SUBJECT, '05/10/1991');
   });
@@ -232,13 +232,13 @@ test('E2E-6 · Vòng đời đảng viên: thêm tay → tìm → sửa → xóa
     await expect(pills).toContainText(`30 năm${upcomingList.byMilestone['30']}`);
   });
 
-  await test.step('E6-11 · Sửa Ngày chính thức sang 01/05/1935: tuổi đảng 91, mốc kế tiếp —, rời Đợt 7/11', async () => {
+  await test.step('E6-11 · Sửa Ngày vào Đảng (dự bị) sang 01/05/1935: tuổi đảng 91, mốc kế tiếp —, rời Đợt 7/11', async () => {
     await navItem(page, 'Đảng viên').click();
     await searchMember(page, SUBJECT, SUBJECT);
     /**
-     * Kế hoạch kiểm thử (ca E6-11) chỉ nói đổi Ngày chính thức sang 01/05/1935,
+     * Kế hoạch kiểm thử (ca E6-11) chỉ nói đổi Ngày vào Đảng (dự bị) sang 01/05/1935,
      * nhưng người này có Ngày sinh 10/10/1970 từ ca E6-02. Quy tắc "Ngày sinh
-     * phải trước Ngày vào Đảng chính thức" — có ở cả biểu mẫu lẫn máy chủ — sẽ
+     * phải trước Ngày vào Đảng (dự bị)" — có ở cả biểu mẫu lẫn máy chủ — sẽ
      * chặn đúng, nên phải lùi Ngày sinh cùng lúc. Đây là chỗ thiếu của kế hoạch,
      * không phải lỗi sản phẩm (QC-T28-03).
      */

@@ -116,7 +116,7 @@ export function EligibleTableCard({
     },
     {
       key: 'officialAdmissionDate',
-      title: 'Ngày vào Đảng chính thức',
+      title: 'Ngày vào Đảng (dự bị)',
       dataIndex: 'officialAdmissionDate',
       width: 230,
       sorter: true,

@@ -25,6 +25,12 @@ public class ImportEndpointTests
     private const string PreviewPath = "/api/PartyMembers/Import/Preview";
     private const string CommitPath = "/api/PartyMembers/Import/Commit";
 
+    /// <summary>
+    /// Tiêu đề cột thứ 4 của mẫu trước T69. Chỉ dùng cho ca kiểm thử chứng minh máy chủ
+    /// KHÔNG còn nhận tiêu đề này nữa.
+    /// </summary>
+    private const string LegacyFourthColumnTitle = "Ngày vào Đảng chính thức";
+
     private readonly HuyHieuDangApiFactory factory;
 
     /// <summary>
@@ -134,7 +140,7 @@ public class ImportEndpointTests
             (ImportErrorCodes.InvalidDateFormat, ImportFields.DateOfBirth),
             (ImportErrorCodes.InvalidGender, ImportFields.Gender));
 
-        // Dòng 11 là biên "ngày chính thức đúng bằng hôm nay" — hợp lệ.
+        // Dòng 11 là biên "ngày vào Đảng (dự bị) đúng bằng hôm nay" — hợp lệ.
         Assert.Equal(new[] { 10, 11 }, preview.ValidRows.Select(row => row.RowNumber));
         Assert.Equal(
             HuyHieuDangApiFactory.FixedToday,
@@ -184,6 +190,30 @@ public class ImportEndpointTests
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(
             Messages<PartyMemberImport>.Invalid(expectedProperty),
+            (await response.ReadApiResponseAsync<object>()).Message);
+    }
+
+    [Fact(DisplayName = "4.2 · T69 · File mang tiêu đề cũ của cột thứ 4 bị chặn như mọi file sai cột")]
+    public async Task Preview_LegacyFourthColumnTitle_IsBlocked()
+    {
+        HttpClient client = await CreateAuthenticatedClientAsync();
+
+        // T69: không thêm nhánh chấp nhận tiêu đề cũ. File làm theo mẫu cũ có thể đang chứa ngày
+        // công nhận đảng viên, không phải ngày kết nạp, nên chặn để người dùng kiểm lại cột ngày.
+        string[] legacyHeader = PartyMemberImportFile.HeaderTitles
+            .Take(PartyMemberImportFile.HeaderTitles.Length - 1)
+            .Append(LegacyFourthColumnTitle)
+            .ToArray();
+
+        byte[] content = BuildWorkbook(
+            legacyHeader,
+            new[] { "Nguyễn Tiêu Đề Cũ", "12/03/1974", "Nam", "01/10/1996" });
+
+        HttpResponseMessage response = await client.PostAsync(PreviewPath, BuildForm(content, "tieu-de-cu.xlsx"));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(
+            Messages<PartyMemberImport>.Invalid(PartyMemberImport.ColumnsProperty),
             (await response.ReadApiResponseAsync<object>()).Message);
     }
 
@@ -283,6 +313,27 @@ public class ImportEndpointTests
         Assert.Equal(
             HttpStatusCode.Unauthorized,
             (await client.PostAsync(CommitPath, BuildForm(content, "core-hop-le.xlsx"))).StatusCode);
+    }
+
+    /// <summary>
+    /// Dựng một file .xlsx trong bộ nhớ với tiêu đề và dòng dữ liệu cho trước.
+    /// </summary>
+    /// <param name="header">Bốn tiêu đề cột, đúng thứ tự muốn ghi.</param>
+    /// <param name="row">Một dòng dữ liệu, cùng số ô với tiêu đề.</param>
+    /// <returns>Nội dung nhị phân của file.</returns>
+    private static byte[] BuildWorkbook(string[] header, string[] row)
+    {
+        List<Dictionary<string, object>> sheet = new()
+        {
+            header
+                .Select((title, index) => (title, value: (object)row[index]))
+                .ToDictionary(cell => cell.title, cell => cell.value),
+        };
+
+        using MemoryStream stream = new();
+        stream.SaveAs(sheet, sheetName: "DanhSach");
+
+        return stream.ToArray();
     }
 
     private static MultipartFormDataContent BuildForm(byte[] content, string fileName)

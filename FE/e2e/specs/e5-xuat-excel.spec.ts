@@ -33,7 +33,7 @@ const FILE_HEADERS = [
   'Họ tên',
   'Giới tính',
   'Ngày sinh',
-  'Ngày chính thức',
+  'Ngày vào Đảng (dự bị)',
   'Ngày tròn mốc',
   'Mốc huy hiệu',
 ];
@@ -242,7 +242,7 @@ test('E2E-5 · Xuất Excel từ Dashboard, chi tiết đợt và Chưa thuộc 
     ).toBeVisible();
     await expect(page.getByText('1.232 người · Tuổi đảng tính đến hôm nay')).toBeVisible();
 
-    // Bộ lớn không làm lệch con số của bộ lõi (ngày chính thức 2015–2020).
+    // Bộ lớn không làm lệch con số của bộ lõi (ngày vào Đảng (dự bị) 2015–2020).
     await navItem(page, 'Dashboard').click();
     await expect(page.locator('.hhd-dashboard__count-value')).toHaveText(
       String(eligibility('core_default_T0', UPCOMING.code, 2026).total),

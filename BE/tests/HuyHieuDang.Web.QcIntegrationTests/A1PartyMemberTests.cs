@@ -336,7 +336,7 @@ public sealed class A1PartyMemberTests
     }
 
     /// <summary>
-    /// A-118 và A-119 · Ngày chính thức đúng bằng hôm nay là hợp lệ; sau hôm nay một ngày
+    /// A-118 và A-119 · Ngày vào Đảng (dự bị) đúng bằng hôm nay là hợp lệ; sau hôm nay một ngày
     /// thì không (biên "≤ hôm nay theo lịch máy chủ").
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
@@ -366,7 +366,7 @@ public sealed class A1PartyMemberTests
     }
 
     /// <summary>
-    /// A-120 · Sửa Ngày chính thức làm tuổi đảng, mốc kế tiếp và danh sách đủ điều kiện đổi
+    /// A-120 · Sửa Ngày vào Đảng (dự bị) làm tuổi đảng, mốc kế tiếp và danh sách đủ điều kiện đổi
     /// theo ngay, không cần thao tác nào khác (QT5).
     /// </summary>
     /// <returns>Tác vụ bất đồng bộ.</returns>
@@ -383,7 +383,7 @@ public sealed class A1PartyMemberTests
         JsonElement target = await FindMemberAsync(client, "Phạm Thị Dung");
         int ageBefore = target.Int("partyAgeYears");
 
-        // Dời Ngày chính thức lùi một ngày thì ngày tròn mốc rơi vào 07/11/2026 — đúng Đến ngày.
+        // Dời Ngày vào Đảng (dự bị) lùi một ngày thì ngày tròn mốc rơi vào 07/11/2026 — đúng Đến ngày.
         JsonElement updated = await QcApi.PutDataAsync(
             client,
             $"{QcEndpoints.PartyMembers}/{target.Str("id")}",

@@ -91,7 +91,7 @@ public class PartyMemberService : IPartyMemberService
 
     /// <summary>
     /// Ba tên cột tính ra sắp xếp được nhờ quy đổi (T51). Tuổi đảng và Mốc kế tiếp đều KHÔNG tăng
-    /// theo Ngày chính thức, nên cả ba đổi thành <see cref="PartyMember.OfficialAdmissionDate"/>
+    /// theo Ngày vào Đảng (dự bị), nên cả ba đổi thành <see cref="PartyMember.OfficialAdmissionDate"/>
     /// với chiều ngược lại. <c>PartyAgeYears</c> là tên trường trên phản hồi, <c>PartyAge</c> là
     /// tên ngắn trong yêu cầu của CEO — nhận cả hai để Frontend khỏi phải nhớ hai cách viết.
     /// </summary>
@@ -206,7 +206,7 @@ public class PartyMemberService : IPartyMemberService
     }
 
     /// <summary>
-    /// Bỏ những cột không sắp xếp được, và quy đổi Tuổi đảng / Mốc kế tiếp thành Ngày chính thức
+    /// Bỏ những cột không sắp xếp được, và quy đổi Tuổi đảng / Mốc kế tiếp thành Ngày vào Đảng (dự bị)
     /// theo chiều ngược lại (T51), để mệnh đề sắp xếp nằm trọn trong SQL.
     /// </summary>
     /// <param name="sortQuery">Chuỗi sắp xếp Frontend gửi lên.</param>

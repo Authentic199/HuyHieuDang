@@ -103,7 +103,7 @@ public sealed record PeriodOverlap(AwardPeriod First, AwardPeriod Second, DateOn
 public sealed record UpcomingPeriod(PeriodOccurrence Occurrence, PeriodStatusResult Status);
 
 /// <summary>
-/// Khoảng Ngày chính thức ứng với một giá trị "Mốc kế tiếp" hoặc một khoảng tuổi đảng (T51).
+/// Khoảng Ngày vào Đảng (dự bị) ứng với một giá trị "Mốc kế tiếp" hoặc một khoảng tuổi đảng (T51).
 /// Nửa mở để hai mốc liền kề không dùng chung ngày nào.
 /// </summary>
 /// <param name="FromExclusive">Cận dưới, KHÔNG bao gồm; <c>null</c> nghĩa là không chặn dưới.</param>

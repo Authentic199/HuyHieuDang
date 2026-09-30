@@ -615,7 +615,7 @@
         "nextMilestoneDisplay": "30",
         "nextAnniversary": "2056-09-19",
         "nextAnniversaryDisplay": "19/09/2056",
-        "intent": "Ngày chính thức ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
+        "intent": "Ngày vào Đảng (dự bị) ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
       }
     ],
     "T0_step10": [
@@ -1129,7 +1129,7 @@
         "nextMilestoneDisplay": "30",
         "nextAnniversary": "2056-09-19",
         "nextAnniversaryDisplay": "19/09/2056",
-        "intent": "Ngày chính thức ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
+        "intent": "Ngày vào Đảng (dự bị) ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"
       }
     ]
   },

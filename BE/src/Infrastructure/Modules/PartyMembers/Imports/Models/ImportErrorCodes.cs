@@ -9,19 +9,19 @@ public static class ImportErrorCodes
     /// <summary>Thiếu họ tên.</summary>
     public const string MissingFullName = nameof(MissingFullName);
 
-    /// <summary>Thiếu ngày vào Đảng chính thức.</summary>
+    /// <summary>Thiếu ngày vào Đảng (dự bị).</summary>
     public const string MissingOfficialAdmissionDate = nameof(MissingOfficialAdmissionDate);
 
     /// <summary>Sai định dạng ngày — kể cả ngày không có thật như <c>31/02/1974</c> (OQ-1).</summary>
     public const string InvalidDateFormat = nameof(InvalidDateFormat);
 
-    /// <summary>Ngày chính thức ở tương lai so với hôm nay.</summary>
+    /// <summary>Ngày vào Đảng (dự bị) ở tương lai so với hôm nay.</summary>
     public const string FutureOfficialAdmissionDate = nameof(FutureOfficialAdmissionDate);
 
     /// <summary>Giới tính khác Nam và Nữ khi có điền.</summary>
     public const string InvalidGender = nameof(InvalidGender);
 
-    /// <summary>Ngày sinh bằng hoặc sau ngày vào Đảng chính thức (OQ-10).</summary>
+    /// <summary>Ngày sinh bằng hoặc sau ngày vào Đảng (dự bị) (OQ-10).</summary>
     public const string BirthDateAfterAdmissionDate = nameof(BirthDateAfterAdmissionDate);
 }
 
@@ -39,6 +39,6 @@ public static class ImportFields
     /// <summary>Cột Giới tính.</summary>
     public const string Gender = nameof(Gender);
 
-    /// <summary>Cột Ngày vào Đảng chính thức.</summary>
+    /// <summary>Cột Ngày vào Đảng (dự bị).</summary>
     public const string OfficialAdmissionDate = nameof(OfficialAdmissionDate);
 }

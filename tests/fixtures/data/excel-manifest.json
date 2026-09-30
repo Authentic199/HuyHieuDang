@@ -24,7 +24,7 @@
     "file": "bulk-1200.xlsx",
     "validRows": 1200,
     "errorRows": 0,
-    "purpose": "Phân trang / tìm kiếm / hiệu năng. Ngày chính thức 2015-2020 nên KHÔNG ảnh hưởng con số đủ điều kiện của bộ lõi ở các năm 2025-2030.",
+    "purpose": "Phân trang / tìm kiếm / hiệu năng. Ngày vào Đảng (dự bị) 2015-2020 nên KHÔNG ảnh hưởng con số đủ điều kiện của bộ lõi ở các năm 2025-2030.",
     "note": ""
   },
   {
@@ -38,7 +38,7 @@
     "file": "loi-moi-loai-mot-dong.xlsx",
     "validRows": 2,
     "errorRows": 8,
-    "purpose": "QT9 - mỗi loại lỗi cấp dòng một dòng, kèm 2 dòng hợp lệ (dòng cuối là biên 'Ngày chính thức đúng bằng hôm nay'). Bảng lỗi phải nêu đúng số dòng Excel và lý do.",
+    "purpose": "QT9 - mỗi loại lỗi cấp dòng một dòng, kèm 2 dòng hợp lệ (dòng cuối là biên 'Ngày vào Đảng (dự bị) đúng bằng hôm nay'). Bảng lỗi phải nêu đúng số dòng Excel và lý do.",
     "note": ""
   },
   {

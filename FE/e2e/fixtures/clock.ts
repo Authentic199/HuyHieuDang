@@ -73,18 +73,18 @@ export function isFrozen(serverToday: string): boolean {
 }
 
 /**
- * Ngày chính thức của dòng Excel 11 trong `loi-4-dong.xlsx` — cố ý đặt là
+ * Ngày vào Đảng (dự bị) của dòng Excel 11 trong `loi-4-dong.xlsx` — cố ý đặt là
  * T0 + 1 ngày để thành lỗi "ngày ở tương lai" (QT9).
  *
  * Đây là chỗ DUY NHẤT trong sáu luồng mà việc chưa đóng băng được đồng hồ máy
  * chủ làm đổi kết quả mong đợi: ngày 20/09/2026 chỉ là tương lai khi hôm nay
  * còn là 19/09/2026. Bộ kiểm thử vì vậy suy số dòng lỗi từ chính quy tắc QT9
- * ("Ngày chính thức ≤ hôm nay") thay vì viết cứng, và vẫn chốt lại đúng con số
+ * ("Ngày vào Đảng (dự bị) ≤ hôm nay") thay vì viết cứng, và vẫn chốt lại đúng con số
  * của kế hoạch (6 hợp lệ / 4 lỗi) khi đồng hồ đã đóng băng.
  */
 export const FUTURE_ROW_ADMISSION_DATE = '2026-09-20';
 
-/** Ngày chính thức đó có còn là "tương lai" so với ngày máy chủ đang dùng không. */
+/** Ngày vào Đảng (dự bị) đó có còn là "tương lai" so với ngày máy chủ đang dùng không. */
 export function futureRowStillInvalid(serverToday: string): boolean {
   return FUTURE_ROW_ADMISSION_DATE > serverToday;
 }

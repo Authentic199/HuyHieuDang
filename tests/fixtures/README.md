@@ -96,7 +96,7 @@ sang Đợt 2/9 → đợt có **5 người**, badge còn **6**.
 
 ## Bộ lớn nạp chung với bộ lõi có an toàn không — CÓ
 
-1200 người trong `bulk-1200.xlsx` đều có Ngày chính thức trong 2015–2020, nên mốc 30 của
+1200 người trong `bulk-1200.xlsx` đều có Ngày vào Đảng (dự bị) trong 2015–2020, nên mốc 30 của
 họ rơi vào 2045–2050. Họ **không bao giờ** xuất hiện trong danh sách đủ điều kiện hay
 "chưa thuộc đợt nào" của các năm 2025–2030. Vì vậy nạp cả hai bộ vẫn giữ nguyên mọi con
 số ở bảng trên; chỉ tổng số người và số trang thay đổi.

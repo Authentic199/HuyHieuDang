@@ -196,12 +196,7 @@ test('E2E-1 · Lần dùng đầu tiên: đăng nhập → cài đặt → tạo
     const template = await downloadExcel(page, () =>
       page.getByRole('button', { name: 'Tải file mẫu' }).click(),
     );
-    expect(template.rows[0]).toEqual([
-      'Họ tên',
-      'Ngày sinh',
-      'Giới tính',
-      'Ngày vào Đảng chính thức',
-    ]);
+    expect(template.rows[0]).toEqual(['Họ tên', 'Ngày sinh', 'Giới tính', 'Ngày vào Đảng (dự bị)']);
     // Có ít nhất một dòng ví dụ, ngày ghi kiểu dd/MM/yyyy.
     expect(template.rows.length).toBeGreaterThan(1);
     expect(template.rows[1][3]).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);

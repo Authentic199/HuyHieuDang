@@ -9,7 +9,7 @@ namespace HuyHieuDang.Infrastructure.Modules.PartyMembers.Imports.Models;
 /// <param name="FullName">Ô Họ tên.</param>
 /// <param name="DateOfBirth">Ô Ngày sinh.</param>
 /// <param name="Gender">Ô Giới tính.</param>
-/// <param name="OfficialAdmissionDate">Ô Ngày vào Đảng chính thức.</param>
+/// <param name="OfficialAdmissionDate">Ô Ngày vào Đảng (dự bị).</param>
 public sealed record ImportRawRow(
     int RowNumber,
     string FullName,
@@ -41,7 +41,7 @@ public sealed record ImportRowErrorResponse(string ErrorCode, string Field);
 /// <param name="FullName">Họ tên đã cắt khoảng trắng (OQ-4).</param>
 /// <param name="DateOfBirth">Ngày sinh, hoặc <see langword="null"/> khi bỏ trống.</param>
 /// <param name="Gender">Giới tính dạng <c>Male</c> / <c>Female</c> / <see langword="null"/>.</param>
-/// <param name="OfficialAdmissionDate">Ngày vào Đảng chính thức.</param>
+/// <param name="OfficialAdmissionDate">Ngày vào Đảng (dự bị).</param>
 public sealed record ImportValidRowResponse(
     int RowNumber,
     string FullName,
@@ -64,7 +64,7 @@ public sealed record ImportValidRowResponse(
 /// <param name="FullName">Ô Họ tên, chữ thô.</param>
 /// <param name="DateOfBirth">Ô Ngày sinh, chữ thô.</param>
 /// <param name="Gender">Ô Giới tính, chữ thô.</param>
-/// <param name="OfficialAdmissionDate">Ô Ngày vào Đảng chính thức, chữ thô.</param>
+/// <param name="OfficialAdmissionDate">Ô Ngày vào Đảng (dự bị), chữ thô.</param>
 /// <param name="Errors">Đủ mọi lý do của dòng, sắp theo thứ tự bảng mã lỗi (OQ-2).</param>
 public sealed record ImportErrorRowResponse(
     int RowNumber,

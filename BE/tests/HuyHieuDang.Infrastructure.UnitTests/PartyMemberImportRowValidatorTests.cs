@@ -39,7 +39,7 @@ public class PartyMemberImportRowValidatorTests
         Assert.Null(valid.ToGender());
     }
 
-    [Fact(DisplayName = "Ngày chính thức đúng bằng hôm nay là hợp lệ")]
+    [Fact(DisplayName = "Ngày vào Đảng (dự bị) đúng bằng hôm nay là hợp lệ")]
     public void Validate_AdmissionDateEqualsToday_IsValid()
     {
         IReadOnlyList<ImportRowErrorResponse> errors = Validate(
@@ -56,21 +56,21 @@ public class PartyMemberImportRowValidatorTests
             ImportErrorCodes.MissingFullName,
             ImportFields.FullName);
 
-    [Fact(DisplayName = "Thiếu ngày chính thức → MissingOfficialAdmissionDate, không kèm lỗi định dạng")]
+    [Fact(DisplayName = "Thiếu ngày vào Đảng (dự bị) → MissingOfficialAdmissionDate, không kèm lỗi định dạng")]
     public void Validate_MissingOfficialAdmissionDate()
         => AssertSingleError(
             Validate("Nguyễn Thiếu Ngày", "12/03/1974", "Nam", string.Empty, out _),
             ImportErrorCodes.MissingOfficialAdmissionDate,
             ImportFields.OfficialAdmissionDate);
 
-    [Fact(DisplayName = "Ngày chính thức dạng yyyy-MM-dd → InvalidDateFormat")]
+    [Fact(DisplayName = "Ngày vào Đảng (dự bị) dạng yyyy-MM-dd → InvalidDateFormat")]
     public void Validate_InvalidAdmissionDateFormat()
         => AssertSingleError(
             Validate("Trần Sai Định Dạng", "12/03/1974", "Nữ", "1996-10-01", out _),
             ImportErrorCodes.InvalidDateFormat,
             ImportFields.OfficialAdmissionDate);
 
-    [Fact(DisplayName = "Ngày chính thức ở tương lai → FutureOfficialAdmissionDate")]
+    [Fact(DisplayName = "Ngày vào Đảng (dự bị) ở tương lai → FutureOfficialAdmissionDate")]
     public void Validate_FutureAdmissionDate()
         => AssertSingleError(
             Validate("Lê Ngày Tương Lai", "12/03/1974", "Nam", "20/09/2026", out _),
@@ -84,14 +84,14 @@ public class PartyMemberImportRowValidatorTests
             ImportErrorCodes.InvalidGender,
             ImportFields.Gender);
 
-    [Fact(DisplayName = "Ngày sinh sau ngày chính thức → BirthDateAfterAdmissionDate")]
+    [Fact(DisplayName = "Ngày sinh sau ngày vào Đảng (dự bị) → BirthDateAfterAdmissionDate")]
     public void Validate_BirthDateAfterAdmissionDate()
         => AssertSingleError(
             Validate("Hoàng Sinh Sau", "02/01/1997", "Nam", "01/10/1996", out _),
             ImportErrorCodes.BirthDateAfterAdmissionDate,
             ImportFields.DateOfBirth);
 
-    [Fact(DisplayName = "OQ-10: ngày sinh bằng đúng ngày chính thức vẫn là lỗi")]
+    [Fact(DisplayName = "OQ-10: ngày sinh bằng đúng ngày vào Đảng (dự bị) vẫn là lỗi")]
     public void Validate_BirthDateEqualsAdmissionDate_IsError()
         => AssertSingleError(
             Validate("Trùng Ngày", "01/10/1996", "Nam", "01/10/1996", out _),

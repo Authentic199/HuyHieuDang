@@ -46,7 +46,7 @@ public abstract class PartyMemberRequest
     public string? Gender { get; set; }
 
     /// <summary>
-    /// Ngày vào Đảng chính thức, ngày thuần. Bắt buộc.
+    /// Ngày vào Đảng (dự bị), ngày thuần. Bắt buộc.
     /// </summary>
     public DateOnly? OfficialAdmissionDate { get; set; }
 

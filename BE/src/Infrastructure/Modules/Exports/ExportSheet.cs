@@ -32,7 +32,7 @@ public static class ExportSheet
         "Họ tên",
         "Giới tính",
         "Ngày sinh",
-        "Ngày chính thức",
+        "Ngày vào Đảng (dự bị)",
         "Ngày tròn mốc",
         "Mốc huy hiệu",
     });

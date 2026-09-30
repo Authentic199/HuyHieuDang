@@ -59,7 +59,7 @@ const VALID_COLUMNS: ColumnsType<ImportValidRow> = [
   },
   {
     key: 'officialAdmissionDate',
-    title: 'Ngày chính thức',
+    title: 'Ngày vào Đảng (dự bị)',
     dataIndex: 'officialAdmissionDate',
     width: 200,
     render: (value: string) => formatDate(value),
@@ -104,9 +104,9 @@ function errorColumns(): ColumnsType<ImportErrorRow> {
     },
     {
       key: 'officialAdmissionDate',
-      title: 'Ngày chính thức',
+      title: 'Ngày vào Đảng (dự bị)',
       dataIndex: 'officialAdmissionDate',
-      width: 180,
+      width: 190,
       onCell: rawCell('OfficialAdmissionDate'),
       render: (value: string) => orEmptyMark(value),
     },

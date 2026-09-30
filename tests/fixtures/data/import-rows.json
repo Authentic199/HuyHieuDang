@@ -3,7 +3,7 @@
     "Họ tên",
     "Ngày sinh",
     "Giới tính",
-    "Ngày vào Đảng chính thức"
+    "Ngày vào Đảng (dự bị)"
   ],
   "errorRows": [
     {
@@ -20,7 +20,7 @@
       "gender": "Nam",
       "officialAdmissionDate": "",
       "errorCode": "E-NGAYCT-TRONG",
-      "expectedReason": "Thiếu Ngày vào Đảng chính thức"
+      "expectedReason": "Thiếu Ngày vào Đảng (dự bị)"
     },
     {
       "fullName": "Trần Sai Định Dạng",
@@ -36,7 +36,7 @@
       "gender": "Nam",
       "officialAdmissionDate": "20/09/2026",
       "errorCode": "E-NGAYCT-TUONGLAI",
-      "expectedReason": "Ngày vào Đảng chính thức ở tương lai (so với hôm nay T0 = 19/09/2026)"
+      "expectedReason": "Ngày vào Đảng (dự bị) ở tương lai (so với hôm nay T0 = 19/09/2026)"
     },
     {
       "fullName": "Phạm Giới Tính Lạ",
@@ -52,7 +52,7 @@
       "gender": "Nam",
       "officialAdmissionDate": "01/10/1996",
       "errorCode": "E-NGAYSINH-SAU",
-      "expectedReason": "Ngày sinh sau Ngày vào Đảng chính thức"
+      "expectedReason": "Ngày sinh sau Ngày vào Đảng (dự bị)"
     },
     {
       "fullName": "Vũ Ngày Sinh Sai",

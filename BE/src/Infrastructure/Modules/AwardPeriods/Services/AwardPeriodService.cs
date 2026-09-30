@@ -300,7 +300,7 @@ public class AwardPeriodService : IAwardPeriodService
     /// </summary>
     /// <param name="Today">Hôm nay theo lịch máy chủ.</param>
     /// <param name="Milestones">Dãy mốc huy hiệu tăng dần.</param>
-    /// <param name="AdmissionDates">Ngày vào Đảng chính thức của toàn bộ đảng viên.</param>
+    /// <param name="AdmissionDates">Ngày vào Đảng (dự bị) của toàn bộ đảng viên.</param>
     private sealed record EligibilityContext(
         DateOnly Today, IReadOnlyList<int> Milestones, IReadOnlyList<DateOnly> AdmissionDates);
 }

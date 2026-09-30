@@ -27,7 +27,7 @@ public class PartyMember : BaseEntity, IHasUpdatedAt
     public Gender? Gender { get; set; }
 
     /// <summary>
-    /// Ngày vào Đảng chính thức — gốc để tính tuổi đảng. Bắt buộc, ngày thuần.
+    /// Ngày vào Đảng (dự bị) — gốc để tính tuổi đảng. Bắt buộc, ngày thuần.
     /// </summary>
     public DateOnly OfficialAdmissionDate { get; set; }
 

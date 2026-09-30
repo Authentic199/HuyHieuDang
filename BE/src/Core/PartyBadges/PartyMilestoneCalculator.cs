@@ -144,7 +144,7 @@ public sealed class PartyMilestoneCalculator : IPartyMilestoneCalculator
         }
 
         // Mốc kế tiếp là `mi` ⟺ tuổi đảng thuộc [m(i-1), mi). Mốc đầu tiên không có cận trên:
-        // người có ngày chính thức ở tương lai vẫn được tính tuổi đảng 0 (QT3) nên phải nằm trong đó.
+        // người có ngày vào Đảng (dự bị) ở tương lai vẫn được tính tuổi đảng 0 (QT3) nên phải nằm trong đó.
         return new AdmissionDateRange(
             GetLatestAdmissionDateForAge(today, milestones[index]),
             index == 0 ? null : GetLatestAdmissionDateForAge(today, milestones[index - 1]));
