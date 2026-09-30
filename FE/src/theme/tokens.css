@@ -98,4 +98,6 @@
   --hhd-shadow-sider-active: inset 0 1px 0 #ffffff40;
   --hhd-shadow-primary: inset 0 1px 0 #ffffff4d, 0 2px 6px -2px #6c0f1259;
   --hhd-shadow-card: 0 1px 2px #1c1c1e0a;
+  --hhd-shadow-year-cell: 0 1px 2px #1c1c1e1f, 0 1px 3px -1px #1c1c1e14;
+  --hhd-shadow-year-cell-active: inset 0 1px 0 #ffffff40, 0 2px 6px -2px #6c0f1259;
 }

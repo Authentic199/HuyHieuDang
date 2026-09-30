@@ -1,0 +1,188 @@
+/* Bộ chọn năm dùng chung — kiểu B mà chủ dự án đã duyệt ngày 30/09.
+   Một rãnh xám bo góc chứa `‹ [ô năm] ›`; ô năm nền trắng nổi lên bằng bóng
+   mềm, không viền. Mọi màu lấy từ `theme/tokens.css`, mọi cỡ chữ lấy từ thang
+   `--hhd-fs-*` để màn thấp tự lùi một nấc cùng cả giao diện. */
+
+.hhd-year-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--hhd-fill);
+  border-radius: var(--hhd-radius-control);
+  /* Cao bằng ô nhập, và thu theo thang gọn của T60, nhưng không dưới 32px. */
+  height: var(--hhd-control-height);
+  flex: none;
+}
+
+/* Hai nút mũi tên: nền trong suốt, mũi tên màu chữ phụ. */
+.hhd-year-picker__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  align-self: stretch;
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--hhd-radius-control) - 2px);
+  background: transparent;
+  color: var(--hhd-text-secondary);
+  font-size: var(--hhd-fs-12);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.hhd-year-picker__step:hover:not(:disabled) {
+  background: var(--hhd-white);
+  color: var(--hhd-red);
+}
+
+/* Hết giới hạn 100 năm thì mờ hẳn và không bấm được. */
+.hhd-year-picker__step:disabled {
+  color: var(--hhd-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Ô năm ở giữa — bấm vào là mở bảng chọn năm. */
+.hhd-year-picker__year {
+  min-width: 76px;
+  align-self: stretch;
+  padding: 0 var(--hhd-space-md);
+  border: 0;
+  border-radius: calc(var(--hhd-radius-control) - 2px);
+  background: var(--hhd-white);
+  box-shadow: var(--hhd-shadow-year-cell);
+  color: var(--hhd-red);
+  font: 700 var(--hhd-fs-18)/1 var(--hhd-font-serif);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.hhd-year-picker__year:disabled {
+  background: var(--hhd-white);
+  box-shadow: none;
+  color: var(--hhd-text-disabled);
+  cursor: not-allowed;
+}
+
+.hhd-year-picker__step:focus-visible,
+.hhd-year-picker__year:focus-visible {
+  outline: 2px solid var(--hhd-red);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Bảng chọn năm                                                       */
+/* ------------------------------------------------------------------ */
+/* Popover của Ant Design vẽ đệm riêng; ở đây nội dung tự lo đệm để lưới cuộn
+   sát mép và thanh cuộn không nằm lọt giữa hai lớp đệm. */
+.hhd-year-panel-root .ant-popover-inner {
+  padding: 0;
+}
+
+.hhd-year-panel {
+  width: 370px;
+  max-width: calc(100vw - 2 * var(--hhd-space-lg));
+  padding: var(--hhd-space-md);
+}
+
+.hhd-year-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hhd-space-md);
+  padding: 0 var(--hhd-space-xs) var(--hhd-space-md);
+}
+
+/* Nút chữ "Năm nay" — vai trò của chữ "Today" trong ảnh mẫu của chủ dự án. */
+.hhd-year-panel__today {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--hhd-red-link);
+  font: 700 var(--hhd-fs-15)/var(--hhd-lh-15) var(--hhd-font-sans);
+  cursor: pointer;
+}
+
+.hhd-year-panel__today:hover {
+  text-decoration: underline;
+}
+
+.hhd-year-panel__range {
+  color: var(--hhd-text-tertiary);
+  font-size: var(--hhd-fs-13);
+  white-space: nowrap;
+}
+
+/* Lưới 5 cột, cuộn dọc, thấy khoảng 5 hàng. Chiều cao tính theo ô và khe nên
+   ở thang gọn nó tự thấp đi cùng cỡ chữ. */
+.hhd-year-panel__grid {
+  --hhd-year-cell-height: 40px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--hhd-space-sm);
+  max-height: calc(5 * var(--hhd-year-cell-height) + 4 * var(--hhd-space-sm));
+  overflow-y: auto;
+  /* Chừa chỗ cho thanh cuộn để hàng năm không nhảy ngang khi cuộn. */
+  padding: 2px var(--hhd-space-sm) 2px 2px;
+}
+
+.hhd-year-panel__cell {
+  height: var(--hhd-year-cell-height);
+  position: relative;
+  border: 0;
+  border-radius: var(--hhd-radius-control);
+  background: var(--hhd-white);
+  box-shadow: var(--hhd-shadow-year-cell);
+  color: var(--hhd-ink);
+  font: 700 var(--hhd-fs-16)/1 var(--hhd-font-serif);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.hhd-year-panel__cell:hover:not(:disabled) {
+  background: var(--hhd-fill);
+  color: var(--hhd-red);
+}
+
+/* Năm hiện tại của máy chủ, khi nó không phải năm đang xem: số đỏ, chấm đỏ. */
+.hhd-year-panel__cell--today {
+  color: var(--hhd-red);
+}
+
+.hhd-year-panel__cell--today::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--hhd-red);
+}
+
+/* Năm đang xem: viên đỏ đặc, cùng gradient với nút chính. */
+.hhd-year-panel__cell--selected,
+.hhd-year-panel__cell--selected:hover {
+  background: var(--hhd-gradient-primary);
+  box-shadow: var(--hhd-shadow-year-cell-active);
+  color: var(--hhd-white);
+}
+
+/* Ô ngoài khoảng 100 năm — chỉ có ở hàng đầu và hàng cuối. */
+.hhd-year-panel__cell:disabled {
+  background: transparent;
+  box-shadow: none;
+  color: var(--hhd-text-disabled);
+  cursor: not-allowed;
+}
+
+.hhd-year-panel__cell:focus-visible {
+  outline: 2px solid var(--hhd-red);
+  outline-offset: 1px;
+}

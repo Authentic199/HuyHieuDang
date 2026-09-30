@@ -1,4 +1,4 @@
-import { App as AntApp, Alert, Button, Tabs } from 'antd';
+import { App as AntApp, Alert, Button } from 'antd';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -8,7 +8,6 @@ import { paths } from '../../routes/paths';
 import { ApiError } from '../../types/api';
 import { EligibilityTab } from './detail/EligibilityTab';
 import { PeriodDetailHeader } from './detail/PeriodDetailHeader';
-import { PeriodInfoTab } from './detail/PeriodInfoTab';
 import { usePeriodDetail } from './detail/usePeriodDetail';
 import './detail/PeriodDetail.css';
 // Modal Sửa đợt dùng lại nguyên của màn danh sách, kể cả dòng nhắc nền xám.
@@ -18,9 +17,10 @@ import './PeriodsPage.css';
 /**
  * Màn 5 — Chi tiết đợt (UC-34), theo artboard "Màn 5 — Chi tiết đợt".
  *
- * Hai tab: "Thông tin" (tên đợt, khoảng ngày hằng năm) và "Danh sách đủ điều
- * kiện" (chọn năm, bảng người tròn mốc, xuất Excel). Đợt chỉ lưu ngày/tháng
- * (QT6) nên khoảng ngày có năm chỉ xuất hiện ở tab thứ hai, theo năm đang chọn.
+ * Từ quyết định 30/09, trang không còn tab. Tiêu đề đã nói đủ phần Thông tin —
+ * tên đợt và khoảng ngày hằng năm (QT6) — nên ngay dưới nó là thẻ danh sách đủ
+ * điều kiện: chọn năm, bảng người tròn mốc, xuất Excel. Đợt chỉ lưu ngày/tháng
+ * nên khoảng ngày có năm chỉ xuất hiện trong thẻ, theo năm đang chọn.
  */
 export default function PeriodDetailPage() {
   const { id = '' } = useParams<{ id: string }>();
@@ -93,29 +93,12 @@ export default function PeriodDetailPage() {
           }
         />
       ) : (
-        <Tabs
-          className="hhd-period-detail__tabs"
-          defaultActiveKey="info"
-          items={[
-            {
-              key: 'info',
-              label: 'Thông tin',
-              children: <PeriodInfoTab period={period} />,
-            },
-            {
-              key: 'eligibility',
-              label: 'Danh sách đủ điều kiện',
-              children: (
-                <EligibilityTab
-                  awardPeriodId={id}
-                  serverYear={serverYear}
-                  year={year}
-                  onYearChange={setSelectedYear}
-                  refreshToken={refreshToken}
-                />
-              ),
-            },
-          ]}
+        <EligibilityTab
+          awardPeriodId={id}
+          serverYear={serverYear}
+          year={year}
+          onYearChange={setSelectedYear}
+          refreshToken={refreshToken}
         />
       )}
 

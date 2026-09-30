@@ -52,12 +52,11 @@ const TABLES: {
     },
   },
   {
-    name: 'Chi tiết đợt — tab Đủ điều kiện',
+    name: 'Chi tiết đợt — danh sách đủ điều kiện',
     panel: '.hhd-eligibility',
     pageSize: FULL_PAGE_SIZE,
     open: async (page) => {
       await page.goto(`/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`);
-      await page.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
     },
   },
   {

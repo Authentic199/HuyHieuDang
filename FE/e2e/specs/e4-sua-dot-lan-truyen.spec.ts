@@ -30,9 +30,9 @@ const AFTER = scenario('core_default_T0_widenedP3');
 const WIDENED = 'Đợt 2/9';
 const MOVED = coreMember('B03'); // Lê Văn Cường, tròn 30 ngày 30/09/2026
 
+/** Mở trang chi tiết một đợt — từ 30/09 danh sách hiện ngay, không còn tab. */
 async function openEligibilityTab(page: Page, periodId: string) {
   await page.goto(`/dot-trao-huy-hieu/${periodId}`);
-  await page.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
 }
 
 /** Sửa Đến ngày của một đợt qua modal, đúng cách cán bộ thao tác. */

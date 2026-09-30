@@ -108,25 +108,17 @@ const SCREENS: Screen[] = [
     },
   },
   {
-    key: '7-chi-tiet-dot-thong-tin',
-    label: 'Chi tiết đợt — tab Thông tin',
-    open: async (app) => {
-      await app.goto(`/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`);
-      await expect(app.locator('.hhd-period-info')).toBeVisible();
-    },
-  },
-  {
-    key: '8-chi-tiet-dot-du-dieu-kien',
-    label: 'Chi tiết đợt — tab Danh sách đủ điều kiện',
+    // Từ 30/09 trang chi tiết đợt gộp làm một, không còn hai tab để soi riêng.
+    key: '7-chi-tiet-dot',
+    label: 'Chi tiết đợt',
     table: '.hhd-eligibility',
     open: async (app) => {
       await app.goto(`/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`);
-      await app.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
       await expect(app.locator('.hhd-eligibility .ant-table-row').first()).toBeVisible();
     },
   },
   {
-    key: '9-chua-thuoc-dot-nao',
+    key: '8-chua-thuoc-dot-nao',
     label: 'Chưa thuộc đợt nào',
     table: '.hhd-uncovered__panel',
     open: async (app) => {
@@ -135,7 +127,7 @@ const SCREENS: Screen[] = [
     },
   },
   {
-    key: '10-cai-dat',
+    key: '9-cai-dat',
     label: 'Cài đặt',
     open: async (app) => {
       await app.goto('/cai-dat');
@@ -143,7 +135,7 @@ const SCREENS: Screen[] = [
     },
   },
   {
-    key: '11-khong-tim-thay-trang',
+    key: '10-khong-tim-thay-trang',
     label: 'Trang 404',
     open: async (app) => {
       await app.goto('/duong-dan-nay-khong-co');

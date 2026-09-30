@@ -1,4 +1,5 @@
-/* Màn 5 — Chi tiết đợt. Ba khối xếp dọc: đầu trang, dải tab, thẻ nội dung. */
+/* Màn 5 — Chi tiết đợt. Từ 30/09 chỉ còn hai khối xếp dọc: đầu trang và thẻ
+   danh sách đủ điều kiện, cách nhau một khe chung. */
 .hhd-period-detail {
   display: flex;
   flex-direction: column;
@@ -16,32 +17,8 @@
   white-space: nowrap;
 }
 
-/* Tab chiếm hết chiều cao còn lại để bảng cuộn bên trong thẻ, không cuộn trang. */
-.hhd-period-detail__tabs {
-  flex: 1;
-  min-height: 0;
-}
-
-.hhd-period-detail__tabs.ant-tabs {
-  display: flex;
-  flex-direction: column;
-}
-
-.hhd-period-detail__tabs > .ant-tabs-content-holder,
-.hhd-period-detail__tabs .ant-tabs-content,
-.hhd-period-detail__tabs .ant-tabs-tabpane-active {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-}
-
-.hhd-period-detail__tabs .ant-tabs-tab {
-  font-size: var(--hhd-fs-15);
-}
-
-/* Thẻ trắng bao quanh nội dung của cả hai tab. */
-.hhd-period-info,
+/* Thẻ trắng bao danh sách đủ điều kiện — chiếm hết chiều cao còn lại để bảng
+   cuộn bên trong thẻ, không cuộn cả trang. */
 .hhd-eligibility {
   background: var(--hhd-white);
   border: 1px solid var(--hhd-border);
@@ -51,16 +28,6 @@
   overflow: hidden;
   flex: 1;
   min-height: 0;
-}
-
-.hhd-period-info {
-  padding: var(--hhd-space-xl);
-  flex: none;
-}
-
-.hhd-period-info .ant-descriptions-item-label,
-.hhd-period-info .ant-descriptions-item-content {
-  font-size: var(--hhd-fs-15);
 }
 
 /* Thanh công cụ: bộ chọn năm, khoảng ngày + nhãn ngữ cảnh, nút Xuất Excel. */

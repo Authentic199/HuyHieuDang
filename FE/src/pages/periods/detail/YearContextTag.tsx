@@ -1,11 +1,20 @@
 import { yearContextBadge, type YearContext } from './yearContext';
 
 /**
- * Viên thuốc "Năm trước / Năm nay / Năm sau" cạnh khoảng ngày, đúng hình dáng
- * viên thuốc có chấm màu của artboard 5.
+ * Viên thuốc ngữ cảnh năm cạnh khoảng ngày, đúng hình dáng viên thuốc có chấm
+ * màu của artboard 5.
+ *
+ * `distance` là số năm cách năm máy chủ. Bỏ trống thì hiểu là 1, tức vẫn đọc
+ * "Năm trước" / "Năm sau" như cũ — thẻ đợt sắp tới ở Dashboard dùng kiểu đó.
  */
-export function YearContextTag({ context }: { context: YearContext }) {
-  const tone = yearContextBadge(context);
+export function YearContextTag({
+  context,
+  distance = 1,
+}: {
+  context: YearContext;
+  distance?: number;
+}) {
+  const tone = yearContextBadge(context, distance);
 
   return (
     <span
