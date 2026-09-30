@@ -54,8 +54,8 @@ export function EligibleTableCard({
     searchTextOf: nameOfRow,
     milestoneOf: milestoneOfRow,
     comparators: ELIGIBLE_COMPARATORS,
-    // Thẻ này nằm dưới thẻ đợt sắp tới, 10 dòng vừa đúng một màn nên bác không
-    // phải cuộn. Ba bảng còn lại chiếm cả màn nên vẫn để 20 dòng mặc định.
+    // Thẻ này nằm dưới thẻ đợt sắp tới, 10 dòng vừa đúng một màn nên người dùng
+    // không phải cuộn. Ba bảng còn lại chiếm cả màn nên vẫn để 20 dòng mặc định.
     defaultPageSize: DASHBOARD_PAGE_SIZE,
   });
 
@@ -209,10 +209,10 @@ export function EligibleTableCard({
         hint={
           <span className="hhd-dashboard__empty-hint">
             {table.isFiltered
-              ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.'
+              ? 'Thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.'
               : period === null
                 ? 'Tạo đợt trao huy hiệu trước, danh sách sẽ tự hiện ra.'
-                : 'Bác xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót ngoài các đợt.'}
+                : 'Xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót ngoài các đợt.'}
           </span>
         }
         action={table.isFiltered ? <Button onClick={table.clearFilters}>Xóa bộ lọc</Button> : null}

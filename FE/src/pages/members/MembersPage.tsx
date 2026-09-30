@@ -122,8 +122,8 @@ export default function MembersPage() {
           : `Xóa ${formatNumber(count)} người khỏi danh sách?`,
       content:
         count === 1
-          ? 'Xóa rồi là mất hẳn, không lấy lại được. Bác xem kỹ giúp trước khi xóa.'
-          : `Cả ${formatNumber(count)} người đang chọn sẽ bị xóa hẳn, không lấy lại được. Bác xem kỹ giúp trước khi xóa.`,
+          ? 'Xóa rồi là mất hẳn, không lấy lại được. Kiểm tra kỹ trước khi xóa.'
+          : `Cả ${formatNumber(count)} người đang chọn sẽ bị xóa hẳn, không lấy lại được. Kiểm tra kỹ trước khi xóa.`,
       okText: count === 1 ? 'Xóa người này' : `Xóa ${formatNumber(count)} người`,
       cancelText: 'Để lại',
       okButtonProps: { danger: true },
@@ -283,13 +283,13 @@ export default function MembersPage() {
         description={headingDescription}
         extra={
           <>
-            {/* Luôn hiện để bác thấy trước là có chức năng xóa; chưa đánh dấu ai
+            {/* Luôn hiện để người dùng thấy trước là có chức năng xóa; chưa đánh dấu ai
                 thì nút mờ đi và bấm không được. */}
             <Tooltip
               title={
                 selectedRows.length > 0
                   ? `Xóa ${formatNumber(selectedRows.length)} người đã chọn`
-                  : 'Xóa người đã chọn — bác đánh dấu vào ô vuông đầu dòng trước'
+                  : 'Xóa người đã chọn — đánh dấu vào ô vuông đầu dòng trước'
               }
             >
               <Button
@@ -391,7 +391,7 @@ export default function MembersPage() {
                 }}
               >
                 {isFiltered
-                  ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Giới tính và Mốc kế tiếp: Tất cả.'
+                  ? 'Thử xóa bớt chữ trong ô tìm, hoặc chọn lại Giới tính và Mốc kế tiếp: Tất cả.'
                   : 'Tải file mẫu, điền sau đó import. Hoặc thêm từng người'}
               </span>
             }

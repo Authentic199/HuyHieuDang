@@ -320,7 +320,7 @@ export default function PeriodsPage() {
                   lineHeight: '24px',
                 }}
               >
-                Bác thử xóa bớt chữ trong ô tìm.
+                Thử xóa bớt chữ trong ô tìm.
               </span>
             ) : null
           }
