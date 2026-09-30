@@ -12,7 +12,8 @@ Bạn là UI/UX designer. Hãy thiết kế giao diện web cho ứng dụng qu�
 - Người dùng: **một** cán bộ văn phòng đảng ủy, không rành công nghệ, dùng trên một máy. Mục tiêu: 4 lần/năm mở lên xem ai đủ tuổi đảng để trao huy hiệu, xuất Excel đem đi làm tờ trình.
 - Không có phân quyền, chỉ một tài khoản admin.
 - Tông màu: trang trọng, tin cậy, sạch. Gợi ý màu chủ đạo đỏ đậm (#C8102E hoặc tương đương) dùng tiết chế cho điểm nhấn; nền trắng/xám nhạt; không lòe loẹt. Có thể dùng ngôi sao vàng làm hoạ tiết logo nhỏ.
-- Font: hệ thống (Inter/Segoe UI). Chữ rõ, cỡ chữ bảng tối thiểu 14px vì người dùng lớn tuổi.
+- Font: hệ thống (Inter/Segoe UI). Chữ rõ, cỡ chữ bảng tối thiểu 14px.
+- *Ghi chú sửa ngày 30/09 theo xác nhận của chủ dự án: người dùng là người trẻ. Lý do độ tuổi gắn với cỡ chữ 14px trong bản gốc đã bỏ. Mức sàn cỡ chữ trên màn nhỏ xem `docs/2026-09-19-team-and-task-plan.md`, nguyên tắc 1 của Frontend Developer.*
 - Định dạng ngày: `dd/MM/yyyy`. Ngày của "đợt" chỉ có ngày/tháng: `dd/MM`.
 
 ## 2. Khái niệm nghiệp vụ cần hiểu để thiết kế

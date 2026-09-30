@@ -4,7 +4,7 @@
 
 Tài liệu này hướng dẫn cán bộ dùng phần mềm để lập danh sách đảng viên **đủ điều kiện** nhận Huy hiệu Đảng theo từng **đợt trao huy hiệu**, rồi xuất ra file Excel để làm tờ trình.
 
-Bạn không cần biết gì về máy tính ngoài việc dùng trình duyệt và Excel. Mỗi phần dưới đây là một việc cụ thể, làm theo thứ tự từ trên xuống.
+Dùng được trình duyệt và Excel là đủ, không cần biết thêm gì về máy tính. Mỗi phần dưới đây là một việc cụ thể, làm theo thứ tự từ trên xuống.
 
 Đọc phần nào:
 
@@ -39,18 +39,18 @@ Bạn không cần biết gì về máy tính ngoài việc dùng trình duyệt
 <a id="truoc-khi-bat-dau"></a>
 ## Trước khi bắt đầu
 
-**Bạn cần có:** địa chỉ phần mềm (ví dụ `http://localhost:5173`), tên tài khoản và mật khẩu. Người cài đặt phần mềm sẽ đưa cho bạn ba thứ này.
+**Cần có:** địa chỉ phần mềm (ví dụ `http://localhost:5173`), tên tài khoản và mật khẩu. Người cài đặt phần mềm đưa ba thứ này.
 
 **Màn hình nào cũng có ba phần giống nhau:**
 
 - **Thanh menu bên trái** có 5 mục: **Dashboard**, **Đảng viên**, **Đợt trao huy hiệu**, **Chưa thuộc đợt nào**, **Cài đặt**.
 - Mục **Chưa thuộc đợt nào** có thể hiện một **con số nhỏ màu đỏ**. Đó là số người tròn mốc trong năm nay nhưng không rơi vào đợt nào. Không có ai thì con số này ẩn đi.
-- **Thanh trên cùng** hiện tên hệ thống, **tên đơn vị** của bạn, ngày hôm nay, tên tài khoản và nút **Đăng xuất**.
+- **Thanh trên cùng** hiện tên hệ thống, **tên đơn vị**, ngày hôm nay, tên tài khoản và nút **Đăng xuất**.
 
 <!-- ảnh: màn Dashboard đã có dữ liệu, chụp đủ chiều ngang để thấy cả menu trái 5 mục và thanh trên cùng; mục "Chưa thuộc đợt nào" đang có badge đỏ -->
 > **[Ảnh 1]** Khung màn hình chung: menu trái 5 mục và thanh trên cùng — `docs/images/01-khung-man-hinh.png`
 
-**Một điều quan trọng cần nhớ ngay:** phần mềm **không lưu sẵn** danh sách đủ điều kiện. Mỗi lần bạn mở một danh sách, phần mềm tính lại từ đầu. Vì vậy chỉ cần sửa ngày của một người, sửa một đợt, hay đổi mốc trong Cài đặt là mọi danh sách đổi theo ngay. Bạn không phải bấm nút "tính lại" nào cả.
+**Một điều quan trọng cần nhớ ngay:** phần mềm **không lưu sẵn** danh sách đủ điều kiện. Mỗi lần mở một danh sách, phần mềm tính lại từ đầu. Vì vậy chỉ cần sửa ngày của một người, sửa một đợt, hay đổi mốc trong Cài đặt là mọi danh sách đổi theo ngay. Không phải bấm nút "tính lại" nào cả.
 
 ---
 
@@ -73,7 +73,7 @@ Nếu sai, phần mềm chỉ báo một câu chung: *"Sai tài khoản hoặc m
 <!-- ảnh: màn Đăng nhập, ô Tài khoản đã điền, ô Mật khẩu để trống, thấy rõ nút Đăng nhập -->
 > **[Ảnh 2]** Màn hình Đăng nhập — `docs/images/02-dang-nhap.png`
 
-**Lần đầu vào, Dashboard sẽ trống.** Đó là đúng — bạn chưa nhập gì cả. Phần mềm hiện khối **Bắt đầu với ba bước** kèm nút đi thẳng tới từng màn hình: **Mở Cài đặt**, **Thêm đợt**, **Import Excel**. Ba bước đó chính là A2, A3, A4 dưới đây.
+**Lần đầu vào, Dashboard sẽ trống.** Đó là đúng — chưa có dữ liệu nào. Phần mềm hiện khối **Bắt đầu với ba bước** kèm nút đi thẳng tới từng màn hình: **Mở Cài đặt**, **Thêm đợt**, **Import Excel**. Ba bước đó chính là A2, A3, A4 dưới đây.
 
 <!-- ảnh: Dashboard khi cơ sở dữ liệu còn trắng — thấy khối "Bắt đầu với ba bước" và các thẻ cảnh báo "Chưa có đảng viên nào", "Chưa cài đợt trao huy hiệu" -->
 > **[Ảnh 3]** Dashboard khi chưa có dữ liệu, kèm khối Bắt đầu với ba bước — `docs/images/03-dashboard-trong.png`
@@ -81,7 +81,7 @@ Nếu sai, phần mềm chỉ báo một câu chung: *"Sai tài khoản hoặc m
 <a id="a2-kiem-tra-moc-tuoi-dang-trong-cai-dat"></a>
 ### A2. Kiểm tra mốc tuổi đảng trong Cài đặt
 
-**Mốc tuổi đảng** là các năm tuổi đảng được trao huy hiệu: 30 năm, 40 năm, 45 năm… Phần mềm không bắt bạn gõ từng mốc. Bạn chỉ cho ba con số, phần mềm tự sinh ra cả dãy.
+**Mốc tuổi đảng** là các năm tuổi đảng được trao huy hiệu: 30 năm, 40 năm, 45 năm… Không phải gõ từng mốc. Chỉ cần ba con số, phần mềm tự sinh ra cả dãy.
 
 1. Bấm **Cài đặt** ở menu trái.
 2. Nhìn thẻ **Mốc tuổi đảng** với ba ô số:
@@ -89,14 +89,14 @@ Nếu sai, phần mềm chỉ báo một câu chung: *"Sai tài khoản hoặc m
    - **Kết thúc (năm)** — mốc cuối cùng. Mặc định **90**.
    - **Bước (năm)** — khoảng cách giữa hai mốc liền nhau. Mặc định **5**.
 3. Ngay dưới ba ô là phần **xem trước dãy mốc**. Với 30 / 90 / 5, phần mềm hiện: 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90.
-4. Dãy này đúng với quy định của đơn vị bạn thì **không phải sửa gì**.
-5. Cần sửa thì gõ số mới, hoặc bấm dấu **+** / **−** ở hai đầu ô. Phần xem trước đổi theo ngay khi bạn gõ, **trước khi** bấm Lưu. Xem thấy đúng rồi hãy bấm **Lưu**.
+4. Dãy này đúng với quy định của đơn vị thì **không phải sửa gì**.
+5. Cần sửa thì gõ số mới, hoặc bấm dấu **+** / **−** ở hai đầu ô. Phần xem trước đổi theo ngay khi gõ, **trước khi** bấm Lưu. Xem thấy đúng rồi hãy bấm **Lưu**.
 
 Bấm nhầm thì có nút **Khôi phục mặc định 30 / 90 / 5** đưa ba ô về như cũ.
 
 Ba ô đều phải là **số nguyên dương**, và **Bắt đầu** không được lớn hơn **Kết thúc**. Gõ sai thì phần mềm báo ngay dưới ô và không cho lưu.
 
-**Nhân tiện, điền luôn Tên đơn vị.** Cũng trên màn hình này, thẻ thứ hai là **Tên đơn vị**, ví dụ *"Đảng ủy Phường X"*. Tên này hiện trên thanh trên cùng của mọi màn hình, và quan trọng hơn: nó được in thành **dòng đầu tiên** của mọi file Excel bạn xuất ra. Để trống cũng được — khi đó file Excel không có dòng tên đơn vị.
+**Nhân tiện, điền luôn Tên đơn vị.** Cũng trên màn hình này, thẻ thứ hai là **Tên đơn vị**, ví dụ *"Đảng ủy Phường X"*. Tên này hiện trên thanh trên cùng của mọi màn hình, và quan trọng hơn: nó được in thành **dòng đầu tiên** của mọi file Excel xuất ra. Để trống cũng được — khi đó file Excel không có dòng tên đơn vị.
 
 **Chỉ có một nút Lưu cho cả màn hình.** Nút **Lưu** ở góc dưới bên phải lưu cả mốc tuổi đảng lẫn tên đơn vị. Sửa xong cả hai thẻ rồi bấm Lưu một lần là đủ.
 
@@ -128,7 +128,7 @@ Một đợt **được phép vắt qua ngày 31/12**. Nếu Đến ngày đứn
 
 | Cột | Nghĩa |
 |---|---|
-| Tên đợt | Tên bạn đặt |
+| Tên đợt | Tên tự đặt |
 | Từ ngày · Đến ngày | Khoảng ngày trong năm, dạng `dd/MM` |
 | Trạng thái *(kèm năm nay)* | **Đã qua**, **Đang diễn ra**, hoặc **Sắp tới** kèm số ngày còn lại |
 | Đủ điều kiện năm nay | Số người đủ điều kiện của đợt đó trong năm nay |
@@ -161,7 +161,7 @@ Có hai cách. Danh sách dài thì dùng **Import Excel**; thêm vài người 
 
 **Bước 1 — Chọn file**
 
-2. Bấm **Tải file mẫu**. Bạn nhận một file `.xlsx` có sẵn **4 cột đúng thứ tự** và **hai dòng ví dụ** (*Nguyễn Văn Mẫu*, *Trần Thị Mẫu*).
+2. Bấm **Tải file mẫu**. Phần mềm tải về một file `.xlsx` có sẵn **4 cột đúng thứ tự** và **hai dòng ví dụ** (*Nguyễn Văn Mẫu*, *Trần Thị Mẫu*).
 3. Mở file mẫu bằng Excel, **xóa hai dòng ví dụ**, điền danh sách thật vào. Giữ nguyên dòng tiêu đề và thứ tự cột:
 
 | Cột | Bắt buộc | Cách ghi |
@@ -204,7 +204,7 @@ Có hai cách. Danh sách dài thì dùng **Import Excel**; thêm vài người 
 | Giới tính chỉ nhận Nam hoặc Nữ | Sửa thành `Nam` hoặc `Nữ`, hoặc để trống |
 | Ngày sinh phải trước ngày vào Đảng chính thức | Kiểm tra lại hai ngày, thường là gõ đổi chỗ |
 
-Một dòng sai nhiều chỗ thì cột **Lý do** ghi đủ cả, ngăn nhau bằng dấu `;`. Bạn sửa một lượt là xong, không phải nạp đi nạp lại nhiều vòng.
+Một dòng sai nhiều chỗ thì cột **Lý do** ghi đủ cả, ngăn nhau bằng dấu `;`. Sửa một lượt là xong, không phải nạp đi nạp lại nhiều vòng.
 
 **Bước 3 — Kết quả**
 
@@ -242,7 +242,7 @@ Bấm vào tên cột để đổi cách sắp xếp: lần đầu tăng dần, 
 
 Phía trên bảng có ô **Tìm theo họ tên…**, ô lọc **Giới tính: Tất cả / Nam / Nữ** và ô lọc **Mốc kế tiếp**.
 
-Ô **Mốc kế tiếp** liệt kê đúng các mốc bác đang cài ở màn Cài đặt, thêm một dòng **Đã vượt mốc lớn nhất** cho những người cột Mốc kế tiếp đang hiện dấu "—". Chọn một mốc là bảng chỉ còn những người sắp tròn đúng mốc đó — cách nhanh nhất để xem "năm nay ai sắp tròn 50 năm".
+Ô **Mốc kế tiếp** liệt kê đúng các mốc đang cài ở màn Cài đặt, thêm một dòng **Đã vượt mốc lớn nhất** cho những người cột Mốc kế tiếp đang hiện dấu "—". Chọn một mốc là bảng chỉ còn những người sắp tròn đúng mốc đó — cách nhanh nhất để xem "năm nay ai sắp tròn 50 năm".
 
 **Sửa một người:** bấm nút bút chì ở cột **Thao tác**. Cửa sổ **Sửa đảng viên** hiện ra với dữ liệu cũ. Sửa xong bấm **Lưu thay đổi**.
 
@@ -256,7 +256,7 @@ Phía trên bảng có ô **Tìm theo họ tên…**, ô lọc **Giới tính: T
 3. Bấm nút **hình thùng rác màu đỏ** ở đầu trang, cạnh nút **+ Thêm**. Nút này chỉ hiện khi có ít nhất một dòng được tích.
 4. Phần mềm hỏi lại: *"Xóa N người khỏi danh sách?"*. Bấm **Xóa N người** để đồng ý, **Để lại** để thôi.
 
-Đổi trang hoặc đổi bộ lọc thì các dòng đang tích bị bỏ đánh dấu. Đó là cố ý, để bạn không xóa nhầm người không còn nhìn thấy trên màn hình.
+Đổi trang hoặc đổi bộ lọc thì các dòng đang tích bị bỏ đánh dấu. Đó là cố ý, để tránh xóa nhầm người không còn nhìn thấy trên màn hình.
 
 > ⚠️ **Xóa là xóa hẳn.** Không có thùng rác, không khôi phục lại được. Đọc kỹ con số trong hộp xác nhận trước khi bấm đồng ý.
 
@@ -288,7 +288,7 @@ Danh sách sắp theo **mốc huy hiệu tăng dần**, trong cùng một mốc 
 
 4. Bấm **Xuất Excel** ở góc trên bên phải bảng. Trình duyệt tải về một file tên dạng `DuDieuKien_Dot7-11_2026.xlsx`.
 
-**File Excel gồm:** dòng 1 là tên đơn vị (bỏ dòng này nếu bạn để trống Tên đơn vị), dòng 2 là tên đợt kèm khoảng ngày, dòng 3 là ngày xuất, dòng 4 để trống, dòng 5 là tiêu đề 7 cột, từ dòng 6 là dữ liệu. Ô nào không có dữ liệu thì để trống.
+**File Excel gồm:** dòng 1 là tên đơn vị (bỏ dòng này nếu Tên đơn vị để trống), dòng 2 là tên đợt kèm khoảng ngày, dòng 3 là ngày xuất, dòng 4 để trống, dòng 5 là tiêu đề 7 cột, từ dòng 6 là dữ liệu. Ô nào không có dữ liệu thì để trống.
 
 5. Mở file bằng Excel, chỉnh trình bày theo mẫu tờ trình của đơn vị rồi in.
 
@@ -298,7 +298,7 @@ Danh sách sắp theo **mốc huy hiệu tăng dần**, trong cùng một mốc 
 <!-- ảnh: file DuDieuKien_Dot7-11_2026.xlsx mở bằng Excel, thấy rõ 3 dòng tiêu đề, dòng trống, dòng tên cột và vài dòng dữ liệu -->
 > **[Ảnh 15]** File Excel xuất ra, mở bằng Excel — `docs/images/15-file-excel.png`
 
-Đến đây phần chuẩn bị đã xong. Những lần sau bạn chỉ làm theo **Phần B**.
+Đến đây phần chuẩn bị đã xong. Những lần sau chỉ làm theo **Phần B**.
 
 ---
 
@@ -317,7 +317,7 @@ Từ đợt trước đến nay có đảng viên mới chuyển đến, hoặc 
 
 Người đã chuyển đi hoặc từ trần thì tích chọn rồi bấm nút thùng rác đỏ để xóa.
 
-Nhân tiện sửa luôn những chỗ sai bạn phát hiện: gõ nhầm ngày, sai tên. Sửa xong là mọi danh sách tự đúng theo.
+Nhân tiện sửa luôn những chỗ sai phát hiện được: gõ nhầm ngày, sai tên. Sửa xong là mọi danh sách tự đúng theo.
 
 > ⚠️ **Nhớ lại: import không kiểm tra trùng.** Trước khi nạp một file, hãy dùng ô **Tìm theo họ tên…** để kiểm tra vài cái tên xem đã có chưa. Lỡ nạp trùng thì tích chọn các dòng thừa rồi xóa.
 
@@ -326,18 +326,18 @@ Nhân tiện sửa luôn những chỗ sai bạn phát hiện: gõ nhầm ngày,
 
 Có hai đường, chọn đường nào cũng ra cùng một danh sách.
 
-**Đường 1 — qua Dashboard.** Nhanh nhất khi bạn làm cho **đợt sắp tới**.
+**Đường 1 — qua Dashboard.** Nhanh nhất khi làm cho **đợt sắp tới**.
 
 1. Bấm **Dashboard**.
-2. Đối chiếu thẻ **Đợt sắp tới**: đúng đợt bạn cần chưa?
+2. Đối chiếu thẻ **Đợt sắp tới**: đúng đợt cần làm chưa?
 3. Xem bảng bên dưới, bấm **Xuất Excel**.
 
-**Đường 2 — qua màn hình đợt.** Dùng khi bạn cần **một đợt cụ thể**, hoặc cần **năm khác**.
+**Đường 2 — qua màn hình đợt.** Dùng khi cần **một đợt cụ thể**, hoặc cần **năm khác**.
 
 1. Bấm **Đợt trao huy hiệu**.
 2. Bấm nút **Xem chi tiết** ở cột Thao tác của đợt cần xem. Trang chi tiết đợt có hai tab: **Thông tin** và **Danh sách đủ điều kiện**.
 3. Mở tab **Danh sách đủ điều kiện**.
-4. Trên tab có **bộ chọn năm** gồm ba năm liền nhau, ví dụ **2025 · 2026 · 2027**. Mặc định là năm nay. Chọn năm sau để chuẩn bị trước; phần mềm gắn nhãn **Năm sau** cạnh khoảng ngày và ghi *"N người · chuẩn bị trước"* để bạn không nhầm.
+4. Trên tab có **bộ chọn năm** gồm ba năm liền nhau, ví dụ **2025 · 2026 · 2027**. Mặc định là năm nay. Chọn năm sau để chuẩn bị trước; phần mềm gắn nhãn **Năm sau** cạnh khoảng ngày và ghi *"N người · chuẩn bị trước"* để không nhầm.
 5. Bấm **Xuất Excel**.
 
 <!-- ảnh: trang chi tiết đợt, tab "Danh sách đủ điều kiện" đang mở, bộ chọn năm 2025·2026·2027 với 2026 đang chọn, bảng danh sách và nút Xuất Excel -->
@@ -350,7 +350,7 @@ Có hai đường, chọn đường nào cũng ra cùng một danh sách.
 
 Đây là bước dễ bỏ qua nhất, nhưng là bước tránh sót người.
 
-**"Chưa thuộc đợt nào" nghĩa là gì:** người đó **có** tròn mốc tuổi đảng trong năm, nhưng ngày tròn mốc **không rơi vào khoảng ngày của bất kỳ đợt nào**. Họ không xuất hiện trong bất cứ danh sách đủ điều kiện nào. Nếu bạn không mở màn hình này, họ bị bỏ quên cả năm.
+**"Chưa thuộc đợt nào" nghĩa là gì:** người đó **có** tròn mốc tuổi đảng trong năm, nhưng ngày tròn mốc **không rơi vào khoảng ngày của bất kỳ đợt nào**. Họ không xuất hiện trong bất cứ danh sách đủ điều kiện nào. Không mở màn hình này thì họ bị bỏ quên cả năm.
 
 1. Nhìn menu trái. Mục **Chưa thuộc đợt nào** có con số đỏ không? Có nghĩa là đang có người bị sót.
 2. Bấm vào mục đó.
@@ -367,7 +367,7 @@ Có hai đường, chọn đường nào cũng ra cùng một danh sách.
 3. Quay lại **Chưa thuộc đợt nào**. Con số phải giảm hoặc về không.
 4. Quay lại **B2** và xuất lại file Excel — danh sách giờ đã có thêm những người vừa được phủ.
 
-Không muốn sửa đợt cũng được: bạn đã **nhìn thấy** họ, và có thể bấm **Xuất Excel** ngay trên màn hình này để có danh sách riêng (tên file dạng `ChuaThuocDot_2026.xlsx`) mà xử lý bằng cách khác.
+Không muốn sửa đợt cũng được: họ đã **hiện ra** ở đây, và có thể bấm **Xuất Excel** ngay trên màn hình này để có danh sách riêng (tên file dạng `ChuaThuocDot_2026.xlsx`) mà xử lý bằng cách khác.
 
 Màn hình ghi *"Không có ai bị sót trong năm 2026."* là tốt — năm đó các đợt đã phủ hết.
 
@@ -403,11 +403,11 @@ Màn hình ghi *"Không có ai bị sót trong năm 2026."* là tốt — năm �
 
 **4. Xóa là xóa hẳn.** Không có thùng rác. Đọc con số trong hộp xác nhận trước khi đồng ý.
 
-**5. Số ở Dashboard khác số ở màn hình đợt.** Thường là do khác năm: Dashboard luôn hiện **đợt sắp tới** — có thể đã sang năm sau — còn trang chi tiết đợt hiện năm bạn tự chọn. Kiểm tra lại bộ chọn năm.
+**5. Số ở Dashboard khác số ở màn hình đợt.** Thường là do khác năm: Dashboard luôn hiện **đợt sắp tới** — có thể đã sang năm sau — còn trang chi tiết đợt hiện năm đang chọn. Kiểm tra lại bộ chọn năm.
 
 **6. Danh sách trống mà đáng lẽ phải có người.** Kiểm tra theo thứ tự: đã nhập đảng viên chưa (màn **Đảng viên**), đã tạo đợt chưa (màn **Đợt trao huy hiệu**), mốc trong **Cài đặt** có đúng không, và đang xem **năm** nào.
 
-**7. Tích chọn rồi đổi trang thì mất dấu tích.** Phần mềm cố ý bỏ đánh dấu khi bạn đổi trang hoặc đổi bộ lọc, để tránh xóa nhầm. Xóa xong từng trang một.
+**7. Tích chọn rồi đổi trang thì mất dấu tích.** Phần mềm cố ý bỏ đánh dấu khi đổi trang hoặc đổi bộ lọc, để tránh xóa nhầm. Xóa xong từng trang một.
 
 ---
 
@@ -427,7 +427,7 @@ Màn hình ghi *"Không có ai bị sót trong năm 2026."* là tốt — năm �
 | Màn hình trắng hoặc không phản hồi | Tải lại trang (phím `F5`). Vẫn vậy thì báo người quản trị. |
 | Mất dữ liệu, cần khôi phục | Việc này do người quản trị làm. Xem phần **Sao lưu dữ liệu** ngay dưới. |
 
-Trục trặc không nằm trong bảng trên thì ghi lại **bạn đang làm gì**, **màn hình nào**, **phần mềm báo chữ gì**, chụp màn hình rồi gửi cho người quản trị.
+Trục trặc không nằm trong bảng trên thì ghi lại **đang làm gì**, **màn hình nào**, **phần mềm báo chữ gì**, chụp màn hình rồi gửi cho người quản trị.
 
 ---
 
