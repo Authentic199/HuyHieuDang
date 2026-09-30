@@ -85,6 +85,24 @@ public class PartyMembersController : BaseController
         => OkWrapper(await partyMemberService.UpdateAsync(id, request, cancellationToken), Messages<PartyMember>.Update());
 
     /// <summary>
+    /// Lưu ghi chú của một đảng viên (UC-26, QT12). Chỉ đổi ghi chú; bốn trường còn lại giữ
+    /// nguyên. Thân rỗng <c>{}</c> hoặc <c>{ "note": null }</c> nghĩa là xóa ghi chú.
+    /// </summary>
+    /// <param name="id">Id đảng viên.</param>
+    /// <param name="request">Nội dung ghi chú mới.</param>
+    /// <param name="cancellationToken">Thẻ hủy.</param>
+    /// <returns>Đảng viên sau khi lưu ghi chú.</returns>
+    [HttpPut("{id:guid}/Note")]
+    [ProducesResponseType(typeof(SuccessResultWrapper<PartyMemberResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResultWrapper), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<SuccessResultWrapper<PartyMemberResponse>>> UpdateNoteAsync(
+        Guid id, [FromBody] UpdatePartyMemberNoteRequest request, CancellationToken cancellationToken)
+        => OkWrapper(
+            await partyMemberService.UpdateNoteAsync(id, request, cancellationToken),
+            Messages<PartyMember>.Update());
+
+    /// <summary>
     /// Xóa hẳn đảng viên, không có thùng rác (UC-23, QT10). Đây là đường xóa duy nhất: xóa một
     /// người thì gửi mảng một phần tử. Dùng <c>POST</c> vì <c>DELETE</c> có thân không phải quy
     /// ước của bộ khung. Id không tồn tại bị bỏ qua lặng lẽ.

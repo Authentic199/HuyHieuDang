@@ -2,11 +2,12 @@ using FluentValidation;
 using HuyHieuDang.Core.Common.Interfaces;
 using HuyHieuDang.Infrastructure.Facades.Definitions;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities;
+using HuyHieuDang.Infrastructure.Modules.PartyMembers.Notes;
 
 namespace HuyHieuDang.Infrastructure.Modules.PartyMembers.Requests;
 
 /// <summary>
-/// Bốn trường chung của thêm mới và sửa (mục 3.3 hợp đồng API).
+/// Năm trường chung của thêm mới và sửa (mục 3.3 hợp đồng API).
 /// </summary>
 /// <remarks>
 /// <see cref="Gender"/> khai báo là chuỗi chứ không phải <c>Gender?</c>: giá trị lạ phải trả đúng
@@ -51,6 +52,12 @@ public abstract class PartyMemberRequest
     public DateOnly? OfficialAdmissionDate { get; set; }
 
     /// <summary>
+    /// Ghi chú của đảng viên (QT12). Không bắt buộc. <c>PUT</c> thay trọn: không gửi trường này
+    /// nghĩa là xóa ghi chú, không phải giữ nguyên ghi chú cũ (mục 3.4 hợp đồng API).
+    /// </summary>
+    public string? Note { get; set; }
+
+    /// <summary>
     /// Đổi <see cref="Gender"/> sang enum. Chỉ gọi sau khi đã qua kiểm tra hợp lệ.
     /// </summary>
     /// <returns>Giới tính đã đổi kiểu, hoặc <see langword="null"/> khi bỏ trống.</returns>
@@ -87,6 +94,8 @@ public abstract class PartyMemberRequestValidator<TRequest> : AbstractValidator<
             .WithMessage(Messages<PartyMember>.Required(x => x.OfficialAdmissionDate))
             .Must(value => value <= dateTimeProvider.Today)
             .WithMessage(Messages<PartyMember>.Invalid(x => x.OfficialAdmissionDate));
+
+        RuleFor(x => x.Note).NoteRule();
 
         RuleFor(x => x.DateOfBirth)
             .Must((request, value) => value is null || request.OfficialAdmissionDate is null || value < request.OfficialAdmissionDate)

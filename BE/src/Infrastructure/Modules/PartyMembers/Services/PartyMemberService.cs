@@ -8,6 +8,7 @@ using HuyHieuDang.Infrastructure.Facades.Definitions;
 using HuyHieuDang.Infrastructure.Facades.Persistence.Repositories;
 using HuyHieuDang.Infrastructure.Modules.AppSettings.Entities;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities;
+using HuyHieuDang.Infrastructure.Modules.PartyMembers.Notes;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Requests;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,14 @@ public interface IPartyMemberService : IScopedService
     /// <returns>Đảng viên sau khi sửa.</returns>
     Task<PartyMemberResponse> UpdateAsync(
         Guid id, UpdatePartyMemberRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>Chỉ lưu ghi chú của một đảng viên (UC-26, QT12).</summary>
+    /// <param name="id">Id đảng viên.</param>
+    /// <param name="request">Nội dung ghi chú mới.</param>
+    /// <param name="cancellationToken">Thẻ hủy.</param>
+    /// <returns>Đảng viên sau khi lưu ghi chú; bốn trường còn lại giữ nguyên.</returns>
+    Task<PartyMemberResponse> UpdateNoteAsync(
+        Guid id, UpdatePartyMemberNoteRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Xóa hẳn đảng viên trong một giao dịch (UC-23, QT10). Đường xóa duy nhất: một phần tử
@@ -164,7 +173,7 @@ public class PartyMemberService : IPartyMemberService
         CreatePartyMemberRequest request, CancellationToken cancellationToken = default)
     {
         PartyMember entity = new();
-        Apply(request, entity);
+        Apply(request, entity, dateTimeProvider.Now);
 
         await repositoryWrapper.Repository<PartyMember>().AddAsync(entity, cancellationToken);
 
@@ -176,7 +185,24 @@ public class PartyMemberService : IPartyMemberService
         Guid id, UpdatePartyMemberRequest request, CancellationToken cancellationToken = default)
     {
         PartyMember entity = await FindOrThrowAsync(id, isAsNoTracking: false, cancellationToken);
-        Apply(request, entity);
+        Apply(request, entity, dateTimeProvider.Now);
+
+        await repositoryWrapper.Repository<PartyMember>().UpdateAsync(entity, cancellationToken);
+
+        return Project(entity, await LoadMilestoneContextAsync(cancellationToken));
+    }
+
+    /// <inheritdoc/>
+    public async Task<PartyMemberResponse> UpdateNoteAsync(
+        Guid id, UpdatePartyMemberNoteRequest request, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        PartyMember entity = await FindOrThrowAsync(id, isAsNoTracking: false, cancellationToken);
+
+        // Chỉ đụng ghi chú: bốn trường còn lại không nằm trên hộp ghi chú của giao diện nên
+        // không có gì để chép vào (mục 3.6 hợp đồng API).
+        PartyMemberNote.Apply(entity, request.Note, dateTimeProvider.Now);
 
         await repositoryWrapper.Repository<PartyMember>().UpdateAsync(entity, cancellationToken);
 
@@ -295,17 +321,21 @@ public class PartyMemberService : IPartyMemberService
     }
 
     /// <summary>
-    /// Chép bốn trường của yêu cầu vào bản ghi. Không gán <c>UpdatedAt</c>:
+    /// Chép năm trường của yêu cầu vào bản ghi. Không gán <c>UpdatedAt</c>:
     /// <c>UpdatedAtInterceptor</c> đóng dấu ở tầng lưu thay cho mọi module (T-FIX-1).
+    /// Ghi chú và ngày ghi đi qua <see cref="PartyMemberNote"/> — chỗ duy nhất giữ luật QT12.
     /// </summary>
     /// <param name="request">Yêu cầu đã qua kiểm tra hợp lệ.</param>
     /// <param name="entity">Bản ghi đích.</param>
-    private static void Apply(PartyMemberRequest request, PartyMember entity)
+    /// <param name="now">Thời điểm hiện tại của máy chủ.</param>
+    private static void Apply(PartyMemberRequest request, PartyMember entity, DateTimeOffset now)
     {
         entity.FullName = request.FullName!.Trim();
         entity.DateOfBirth = request.DateOfBirth;
         entity.Gender = request.ToGender();
         entity.OfficialAdmissionDate = request.OfficialAdmissionDate!.Value;
+
+        PartyMemberNote.Apply(entity, request.Note, now);
     }
 
     /// <summary>
