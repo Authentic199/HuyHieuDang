@@ -1,11 +1,11 @@
 openapi: 3.0.3
 
-# Bản máy đọc của docs/api-contract.md (v1.5 — 21/09/2026).
+# Bản máy đọc của docs/api-contract.md (v1.6 — 30/09/2026).
 # Tài liệu markdown là bản chuẩn; file này phải được sửa cùng lúc mỗi khi contract đổi.
 
 info:
   title: HuyHieuDang API
-  version: "1.5"
+  version: "1.6"
   description: |
     API của hệ thống hỗ trợ xét trao Huy hiệu Đảng.
     Mọi phản hồi thành công bọc trong `{ message, data }`; phần mô tả dưới đây chỉ nói về `data`.
@@ -215,6 +215,47 @@ paths:
                         $ref: '#/components/schemas/PartyMemberResponse'
         '400':
           $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /PartyMembers/{id}/Note:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags: [PartyMembers]
+      summary: Lưu ghi chú của một đảng viên (UC-26)
+      description: |
+        Chỉ đổi ghi chú (QT12); không đụng fullName, dateOfBirth, gender, officialAdmissionDate.
+        Máy chủ cắt khoảng trắng hai đầu; rỗng sau khi cắt thì lưu null.
+        `{ "note": null }` và thân rỗng `{}` đều là xóa ghi chú, khi đó noteUpdatedAt cũng về null.
+        noteUpdatedAt chỉ nhảy khi nội dung ghi chú sau khi cắt khác nội dung đang lưu.
+        Báo thành công bằng khóa có sẵn Mes.PartyMember.Update.Successfully.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyMemberNoteRequest'
+      responses:
+        '200':
+          description: Đã lưu ghi chú
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PartyMemberResponse'
+        '400':
+          description: |
+            Mes.PartyMember.NotFound khi id không tồn tại;
+            Mes.PartyMember.OverLength.Note khi ghi chú vượt 500 ký tự sau khi cắt khoảng trắng.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResult'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -984,6 +1025,29 @@ components:
           format: date
           description: Không được ở tương lai
           example: '1996-10-15'
+        note:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: |
+            QT12 — ghi chú của đảng viên, không bắt buộc.
+            Máy chủ cắt khoảng trắng hai đầu; rỗng sau khi cắt thì lưu null.
+            Giới hạn 500 ký tự tính sau khi cắt; vượt thì trả Mes.PartyMember.OverLength.Note.
+            PUT thay trọn: không gửi note, hoặc gửi null, đều là xóa ghi chú.
+          example: Sức khỏe yếu, con trai nhận thay.
+
+    PartyMemberNoteRequest:
+      type: object
+      description: Thân yêu cầu của PUT /PartyMembers/{id}/Note — chỉ có ghi chú (QT12)
+      properties:
+        note:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: |
+            Máy chủ cắt khoảng trắng hai đầu; rỗng sau khi cắt thì lưu null.
+            Giới hạn 500 ký tự tính sau khi cắt.
+          example: Sức khỏe yếu, con trai nhận thay.
 
     PartyMemberResponse:
       type: object
@@ -1015,12 +1079,29 @@ components:
           type: string
           format: date
           nullable: true
+        note:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: QT12 — ghi chú của đảng viên; null khi chưa có ghi chú
+          example: Sức khỏe yếu, con trai nhận thay.
+        noteUpdatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: |
+            QT12 — thời điểm nội dung ghi chú thay đổi lần cuối, giờ Asia/Ho_Chi_Minh (độ lệch +07:00).
+            Máy chủ tự đóng; không nhận trong thân yêu cầu.
+            Giữ nguyên khi nội dung ghi chú không đổi; về null cùng lúc với note khi xóa ghi chú.
+          example: '2026-09-30T14:05:00+07:00'
         createdAt:
           type: string
           format: date-time
+          description: Mốc thời gian hệ thống, ISO UTC
         updatedAt:
           type: string
           format: date-time
+          description: Mốc thời gian hệ thống, ISO UTC
 
     PartyMemberPagination:
       type: object
@@ -1360,6 +1441,21 @@ components:
         milestone:
           type: integer
           example: 30
+        note:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: |
+            QT12 — ghi chú của đảng viên; null khi chưa có ghi chú.
+            Vì vậy GET /Dashboard (eligibleMembers) và GET /Eligibility (members) trả kèm ghi chú.
+            File Excel xuất không có cột ghi chú.
+          example: Sức khỏe yếu, con trai nhận thay.
+        noteUpdatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: QT12 — giống noteUpdatedAt của PartyMemberResponse, giờ Asia/Ho_Chi_Minh
+          example: '2026-09-30T14:05:00+07:00'
 
     MemberGap:
       type: object
@@ -1374,6 +1470,9 @@ components:
           nullable: true
 
     UnassignedMemberResponse:
+      description: |
+        Kế thừa EligibleMemberResponse nên cũng có note và noteUpdatedAt,
+        nhưng màn "Chưa thuộc đợt nào" (UC-40) không hiện ghi chú.
       allOf:
         - $ref: '#/components/schemas/EligibleMemberResponse'
         - type: object

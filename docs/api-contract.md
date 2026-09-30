@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| Phiên bản | 1.5 — 21/09/2026 |
-| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào; v1.4 bổ sung bảy khóa thông điệp còn thiếu ở mục 1.5 và trần 200 năm của ba mốc ở mục 7.2 và 7.4; v1.5 khớp lại tài liệu với mã đã gộp — bỏ endpoint xóa một đảng viên, mở lọc/sắp xếp theo Mốc kế tiếp và Tuổi đảng, QT6 cho đợt vắt qua 31/12 |
+| Phiên bản | 1.6 — 30/09/2026 |
+| Trạng thái | Đã chốt. CEO duyệt v1.0 (PR #1); v1.1 bổ sung 10 quyết định OQ; v1.2 khớp mã đã duyệt của Import, Đợt và Cài đặt, sửa quy ước sắp xếp ở mục 1.8; v1.3 chốt `warnings.gaps` rỗng khi năm chưa có đợt nào; v1.4 bổ sung bảy khóa thông điệp còn thiếu ở mục 1.5 và trần 200 năm của ba mốc ở mục 7.2 và 7.4; v1.5 khớp lại tài liệu với mã đã gộp — bỏ endpoint xóa một đảng viên, mở lọc/sắp xếp theo Mốc kế tiếp và Tuổi đảng, QT6 cho đợt vắt qua 31/12; v1.6 thêm ghi chú đảng viên |
 | Chủ sở hữu | Technical Writer |
-| Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.1) |
+| Nguồn nghiệp vụ | `docs/2026-09-17-huyhieudang-business-design.md` (v1.3) |
 | Nguồn giao diện | `docs/design-system/Huy Hieu Dang - 9 man hinh.html` |
 | Bản máy đọc | `docs/openapi.yaml` (OpenAPI 3.0.3, sinh từ tài liệu này) |
 
@@ -134,6 +134,7 @@ Lý do: bộ khung Backend sinh khóa tự động; để chữ tiếng Việt n
 | `Mes.PartyMember.NotFound` | Không tìm thấy đảng viên | Lấy, sửa hoặc xóa bằng id không tồn tại |
 | `Mes.PartyMember.Required.FullName` | Chưa nhập Họ tên | Thêm hoặc sửa mà bỏ trống Họ tên |
 | `Mes.PartyMember.OverLength.FullName` | Họ tên quá dài, tối đa 200 ký tự | Họ tên vượt 200 ký tự |
+| `Mes.PartyMember.OverLength.Note` | Ghi chú quá dài, tối đa 500 ký tự | Ghi chú vượt 500 ký tự, đếm **sau khi** máy chủ cắt khoảng trắng hai đầu — ở `POST /api/PartyMembers`, `PUT /api/PartyMembers/{id}` hoặc `PUT /api/PartyMembers/{id}/Note` |
 | `Mes.PartyMember.Required.OfficialAdmissionDate` | Chưa nhập Ngày vào Đảng chính thức | Thêm hoặc sửa mà bỏ trống ngày vào Đảng chính thức |
 | `Mes.PartyMember.Invalid.OfficialAdmissionDate` | Ngày chính thức không được ở tương lai | Ngày vào Đảng chính thức sau ngày hôm nay của máy chủ |
 | `Mes.PartyMember.Invalid.DateOfBirth` | Ngày sinh phải trước Ngày vào Đảng chính thức | Ngày sinh bằng hoặc sau ngày vào Đảng chính thức |
@@ -175,10 +176,13 @@ Ngoài bảng trên, tầng xác thực phiên còn trả `Mes.User.NotFound` v�
 | Ngày (không giờ) | chuỗi `"yyyy-MM-dd"`, ví dụ `"1996-10-15"` | `dd/MM/yyyy` → `15/10/1996` |
 | Ngày/tháng của đợt | hai số nguyên `fromDay` + `fromMonth` | `dd/MM` → `01/10` |
 | Mốc thời gian hệ thống | ISO UTC `"2026-09-19T08:30:00Z"` | thường không hiển thị |
+| Ngày ghi của ghi chú (`noteUpdatedAt`) | ISO có độ lệch múi giờ `"2026-09-30T14:05:00+07:00"` | `Ghi ngày dd/MM/yyyy` → `Ghi ngày 30/09/2026` |
 | Số lượng | số nguyên JSON | dấu chấm ngăn nghìn: `1.248` |
 | Ô trống | `null` | hiển thị `—` (trừ trong file Excel: để rỗng) |
 
 **Bắt buộc:** mọi trường ngày nghiệp vụ (`dateOfBirth`, `officialAdmissionDate`, `milestoneDate`, `fromDate`, `toDate`, `today`) là **ngày thuần**, kiểu `DateOnly` phía Backend, tuần tự hóa thành chuỗi `yyyy-MM-dd`. **Không dùng `DateTime`** cho các trường này: bộ khung Backend có bộ chuyển đổi tự quy `DateTime` về UTC, sẽ làm lệch ngày một đơn vị.
+
+**Ngoại lệ duy nhất về múi giờ:** `noteUpdatedAt` trả theo giờ **Asia/Ho_Chi_Minh** kèm độ lệch `+07:00`, vì giao diện hiện đúng ngày cán bộ ghi (`Ghi ngày dd/MM/yyyy`) — ghi lúc 01:00 ngày 30/09 giờ Việt Nam mà trả UTC thì giao diện đọc ra 29/09. `createdAt` và `updatedAt` vẫn là UTC như cũ.
 
 Ngày hôm nay luôn lấy từ **máy chủ** (`GET /api/Auth/Me` → `serverDate`, và `GET /api/Dashboard` → `today`), không lấy từ đồng hồ trình duyệt.
 
@@ -293,6 +297,8 @@ Khi lỗi, các endpoint này trả JSON theo mục 1.4 (Frontend phải đọc 
   "partyAgeYears": 50,
   "nextMilestone": 55,
   "nextMilestoneDate": "2031-09-12",
+  "note": "Sức khỏe yếu, con trai nhận thay.",
+  "noteUpdatedAt": "2026-09-30T14:05:00+07:00",
   "createdAt": "2026-09-19T08:30:00Z",
   "updatedAt": "2026-09-19T08:30:00Z"
 }
@@ -308,7 +314,18 @@ Khi lỗi, các endpoint này trả JSON theo mục 1.4 (Frontend phải đọc 
 | `partyAgeYears` | int | QT3 — tính đến hôm nay, tính lại mỗi lần gọi |
 | `nextMilestone` | int \| null | QT3a — `null` khi đã vượt mốc lớn nhất |
 | `nextMilestoneDate` | date \| null | `null` cùng lúc với `nextMilestone` |
+| `note` | string \| null | QT12 — ghi chú của đảng viên, tối đa 500 ký tự. `null` khi chưa có ghi chú |
+| `noteUpdatedAt` | datetime \| null | QT12 — thời điểm **nội dung** ghi chú thay đổi lần cuối, giờ Asia/Ho_Chi_Minh (mục 1.6). `null` khi chưa có ghi chú. Xem "Quy tắc `noteUpdatedAt`" ngay dưới |
 | `createdAt` / `updatedAt` | datetime | Không hiển thị trên giao diện v1 |
+
+**Quy tắc `noteUpdatedAt`** — dùng chung cho mục 3.3, 3.4 và 3.6:
+
+1. Máy chủ **cắt khoảng trắng hai đầu** nội dung gửi lên. Rỗng sau khi cắt thì lưu `null`. Giới hạn 500 ký tự tính **sau khi** cắt.
+2. `noteUpdatedAt` bằng **thời điểm hiện tại của máy chủ** khi nội dung ghi chú sau khi cắt **khác** nội dung đang lưu — kể cả khi đổi từ `null` sang có nội dung.
+3. `noteUpdatedAt` **giữ nguyên** khi nội dung ghi chú không đổi: sửa trường khác của đảng viên, hoặc lưu lại đúng nội dung cũ.
+4. Xóa ghi chú thì `note` và `noteUpdatedAt` **cùng** về `null`.
+
+Người dùng không gửi và không sửa được `noteUpdatedAt`; máy chủ tự đóng.
 
 **`EligibleMemberResponse`** — một dòng trong danh sách đủ điều kiện:
 
@@ -320,9 +337,20 @@ Khi lỗi, các endpoint này trả JSON theo mục 1.4 (Frontend phải đọc 
   "dateOfBirth": "1958-03-12",
   "officialAdmissionDate": "1996-10-15",
   "milestoneDate": "2026-10-15",
-  "milestone": 30
+  "milestone": 30,
+  "note": "Sức khỏe yếu, con trai nhận thay.",
+  "noteUpdatedAt": "2026-09-30T14:05:00+07:00"
 }
 ```
+
+| Trường thêm ở v1.6 | Kiểu | Ghi chú |
+|---|---|---|
+| `note` | string \| null | QT12 — giống `note` của `PartyMemberResponse`. `null` khi chưa có ghi chú |
+| `noteUpdatedAt` | datetime \| null | QT12 — giống `noteUpdatedAt` của `PartyMemberResponse` |
+
+Vì vậy `GET /api/Dashboard` (mảng `eligibleMembers`) và `GET /api/Eligibility` (mảng `members`) **trả kèm ghi chú**; giao diện dùng chúng để dựng khối gọn `Ghi chú · N người` và hộp xem đầy đủ (UC-11, UC-34).
+
+`UnassignedMemberResponse` kế thừa `EligibleMemberResponse` nên cũng có hai trường này, nhưng màn "Chưa thuộc đợt nào" (UC-40) **không** hiện ghi chú — giao diện bỏ qua.
 
 > **Không có trường `id`.** Danh sách đủ điều kiện không được lưu vào bảng nào (QT5); mỗi lời gọi là một lần tính lại. `partyMemberId` chỉ để Frontend làm `rowKey` và để bấm sang màn sửa đảng viên. Không được dùng nó như id của "bản ghi đủ điều kiện" — không tồn tại thứ đó.
 
@@ -549,7 +577,8 @@ Authorization: Bearer …
   "fullName": "Nguyễn Văn An",
   "dateOfBirth": "1958-03-12",
   "gender": "Male",
-  "officialAdmissionDate": "1996-10-15"
+  "officialAdmissionDate": "1996-10-15",
+  "note": "Sức khỏe yếu, con trai nhận thay."
 }
 ```
 
@@ -559,6 +588,7 @@ Authorization: Bearer …
 | `dateOfBirth` | date \| null | – | Nếu có: phải trước `officialAdmissionDate` |
 | `gender` | Gender \| null | – | `Male` / `Female` / `null` |
 | `officialAdmissionDate` | date | ✔ | ≤ ngày hôm nay (theo lịch máy chủ) |
+| `note` | string \| null | – | QT12 — máy chủ cắt khoảng trắng hai đầu; rỗng sau khi cắt thì lưu `null`. ≤ 500 ký tự tính sau khi cắt |
 
 **Phản hồi `data`:** `PartyMemberResponse` vừa tạo.
 
@@ -571,12 +601,19 @@ Authorization: Bearer …
 | `Mes.PartyMember.Invalid.OfficialAdmissionDate` | Ngày chính thức ở tương lai |
 | `Mes.PartyMember.Invalid.DateOfBirth` | Ngày sinh sau ngày chính thức |
 | `Mes.PartyMember.Invalid.Gender` | Giới tính khác `Male`/`Female` |
+| `Mes.PartyMember.OverLength.Note` | Ghi chú vượt 500 ký tự sau khi cắt khoảng trắng |
+
+Ghi chú đi kèm khi thêm người thì `noteUpdatedAt` bằng thời điểm hiện tại của máy chủ; không gửi `note` (hoặc gửi rỗng) thì cả `note` và `noteUpdatedAt` là `null`. Xem "Quy tắc `noteUpdatedAt`" ở mục 1.10.
 
 > **Không kiểm tra trùng tên.** Thêm hai người cùng tên, cùng ngày là hợp lệ (QT9 nói rõ hệ thống không chống trùng).
 
 ### 3.4 `PUT /api/PartyMembers/{id}` — Sửa (UC-22)
 
-Thân yêu cầu và ràng buộc giống `POST`. Gửi **đủ cả 4 trường**, kể cả trường muốn xóa (gửi `null`).
+Thân yêu cầu và ràng buộc giống `POST`. Gửi **đủ cả 5 trường**, kể cả trường muốn xóa (gửi `null`).
+
+**`PUT` thay trọn.** Không gửi `note`, hoặc gửi `note = null`, đều có nghĩa là **xóa ghi chú** — không phải "giữ nguyên ghi chú cũ". Frontend muốn giữ ghi chú thì phải gửi lại đúng nội dung đang có; giữ lại y hệt thì `noteUpdatedAt` không đổi. Muốn đổi **chỉ** ghi chú thì dùng mục 3.6.
+
+`noteUpdatedAt` theo "Quy tắc `noteUpdatedAt`" ở mục 1.10: chỉ nhảy khi nội dung ghi chú sau khi cắt khác nội dung đang lưu. Sửa Họ tên hay Ngày sinh mà ghi chú không đổi thì ngày ghi giữ nguyên.
 
 **Phản hồi `data`:** `PartyMemberResponse` sau khi sửa.
 **Lỗi:** như `POST`, thêm `Mes.PartyMember.NotFound`.
@@ -603,11 +640,42 @@ Dùng `POST` thay vì `DELETE` có thân — theo quy ước sẵn có của b�
 
 **Đây là đường xóa duy nhất.** `DELETE /api/PartyMembers/{id}` đã bị bỏ ở T34: xóa một người là gọi endpoint này với mảng một phần tử. Giữ hai đường xóa nghĩa là hai chỗ phải sửa mỗi khi luật xóa đổi, mà màn hình chỉ dùng một.
 
+### 3.6 `PUT /api/PartyMembers/{id}/Note` — Lưu ghi chú (UC-26)
+
+Endpoint riêng cho nút ghi chú ở cột Thao tác của màn Đảng viên (UC-20) và cho hộp `Ghi chú — <Họ tên>` (UC-26). Có endpoint riêng vì hộp ghi chú không có Họ tên, Ngày sinh, Giới tính, Ngày chính thức trên màn hình; gọi `PUT /api/PartyMembers/{id}` ở đó sẽ phải gửi lại bốn trường mà người dùng không nhìn thấy.
+
+**Thân yêu cầu** (`application/json`)
+
+```json
+{ "note": "Sức khỏe yếu, con trai nhận thay." }
+```
+
+| Trường | Kiểu | Bắt buộc | Ràng buộc |
+|---|---|---|---|
+| `note` | string \| null | – | QT12 — máy chủ cắt khoảng trắng hai đầu; rỗng sau khi cắt thì lưu `null`. ≤ 500 ký tự tính sau khi cắt |
+
+**Chỉ đổi ghi chú.** Endpoint này không đụng `fullName`, `dateOfBirth`, `gender`, `officialAdmissionDate` — dù thân yêu cầu có kèm trường lạ thì cũng bị bỏ qua. `{ "note": null }` và thân rỗng `{}` đều là **xóa ghi chú**.
+
+`noteUpdatedAt` theo "Quy tắc `noteUpdatedAt`" ở mục 1.10.
+
+**Phản hồi `data`:** `PartyMemberResponse` đã cập nhật — giao diện dùng luôn để hiện lại viên ngày ghi mà không cần gọi thêm.
+
+**Khóa thông điệp thành công:** dùng khóa có sẵn `Mes.PartyMember.Update.Successfully` ("Đã lưu thay đổi", mục 1.5). Không thêm khóa thành công mới.
+
+**Lỗi**
+
+| Khóa | Khi nào |
+|---|---|
+| `Mes.PartyMember.NotFound` | `id` không tồn tại |
+| `Mes.PartyMember.OverLength.Note` | Ghi chú vượt 500 ký tự sau khi cắt khoảng trắng |
+
 ---
 
 ## 4. Nhóm 3 — Import Excel (M2 → wizard 3 bước)
 
 Ba endpoint tương ứng ba bước của UC-24.
+
+> **v1.6 không đổi gì ở nhóm này.** File Excel vẫn đúng **4 cột** (Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức) — không có cột ghi chú, file mẫu không thêm cột, `ImportValidRow` và `ImportErrorRow` không thêm trường. Người được nạp bằng import có `note = null` và `noteUpdatedAt = null`; cán bộ ghi chú sau bằng mục 3.6 (QT12).
 
 ### 4.1 `GET /api/PartyMembers/Import/Template` — Tải file mẫu (UC-25)
 
@@ -1036,6 +1104,8 @@ Cả ba đều trả file nhị phân theo mục 1.9. Mỗi file chỉ có **m�
 Cột của file đủ điều kiện: `STT` · `Họ tên` · `Giới tính` · `Ngày sinh` · `Ngày chính thức` · `Ngày tròn mốc` · `Mốc huy hiệu`.
 File "chưa thuộc đợt nào" có thêm cột cuối: `Khoảng trống`.
 
+> **File xuất không có cột ghi chú** (v1.6, QT12). Ba endpoint ở mục 8 giữ nguyên bộ cột trên, dù `EligibleMemberResponse` đã trả kèm `note` và `noteUpdatedAt`. Ghi chú là chữ tự do dài tới 500 ký tự, có xuống dòng; đưa vào bảng Excel sẽ làm vỡ bố cục của tờ trình mà cán bộ in ra. Ghi chú chỉ đọc trên giao diện.
+
 Ba dòng tiêu đề đầu file ghi chữ vào **ô đầu tiên của dòng**, **không gộp ô** ngang qua các cột. Cán bộ lọc hay sắp xếp lại bảng trong Excel vẫn được.
 
 ### 8.1 `GET /api/Exports/Eligibility` — Xuất danh sách một đợt (UC-34)
@@ -1075,28 +1145,29 @@ Khi không có ai bị sót, vẫn trả file hợp lệ chỉ có phần tiêu 
 | UC-00 | Đăng nhập | `POST /api/Auth/Login` |
 | UC-01 | Đăng xuất | `POST /api/Auth/Logout` |
 | UC-10 | Thẻ đợt sắp tới | `GET /api/Dashboard` → `upcomingPeriod` |
-| UC-11 | Bảng đủ điều kiện của đợt sắp tới | `GET /api/Dashboard` → `eligibleMembers`; xuất: `GET /api/Exports/Dashboard` |
+| UC-11 | Bảng đủ điều kiện của đợt sắp tới + khối ghi chú | `GET /api/Dashboard` → `eligibleMembers` (đã kèm `note`, `noteUpdatedAt`); xuất: `GET /api/Exports/Dashboard` (không có cột ghi chú) |
 | UC-12 | Cảnh báo nhanh | `GET /api/Dashboard` → `warnings` |
 | UC-13 | Hướng dẫn 3 bước (trạng thái trống) | `GET /api/Dashboard` → `warnings.noMembers`, `warnings.noPeriods` |
-| UC-20 | Danh sách đảng viên | `GET /api/PartyMembers` |
+| UC-20 | Danh sách đảng viên (kèm nút ghi chú ở cột Thao tác) | `GET /api/PartyMembers` — `PartyMemberResponse` đã kèm `note`, `noteUpdatedAt` |
 | UC-21 | Thêm thủ công | `POST /api/PartyMembers` |
 | UC-22 | Sửa | `GET /api/PartyMembers/{id}` + `PUT /api/PartyMembers/{id}` |
 | UC-23 | Xóa | `POST /api/PartyMembers/DeleteMany` (xóa một người là mảng một phần tử) |
+| UC-26 | Ghi chú của một đảng viên | `PUT /api/PartyMembers/{id}/Note`; đọc kèm trong `GET /api/PartyMembers` và `GET /api/PartyMembers/{id}` |
 | UC-24 | Import Excel | `POST /api/PartyMembers/Import/Preview` + `POST /api/PartyMembers/Import/Commit` |
 | UC-25 | Tải file mẫu | `GET /api/PartyMembers/Import/Template` |
 | UC-30 | Danh sách đợt | `GET /api/AwardPeriods` |
 | UC-31 | Thêm đợt | `POST /api/AwardPeriods` |
 | UC-32 | Sửa đợt | `PUT /api/AwardPeriods/{id}` |
 | UC-33 | Xóa đợt | `DELETE /api/AwardPeriods/{id}` |
-| UC-34 | Chi tiết đợt + đủ điều kiện | `GET /api/AwardPeriods/{id}` + `GET /api/Eligibility`; xuất: `GET /api/Exports/Eligibility` |
+| UC-34 | Chi tiết đợt + đủ điều kiện + khối ghi chú | `GET /api/AwardPeriods/{id}` + `GET /api/Eligibility` → `members` (đã kèm `note`, `noteUpdatedAt`); xuất: `GET /api/Exports/Eligibility` (không có cột ghi chú) |
 | UC-36 | Dải độ phủ trong năm | `GET /api/AwardPeriods` → `coverage.segments` |
-| UC-40 | Chưa thuộc đợt nào | `GET /api/Eligibility/Unassigned`; xuất: `GET /api/Exports/Unassigned` |
+| UC-40 | Chưa thuộc đợt nào | `GET /api/Eligibility/Unassigned`; xuất: `GET /api/Exports/Unassigned`. Phản hồi kế thừa `note`/`noteUpdatedAt` nhưng màn này **không** hiện ghi chú |
 | UC-50 | Cài mốc tuổi đảng | `GET /api/Settings` · `PUT /api/Settings` · `POST /api/Settings/RestoreDefaults` · `GET /api/Settings/Milestones` |
 | UC-51 | Tên đơn vị | `PUT /api/Settings` (trường `unitName`); đọc ở `GET /api/Auth/Me` và `GET /api/Dashboard` |
 | Khung chung | Badge "Chưa thuộc đợt nào" | `GET /api/Eligibility/UnassignedCount` |
 | Khung chung | Header: tên đơn vị, ngày hôm nay | `GET /api/Auth/Me` |
 
-Tổng: **28 endpoint**. Mọi use case trong tài liệu nghiệp vụ v1.1 đều có endpoint tương ứng. Không còn chỗ nào "sẽ bổ sung sau".
+Tổng: **28 endpoint**. (Bản v1.5 ghi "28 endpoint" khi thật ra chỉ có 27 — con số đã đếm sai một; v1.6 thêm mục 3.6 nên tổng đúng bây giờ là 28.) Mọi use case trong tài liệu nghiệp vụ v1.3 đều có endpoint tương ứng. Không còn chỗ nào "sẽ bổ sung sau".
 
 ---
 
@@ -1115,6 +1186,10 @@ Tổng: **28 endpoint**. Mọi use case trong tài liệu nghiệp vụ v1.1 đ�
 | **QT9** import không chống trùng | Hai endpoint riêng cho xem trước và nạp; nạp là một giao dịch; không có tham số nào bật chống trùng |
 | **QT10** xóa hẳn | Endpoint xóa trả về id đã xóa, không có endpoint khôi phục |
 | **QT11** trạng thái đợt trong năm | `status` + `daysRemaining` trong `AwardPeriodResponse` |
+| **QT12** ghi chú đảng viên, một ghi chú mỗi người | `note` + `noteUpdatedAt` trong `PartyMemberResponse` và `EligibleMemberResponse`; ghi bằng `note` của mục 3.3 / 3.4 hoặc bằng `PUT /api/PartyMembers/{id}/Note` (mục 3.6). Không có endpoint nào tạo thêm dòng ghi chú thứ hai cho một người |
+| **QT12** ngày ghi do máy chủ đóng | "Quy tắc `noteUpdatedAt`" ở mục 1.10. Không endpoint nào **nhận** `noteUpdatedAt` trong thân yêu cầu; nội dung không đổi thì ngày ghi không nhảy |
+| **QT12** ghi chú chỉ để đọc | `note` không xuất hiện trong bất kỳ tham số lọc, sắp xếp hay tìm kiếm nào (mục 1.7, 3.1 — tìm kiếm vẫn chỉ `searchFields=FullName`); không ảnh hưởng `partyAgeYears`, `nextMilestone`, danh sách đủ điều kiện hay `warnings` |
+| **QT12** ghi chú không vào Excel, import không nạp ghi chú | Mục 8 giữ nguyên bộ cột; mục 4 giữ nguyên 4 cột của file import |
 | Cảnh báo **không chặn lưu** | `POST`/`PUT`/`DELETE` đợt vẫn trả `200` kèm `warnings`; cảnh báo không bao giờ xuất hiện dưới dạng lỗi `400` |
 
 ---
@@ -1202,4 +1277,5 @@ Tám điểm Backend tự quyết khi dựng bộ khung (T00A, HUYH-2) mà tài 
 | 1.2 | 19/09/2026 | **Mục 4 Import** khớp API đã duyệt ở PR #15: thứ tự lý do trong `errors[]`, tệp đổi đuôi ra `Mes.Import.Invalid.Extension`, khóa thành công của xem trước và nạp. **Mục 5.2** làm rõ kiểm tra `year` (1900–2200, `Mes.Query.Invalid.Year`) cho khớp mã đã duyệt ở PR #18. **Mục 1.8** trong cùng mốc sắp theo Họ tên đầy đủ, bỏ quy ước sắp theo tên gọi (từ cuối); đồng bộ mục 6.3, mục 8, mục 11 điểm 9 và OQ-3, khớp tài liệu nghiệp vụ v1.1 (UC-11, UC-40), `docs/test-plan.md` (U-419, A-214, A-405, E1-16) và `tests/fixtures/data/expected.json`. **Mục 7 Cài đặt** khớp API đã duyệt ở PR #24: `unitName` rỗng hoặc toàn khoảng trắng đều lưu thành `null` và cắt khoảng trắng đầu/cuối, thêm khóa `Mes.AppSetting.OverLength.UnitName`, ba mốc không phải số nguyên bị từ chối 400 không kèm khóa `Mes.*`, kho trống trả mặc định 30 / 90 / 5 mà không tự tạo bản ghi. **Mục 8** ghi tên sheet `DanhSach` và cách ghi dòng tiêu đề (T14). Không đổi hình dạng request/response |
 | 1.3 | 20/09/2026 | **Mục 5.1 và 6.1**: khi năm đang xem chưa có đợt nào, `warnings.gaps` là mảng rỗng ở cả hai endpoint; `coverage.segments` vẫn phủ liên tục 01/01–31/12 bằng một đoạn `Gap`. Không đổi QT6: khoảng trống phủ trọn năm với nhãn "Trước đợt đầu tiên" và nhãn khoảng trống của màn "Chưa thuộc đợt nào" (QT7) giữ nguyên. Không đổi hình dạng request/response |
 | 1.4 | 20/09/2026 | **Mục 1.5**: bảng khóa thêm cột "Khi nào Backend trả" và bảy khóa Backend đang trả mà bảng chưa có: `Mes.User.Required.Username`, `Mes.User.Required.Password`, `Mes.PartyMember.OverLength.FullName`, `Mes.PartyMember.Required.Ids`, `Mes.AwardPeriod.OverLength.Name`, `Mes.AppSetting.OverLength.UnitName`, `Mes.Common.Invalid.Parameter` (QC-T27-07, QC-T27-04). Ghi thêm hai khóa `401` của tầng phiên (`Mes.User.NotFound`, `Mes.User.Blocked`) mà Frontend không hiển thị. **Mục 7.2 và 7.4**: `startYears` / `endYears` / `stepYears` là số nguyên **từ 1 đến 200** thay cho “≥ 1”; vượt trần dùng đúng bộ khóa sẵn có, không thêm khóa mới; ô xem trước `GET /api/Settings/Milestones` validate bằng đúng bộ luật của `PUT /api/Settings` (QC-T27-06); tham số sai kiểu nay trả `Mes.Common.Invalid.Parameter` chứ không còn câu tiếng Anh của khung ASP.NET. Khớp mã đã duyệt ở PR #35 (T36). Không đổi hình dạng request/response |
+| 1.6 | 30/09/2026 | **Ghi chú đảng viên (QT12).** **Mục 1.10**: `PartyMemberResponse` và `EligibleMemberResponse` thêm `note` (string \| null, ≤ 500 ký tự) và `noteUpdatedAt` (datetime \| null); thêm "Quy tắc `noteUpdatedAt`" dùng chung; `UnassignedMemberResponse` kế thừa nhưng UC-40 không hiện. **Mục 3.3 và 3.4**: request thêm `note` (không bắt buộc); `PUT` thay trọn nên không gửi `note` là xóa ghi chú. **Mục 3.6 mới**: `PUT /api/PartyMembers/{id}/Note` chỉ đổi ghi chú, trả `PartyMemberResponse`, báo thành công bằng khóa có sẵn `Mes.PartyMember.Update.Successfully`. **Mục 1.5**: thêm khóa `Mes.PartyMember.OverLength.Note`. **Mục 1.6**: `noteUpdatedAt` là ngoại lệ múi giờ duy nhất — trả theo giờ Asia/Ho_Chi_Minh kèm `+07:00`. **Mục 4 và mục 8**: ghi rõ Import giữ 4 cột và file Excel xuất không có cột ghi chú. **Mục 9**: thêm UC-26; sửa con số tổng đếm sai của v1.5 (ghi 28 khi chỉ có 27), tổng đúng sau khi thêm mục 3.6 là 28. **Mục 10**: thêm bốn dòng QT12. Khớp tài liệu nghiệp vụ v1.3 |
 | 1.5 | 21/09/2026 | Khớp lại tài liệu với mã đã gộp vào `main`. **Mục 3.5**: bỏ hẳn `DELETE /api/PartyMembers/{id}`, `POST /api/PartyMembers/DeleteMany` là đường xóa duy nhất (T34, PR #45); mục 3.6 cũ dồn lên thành 3.5; bảng đối chiếu UC-23 và dòng QT10 sửa theo. **Mục 1.7 và 3.1**: `PartyAgeYears` (viết tắt `PartyAge`) và `NextMilestone` sắp xếp được nhờ quy đổi về `OfficialAdmissionDate` chiều ngược lại; thêm `filter.NextMilestone=$eq:<mốc|None>` và khóa lỗi `Mes.PartyMember.Invalid.NextMilestone` (T51, PR #54). **Mục 5.1**: `GET /api/AwardPeriods` nhận `filter.*` dùng chung; giá trị sai kiểu trả `Mes.Common.Invalid.Parameter` thay vì bị nuốt lặng lẽ (QC-T27-05). **Mục 1.5**: bỏ `Mes.AwardPeriod.Invalid.Range` theo QT6 đợt vắt qua 31/12. Không đổi hình dạng response của endpoint nào còn lại |
