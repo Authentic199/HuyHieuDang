@@ -58,6 +58,39 @@ const UPCOMING_PERIOD = {
   milestoneBreakdown: [] as { milestone: number; count: number }[],
 };
 
+/**
+ * Kết quả xem trước của màn Nạp danh sách: vài dòng hợp lệ và một dòng lỗi, đủ
+ * để bước 2 dựng cả hai tab và bước 3 có số mà báo.
+ */
+export const IMPORT_PREVIEW = {
+  fileName: 'DanhSachDangVien.xlsx',
+  totalRows: 4,
+  validCount: 3,
+  errorCount: 1,
+  validRows: mockData.eligible.slice(0, 3).map((row, index) => ({
+    rowNumber: index + 2,
+    fullName: row.fullName,
+    dateOfBirth: row.dateOfBirth,
+    gender: row.gender,
+    officialAdmissionDate: row.officialAdmissionDate,
+  })),
+  errorRows: [
+    {
+      rowNumber: 5,
+      fullName: '',
+      dateOfBirth: '30/02/1950',
+      gender: 'Khac',
+      officialAdmissionDate: '',
+      errors: [
+        { errorCode: 'MissingFullName', field: 'FullName' },
+        { errorCode: 'InvalidDateFormat', field: 'DateOfBirth' },
+        { errorCode: 'InvalidGender', field: 'Gender' },
+        { errorCode: 'MissingOfficialAdmissionDate', field: 'OfficialAdmissionDate' },
+      ],
+    },
+  ],
+};
+
 /** Đợt dùng cho trang chi tiết — lấy đợt đầu tiên của danh sách. */
 export const DETAIL_PERIOD = mockData.periods[0];
 
@@ -188,6 +221,20 @@ async function installApiMocks(page: Page): Promise<void> {
           milestones: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90],
           milestoneCount: 13,
           updatedAt: `${SERVER_YEAR}-01-01T00:00:00Z`,
+        }),
+      );
+    }
+
+    // Hai bước của màn Nạp danh sách (UC-24) — T60 cần chụp cả ba bước.
+    if (path === '/PartyMembers/Import/Preview') {
+      return route.fulfill(envelope(IMPORT_PREVIEW));
+    }
+
+    if (path === '/PartyMembers/Import/Commit') {
+      return route.fulfill(
+        envelope({
+          importedCount: IMPORT_PREVIEW.validCount,
+          skippedCount: IMPORT_PREVIEW.errorCount,
         }),
       );
     }

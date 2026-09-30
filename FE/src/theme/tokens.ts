@@ -50,7 +50,7 @@ export const neutral = {
   textDisabled: '#a1a3a8',
   /** Viền thẻ, viền bảng */
   border: '#e6e8ec',
-  /** Viền ô nhập (đậm hơn để cán bộ lớn tuổi nhìn rõ) */
+  /** Viền ô nhập — đậm hơn mặc định của Ant Design cho dễ thấy */
   borderInput: '#8a8e96',
   /** Nền vùng chìm, nền nút disabled */
   fill: '#f5f6f8',
@@ -67,13 +67,31 @@ export const font = {
   mono: "'JetBrains Mono', ui-monospace, monospace",
 } as const;
 
-/** Thang cỡ chữ — nhỏ nhất trong bảng là 14px theo yêu cầu người dùng lớn tuổi */
+/**
+ * Thang cỡ chữ của màn cao (khung nhìn từ 900 px) — đúng bộ thiết kế 1440x900.
+ * Màn thấp dùng `compactTypography` bên dưới, mỗi bậc lùi một nấc.
+ */
 export const typography = {
   displayLg: { size: 34, line: 42, weight: 700 },
   headingXl: { size: 32, line: 42, weight: 700 },
   headingLg: { size: 22, line: 30, weight: 700 },
   title: { size: 16, line: 24, weight: 700 },
   body: { size: 14, line: 20, weight: 400 },
+  label: { size: 13, line: 18, weight: 500 },
+  overline: { size: 11, line: 16, weight: 600 },
+} as const;
+
+/**
+ * Thang gọn cho khung nhìn thấp. Sàn an toàn: chữ thân và chữ trong bảng
+ * >= 13px, chữ phụ >= 12px — chỉ lùi một nấc, không thu nhỏ cả giao diện.
+ * Khớp với các biến `--hhd-fs-*` trong `theme/responsive.css`.
+ */
+export const compactTypography = {
+  displayLg: { size: 26, line: 34, weight: 700 },
+  headingXl: { size: 24, line: 32, weight: 700 },
+  headingLg: { size: 19, line: 26, weight: 700 },
+  title: { size: 15, line: 22, weight: 700 },
+  body: { size: 13, line: 18, weight: 400 },
   label: { size: 13, line: 18, weight: 500 },
   overline: { size: 11, line: 16, weight: 600 },
 } as const;
@@ -110,6 +128,20 @@ export const size = {
   controlHeightSm: 32,
   controlHeightLg: 48,
   shellPadding: 16,
+} as const;
+
+/**
+ * Chiều cao của thang gọn. `controlHeightSm` giữ 32 px: đó là sàn "nút và ô
+ * nhập cao không dưới 32px", nút cỡ nhỏ không được thấp hơn nữa.
+ */
+export const compactSize = {
+  headerHeight: 48,
+  siderWidth: 104,
+  siderItemHeight: 56,
+  controlHeight: 32,
+  controlHeightSm: 32,
+  controlHeightLg: 40,
+  shellPadding: 12,
 } as const;
 
 /** Gradient — ngôn ngữ chung: sáng ở trên, đậm ở dưới, highlight trắng 1px */

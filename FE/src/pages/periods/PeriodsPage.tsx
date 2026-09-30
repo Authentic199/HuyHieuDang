@@ -144,8 +144,9 @@ export default function PeriodsPage() {
       title: 'STT',
       width: 72,
       className: 'hhd-periods__index',
-      // Bảng này không phân trang nên số thứ tự chạy thẳng từ 1.
-      render: (_value, _record, index) => index + 1,
+      // Đánh nối tiếp qua các trang: dòng đầu trang 2 mang số 21, không quay
+      // về 1 — giống bốn bảng kia.
+      render: (_value, _record, index) => table.indexOffset + index + 1,
     },
     {
       key: 'name',
@@ -301,7 +302,9 @@ export default function PeriodsPage() {
           skeletonRows={5}
           description={
             // Cỡ chữ và kiểu chữ lấy theo khối giữa của các artboard trống.
-            <span style={{ font: "700 22px/30px 'Noto Serif', Georgia, serif" }}>
+            <span
+              style={{ font: "700 var(--hhd-fs-22)/var(--hhd-lh-22) 'Noto Serif', Georgia, serif" }}
+            >
               {/* Rỗng do tìm là chuyện khác hẳn rỗng do chưa cài đợt nào. */}
               {table.isFiltered ? 'Không tìm thấy đợt nào khớp.' : 'Chưa có đợt trao huy hiệu nào'}
             </span>

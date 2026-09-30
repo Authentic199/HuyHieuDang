@@ -11,7 +11,7 @@
 
 .hhd-import__crumbs {
   color: var(--hhd-text-secondary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-import__crumbs b {
@@ -65,7 +65,7 @@
 }
 
 .hhd-import .hhd-import__steps.ant-steps .ant-steps-item-icon .ant-steps-icon {
-  font: 700 13px var(--hhd-font-sans);
+  font: 700 var(--hhd-fs-13) var(--hhd-font-sans);
   color: var(--hhd-text-disabled);
   top: 0;
 }
@@ -77,17 +77,17 @@
 
 .hhd-import .hhd-import__steps.ant-steps .ant-steps-item-title {
   display: block;
-  font: 700 14px/20px var(--hhd-font-sans);
+  font: 700 var(--hhd-fs-14)/var(--hhd-lh-14) var(--hhd-font-sans);
   color: var(--hhd-ink);
   white-space: nowrap;
   padding-inline-end: 0;
-  line-height: 20px;
+  line-height: var(--hhd-lh-14);
 }
 
 .hhd-import .hhd-import__steps.ant-steps .ant-steps-item-description {
   display: block;
   max-width: none;
-  font: 12px/16px var(--hhd-font-sans);
+  font: var(--hhd-fs-12)/var(--hhd-lh-12) var(--hhd-font-sans);
   color: var(--hhd-text-tertiary);
   white-space: nowrap;
   overflow: hidden;
@@ -132,7 +132,7 @@
   .ant-steps-item-icon
   .ant-steps-icon {
   color: var(--hhd-white);
-  font-size: 15px;
+  font-size: var(--hhd-fs-15);
 }
 
 .hhd-import .hhd-import__steps.ant-steps .ant-steps-item-finish .ant-steps-item-title {
@@ -183,11 +183,11 @@
   color: #7a5a00;
   display: grid;
   place-items: center;
-  font-size: 22px;
+  font-size: var(--hhd-fs-22);
 }
 
 .hhd-import__dropzone-title {
-  font: 600 16px/24px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-16)/var(--hhd-lh-16) var(--hhd-font-sans);
   color: var(--hhd-ink);
   margin-top: var(--hhd-space-md);
   word-break: break-all;
@@ -195,7 +195,7 @@
 
 .hhd-import__dropzone-hint {
   color: var(--hhd-text-secondary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   margin-top: var(--hhd-space-xs);
 }
 
@@ -212,7 +212,7 @@
 }
 
 .hhd-import__overline {
-  font: 600 11px/16px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-11)/var(--hhd-lh-11) var(--hhd-font-sans);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--hhd-text-secondary);
@@ -225,7 +225,7 @@
   border: 1px solid var(--hhd-border);
   border-radius: var(--hhd-radius-control);
   overflow: hidden;
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-import__columns-head {
@@ -255,7 +255,7 @@
 
 .hhd-import__template-note {
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   margin-top: var(--hhd-space-sm);
 }
 
@@ -287,7 +287,7 @@
   padding: 14px 20px;
   border: 1px solid transparent;
   border-radius: var(--hhd-radius-card);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-import__summary--ok {
@@ -311,17 +311,17 @@
   display: inline-flex;
   align-items: center;
   gap: var(--hhd-space-sm);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-import__stat b {
   font-weight: 700;
-  font-size: 22px;
+  font-size: var(--hhd-fs-22);
   font-variant-numeric: tabular-nums;
 }
 
 .hhd-import__stat .anticon {
-  font-size: 18px;
+  font-size: var(--hhd-fs-18);
 }
 
 /* Vách ngăn giữa hai vế, đặt trên vế thứ hai. */
@@ -362,7 +362,7 @@
 }
 
 .hhd-import__summary-note .anticon {
-  font-size: 18px;
+  font-size: var(--hhd-fs-18);
   color: var(--hhd-warning);
 }
 
@@ -413,7 +413,7 @@
   padding: 0 7px;
   border-radius: var(--hhd-radius-pill);
   white-space: nowrap;
-  font: 600 12px/20px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-12)/var(--hhd-lh-14) var(--hhd-font-sans);
 }
 
 .hhd-import__count--valid {
@@ -442,7 +442,7 @@
   background: #fdeceb;
   color: var(--hhd-danger);
   font-family: var(--hhd-font-mono);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-import__reason {
@@ -468,7 +468,7 @@
 
 .hhd-import__footer-note {
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   margin-right: auto;
 }
 
@@ -500,11 +500,11 @@
   color: var(--hhd-success);
   display: grid;
   place-items: center;
-  font-size: 28px;
+  font-size: var(--hhd-fs-28);
 }
 
 .hhd-import__result-title {
-  font: 700 34px/42px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-34)/var(--hhd-lh-34) var(--hhd-font-serif);
   letter-spacing: -0.01em;
   margin-top: 20px;
   font-variant-numeric: tabular-nums;
@@ -513,8 +513,8 @@
 .hhd-import__result-note {
   color: var(--hhd-text-secondary);
   margin-top: var(--hhd-space-sm);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: var(--hhd-fs-16);
+  line-height: var(--hhd-lh-16);
 }
 
 .hhd-import__result-actions {
