@@ -104,9 +104,10 @@
   align-items: center;
   gap: 12px;
   border-top: 1px solid #e6e8ec;
-  /* Thẻ đi theo nhịp 24px. Nút cao 40px nên chữ của nó nằm thụt vào trong hộp
-     12px; trừ đi phần thụt đó thì chữ mới cách đường kẻ đúng 24px như các
-     khối khác, thay vì 32px làm chân thẻ trông rỗng. */
+  /* Hai chân thẻ dùng chung luật này nên viền nút Khôi phục mặc định cách
+     đường kẻ đúng bằng viền nút Lưu. Nhịp của thẻ là 24px, nhưng nút có viền
+     đã tự chiếm chỗ bằng hộp của nó: để nguyên 24px thì chân thẻ trông rỗng,
+     nên lùi xuống 12px cho khối nút nằm cân dưới đường kẻ. */
   padding-top: 12px;
 }
 

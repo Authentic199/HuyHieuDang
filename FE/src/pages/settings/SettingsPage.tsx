@@ -1,3 +1,4 @@
+import { UndoOutlined } from '@ant-design/icons';
 import { App as AntApp, Alert, Button, Form, Input, Skeleton } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -256,7 +257,7 @@ export default function SettingsPage() {
           <div className="hhd-settings__card-foot">
             {/* Nút này luôn bật: khôi phục được cả khi ba ô đang có lỗi. */}
             <Button
-              type="text"
+              icon={<UndoOutlined />}
               loading={restoring}
               disabled={restoring}
               onClick={handleRestoreDefaults}
