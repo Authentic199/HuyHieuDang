@@ -2,7 +2,12 @@ import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
 
 import type { CoverageSegment } from '../../api/periods';
-import type { AwardPeriodResponse, CoverageOverlap, IsoDate } from '../../types/domain';
+import type {
+  AwardPeriodResponse,
+  AwardPeriodStatus,
+  CoverageOverlap,
+  IsoDate,
+} from '../../types/domain';
 import './CoverageStrip.css';
 
 /**
@@ -15,6 +20,19 @@ import './CoverageStrip.css';
  * Đợt vắt qua 31/12 được máy chủ cắt sẵn thành HAI đoạn trong cùng một năm —
  * đuôi ở đầu năm và đầu ở cuối năm — mang cùng `periodId`, nên khóa của mỗi
  * đoạn phải ghép thêm ngày bắt đầu.
+ *
+ * MÀU BAR THEO TRẠNG THÁI (quyết định 30/09/2026, lệch artboard 5). Trước đây
+ * bar tô ngược nghĩa: đợt đã qua màu đỏ, đợt đang diễn ra lại vàng giống đợt
+ * sắp tới. Giờ mỗi bar mang đúng màu của nhãn tương ứng ở cột Trạng thái —
+ * xám "Đã qua", đỏ "Đang diễn ra", vàng "Sắp tới".
+ *
+ * Trạng thái của một bar tính từ khoảng ngày của CHÍNH ĐOẠN ĐÓ so với `today`,
+ * bằng đúng phép so của QT11. Đợt không vắt năm chỉ có một đoạn nên luôn trùng
+ * nhãn trong bảng. Đợt vắt năm có hai đoạn và mỗi đoạn tô theo khoảng riêng:
+ * mọi thứ bên trái vạch Hôm nay đều đã qua, nên đoạn đuôi đầu năm không được
+ * tô vàng "sắp tới". Hệ quả chấp nhận: từ 01/01 tới hết đoạn đầu năm, đoạn đó
+ * tô đỏ vì lần diễn ra năm trước đang chạy thật, trong khi cột Trạng thái vẫn
+ * ghi "Sắp tới" — QT11 xét lần diễn ra neo năm nay, và QT11 không đổi.
  */
 
 interface CoverageStripProps {
@@ -23,9 +41,16 @@ interface CoverageStripProps {
   today: IsoDate | null;
   segments: CoverageSegment[];
   overlaps: CoverageOverlap[];
-  /** Dùng để biết đợt nào là đợt sắp tới — đợt đó tô vàng như artboard */
+  /**
+   * Dự phòng khi `today` rỗng, sai hoặc không thuộc năm đang vẽ: lúc đó bar lấy
+   * `status` của đợt trong danh sách này thay vì tự so ngày. Máy chủ đúng hợp
+   * đồng thì không rơi vào trường hợp này.
+   */
   periods: AwardPeriodResponse[];
 }
+
+/** Ba loại màu bar, khớp ba nhãn của cột Trạng thái. */
+type BarTone = 'past' | 'ongoing' | 'upcoming';
 
 /** Một bar đã tính sẵn vị trí, đơn vị phần trăm chiều ngang của dải. */
 interface PlacedBar {
@@ -34,7 +59,7 @@ interface PlacedBar {
   left: number;
   width: number;
   lane: number;
-  highlighted: boolean;
+  tone: BarTone;
   tooltip: string;
 }
 
@@ -54,6 +79,21 @@ function dayNumber(date: string, year: number): number {
 /** Số ngày của cả năm — 366 với năm nhuận. */
 function lastDayNumber(year: number): number {
   return dayNumber(`${year}-12-31`, year);
+}
+
+/** Trạng thái của một khoảng ngày so với hôm nay — đúng phép so của QT11. */
+function toneOfRange(fromDate: string, toDate: string, todayIso: string): BarTone {
+  // Cùng định dạng YYYY-MM-DD nên so chuỗi là so ngày, không cần dựng dayjs.
+  if (toDate < todayIso) return 'past';
+  if (fromDate > todayIso) return 'upcoming';
+  return 'ongoing';
+}
+
+/** Màu dự phòng lấy từ `status` của đợt trong bảng. */
+function toneOfStatus(status: AwardPeriodStatus | undefined): BarTone {
+  if (status === 'Ongoing') return 'ongoing';
+  if (status === 'Upcoming') return 'upcoming';
+  return 'past';
 }
 
 /** Phần trăm bắt đầu và bề ngang của một khoảng ngày trong năm. */
@@ -85,10 +125,10 @@ function assignLanes(bars: Omit<PlacedBar, 'lane'>[]): PlacedBar[] {
 }
 
 export function CoverageStrip({ year, today, segments, overlaps, periods }: CoverageStripProps) {
-  // Đợt đang diễn ra / sắp tới được tô vàng như artboard 5.
-  const highlightedIds = new Set(
-    periods.filter((item) => item.status !== 'Past').map((item) => item.id),
-  );
+  const parsedToday = today ? dayjs(today) : null;
+  const todayValid = parsedToday?.isValid() && parsedToday.year() === year ? parsedToday : null;
+  const todayIso = todayValid ? todayValid.format('YYYY-MM-DD') : null;
+  const statusById = new Map(periods.map((item) => [item.id, item.status]));
 
   const gaps = segments.filter((item) => item.type === 'Gap');
   const periodBars = assignLanes(
@@ -99,7 +139,9 @@ export function CoverageStrip({ year, today, segments, overlaps, periods }: Cove
         key: `${item.periodId ?? `period-${index}`}#${item.fromDate}`,
         label: item.name ?? '',
         tooltip: `${item.name ?? ''}: ${dayjs(item.fromDate).format('DD/MM')} – ${dayjs(item.toDate).format('DD/MM')}`,
-        highlighted: item.periodId !== null && highlightedIds.has(item.periodId),
+        tone: todayIso
+          ? toneOfRange(item.fromDate, item.toDate, todayIso)
+          : toneOfStatus(item.periodId ? statusById.get(item.periodId) : undefined),
         ...place(item.fromDate, item.toDate, year),
       })),
   );
@@ -107,8 +149,6 @@ export function CoverageStrip({ year, today, segments, overlaps, periods }: Cove
   const laneCount = Math.max(1, ...periodBars.map((bar) => bar.lane + 1));
   const laneHeight = (TRACK_HEIGHT - TRACK_PADDING * 2 - (laneCount - 1) * LANE_GAP) / laneCount;
 
-  const parsedToday = today ? dayjs(today) : null;
-  const todayValid = parsedToday?.isValid() && parsedToday.year() === year ? parsedToday : null;
   const todayLeft = todayValid
     ? ((dayNumber(todayValid.format('YYYY-MM-DD'), year) - 0.5) / lastDayNumber(year)) * 100
     : null;
@@ -124,8 +164,16 @@ export function CoverageStrip({ year, today, segments, overlaps, periods }: Cove
         <span className="hhd-coverage__title">Độ phủ trong năm</span>
         <div className="hhd-coverage__legend">
           <span>
-            <i className="hhd-coverage__swatch hhd-coverage__swatch--period" />
-            Đợt
+            <i className="hhd-coverage__swatch hhd-coverage__swatch--past" />
+            Đã qua
+          </span>
+          <span>
+            <i className="hhd-coverage__swatch hhd-coverage__swatch--ongoing" />
+            Đang diễn ra
+          </span>
+          <span>
+            <i className="hhd-coverage__swatch hhd-coverage__swatch--upcoming" />
+            Sắp tới
           </span>
           <span>
             <i className="hhd-coverage__swatch hhd-coverage__swatch--gap" />
@@ -165,7 +213,7 @@ export function CoverageStrip({ year, today, segments, overlaps, periods }: Cove
           {periodBars.map((bar) => (
             <Tooltip key={bar.key} title={bar.tooltip}>
               <div
-                className={`hhd-coverage__bar${bar.highlighted ? ' hhd-coverage__bar--next' : ''}`}
+                className={`hhd-coverage__bar hhd-coverage__bar--${bar.tone}`}
                 style={{
                   left: `${bar.left}%`,
                   width: `${bar.width}%`,
