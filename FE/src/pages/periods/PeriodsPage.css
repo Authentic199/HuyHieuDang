@@ -34,7 +34,7 @@
 /* TableStates dựng sẵn một thẻ trắng có viền cho trạng thái đang tải và trống.
    Ở đây nó đã nằm trong thẻ của bảng nên bỏ viền, tránh thẻ lồng thẻ, và cho
    giãn hết chiều cao để vùng thân bảng có chỗ mà cuộn. */
-.hhd-periods__panel > div:not(.ant-alert):not(.hhd-table-filters):not(.hhd-periods__footnote) {
+.hhd-periods__panel > div:not(.ant-alert):not(.hhd-table-filters) {
   border: 0;
   border-radius: 0;
   flex: 1;
@@ -81,15 +81,6 @@
 
 .hhd-periods .ant-table-thead th {
   white-space: nowrap;
-}
-
-/* Dòng chú thích dưới chân bảng, đúng câu chữ trong artboard 5. */
-.hhd-periods__footnote {
-  margin-top: auto;
-  padding: 12px 16px;
-  border-top: 1px solid var(--hhd-border);
-  color: var(--hhd-text-tertiary);
-  font-size: var(--hhd-fs-14);
 }
 
 /* Dòng nhắc nền xám trong modal Thêm/Sửa đợt, theo bản vẽ đi kèm artboard 5. */

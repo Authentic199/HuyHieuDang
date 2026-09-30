@@ -1,4 +1,10 @@
-/* Dải độ phủ 12 tháng — artboard 5. Màu và bóng lấy nguyên từ thiết kế. */
+/* Dải độ phủ 12 tháng — artboard 5.
+
+   Bóng, quầng sáng, vạch Hôm nay và màu cát của khoảng trống lấy nguyên từ
+   thiết kế. MÀU BAR thì lệch artboard 5 có chủ ý (quyết định 30/09/2026): mỗi
+   bar mang đúng màu của nhãn tương ứng ở cột Trạng thái, thay vì tô ngược nghĩa
+   như bản vẽ. Ba mã màu của bar "Đã qua" chép từ `statusBadge.past` trong
+   `src/theme/tokens.ts` — đổi ở đó thì đổi cả ở đây. */
 .hhd-coverage {
   background: var(--hhd-white);
   border: 1px solid var(--hhd-border);
@@ -19,15 +25,18 @@
 
 .hhd-coverage__legend {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   font-size: var(--hhd-fs-14);
   color: var(--hhd-text-secondary);
 }
 
+/* Sáu mục phải đứng trên MỘT hàng, kể cả ở 1280x600: không co, không gãy dòng. */
 .hhd-coverage__legend > span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  flex: none;
+  white-space: nowrap;
 }
 
 .hhd-coverage__swatch {
@@ -37,8 +46,18 @@
   flex: none;
 }
 
-.hhd-coverage__swatch--period {
-  background: linear-gradient(180deg, #bd2a1c, #6c0f12);
+/* Ba ô màu đầu của chú giải dùng đúng màu ba loại bar. */
+.hhd-coverage__swatch--past {
+  background: #ecedf0;
+  border: 1px solid #9aa0a8;
+}
+
+.hhd-coverage__swatch--ongoing {
+  background: linear-gradient(135deg, #bd2a1c, #991a14 55%, #6c0f12);
+}
+
+.hhd-coverage__swatch--upcoming {
+  background: linear-gradient(135deg, #ffcd00, #c99a10 60%, #8a6a1e);
 }
 
 .hhd-coverage__swatch--gap {
@@ -95,23 +114,37 @@
   background: #f0e2c2;
 }
 
+/* Chỗ đứng và cách xếp chữ của mọi bar; màu do ba luật trạng thái bên dưới
+   quyết định. Mọi bar giữ class gốc này. */
 .hhd-coverage__bar {
   position: absolute;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #bd2a1c, #991a14 55%, #6c0f12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 4px 10px -4px rgba(108, 15, 18, 0.6);
   display: grid;
   place-items: center;
   overflow: hidden;
-  color: #fff;
   font: 600 var(--hhd-fs-13)/1 var(--hhd-font-sans);
   white-space: nowrap;
 }
 
-/* Đợt đang diễn ra hoặc sắp tới — tô vàng để bật lên như artboard 5. */
-.hhd-coverage__bar--next {
+/* Đợt đã qua — xám như nhãn "Đã qua". Có viền nên không lẫn với khoảng trống
+   màu cát, và không mang bóng đỏ nữa. */
+.hhd-coverage__bar--past {
+  background: #ecedf0;
+  border: 1px solid #9aa0a8;
+  color: #4e5158;
+}
+
+/* Đợt đang diễn ra — đỏ như nhãn "Đang diễn ra". */
+.hhd-coverage__bar--ongoing {
+  background: linear-gradient(135deg, #bd2a1c, #991a14 55%, #6c0f12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px -4px rgba(108, 15, 18, 0.6);
+  color: #fff;
+}
+
+/* Đợt sắp tới — vàng như nhãn "Sắp tới". */
+.hhd-coverage__bar--upcoming {
   background: linear-gradient(135deg, #ffcd00, #c99a10 60%, #8a6a1e);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.5),

@@ -177,7 +177,7 @@ export default function PeriodsPage() {
     },
     {
       key: 'status',
-      title: `Trạng thái ${year}`,
+      title: 'Trạng thái',
       width: 190,
       sorter: true,
       sortOrder: table.sortOrderOf('status'),
@@ -185,7 +185,7 @@ export default function PeriodsPage() {
     },
     {
       key: 'eligibleCount',
-      title: 'Đủ điều kiện năm nay',
+      title: 'Đủ điều kiện',
       dataIndex: 'eligibleCount',
       width: 215,
       align: 'right',
@@ -318,10 +318,6 @@ export default function PeriodsPage() {
             />
           </div>
         </TableStates>
-
-        <div className="hhd-periods__footnote">
-          Sắp theo Từ ngày. Sửa hoặc xóa đợt có hiệu lực ngay cho mọi năm.
-        </div>
       </div>
 
       {formOpen ? (

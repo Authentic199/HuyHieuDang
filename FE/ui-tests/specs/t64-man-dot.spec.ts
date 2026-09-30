@@ -17,7 +17,7 @@ import { TableView } from '../fixtures/table';
  * 2. Các dòng "Đang diễn ra" và "Sắp tới" KHÔNG còn được tô nền vàng nhạt: mọi
  *    dòng cùng một nền như ở các bảng khác.
  *
- * Nhãn ở cột "Trạng thái <năm>" thì vẫn phải còn nguyên, kể cả nền vàng nhạt
+ * Nhãn ở cột "Trạng thái" thì vẫn phải còn nguyên, kể cả nền vàng nhạt
  * của riêng nhãn "Sắp tới" — bỏ nền dòng chứ không bỏ nhãn.
  */
 
@@ -30,7 +30,7 @@ const PANEL = '.hhd-periods__panel';
 /** Ô "Tên đợt" — ô thường, không có luật màu riêng nào, nên đo nền ở đây. */
 const NAME_COLUMN = 1;
 
-/** Ô "Trạng thái <năm>" — nơi in nhãn trạng thái. */
+/** Ô "Trạng thái" — nơi in nhãn trạng thái. */
 const STATUS_COLUMN = 4;
 
 /**
@@ -144,10 +144,10 @@ const SHOT_KEYWORD = 'nhóm 3';
 
 /**
  * Dải độ phủ chiếm nửa trên màn nên thân bảng chỉ hở chừng bốn dòng. Sắp theo
- * "Đủ điều kiện năm nay" tăng dần xen ba trạng thái vào ngay bốn dòng đầu, nên
+ * "Đủ điều kiện" tăng dần xen ba trạng thái vào ngay bốn dòng đầu, nên
  * một khung ảnh có đủ cả tiêu đề lẫn ba trạng thái mà không phải cuộn.
  */
-const SHOT_SORT_COLUMN = 'Đủ điều kiện năm nay';
+const SHOT_SORT_COLUMN = 'Đủ điều kiện';
 const SHOT_VISIBLE_ROWS = 4;
 
 test.describe('Ảnh bàn giao màn Đợt trao huy hiệu', () => {
