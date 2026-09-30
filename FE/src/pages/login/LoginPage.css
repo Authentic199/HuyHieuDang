@@ -174,9 +174,14 @@
     padding: 40px;
   }
 
+  /* Hạ cỡ chữ mà giữ nguyên max-width 520px thì tiêu đề ngắt thành
+     "…xét trao Huy" / "hiệu Đảng", tách đôi tên huy hiệu. Ở 32px, "Hệ thống hỗ
+     trợ xét trao" rộng 384px còn thêm chữ "Huy" thành 457px — chặn 400px nên
+     ngắt đúng chỗ như ở 1440x900. */
   .hhd-login__headline {
     font-size: 32px;
     line-height: 40px;
+    max-width: 400px;
   }
 
   .hhd-login__subline {

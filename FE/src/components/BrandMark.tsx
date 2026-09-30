@@ -1,11 +1,13 @@
-import { font, neutral, radius } from '../theme/tokens';
+import { font } from '../theme/tokens';
 import { Logo } from './Logo';
 
 /**
  * Cờ kèm tên hệ thống, dùng ở header và trang Đăng nhập.
  *
- * Cờ luôn nằm trong một ô nền trắng bo góc: cả hai nơi dùng đều là nền đỏ, mà
- * cờ cũng đỏ — đặt thẳng lên thì thân cờ chìm mất, chỉ còn ngôi sao và búa liềm.
+ * Cờ đặt THẲNG lên nền đỏ, không lót ô nền trắng: nền là đỏ sẫm (#8f1619 →
+ * #530b0e) còn cờ là đỏ tươi (#D9251C) nên thân cờ vẫn nổi rõ, trong khi ô
+ * trắng trông như miếng dán. Quyết định của CEO ngày 30/09 sau khi dựng thử
+ * trên nền thật.
  */
 export function BrandMark({
   logoSize = 28,
@@ -16,18 +18,7 @@ export function BrandMark({
 }) {
   return (
     <span style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-      <span
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          background: neutral.white,
-          borderRadius: radius.control,
-          padding: '3px 5px',
-          flex: 'none',
-        }}
-      >
-        <Logo size={logoSize} />
-      </span>
+      <Logo size={logoSize} />
       <span
         style={{
           font: `700 ${fontSize}px/${fontSize + 6}px ${font.serif}`,

@@ -38,6 +38,74 @@ async function expectLoaded(image: Locator, what: string): Promise<void> {
     .toBe(true);
 }
 
+/**
+ * Cờ phải đặt THẲNG lên nền đỏ, không lót ô nền nào — quyết định của CEO ngày
+ * 30/09 sau khi dựng thử trên nền thật. Khóa lại bằng ca kiểm: nền tính được
+ * của chính thẻ <img> và của thẻ cha trực tiếp đều phải trong suốt.
+ */
+async function expectNoBackdrop(image: Locator, where: string): Promise<void> {
+  const backgrounds = await image.evaluate((element) => {
+    const read = (node: Element | null) => {
+      if (!node) return null;
+      const style = getComputedStyle(node);
+      return { color: style.backgroundColor, image: style.backgroundImage };
+    };
+    return { self: read(element), parent: read(element.parentElement) };
+  });
+
+  for (const [who, style] of Object.entries(backgrounds)) {
+    const nhan = who === 'self' ? 'chính thẻ ảnh' : 'thẻ cha trực tiếp';
+    expect(style, `${where}: không đọc được nền của ${nhan}`).not.toBeNull();
+    // rgba(0, 0, 0, 0) là giá trị trình duyệt trả về cho nền trong suốt.
+    expect(style!.color, `${where}: ${nhan} phải trong suốt, không lót ô nền`).toBe(
+      'rgba(0, 0, 0, 0)',
+    );
+    expect(style!.image, `${where}: ${nhan} không được có ảnh nền`).toBe('none');
+  }
+}
+
+/**
+ * Tiêu đề trang Đăng nhập phải ngắt thành "Hệ thống hỗ trợ xét trao" /
+ * "Huy hiệu Đảng" ở MỌI khung nhìn. Hạ cỡ chữ cho màn thấp mà quên hạ
+ * `max-width` thì nó ngắt thành "…xét trao Huy" / "hiệu Đảng", tách đôi tên
+ * huy hiệu — đúng lỗi CEO bắt được ở 1280x600 và 1366x650.
+ */
+async function expectHeadlineWrap(page: Page): Promise<void> {
+  const wrap = await page.locator('.hhd-login__headline').evaluate((element) => {
+    const text = element.textContent ?? '';
+    const node = element.firstChild;
+    if (!node) throw new Error('Tiêu đề không có nội dung');
+
+    /** Mép trên của một cụm chữ — hai cụm cùng dòng thì cùng mép trên. */
+    const topOf = (fragment: string) => {
+      const at = text.indexOf(fragment);
+      if (at < 0) throw new Error(`Không thấy cụm "${fragment}" trong tiêu đề`);
+      const range = document.createRange();
+      range.setStart(node, at);
+      range.setEnd(node, at + fragment.length);
+      return Math.round(range.getBoundingClientRect().top);
+    };
+
+    const all = document.createRange();
+    all.selectNodeContents(element);
+    return {
+      lineCount: [...all.getClientRects()].length,
+      topOfFirst: topOf('Hệ thống'),
+      topOfTrao: topOf('trao'),
+      topOfHuyHieu: topOf('Huy hiệu Đảng'),
+    };
+  });
+
+  expect(wrap.lineCount, 'tiêu đề phải đúng 2 dòng').toBe(2);
+  expect(wrap.topOfTrao, '"trao" phải nằm cuối dòng 1, cùng dòng với "Hệ thống"').toBe(
+    wrap.topOfFirst,
+  );
+  expect(
+    wrap.topOfHuyHieu,
+    '"Huy hiệu Đảng" phải xuống dòng 2 nguyên cụm, không bị tách đôi',
+  ).toBeGreaterThan(wrap.topOfFirst);
+}
+
 /** Không có phần tử nào tràn khỏi bề ngang của khung nhìn. */
 async function overflowsHorizontally(page: Page, selector: string): Promise<boolean> {
   return page.evaluate((sel) => {
@@ -72,6 +140,7 @@ test('thanh đầu trang hiện ảnh lá cờ mới', async ({ app }) => {
   await expect(flag).toHaveAttribute('src', FLAG_FILE);
   await expect(flag).toHaveAttribute('alt', 'Cờ Đảng và cờ Tổ quốc');
   await expectLoaded(flag, 'ảnh cờ trên thanh đầu trang');
+  await expectNoBackdrop(flag, 'thanh đầu trang');
 
   // Cờ nằm ngang: rộng hơn cao. Logo cũ vuông nên đây là thứ phân biệt chắc chắn.
   const box = await flag.boundingBox();
@@ -136,6 +205,7 @@ anonymous.describe('trang Đăng nhập', () => {
     await expect(brand).toHaveAttribute('src', FLAG_FILE);
     await expect(brand).toHaveAttribute('alt', 'Cờ Đảng và cờ Tổ quốc');
     await expectLoaded(brand, 'cờ ở hàng thương hiệu');
+    await expectNoBackdrop(brand, 'hàng thương hiệu trang Đăng nhập');
 
     const watermark = page.locator('.hhd-login__watermark img');
     await expect(watermark).toHaveAttribute('src', FLAG_FILE);
@@ -167,7 +237,14 @@ anonymous.describe('trang Đăng nhập', () => {
       await expect(page.locator('.hhd-login__version')).toBeInViewport();
       await expect(page.getByRole('button', { name: 'Đăng nhập' })).toBeInViewport();
 
+      await expectHeadlineWrap(page);
+
       await page.screenshot({ path: path.join(SHOT_DIR, `t59-dang-nhap-${label}.png`) });
     });
   }
+
+  anonymous('tiêu đề ở 1440x900 ngắt đúng chỗ — mốc để so', async ({ page }) => {
+    await gotoLogin(page);
+    await expectHeadlineWrap(page);
+  });
 });
