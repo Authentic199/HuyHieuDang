@@ -257,7 +257,14 @@ for (const screen of SCREENS) {
       expect(afterScroll.horizontal, `${screen.label}: cuộn xong lại mọc cuộn ngang`).toBe(false);
     }
 
-    await app.evaluate(() => window.scrollTo(0, 0));
+    // Chụp từ đầu màn: trả cả cửa sổ lẫn vùng nội dung về đỉnh sau khi đã cuộn
+    // xuống để kiểm thanh phân trang.
+    await app.evaluate(() => {
+      window.scrollTo(0, 0);
+      for (const node of document.querySelectorAll('.hhd-main, .ant-table-content')) {
+        node.scrollTop = 0;
+      }
+    });
     await app.screenshot({
       path: path.join(SHOT_DIR, `${viewport.width}x${viewport.height}`, `${screen.key}.png`),
     });
