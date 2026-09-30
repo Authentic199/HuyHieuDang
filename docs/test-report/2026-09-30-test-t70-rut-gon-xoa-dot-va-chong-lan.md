@@ -95,4 +95,49 @@ Cả bộ ui-tests là **102 ca**, tăng đúng 4 so với 98 ca trên `main`.
 
 ## E2E
 
-Stack e2e dùng chung cả máy (`huyhieudang-e2e`, cổng 4174 / 18080 / 55433). Kết quả lượt chạy này: xem comment cuối của HUYH-80.
+Stack e2e dùng chung cả máy (`huyhieudang-e2e`, cổng 4174 / 18080 / 55433). Lúc bắt đầu việc này stack đang bận vì một việc khác, nên đợi ngay trong lượt chạy khoảng 24 phút cho tới khi trống, rồi mới dựng stack của mình bằng `up -d --build` và `down -v` sau khi xong.
+
+```
+$ docker compose -f e2e/docker-compose.e2e.yml up -d --build
+Container huyhieudang-e2e-postgres Healthy
+Container huyhieudang-e2e-be Started
+Container huyhieudang-e2e-fe Started
+
+$ npx playwright test -c e2e/playwright.e2e.config.ts e2e/specs/e1-lan-dung-dau-tien.spec.ts e2e/specs/e4-sua-dot-lan-truyen.spec.ts e2e/specs/e7-dot-vat-qua-nam.spec.ts
+
+───── Môi trường kiểm thử end-to-end (T28) ─────
+  Giao diện      : http://localhost:4174
+  API            : http://localhost:4174/api
+  Mốc đang ép    : 2026-09-19
+  Máy chủ báo    : 2026-09-19
+  Đồng hồ        : ĐÃ ĐÓNG BĂNG đúng mốc (T-FIX-4 hoạt động)
+────────────────────────────────────────────────
+
+Running 4 tests using 1 worker
+
+  ok 1 [chromium] › e1-lan-dung-dau-tien.spec.ts:36:1 › E2E-1 · Lần dùng đầu tiên: đăng nhập → cài đặt → tạo đợt → import → Dashboard (34.8s)
+  ok 2 [chromium] › e4-sua-dot-lan-truyen.spec.ts:54:1 › E2E-4 · Nới Đến ngày của một đợt lan truyền ngay sang mọi màn (20.1s)
+  ok 3 [chromium] › e7-dot-vat-qua-nam.spec.ts:161:1 › E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi màn (24.1s)
+  ok 4 [chromium] › e7-dot-vat-qua-nam.spec.ts:405:1 › QC-T54-01 · Tiêu đề trang chi tiết đợt phải nói rõ Đến ngày thuộc năm sau (836ms)
+
+  4 passed (1.4m)
+
+$ docker compose -f e2e/docker-compose.e2e.yml down -v
+Network huyhieudang-e2e_default Removed
+```
+
+Bước **E4-11** nằm trong luồng E2E-4 ở trên và xanh với câu mới.
+
+## Không giẫm lên các PR đang mở
+
+```
+PR #65  docs/T65-man-dot-chi-tiet-dot-va-bo-chon-nam (7e47728)  KHÔNG xung đột
+PR #66  fix/T63-bo-xung-ho (2f17456)                            KHÔNG xung đột
+PR #67  fix/T64-man-dot-bo-tom-tat-va-nen-vang (d250a6b)        KHÔNG xung đột
+PR #68  feat/T66-chi-tiet-dot-mot-trang-bo-chon-nam (9c82061)   KHÔNG xung đột
+PR #69  fix/T69-ngay-vao-dang-du-bi (8fed992)                   KHÔNG xung đột
+```
+
+Đúng năm đầu nhánh CEO đã gộp thử. Trong lúc làm việc này `origin/main` tiến lên `1b9791c` do PR #65 (chỉ tài liệu) merge — nhánh này vẫn gộp sạch vào bản main mới.
+
+`git diff --stat origin/main...HEAD` chỉ gồm tám tệp thuộc việc này, không tệp nào khác.
