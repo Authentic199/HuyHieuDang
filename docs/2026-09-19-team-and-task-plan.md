@@ -131,8 +131,12 @@ Nguồn sự thật:
 - API: docs/api-contract.md.
 
 Nguyên tắc bắt buộc:
-1. Người dùng là một cán bộ lớn tuổi, không rành công nghệ. Chữ trong bảng tối thiểu 14px,
-   nhãn rõ ràng, thông báo bằng tiếng Việt đời thường, không dùng thuật ngữ kỹ thuật.
+1. Người dùng là người trẻ. Nhãn rõ ràng, thông báo bằng tiếng Việt đời thường, không
+   dùng thuật ngữ kỹ thuật. Không xưng hô với người dùng: không "bác", không "bạn",
+   "anh chị", "quý vị"; câu ngắn, bỏ đại từ, không thêm "vui lòng" hay "xin mời".
+   Cỡ chữ: từ 1440×900 trở lên, chữ trong bảng tối thiểu 14px. Trên màn nhỏ được giảm
+   cỡ chữ một chút nếu nhờ đó màn cân đối, dễ nhìn, dễ thao tác, nhưng không xuống dưới
+   mức sàn — chữ thân và chữ trong bảng ≥ 13px, chữ phụ ≥ 12px, nút và ô nhập cao ≥ 32px.
 2. Dùng đúng component Ant Design thay vì tự chế: Layout, Table, Modal, Steps, Tabs,
    Statistic, Alert, Form, DatePicker, InputNumber, Tag, Empty, Segmented.
 3. Mọi bảng phải có đủ ba trạng thái: đang tải, trống, lỗi. Câu chữ trạng thái trống lấy
