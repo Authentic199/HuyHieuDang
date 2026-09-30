@@ -73,7 +73,26 @@ Dữ liệu giả dựng ngay trong tệp bằng `app.route('**/api/AwardPeriods
 
 ## Kết quả chạy
 
-`git grep -n -E "hhd-coverage__bar--next|hhd-coverage__swatch--period|hhd-periods__footnote|Sắp theo Từ ngày|hiệu lực ngay cho mọi năm|Đủ điều kiện năm nay" -- FE` → rỗng.
+```
+git grep -n -E "hhd-coverage__bar--next|hhd-coverage__swatch--period|hhd-periods__footnote|Sắp theo Từ ngày|hiệu lực ngay cho mọi năm|Đủ điều kiện năm nay" -- FE
+
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:14: * 2. Cột "Trạng thái <năm>" còn "Trạng thái", cột "Đủ điều kiện năm nay" còn
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:16: * 3. Không còn dòng "Sắp theo Từ ngày…" dưới chân bảng.
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:304:    await expect(app.locator('.hhd-periods__footnote')).toHaveCount(0);
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:306:    expect(pageText).not.toContain('Sắp theo Từ ngày');
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:307:    expect(pageText).not.toContain('hiệu lực ngay cho mọi năm');
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:340:    await expect(app.locator('.hhd-coverage__bar--next')).toHaveCount(0);
+FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts:427:    await expect(app.locator('.hhd-coverage__swatch--period')).toHaveCount(0);
+```
+
+Cả 7 dòng đều thuộc `FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts` và đều là khẳng định "không còn" mà mục Kiểm thử của HUYH-89 bắt buộc phải có, cùng hai dòng chú thích đầu tệp mô tả chính những thứ đã bỏ. Mô tả HUYH-89 tự mâu thuẫn giữa grep 1 và mục Kiểm thử; CEO chốt ngày 30/09/2026 là theo mục Kiểm thử, giữ nguyên bảy dòng này.
+
+Loại tệp spec đó ra thì lệnh trả rỗng — tức mã nguồn và các bộ ca khác không còn chỗ nào dùng thật:
+
+```
+git grep -n -E "hhd-coverage__bar--next|hhd-coverage__swatch--period|hhd-periods__footnote|Sắp theo Từ ngày|hiệu lực ngay cho mọi năm|Đủ điều kiện năm nay" -- FE ':!FE/ui-tests/specs/t78-man-dot-mau-dai-va-ten-cot.spec.ts'
+→ rỗng
+```
 
 `git grep -n -F 'Trạng thái ${year}' -- FE/src` → rỗng.
 
