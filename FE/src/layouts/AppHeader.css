@@ -11,10 +11,17 @@
   color: var(--hhd-white);
 }
 
-/* Tên đơn vị đứng cạnh tên hệ thống, ngăn bằng một vạch mờ. */
+/* Tên đơn vị đứng cạnh tên hệ thống, ngăn bằng một vạch mờ.
+   Đơn vị là phần duy nhất được phép co: tên hệ thống, ngày và nút Đăng xuất đều
+   phải đọc đủ, nên tên đơn vị dài thì cắt bớt bằng dấu ba chấm thay vì đẩy
+   những phần kia tràn ra ngoài. */
 .hhd-header__unit {
   font: 500 14px/20px var(--hhd-font-sans);
   color: #f7d9d8;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hhd-header__meta {
@@ -23,6 +30,8 @@
   align-items: center;
   gap: var(--hhd-space-lg);
   font-size: 13px;
+  flex: none;
+  white-space: nowrap;
 }
 
 .hhd-header__today {
@@ -49,4 +58,18 @@
   border-color: var(--hhd-white);
   background: #ffffff1f;
   color: var(--hhd-white);
+}
+
+/* Màn hẹp (1280, 1366): cờ rộng hơn logo vuông cũ nên phải thu khe và lề lại,
+   không thì ngày hôm nay và nút Đăng xuất bị đẩy tràn. Từ 1440 trở lên giữ
+   nguyên dáng cũ. */
+@media (max-width: 1439px) {
+  .hhd-header {
+    gap: var(--hhd-space-md);
+    padding: 0 12px;
+  }
+
+  .hhd-header__meta {
+    gap: var(--hhd-space-md);
+  }
 }
