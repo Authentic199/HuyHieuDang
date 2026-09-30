@@ -256,6 +256,37 @@ test.describe('Bảng chọn năm', () => {
     await expectYear(app, SERVER_YEAR);
   });
 
+  test('nút "Năm nay" bấm được bằng bàn phím khi nó có tiêu điểm', async ({ app }) => {
+    await app.goto(DETAIL_URL);
+    await openPanel(app);
+    await panelYear(app, SERVER_YEAR - 12).click();
+    await expectYear(app, SERVER_YEAR - 12);
+
+    await openPanel(app);
+    // Bộ nghe phím của bảng không được nuốt Enter của nút này.
+    await panel(app).getByRole('button', { name: 'Năm nay' }).focus();
+    await app.keyboard.press('Enter');
+
+    await expect(panel(app)).toBeHidden();
+    await expectYear(app, SERVER_YEAR);
+  });
+
+  // Bấm ngay khi bảng vừa mở, lúc tiêu điểm còn ở lưới chứ chưa ở ô năm nào.
+  // `Space` ngoài việc phải chọn năm còn không được cuộn lưới.
+  for (const key of ['Enter', 'Space'] as const) {
+    test(`mở bảng rồi bấm ${key} ngay: bảng đóng, năm không đổi`, async ({ app }) => {
+      await app.goto(DETAIL_URL);
+      await expectYear(app, SERVER_YEAR);
+      await openPanel(app);
+
+      await app.keyboard.press(key);
+
+      await expect(panel(app)).toBeHidden();
+      await expectYear(app, SERVER_YEAR);
+      await expect(app.locator('.hhd-eligibility__range')).toContainText('Năm nay');
+    });
+  }
+
   test('bàn phím: ↓ rồi Enter thì năm tăng 5', async ({ app }) => {
     await app.goto(DETAIL_URL);
     await openPanel(app);

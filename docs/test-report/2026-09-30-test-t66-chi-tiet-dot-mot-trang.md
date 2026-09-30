@@ -36,6 +36,25 @@ tách từ đầu nhánh PR #64 (`e94f153`).
    chỗ này: nó **đỏ trên `a13e5ee`** (lệch 46px ở năm máy chủ, 96px ở năm máy chủ
    − 37) và **xanh sau khi sửa**. Ca cũ chỉ kiểm `toBeInViewport()` nên không bắt
    được.
+   **Vòng ba sửa tiếp bàn phím trong lưới.** CEO chạy ca bàn phím 30 lần và thấy
+   nó chập chờn — bản báo cáo vòng hai ghi "không còn chập chờn" là **sai**: lúc
+   đó chỉ chạy cả bộ tám lượt, mỗi ca một lần, nên một lỗi đua chỉ hiện khoảng
+   một phần sáu số lần thì không lộ ra. Đo lại bằng đúng lệnh lặp 30 lần:
+   `a13e5ee` 13/30 đỏ, `e96e517` 6/30 đỏ. Hai lỗi:
+
+   - `Enter` / `Space` đọc năm qua state React và qua tiêu điểm DOM, mà tiêu
+     điểm chỉ chuyển sau một `requestAnimationFrame`. Phím bấm nhanh ngay sau
+     phím mũi tên thì rơi vào ô cũ. Nay `YearPanel` giữ thêm một ref đồng bộ cho
+     năm bàn phím đang trỏ tới, và bộ nghe phím chọn theo ref đó — không phụ
+     thuộc lúc nào tiêu điểm tới nơi.
+   - Từ khi tiêu điểm trao cho lưới (vòng hai), `Enter` lúc vừa mở không làm gì
+     và `Space` cuộn lưới một trang. Nay bộ nghe phím của bảng nhận luôn `Enter`
+     và `Space` khi tiêu điểm ở trong lưới, `preventDefault` để `Space` không
+     cuộn; ngoài lưới — ví dụ nút "Năm nay" — thì trả phím về hành vi mặc định.
+
+   Lưới cũng thôi đeo viền đen mặc định của trình duyệt khi mở bảng bằng bàn
+   phím; dấu tiêu điểm nay là viền đỏ theo token, đặt trên đúng ô năm bàn phím
+   đang trỏ tới.
 4. Nhãn ngữ cảnh ghi đúng khoảng cách: `Năm nay` / `Năm sau` / `Năm trước` /
    `N năm nữa` / `N năm trước`; mọi năm tương lai vẫn ghi "· chuẩn bị trước".
 5. Màn Chưa thuộc đợt nào thay `Segmented` bằng cùng `YearPicker`. `yearsAround`
@@ -61,8 +80,14 @@ $ npm run format:check
 All matched files use Prettier code style!
 
 $ T50_PORT=4183 npm run test:ui
-109 passed (34.0s)
+114 passed (33.1s)
+
+$ T50_PORT=4183 npx playwright test -c ui-tests/playwright.ui.config.ts     t66-bo-chon-nam -g "Bảng chọn năm" --repeat-each=30 --workers=4
+300 passed (1.9m)
 ```
+
+Lệnh lặp 30 lần là lệnh đã làm lộ lỗi bàn phím: trên `a13e5ee` nó cho 13 đỏ, trên
+`e96e517` cho 6 đỏ. Chạy `npm run test:ui` thêm hai lượt nữa cũng đều 114 xanh.
 
 Bộ `test:ui` chạy trên **cổng riêng 4183** vì HUYH-72 (4181) và HUYH-73 (4182)
 chạy song song trên cùng một máy.
@@ -71,7 +96,7 @@ E2E docker không chạy ở việc này theo đúng yêu cầu của issue — 
 HUYH-77 trên bản gộp ba PR. Các bài e2e đã sửa để đọc đúng giao diện mới và
 `typecheck:e2e` xanh.
 
-## Ca kiểm thử mới — `ui-tests/specs/t66-bo-chon-nam.spec.ts` (17 ca)
+## Ca kiểm thử mới — `ui-tests/specs/t66-bo-chon-nam.spec.ts` (20 ca)
 
 | Nhóm | Ca |
 |---|---|
@@ -86,6 +111,9 @@ HUYH-77 trên bản gộp ba PR. Các bài e2e đã sửa để đọc đúng gi
 | Bảng chọn | `Esc` đóng mà không đổi năm, tiêu điểm trả về ô năm |
 | Bảng chọn | nút "Năm nay" đưa về năm máy chủ; năm máy chủ có dấu riêng khi không phải năm đang xem |
 | Bàn phím | mở bảng, `↓` rồi `Enter` → năm tăng 5 |
+| Bàn phím | mở bảng rồi bấm `Enter` ngay → bảng đóng, năm không đổi |
+| Bàn phím | mở bảng rồi bấm `Space` ngay → bảng đóng, năm không đổi, lưới không cuộn |
+| Bàn phím | nút "Năm nay" bấm được bằng `Enter` khi nó có tiêu điểm |
 | Chưa thuộc đợt nào | `‹ ›` đổi năm và gọi lại `GET /api/Eligibility/Unassigned`; bảng chọn nhảy thẳng tới năm xa; giới hạn y hệt |
 | 1280x600 | bảng chọn nằm trọn trong khung nhìn, trang không có thanh cuộn ngang (cả hai màn) |
 

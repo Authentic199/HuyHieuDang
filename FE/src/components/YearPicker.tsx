@@ -161,8 +161,15 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
   const lastYear = Math.ceil((maxYear + 1) / COLUMNS) * COLUMNS - 1;
   const years = Array.from({ length: lastYear - firstYear + 1 }, (_, index) => firstYear + index);
 
-  /** Ô đang nhận tiêu điểm trong lưới — bàn phím di chuyển ô này. */
+  /** Ô bàn phím đang trỏ tới trong lưới. */
   const [activeYear, setActiveYear] = useState(value);
+  /**
+   * Bản sao đồng bộ của `activeYear`. `Enter` / `Space` phải chọn đúng năm bàn
+   * phím đang trỏ tới KỂ CẢ khi nó tới ngay sau phím mũi tên: lúc đó React chưa
+   * kịp dựng lại và tiêu điểm DOM chưa kịp chuyển, nên đọc state hay đọc phần
+   * tử đang có tiêu điểm đều còn là năm cũ. Ref này đổi ngay trong lần gõ phím.
+   */
+  const activeYearRef = useRef(value);
   const gridRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
   /**
@@ -230,22 +237,34 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  const setActive = useCallback((year: number) => {
+    activeYearRef.current = year;
+    setActiveYear(year);
+  }, []);
+
   const moveTo = useCallback(
     (year: number) => {
       const next = clamp(year, bounds);
-      setActiveYear(next);
+      setActive(next);
       // Tiêu điểm đi theo ô, và trình duyệt tự cuộn ô đó vào tầm nhìn của lưới.
       window.requestAnimationFrame(() => activeRef.current?.focus());
     },
-    [bounds],
+    [bounds, setActive],
   );
 
   function handleKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    // Esc đóng bảng dù tiêu điểm đang ở đâu trong bảng.
     if (event.key === 'Escape') {
       event.preventDefault();
       onClose();
       return;
     }
+
+    // Các phím còn lại chỉ dành cho lưới. Nút "Năm nay" giữ nguyên hành vi mặc
+    // định của một nút: Enter và Space bấm chính nó.
+    const grid = gridRef.current;
+    if (!grid || !grid.contains(event.target as Node)) return;
+
     const moves: Record<string, number> = {
       ArrowLeft: -1,
       ArrowRight: 1,
@@ -255,7 +274,15 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
     const delta = moves[event.key];
     if (delta !== undefined) {
       event.preventDefault();
-      moveTo(activeYear + delta);
+      moveTo(activeYearRef.current + delta);
+      return;
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      // `preventDefault` lo hai việc: Space không cuộn lưới, và ô năm đang có
+      // tiêu điểm không tự bấm thêm một lần nữa.
+      event.preventDefault();
+      onPick(activeYearRef.current);
     }
   }
 
@@ -294,13 +321,14 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
                 'hhd-year-panel__cell',
                 selected ? 'hhd-year-panel__cell--selected' : '',
                 isServerYear ? 'hhd-year-panel__cell--today' : '',
+                active ? 'hhd-year-panel__cell--active' : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
               disabled={outOfRange}
               tabIndex={active ? 0 : -1}
               aria-current={selected ? 'true' : undefined}
-              onFocus={() => setActiveYear(year)}
+              onFocus={() => setActive(year)}
               onClick={() => onPick(year)}
             >
               {year}

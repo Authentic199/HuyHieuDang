@@ -190,3 +190,17 @@
   outline: 2px solid var(--hhd-red);
   outline-offset: 1px;
 }
+
+/* Lưới nhận tiêu điểm thay cho ô năm khi bảng vừa mở (xem `YearPicker.tsx`),
+   nhưng KHÔNG đeo viền đen mặc định của trình duyệt: dấu tiêu điểm phải là viền
+   đỏ theo token, và nó thuộc về ô năm bàn phím đang trỏ tới chứ không phải cả
+   khối lưới. */
+.hhd-year-panel__grid:focus,
+.hhd-year-panel__grid:focus-visible {
+  outline: none;
+}
+
+.hhd-year-panel__grid:focus-visible .hhd-year-panel__cell--active {
+  outline: 2px solid var(--hhd-red);
+  outline-offset: 1px;
+}
