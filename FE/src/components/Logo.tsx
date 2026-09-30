@@ -1,18 +1,28 @@
-import logoUrl from '../assets/logo-huyhieudang.png';
+import flagUrl from '../assets/co-dang-co-to-quoc.png';
 
 /**
- * Logo dùng đúng tệp gốc của bộ thiết kế, không vẽ lại.
- * Thanh đầu trang 30px, trang đăng nhập 44px, trạng thái trống 64px, tối thiểu 20px.
+ * Ảnh cờ Đảng và cờ Tổ quốc, dùng đúng tệp chủ dự án gửi, không vẽ lại.
+ * Sinh từ `docs/logo/co-dang-co-to-quoc-goc.png` — xem `docs/logo/tao-anh-co.py`.
  */
-export function Logo({ size = 30, decorative = false }: { size?: number; decorative?: boolean }) {
+
+/** Bề ngang chia bề cao của tệp ảnh (498x276). Cờ nằm ngang chứ không vuông. */
+const ASPECT_RATIO = 498 / 276;
+
+/**
+ * `size` là CHIỀU CAO tính bằng px; bề ngang tự suy theo tỷ lệ ảnh.
+ * Thanh đầu trang 28px, trang đăng nhập 32px, trạng thái trống 64px.
+ */
+export function Logo({ size = 28, decorative = false }: { size?: number; decorative?: boolean }) {
+  const width = Math.round(size * ASPECT_RATIO);
+
   return (
     <img
-      src={logoUrl}
-      alt={decorative ? '' : 'Huy Hiệu Đảng'}
+      src={flagUrl}
+      alt={decorative ? '' : 'Cờ Đảng và cờ Tổ quốc'}
       aria-hidden={decorative || undefined}
-      width={size}
+      width={width}
       height={size}
-      style={{ width: size, height: size, objectFit: 'contain', flex: 'none', display: 'block' }}
+      style={{ width, height: size, objectFit: 'contain', flex: 'none', display: 'block' }}
     />
   );
 }
