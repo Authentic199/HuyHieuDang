@@ -386,7 +386,7 @@ public sealed class A6ImportTests
         byte[] bytes = await template.Content.ReadAsByteArrayAsync();
         QcWorkbook workbook = QcWorkbook.Read(bytes);
 
-        workbook.Row(1).ShouldBe(new[] { "Họ tên", "Ngày sinh", "Giới tính", "Ngày vào Đảng chính thức" });
+        workbook.Row(1).ShouldBe(new[] { "Họ tên", "Ngày sinh", "Giới tính", "Ngày vào Đảng (dự bị)" });
         workbook.RowCount.ShouldBeGreaterThanOrEqualTo(2, "file mẫu phải có dòng ví dụ");
 
         foreach (string cell in new[] { workbook.Cell(2, 2), workbook.Cell(2, 4) })

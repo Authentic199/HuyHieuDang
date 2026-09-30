@@ -136,7 +136,7 @@ public sealed class QcMember
     [JsonPropertyName("gender")]
     public string? Gender { get; set; }
 
-    /// <summary>Ngày vào Đảng chính thức.</summary>
+    /// <summary>Ngày vào Đảng (dự bị).</summary>
     [JsonPropertyName("officialAdmissionDate")]
     public DateOnly OfficialAdmissionDate { get; set; }
 

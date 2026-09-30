@@ -80,7 +80,7 @@ public static class PartyMemberImportRowValidator
             errors.Add(new ImportRowErrorResponse(ImportErrorCodes.InvalidGender, ImportFields.Gender));
         }
 
-        // OQ-10: bằng nhau cũng là lỗi, ngày sinh phải thực sự trước ngày chính thức.
+        // OQ-10: bằng nhau cũng là lỗi, ngày sinh phải thực sự trước ngày vào Đảng (dự bị).
         if (hasBirthDate && hasAdmissionDate && birthDate >= admissionDate)
         {
             errors.Add(new ImportRowErrorResponse(

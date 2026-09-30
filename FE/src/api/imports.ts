@@ -46,11 +46,11 @@ export interface ImportErrorRow {
 /** Chữ hiển thị ở cột "Lý do" của bảng dòng lỗi. */
 export const IMPORT_ERROR_TEXTS: Record<ImportErrorCode, string> = {
   MissingFullName: 'Thiếu họ tên',
-  MissingOfficialAdmissionDate: 'Thiếu ngày vào Đảng chính thức',
+  MissingOfficialAdmissionDate: 'Thiếu ngày vào Đảng (dự bị)',
   InvalidDateFormat: 'Sai định dạng ngày (cần dd/MM/yyyy)',
-  FutureOfficialAdmissionDate: 'Ngày chính thức ở tương lai',
+  FutureOfficialAdmissionDate: 'Ngày vào Đảng (dự bị) ở tương lai',
   InvalidGender: 'Giới tính chỉ nhận Nam hoặc Nữ',
-  BirthDateAfterAdmissionDate: 'Ngày sinh phải trước ngày vào Đảng chính thức',
+  BirthDateAfterAdmissionDate: 'Ngày sinh phải trước ngày vào Đảng (dự bị)',
 };
 
 /** Ghép mọi lý do của một dòng thành chữ cho cột "Lý do", ngăn bằng "; ". */

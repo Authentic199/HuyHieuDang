@@ -20,9 +20,9 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.PartyMember.NotFound': 'Không tìm thấy đảng viên',
   'Mes.PartyMember.Required.FullName': 'Chưa nhập Họ tên',
   'Mes.PartyMember.OverLength.FullName': 'Họ tên quá dài, tối đa 200 ký tự',
-  'Mes.PartyMember.Required.OfficialAdmissionDate': 'Chưa nhập Ngày vào Đảng chính thức',
-  'Mes.PartyMember.Invalid.OfficialAdmissionDate': 'Ngày chính thức không được ở tương lai',
-  'Mes.PartyMember.Invalid.DateOfBirth': 'Ngày sinh phải trước Ngày vào Đảng chính thức',
+  'Mes.PartyMember.Required.OfficialAdmissionDate': 'Chưa nhập Ngày vào Đảng (dự bị)',
+  'Mes.PartyMember.Invalid.OfficialAdmissionDate': 'Ngày vào Đảng (dự bị) không được ở tương lai',
+  'Mes.PartyMember.Invalid.DateOfBirth': 'Ngày sinh phải trước Ngày vào Đảng (dự bị)',
   'Mes.PartyMember.Invalid.Gender': 'Giới tính chỉ nhận Nam hoặc Nữ',
   'Mes.PartyMember.Invalid.NextMilestone': 'Mốc kế tiếp không hợp lệ',
   'Mes.PartyMember.Required.Ids': 'Chưa chọn đảng viên nào',
@@ -50,7 +50,7 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.Import.Invalid.Extension': 'Chỉ nhận file .xlsx',
   'Mes.Import.Invalid.FileSize': 'File vượt quá 10 MB',
   'Mes.Import.Invalid.Columns':
-    'File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức',
+    'File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng (dự bị)',
   'Mes.Import.Invalid.Empty': 'File rỗng, không đọc được dữ liệu',
   'Mes.Import.Invalid.NoDataRows': 'File không có dòng dữ liệu nào',
 

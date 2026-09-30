@@ -16,7 +16,7 @@ public sealed class A7ExportTests
 
     private static readonly string[] EligibilityColumns =
     {
-        "STT", "Họ tên", "Giới tính", "Ngày sinh", "Ngày chính thức", "Ngày tròn mốc", "Mốc huy hiệu",
+        "STT", "Họ tên", "Giới tính", "Ngày sinh", "Ngày vào Đảng (dự bị)", "Ngày tròn mốc", "Mốc huy hiệu",
     };
 
     private readonly QcApiFactory factory;

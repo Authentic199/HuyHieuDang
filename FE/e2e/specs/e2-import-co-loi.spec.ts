@@ -53,7 +53,7 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     await expect(columns).toContainText('Họ tên');
     await expect(columns).toContainText('Ngày sinh');
     await expect(columns).toContainText('Giới tính');
-    await expect(columns).toContainText('Ngày vào Đảng chính thức');
+    await expect(columns).toContainText('Ngày vào Đảng (dự bị)');
     // Dòng ví dụ ngay dưới tiêu đề cột.
     await expect(columns).toContainText('Nguyễn Văn An');
     await expect(columns).toContainText('15/10/1996');
@@ -163,17 +163,17 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
       'Họ tên',
       'Ngày sinh',
       'Giới tính',
-      'Ngày chính thức',
+      'Ngày vào Đảng (dự bị)',
       'Lý do',
     ]);
 
     const rows = await readTable(pane);
     const expectedRows: [string, string][] = [
       ['8', 'Thiếu họ tên'],
-      ['9', 'Thiếu ngày vào Đảng chính thức'],
+      ['9', 'Thiếu ngày vào Đảng (dự bị)'],
       ['10', 'Sai định dạng ngày (cần dd/MM/yyyy)'],
     ];
-    if (futureRowIsError) expectedRows.push(['11', 'Ngày chính thức ở tương lai']);
+    if (futureRowIsError) expectedRows.push(['11', 'Ngày vào Đảng (dự bị) ở tương lai']);
 
     expect(rows.map((row) => [row[0], row[5]])).toEqual(expectedRows);
     // Ô gây lỗi giữ nguyên chữ thô đọc từ Excel để bác biết chỗ nào phải sửa.
@@ -243,7 +243,7 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
       step: 'E2-12 · File sai cột bị chặn ngay bước 1',
       file: path.join(EXCEL_DIR, 'loi-sai-cot.xlsx'),
       message:
-        'File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng chính thức',
+        'File phải có đúng 4 cột theo thứ tự Họ tên · Ngày sinh · Giới tính · Ngày vào Đảng (dự bị)',
     },
     {
       step: 'E2-13 · File không phải Excel bị chặn, không lộ lỗi máy chủ',

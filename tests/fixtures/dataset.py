@@ -153,15 +153,15 @@ MEMBERS_CORE: list[Member] = [
     Member("X02", "Nguyễn Văn Ẩn", _D(1968, 9, 9), "Nam", _D(1991, 2, 20),
            "Mốc 35 ngày 20/02/2026 trong Đợt 3/2; tên khác X01 chỉ ở dấu -> kiểm tra sắp xếp và tìm kiếm"),
 
-    # --- Biên "Ngày chính thức <= hôm nay"
+    # --- Biên "Ngày vào Đảng (dự bị) <= hôm nay"
     Member("V01", "Lưu Thị Diễm", _D(2000, 4, 4), "Nữ", T0,
-           "Ngày chính thức ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"),
+           "Ngày vào Đảng (dự bị) ĐÚNG BẰNG hôm nay (T0) -> hợp lệ, tuổi đảng 0, mốc kế tiếp 30"),
 ]
 
 # ---------------------------------------------------------------- Đảng viên - bộ lớn
 #
 # 1200 người chỉ để kiểm thử phân trang, tìm kiếm và hiệu năng.
-# QUY TẮC THIẾT KẾ: Ngày chính thức đều nằm trong 2015-2020 nên mốc 30 của họ rơi
+# QUY TẮC THIẾT KẾ: Ngày vào Đảng (dự bị) đều nằm trong 2015-2020 nên mốc 30 của họ rơi
 # vào 2045-2050. Vì vậy bộ này KHÔNG BAO GIỜ làm sai lệch các con số đủ điều kiện /
 # badge của bộ lõi ở các năm 2025-2030, và có thể nạp chung với bộ lõi một cách an toàn.
 
@@ -202,22 +202,22 @@ MEMBERS_BULK = build_bulk()
 
 # ---------------------------------------------------------------- Dòng lỗi import (QT9)
 #
-# Mỗi phần tử: (họ tên, ngày sinh, giới tính, ngày chính thức, mã lỗi, lý do mong đợi)
+# Mỗi phần tử: (họ tên, ngày sinh, giới tính, ngày vào Đảng (dự bị), mã lỗi, lý do mong đợi)
 # Giá trị ghi nguyên văn như khi gõ vào ô Excel dạng CHUỖI.
 
 ERR_ROWS = [
     ("", "12/03/1974", "Nam", "01/10/1996",
      "E-HOTEN-TRONG", "Thiếu Họ tên"),
     ("Nguyễn Thiếu Ngày", "12/03/1974", "Nam", "",
-     "E-NGAYCT-TRONG", "Thiếu Ngày vào Đảng chính thức"),
+     "E-NGAYCT-TRONG", "Thiếu Ngày vào Đảng (dự bị)"),
     ("Trần Sai Định Dạng", "12/03/1974", "Nữ", "1996-10-01",
      "E-NGAYCT-SAIDANG", "Sai định dạng ngày, cần dd/MM/yyyy"),
     ("Lê Ngày Tương Lai", "12/03/1974", "Nam", "20/09/2026",
-     "E-NGAYCT-TUONGLAI", "Ngày vào Đảng chính thức ở tương lai (so với hôm nay T0 = 19/09/2026)"),
+     "E-NGAYCT-TUONGLAI", "Ngày vào Đảng (dự bị) ở tương lai (so với hôm nay T0 = 19/09/2026)"),
     ("Phạm Giới Tính Lạ", "12/03/1974", "Khác", "01/10/1996",
      "E-GIOITINH", "Giới tính không hợp lệ, chỉ nhận Nam hoặc Nữ"),
     ("Hoàng Sinh Sau", "02/01/1997", "Nam", "01/10/1996",
-     "E-NGAYSINH-SAU", "Ngày sinh sau Ngày vào Đảng chính thức"),
+     "E-NGAYSINH-SAU", "Ngày sinh sau Ngày vào Đảng (dự bị)"),
     ("Vũ Ngày Sinh Sai", "31/02/1974", "Nữ", "01/10/1996",
      "E-NGAYSINH-SAIDANG", "Ngày sinh không tồn tại / sai định dạng (chờ chốt OQ-1)"),
     ("", "31/02/1974", "Khác", "",
@@ -236,7 +236,7 @@ OK_ROWS = [
     ("Vũ Hợp Lệ Sáu", "14/09/1972", "Nữ", "10/09/1996"),
 ]
 
-# Biên trên của ràng buộc "Ngày chính thức <= hôm nay": đúng bằng T0.
+# Biên trên của ràng buộc "Ngày vào Đảng (dự bị) <= hôm nay": đúng bằng T0.
 OK_ROW_TODAY = ("Lưu Đúng Hôm Nay", "04/04/2000", "Nữ", "19/09/2026")
 
 # Các dòng mà hành vi CHƯA ĐƯỢC CHỐT trong tài liệu - tách riêng để không làm
@@ -252,4 +252,4 @@ NORMALIZE_ROWS = [
      "OQ-6", "Ngày viết d/M/yyyy (không đủ 2 chữ số) - có nhận không?"),
 ]
 
-HEADER = ["Họ tên", "Ngày sinh", "Giới tính", "Ngày vào Đảng chính thức"]
+HEADER = ["Họ tên", "Ngày sinh", "Giới tính", "Ngày vào Đảng (dự bị)"]

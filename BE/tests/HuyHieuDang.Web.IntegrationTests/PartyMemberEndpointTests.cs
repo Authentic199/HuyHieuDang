@@ -189,7 +189,7 @@ public class PartyMemberEndpointTests
             unknownColumn.PagedData.Select(x => x.FullName).ToArray());
     }
 
-    [Fact(DisplayName = "T51 · Sắp xếp theo Tuổi đảng quy về Ngày chính thức theo chiều ngược lại")]
+    [Fact(DisplayName = "T51 · Sắp xếp theo Tuổi đảng quy về Ngày vào Đảng (dự bị) theo chiều ngược lại")]
     public async Task Search_SortsByPartyAge()
     {
         HttpClient client = await CreateAuthenticatedClientAsync();
@@ -399,7 +399,7 @@ public class PartyMemberEndpointTests
             body.Message);
     }
 
-    [Fact(DisplayName = "3.3 · Đúng ngày hôm nay là ngày chính thức hợp lệ")]
+    [Fact(DisplayName = "3.3 · Đúng ngày hôm nay là ngày vào Đảng (dự bị) hợp lệ")]
     public async Task Create_WithTodayAsAdmissionDate_Succeeds()
     {
         HttpClient client = await CreateAuthenticatedClientAsync();

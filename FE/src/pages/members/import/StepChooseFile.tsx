@@ -13,7 +13,7 @@ const TEMPLATE_COLUMNS = [
   { header: 'Họ tên', required: true, sample: 'Nguyễn Văn An', mono: false },
   { header: 'Ngày sinh', required: false, sample: '12/03/1958', mono: true },
   { header: 'Giới tính', required: false, sample: 'Nam', mono: false },
-  { header: 'Ngày vào Đảng chính thức', required: true, sample: '15/10/1996', mono: true },
+  { header: 'Ngày vào Đảng (dự bị)', required: true, sample: '15/10/1996', mono: true },
 ] as const;
 
 /** Dung lượng file cho người đọc: 2,4 MB. */

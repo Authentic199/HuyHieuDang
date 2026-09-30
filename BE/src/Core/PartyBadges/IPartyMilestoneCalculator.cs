@@ -13,44 +13,44 @@ public interface IPartyMilestoneCalculator : IScopedService
     /// <returns>Dãy mốc tăng dần.</returns>
     IReadOnlyList<int> BuildMilestones(MilestoneSettings settings);
 
-    /// <summary>QT2 — ngày tròn mốc: ngày chính thức cộng thêm N năm.</summary>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>
+    /// <summary>QT2 — ngày tròn mốc: ngày vào Đảng (dự bị) cộng thêm N năm.</summary>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị).</param>
     /// <param name="milestone">Số năm cần cộng.</param>
     /// <returns>Ngày tròn mốc; 29/02 ở năm đích không nhuận lùi về 28/02.</returns>
     DateOnly GetAnniversary(DateOnly officialAdmissionDate, int milestone);
 
     /// <summary>QT3 — tuổi đảng hiện tại tính theo năm tròn.</summary>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị).</param>
     /// <param name="today">Ngày hôm nay.</param>
     /// <returns>Số năm tròn đã qua hoặc đúng ngày kỷ niệm.</returns>
     int GetPartyAge(DateOnly officialAdmissionDate, DateOnly today);
 
     /// <summary>QT3a — mốc nhỏ nhất lớn hơn tuổi đảng hiện tại.</summary>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị).</param>
     /// <param name="today">Ngày hôm nay.</param>
     /// <param name="milestones">Dãy mốc của QT1.</param>
     /// <returns>Mốc kế tiếp, hoặc <c>null</c> khi đã vượt mốc lớn nhất.</returns>
     int? GetNextMilestone(DateOnly officialAdmissionDate, DateOnly today, IReadOnlyList<int> milestones);
 
     /// <summary>QT3a — ngày tròn mốc kế tiếp.</summary>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị).</param>
     /// <param name="today">Ngày hôm nay.</param>
     /// <param name="milestones">Dãy mốc của QT1.</param>
     /// <returns>Ngày tròn mốc kế tiếp, hoặc <c>null</c> khi đã vượt mốc lớn nhất.</returns>
     DateOnly? GetNextAnniversary(DateOnly officialAdmissionDate, DateOnly today, IReadOnlyList<int> milestones);
 
     /// <summary>
-    /// T51 — Ngày chính thức muộn nhất mà tuổi đảng hôm nay vẫn đạt <paramref name="age"/> năm.
+    /// T51 — Ngày vào Đảng (dự bị) muộn nhất mà tuổi đảng hôm nay vẫn đạt <paramref name="age"/> năm.
     /// Phép nghịch đảo của <see cref="GetPartyAge"/>: <c>GetPartyAge(D, today) >= age</c> đúng khi
     /// và chỉ khi <c>D &lt;= GetLatestAdmissionDateForAge(today, age)</c>.
     /// </summary>
     /// <param name="today">Ngày hôm nay.</param>
     /// <param name="age">Số năm tuổi đảng cần đạt.</param>
-    /// <returns>Ngày chính thức muộn nhất; 29/02 được tính vào theo đúng QT2.</returns>
+    /// <returns>Ngày vào Đảng (dự bị) muộn nhất; 29/02 được tính vào theo đúng QT2.</returns>
     DateOnly GetLatestAdmissionDateForAge(DateOnly today, int age);
 
     /// <summary>
-    /// T51 — khoảng Ngày chính thức của những người có đúng một giá trị "Mốc kế tiếp" (QT3a),
+    /// T51 — khoảng Ngày vào Đảng (dự bị) của những người có đúng một giá trị "Mốc kế tiếp" (QT3a),
     /// để điều kiện lọc nằm được trong SQL thay vì lọc sau khi nạp.
     /// </summary>
     /// <param name="milestone">Mốc kế tiếp cần lọc; <c>null</c> nghĩa là đã vượt mốc lớn nhất.</param>
@@ -79,7 +79,7 @@ public interface IPartyMilestoneCalculator : IScopedService
     IReadOnlyList<PeriodSlice> GetSlicesInYear(IReadOnlyList<AwardPeriod> periods, int year);
 
     /// <summary>QT4 — mốc được trao cho một đảng viên trong một đợt của một năm.</summary>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị).</param>
     /// <param name="period">Đợt trao huy hiệu.</param>
     /// <param name="year">Năm xét.</param>
     /// <param name="milestones">Dãy mốc của QT1.</param>
@@ -88,7 +88,7 @@ public interface IPartyMilestoneCalculator : IScopedService
         DateOnly officialAdmissionDate, AwardPeriod period, int year, IReadOnlyList<int> milestones);
 
     /// <summary>QT7 — mốc tròn trong năm nhưng rơi ra ngoài mọi đợt.</summary>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức.</param>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị).</param>
     /// <param name="periods">Toàn bộ đợt đang cấu hình.</param>
     /// <param name="year">Năm xét.</param>
     /// <param name="milestones">Dãy mốc của QT1.</param>

@@ -211,16 +211,16 @@ export default function MembersPage() {
     },
     {
       key: 'OfficialAdmissionDate',
-      title: 'Ngày chính thức',
+      title: 'Ngày vào Đảng (dự bị)',
       dataIndex: 'officialAdmissionDate',
-      width: 148,
+      width: 200,
       sorter: true,
       sortOrder: sortOrderOf('OfficialAdmissionDate'),
       render: (value: string) => formatDate(value),
     },
     {
       // Tuổi đảng không có trong bảng, nhưng Backend nhận tên cột này rồi quy đổi
-      // về Ngày chính thức theo chiều ngược lại (T51, mục 1.7 hợp đồng v1.5).
+      // về Ngày vào Đảng (dự bị) theo chiều ngược lại (T51, mục 1.7 hợp đồng v1.5).
       key: 'PartyAge',
       title: 'Tuổi đảng',
       dataIndex: 'partyAgeYears',
@@ -240,7 +240,7 @@ export default function MembersPage() {
       render: (value: number | null) => <MilestoneTag milestone={value} />,
     },
     {
-      // Ngày tròn mốc không cùng thứ tự với Ngày chính thức nên không quy đổi được:
+      // Ngày tròn mốc không cùng thứ tự với Ngày vào Đảng (dự bị) nên không quy đổi được:
       // cột này cố ý không có nút sắp xếp.
       key: 'nextMilestoneDate',
       title: 'Ngày tròn mốc kế tiếp',

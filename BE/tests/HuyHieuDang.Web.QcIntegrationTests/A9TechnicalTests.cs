@@ -224,7 +224,7 @@ public sealed class A9TechnicalTests
         string createdAt = QcDb.ColumnName<PartyMemberEntity>(factory, nameof(PartyMemberEntity.CreatedAt));
         string updatedAt = QcDb.ColumnName<PartyMemberEntity>(factory, nameof(PartyMemberEntity.UpdatedAt));
 
-        // Ngày chính thức trải đều 1970–2005 để dữ liệu giống thật; ngày cố định, không theo
+        // Ngày vào Đảng (dự bị) trải đều 1970–2005 để dữ liệu giống thật; ngày cố định, không theo
         // đồng hồ máy, nên ca này chạy lại lúc nào cũng cho cùng kết quả.
         await QcDb.ExecuteSqlAsync(
             factory,

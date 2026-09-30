@@ -62,7 +62,7 @@ public static class QcFixtures
         MainPeriods.SingleOrDefault(x => x.Code == code)?.Period
         ?? throw new InvalidOperationException($"Bộ đợt chính không có đợt mã {code}.");
 
-    /// <summary>Danh sách ngày vào Đảng chính thức của cả bộ lõi.</summary>
+    /// <summary>Danh sách ngày vào Đảng (dự bị) của cả bộ lõi.</summary>
     public static IReadOnlyList<DateOnly> CoreAdmissions =>
         CoreMembers.Select(x => x.OfficialAdmissionDate).ToList();
 

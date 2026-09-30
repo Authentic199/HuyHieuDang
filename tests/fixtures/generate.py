@@ -410,7 +410,7 @@ def build_excel(core: list[Member], bulk: list[Member]) -> list[dict]:
     # Bộ lớn
     write_xlsx(EXCEL / "bulk-1200.xlsx", [member_row_text(m) for m in bulk], ds.HEADER)
     rec("bulk-1200.xlsx", len(bulk), 0,
-        "Phân trang / tìm kiếm / hiệu năng. Ngày chính thức 2015-2020 nên KHÔNG ảnh hưởng "
+        "Phân trang / tìm kiếm / hiệu năng. Ngày vào Đảng (dự bị) 2015-2020 nên KHÔNG ảnh hưởng "
         "con số đủ điều kiện của bộ lõi ở các năm 2025-2030.")
 
     # E2E-2: đúng 4 dòng lỗi
@@ -431,7 +431,7 @@ def build_excel(core: list[Member], bulk: list[Member]) -> list[dict]:
     write_xlsx(EXCEL / "loi-moi-loai-mot-dong.xlsx", rows, ds.HEADER)
     rec("loi-moi-loai-mot-dong.xlsx", 2, len(ds.ERR_ROWS),
         "QT9 - mỗi loại lỗi cấp dòng một dòng, kèm 2 dòng hợp lệ (dòng cuối là biên "
-        "'Ngày chính thức đúng bằng hôm nay'). Bảng lỗi phải nêu đúng số dòng Excel và lý do.")
+        "'Ngày vào Đảng (dự bị) đúng bằng hôm nay'). Bảng lỗi phải nêu đúng số dòng Excel và lý do.")
 
     # Chuẩn hoá - hành vi chưa chốt
     rows = [(r[0], r[1], r[2], r[3]) for r in ds.NORMALIZE_ROWS]
@@ -443,7 +443,7 @@ def build_excel(core: list[Member], bulk: list[Member]) -> list[dict]:
     # Lỗi cấp file
     write_xlsx(EXCEL / "loi-sai-cot.xlsx",
                [("01/10/1996", "Nguyễn Sai Cột", "Nam", "12/03/1974", "ghi chú")],
-               ["Ngày vào Đảng chính thức", "Họ tên", "Giới tính", "Ngày sinh", "Ghi chú"])
+               ["Ngày vào Đảng (dự bị)", "Họ tên", "Giới tính", "Ngày sinh", "Ghi chú"])
     rec("loi-sai-cot.xlsx", 0, 0,
         "QT9 lỗi cấp file - 5 cột, sai thứ tự. Phải bị chặn ngay ở bước 1, không sang xem trước.")
 
@@ -462,15 +462,15 @@ def build_excel(core: list[Member], bulk: list[Member]) -> list[dict]:
     (EXCEL / "loi-khong-phai-xlsx.xlsx").write_text(
         "Đây là tệp văn bản thuần, chỉ đổi phần mở rộng thành .xlsx.\n"
         "Trình đọc phải báo lỗi định dạng, không được văng lỗi 500.\n",
-        encoding="utf-8")
+        encoding="utf-8", newline="\n")
     rec("loi-khong-phai-xlsx.xlsx", 0, 0,
         "QT9 lỗi cấp file - không phải tệp zip/xlsx. Phải trả 400 với thông báo tiếng Việt, "
         "không phải 500.")
 
     (EXCEL / "loi-dinh-dang-csv.csv").write_text(
-        "Họ tên,Ngày sinh,Giới tính,Ngày vào Đảng chính thức\n"
+        "Họ tên,Ngày sinh,Giới tính,Ngày vào Đảng (dự bị)\n"
         "Nguyễn Văn Csv,12/03/1974,Nam,01/10/1996\n",
-        encoding="utf-8-sig")
+        encoding="utf-8-sig", newline="\n")
     rec("loi-dinh-dang-csv.csv", 0, 0,
         "QT9 lỗi cấp file - .csv phải bị từ chối vì chỉ nhận .xlsx.")
 
@@ -504,7 +504,7 @@ def build_sql(core: list[Member], bulk: list[Member]) -> None:
         head + "TRUNCATE TABLE {m}, {p} RESTART IDENTITY CASCADE;\n"
                 "DELETE FROM {s};\n".format(
                     m=DB["member_table"], p=DB["period_table"], s=DB["setting_table"]),
-        encoding="utf-8")
+        encoding="utf-8", newline="\n")
 
     def members_sql(members: list[Member], prefix: str) -> str:
         cols = ", ".join(DB["member_cols"])
@@ -518,11 +518,11 @@ def build_sql(core: list[Member], bulk: list[Member]) -> None:
 
     (SQL / "02-seed-members-core.sql").write_text(
         head + f"-- {len(core)} đảng viên bộ lõi, Id tất định c0000000-...-<số thứ tự>\n"
-        + members_sql(core, "c"), encoding="utf-8")
+        + members_sql(core, "c"), encoding="utf-8", newline="\n")
 
     (SQL / "03-seed-members-bulk.sql").write_text(
         head + f"-- {len(bulk)} đảng viên bộ lớn, Id tất định b0000000-...-<số thứ tự>\n"
-        + members_sql(bulk, "b"), encoding="utf-8")
+        + members_sql(bulk, "b"), encoding="utf-8", newline="\n")
 
     pcols = ", ".join(DB["period_cols"])
     pvals = []
@@ -540,7 +540,7 @@ def build_sql(core: list[Member], bulk: list[Member]) -> None:
 
     (SQL / "04-seed-periods-settings.sql").write_text(
         head + f"INSERT INTO {DB['period_table']} ({pcols}) VALUES\n"
-        + ",\n".join(pvals) + ";\n\n" + setting, encoding="utf-8")
+        + ",\n".join(pvals) + ";\n\n" + setting, encoding="utf-8", newline="\n")
 
 
 # ---------------------------------------------------------------- main
@@ -672,24 +672,24 @@ def main() -> None:
     }
 
     (DATA / "expected.json").write_text(
-        json.dumps(expected, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps(expected, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     def dump_members(name: str, members: list[Member]) -> None:
         (DATA / name).write_text(json.dumps(
             [{"code": m.code, "fullName": m.full_name,
               "dateOfBirth": iso(m.date_of_birth), "gender": m.gender,
               "officialAdmissionDate": iso(m.admission), "intent": m.intent}
-             for m in members], ensure_ascii=False, indent=2), encoding="utf-8")
+             for m in members], ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     dump_members("members-core.json", core)
     dump_members("members-bulk.json", bulk)
 
     (DATA / "settings.json").write_text(json.dumps(
         {"default": ds.SETTINGS_DEFAULT, "step10": ds.SETTINGS_STEP10,
-         "noUnitName": ds.SETTINGS_NO_UNIT}, ensure_ascii=False, indent=2), encoding="utf-8")
+         "noUnitName": ds.SETTINGS_NO_UNIT}, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     (DATA / "periods.json").write_text(json.dumps(
-        expected["periods"], ensure_ascii=False, indent=2), encoding="utf-8")
+        expected["periods"], ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     (DATA / "import-rows.json").write_text(json.dumps({
         "header": ds.HEADER,
@@ -704,11 +704,11 @@ def main() -> None:
         "undecidedRows": [{"fullName": r[0], "dateOfBirth": r[1], "gender": r[2],
                            "officialAdmissionDate": r[3], "openQuestion": r[4],
                            "question": r[5]} for r in ds.NORMALIZE_ROWS],
-    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    }, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     manifest = build_excel(core, bulk)
     (DATA / "excel-manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     build_sql(core, bulk)
 

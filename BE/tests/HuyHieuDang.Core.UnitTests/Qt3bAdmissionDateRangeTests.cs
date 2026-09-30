@@ -5,7 +5,7 @@ using HuyHieuDang.Core.UnitTests.Fixtures;
 namespace HuyHieuDang.Core.UnitTests;
 
 /// <summary>
-/// T51 — phép quy đổi "Mốc kế tiếp" và "Tuổi đảng" thành khoảng Ngày chính thức, để điều kiện
+/// T51 — phép quy đổi "Mốc kế tiếp" và "Tuổi đảng" thành khoảng Ngày vào Đảng (dự bị), để điều kiện
 /// lọc nằm được trong SQL thay vì lọc sau khi nạp.
 /// </summary>
 public sealed class Qt3bAdmissionDateRangeTests
@@ -182,7 +182,7 @@ public sealed class Qt3bAdmissionDateRangeTests
                 // Assert
                 inRange.ShouldBe(
                     expected,
-                    $"Mốc {milestone?.ToString() ?? "None"} lệch ở ngày chính thức {admission:dd/MM/yyyy}, hôm nay {today:dd/MM/yyyy}.");
+                    $"Mốc {milestone?.ToString() ?? "None"} lệch ở ngày vào Đảng (dự bị) {admission:dd/MM/yyyy}, hôm nay {today:dd/MM/yyyy}.");
             }
         }
     }

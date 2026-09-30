@@ -146,7 +146,7 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
 
         <Form.Item
           name="officialAdmissionDate"
-          label="Ngày vào Đảng chính thức"
+          label="Ngày vào Đảng (dự bị)"
           rules={[
             {
               required: true,
@@ -161,7 +161,7 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
                     ),
             },
           ]}
-          extra="Ngày ghi trong quyết định công nhận đảng viên chính thức."
+          extra="Ngày ghi trong quyết định kết nạp đảng viên (dự bị)."
         >
           <DatePicker
             size="large"

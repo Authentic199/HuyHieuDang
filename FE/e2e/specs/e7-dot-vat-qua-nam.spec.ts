@@ -102,7 +102,7 @@ function display(iso: string): string {
   return `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`;
 }
 
-/** Ngày vào Đảng chính thức để tròn mốc 30 đúng ngày mong muốn. */
+/** Ngày vào Đảng (dự bị) để tròn mốc 30 đúng ngày mong muốn. */
 function admissionFor(person: Seeded, serverYear: number): string {
   return `${serverYear + person.yearOffset - MILESTONE}-${person.anniversary}`;
 }

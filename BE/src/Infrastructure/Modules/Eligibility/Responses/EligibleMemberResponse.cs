@@ -30,7 +30,7 @@ public class EligibleMemberResponse
     public DateOnly? DateOfBirth { get; set; }
 
     /// <summary>
-    /// Ngày vào Đảng chính thức.
+    /// Ngày vào Đảng (dự bị).
     /// </summary>
     public DateOnly OfficialAdmissionDate { get; set; }
 

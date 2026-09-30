@@ -23,13 +23,13 @@ public static class QcMessages
     /// <summary>Gọi xóa nhiều mà danh sách id rỗng.</summary>
     public const string MemberRequiredIds = "Mes.PartyMember.Required.Ids";
 
-    /// <summary>Chưa nhập Ngày vào Đảng chính thức.</summary>
+    /// <summary>Chưa nhập Ngày vào Đảng (dự bị).</summary>
     public const string MemberRequiredAdmissionDate = "Mes.PartyMember.Required.OfficialAdmissionDate";
 
-    /// <summary>Ngày chính thức không được ở tương lai.</summary>
+    /// <summary>Ngày vào Đảng (dự bị) không được ở tương lai.</summary>
     public const string MemberInvalidAdmissionDate = "Mes.PartyMember.Invalid.OfficialAdmissionDate";
 
-    /// <summary>Ngày sinh phải trước Ngày vào Đảng chính thức.</summary>
+    /// <summary>Ngày sinh phải trước Ngày vào Đảng (dự bị).</summary>
     public const string MemberInvalidDateOfBirth = "Mes.PartyMember.Invalid.DateOfBirth";
 
     /// <summary>Giá trị lọc Mốc kế tiếp không hợp lệ (T51).</summary>

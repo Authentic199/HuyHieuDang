@@ -41,7 +41,7 @@ public static class PartyMemberImportFile
         "Họ tên",
         "Ngày sinh",
         "Giới tính",
-        "Ngày vào Đảng chính thức",
+        "Ngày vào Đảng (dự bị)",
     };
 
     /// <summary>
@@ -130,7 +130,7 @@ public static class PartyMemberImportFile
     /// <param name="fullName">Họ tên ví dụ.</param>
     /// <param name="dateOfBirth">Ngày sinh ví dụ.</param>
     /// <param name="gender">Giới tính ví dụ.</param>
-    /// <param name="officialAdmissionDate">Ngày vào Đảng chính thức ví dụ.</param>
+    /// <param name="officialAdmissionDate">Ngày vào Đảng (dự bị) ví dụ.</param>
     /// <returns>Từ điển bốn cột.</returns>
     private static Dictionary<string, object> BuildTemplateRow(
         string fullName, string dateOfBirth, string gender, string officialAdmissionDate)
