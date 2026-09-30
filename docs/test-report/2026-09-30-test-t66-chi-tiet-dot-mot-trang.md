@@ -15,6 +15,27 @@ tách từ đầu nhánh PR #64 (`e94f153`).
 3. Bảng chọn năm mở khi bấm ô năm: Popover rộng 370px, đầu bảng có nút "Năm nay"
    và câu "Chọn trong 1926 – 2126", thân là lưới 5 cột cuộn dọc căn theo bội số
    của 5, mở ra đã cuộn sẵn để hàng chứa năm đang xem nằm giữa.
+
+   **Vòng đầu (`a13e5ee`) làm sai chỗ này** và bản báo cáo đầu tiên ghi là đã
+   làm, trong khi đo thật thì chưa. CEO bắt được khi gác cổng: hàng của năm đang
+   xem luôn rơi vào hàng thứ hai chứ không nằm giữa. Ba nguyên nhân chồng lên
+   nhau, đã sửa cả ba ở vòng này:
+
+   - `cell.offsetTop` được đo khi `offsetParent` của ô năm là `.ant-popover-content`
+     chứ không phải lưới, nên cộng thừa đệm bảng và dòng đầu "Năm nay" — lưới
+     cuộn lố gần một hàng. Nay lưới mang `position: relative` để chính nó là
+     `offsetParent`.
+   - Tiêu điểm đặt vào ô năm làm trình duyệt kéo ô đó lên đầu vùng cuộn ngay sau
+     khi lớp phủ hiện xong, đạp đổ phép căn giữa. Nay tiêu điểm trao cho lưới;
+     ô năm chỉ nhận tiêu điểm khi người dùng bấm mũi tên.
+   - Hiệu ứng phóng to của lớp phủ làm mọi số đo đổi liên tục trong lúc chạy.
+     Nay tắt bằng `transitionName=""`, và vòng căn giữa thử lại từng khung hình
+     cho tới khi vị trí cuộn đứng yên.
+
+   Ca `hàng của năm đang xem nằm giữa lưới` trong `t66-bo-chon-nam` canh đúng ba
+   chỗ này: nó **đỏ trên `a13e5ee`** (lệch 46px ở năm máy chủ, 96px ở năm máy chủ
+   − 37) và **xanh sau khi sửa**. Ca cũ chỉ kiểm `toBeInViewport()` nên không bắt
+   được.
 4. Nhãn ngữ cảnh ghi đúng khoảng cách: `Năm nay` / `Năm sau` / `Năm trước` /
    `N năm nữa` / `N năm trước`; mọi năm tương lai vẫn ghi "· chuẩn bị trước".
 5. Màn Chưa thuộc đợt nào thay `Segmented` bằng cùng `YearPicker`. `yearsAround`
@@ -50,7 +71,7 @@ E2E docker không chạy ở việc này theo đúng yêu cầu của issue — 
 HUYH-77 trên bản gộp ba PR. Các bài e2e đã sửa để đọc đúng giao diện mới và
 `typecheck:e2e` xanh.
 
-## Ca kiểm thử mới — `ui-tests/specs/t66-bo-chon-nam.spec.ts` (15 ca)
+## Ca kiểm thử mới — `ui-tests/specs/t66-bo-chon-nam.spec.ts` (17 ca)
 
 | Nhóm | Ca |
 |---|---|
@@ -61,6 +82,7 @@ HUYH-77 trên bản gộp ba PR. Các bài e2e đã sửa để đọc đúng gi
 | Giới hạn | ở năm máy chủ + 100 thì `›` khóa, ô ngoài khoảng trong bảng bị vô hiệu |
 | Giới hạn | ở năm máy chủ − 100 thì `‹` khóa, ô ngoài khoảng bị vô hiệu |
 | Bảng chọn | mở đúng tại năm đang xem, năm đó được đánh dấu và nằm trong vùng nhìn; chọn năm máy chủ − 37 → đóng bảng, đổi năm, nhãn "37 năm trước", lời gọi mang đúng `year` |
+| Bảng chọn | hàng của năm đang xem nằm giữa lưới — đo ở năm máy chủ và ở năm máy chủ − 37, tâm ô lệch tâm lưới dưới nửa hàng |
 | Bảng chọn | `Esc` đóng mà không đổi năm, tiêu điểm trả về ô năm |
 | Bảng chọn | nút "Năm nay" đưa về năm máy chủ; năm máy chủ có dấu riêng khi không phải năm đang xem |
 | Bàn phím | mở bảng, `↓` rồi `Enter` → năm tăng 5 |

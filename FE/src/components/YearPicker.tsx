@@ -97,6 +97,11 @@ export function YearPicker({ value, serverYear, onChange }: YearPickerProps) {
         placement="bottomLeft"
         arrow={false}
         destroyOnHidden
+        // Tắt hiệu ứng phóng to của lớp phủ. Trong lúc nó chạy, lưới chưa có
+        // kích thước thật và trình duyệt còn cuộn thêm một nhịp, nên vị trí cuộn
+        // đặt lúc mở bị đạp đổ — bảng nhảy về sai hàng. Bảng chọn năm hiện ra
+        // tức thì cũng đúng tinh thần thiết kế: bấm một lần là thấy ngay.
+        transitionName=""
         rootClassName="hhd-year-panel-root"
         content={
           ready && bounds !== null && serverYear !== null ? (
@@ -161,31 +166,64 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
   const gridRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
   /**
-   * Cuộn hàng chứa năm đang xem vào giữa và đặt tiêu điểm vào đúng ô đó, để bấm
-   * mũi tên là đi được ngay. Làm đúng một lần, khi bảng vừa mở.
+   * Cuộn hàng chứa năm đang xem vào giữa lưới, và trao tiêu điểm cho lưới để
+   * bấm phím mũi tên là đi được ngay.
    *
-   * Lớp phủ của Ant Design dựng nội dung trong lúc còn ẩn, khi đó lưới chưa có
-   * kích thước thật — gán `scrollTop` lúc ấy không ăn. Nên chờ qua vài khung
-   * hình cho tới khi lưới đã cao thật rồi mới cuộn.
+   * Ba điều dễ sai, ca "hàng của năm đang xem nằm giữa lưới" canh cả ba:
+   *
+   * 1. `cell.offsetTop` chỉ đúng khi CHÍNH LƯỚI là `offsetParent` của ô năm —
+   *    vì vậy `.hhd-year-panel__grid` phải giữ `position: relative`. Bỏ dòng đó
+   *    thì `offsetParent` rơi ra lớp phủ của Ant Design, `offsetTop` cộng thừa
+   *    cả đệm bảng lẫn dòng đầu "Năm nay", lưới cuộn lố gần một hàng và đẩy năm
+   *    đang xem lên hàng thứ hai.
+   * 2. Tiêu điểm trao cho lưới, KHÔNG cho ô năm: ô năm có tiêu điểm thì trình
+   *    duyệt kéo nó lên đầu vùng cuộn, đạp đổ phép căn giữa. Lưới nhận phím
+   *    thay cho ô là đủ — bộ nghe phím nằm ở gốc bảng, còn ô năm chỉ nhận tiêu
+   *    điểm khi người dùng thật sự bấm mũi tên, lúc đó cuộn theo là đúng ý.
+   * 3. Lớp phủ dựng nội dung trong lúc còn ẩn, khi đó lưới chưa có kích thước
+   *    thật nên gán `scrollTop` không ăn. Vòng dưới đây thử lại mỗi khung hình
+   *    cho tới khi vị trí cuộn đứng yên vài khung liền. (Hiệu ứng phóng to của
+   *    lớp phủ cũng đã tắt bằng `transitionName=""` ở trên, vì trong lúc nó
+   *    chạy mọi số đo đều còn đang thay đổi.)
    */
   useEffect(() => {
+    /** Số khung hình liền nhau vị trí cuộn phải đứng yên thì mới coi là xong. */
+    const STABLE_FRAMES = 5;
+    /** Trần an toàn, khoảng một giây — không để vòng chạy mãi. */
+    const MAX_FRAMES = 60;
+
     let frame = 0;
     let attempts = 0;
+    let stable = 0;
 
     function center() {
       const grid = gridRef.current;
       const cell = activeRef.current;
       if (!grid || !cell) return;
-      if (grid.clientHeight === 0 || grid.scrollHeight <= grid.clientHeight) {
-        if (attempts < 30) {
-          attempts += 1;
-          frame = window.requestAnimationFrame(center);
+      attempts += 1;
+
+      // Trao tiêu điểm ngay khung hình đầu: bấm phím mũi tên là đi được luôn,
+      // không phải đợi vòng căn giữa bên dưới chạy xong.
+      if (attempts === 1) grid.focus({ preventScroll: true });
+
+      if (grid.clientHeight > 0 && grid.scrollHeight > grid.clientHeight) {
+        // Đưa tâm ô về đúng tâm lưới. Trình duyệt tự kẹp lại khi năm sát hai đầu
+        // khoảng và lưới hết chỗ cuộn.
+        // Không dùng scrollIntoView: nó cuộn cả trang bên ngoài lớp phủ.
+        const want = cell.offsetTop + cell.offsetHeight / 2 - grid.clientHeight / 2;
+        if (Math.abs(grid.scrollTop - want) <= 1) {
+          stable += 1;
+        } else {
+          grid.scrollTop = want;
+          stable = 0;
         }
-        return;
       }
-      // Không dùng scrollIntoView: nó cuộn cả trang bên ngoài lớp phủ.
-      grid.scrollTop = cell.offsetTop - grid.clientHeight / 2 + cell.offsetHeight / 2;
-      cell.focus({ preventScroll: true });
+
+      // Còn đang phóng to thì hộp bao còn thấp hơn chiều cao thật của lưới.
+      const grown = grid.getBoundingClientRect().height >= grid.clientHeight - 1;
+      if ((!grown || stable < STABLE_FRAMES) && attempts < MAX_FRAMES) {
+        frame = window.requestAnimationFrame(center);
+      }
     }
 
     center();
@@ -232,7 +270,15 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
         </span>
       </div>
 
-      <div className="hhd-year-panel__grid" ref={gridRef} role="grid" aria-label="Danh sách năm">
+      {/* `tabIndex={-1}`: lưới tự nhận tiêu điểm khi bảng mở, để phím mũi tên đi
+          được ngay mà không phải kéo tiêu điểm vào một ô — xem `center()`. */}
+      <div
+        className="hhd-year-panel__grid"
+        ref={gridRef}
+        role="grid"
+        aria-label="Danh sách năm"
+        tabIndex={-1}
+      >
         {years.map((year) => {
           const outOfRange = year < minYear || year > maxYear;
           const selected = year === value;

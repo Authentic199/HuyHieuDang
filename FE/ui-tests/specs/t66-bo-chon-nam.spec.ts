@@ -71,6 +71,30 @@ async function expectYear(app: Page, year: number): Promise<void> {
   await expect(yearCell(app)).toHaveText(String(year));
 }
 
+/**
+ * Hàng chứa năm đang xem lệch tâm lưới bao nhiêu, tính theo SỐ HÀNG. 0 là nằm
+ * đúng giữa, 1 là lệch trọn một hàng.
+ *
+ * Đo bằng `getBoundingClientRect` chứ không dùng `offsetTop`: ô năm nằm trong
+ * lớp phủ của Ant Design nên `offsetParent` của nó là `.ant-popover-content`,
+ * không phải lưới — đó đúng là cái bẫy đã làm lưới cuộn lố gần một hàng. Lấy
+ * tỉ lệ thay vì số pixel nên hiệu ứng phóng to của lớp phủ lúc mới hiện ra
+ * không làm sai kết quả.
+ */
+async function centerOffsetInRows(app: Page): Promise<number> {
+  return app.evaluate(() => {
+    const grid = document.querySelector('.hhd-year-panel__grid')!;
+    const cell = grid.querySelector('.hhd-year-panel__cell--selected')!;
+    const cells = grid.querySelectorAll('.hhd-year-panel__cell');
+    const gridBox = grid.getBoundingClientRect();
+    const cellBox = cell.getBoundingClientRect();
+    // Hai ô cách nhau 5 vị trí là hai hàng liền nhau — đó là chiều cao một hàng.
+    const rowHeight = cells[5].getBoundingClientRect().top - cells[0].getBoundingClientRect().top;
+    const offset = Math.abs(cellBox.top + cellBox.height / 2 - (gridBox.top + gridBox.height / 2));
+    return offset / rowHeight;
+  });
+}
+
 test.describe('Chi tiết đợt — một trang, không còn tab', () => {
   test('không còn dải tab; tiêu đề có tên đợt và khoảng ngày hằng năm; bảng hiện ngay', async ({
     app,
@@ -183,6 +207,27 @@ test.describe('Bảng chọn năm', () => {
     await expectYear(app, target);
     await expect(app.locator('.hhd-eligibility__range')).toContainText('37 năm trước');
   });
+
+  // Lưới cao hơn khung nhìn của nó, nên năm nào cũng cuộn được vào giữa; chỉ khi
+  // năm sát hai đầu khoảng 1926 – 2126 mới hết chỗ cuộn, và hai năm đo ở đây thì
+  // không.
+  for (const offsetFromServer of [0, -37]) {
+    test(`hàng của năm đang xem nằm giữa lưới (năm máy chủ ${offsetFromServer || ''})`, async ({
+      app,
+    }) => {
+      await app.goto(DETAIL_URL);
+      if (offsetFromServer !== 0) {
+        await openPanel(app);
+        await panelYear(app, SERVER_YEAR + offsetFromServer).click();
+        await expectYear(app, SERVER_YEAR + offsetFromServer);
+      }
+      await openPanel(app);
+
+      // Nửa hàng là mức chặt nhất còn đúng: lưới cuộn theo pixel nên tâm hàng
+      // khó trùng tuyệt đối tâm lưới khi số hàng thấy được là số chẵn.
+      await expect.poll(() => centerOffsetInRows(app), { timeout: 5_000 }).toBeLessThan(0.5);
+    });
+  }
 
   test('Esc đóng bảng mà không đổi năm, tiêu điểm về ô năm', async ({ app }) => {
     await app.goto(DETAIL_URL);

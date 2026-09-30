@@ -120,6 +120,10 @@
    ở thang gọn nó tự thấp đi cùng cỡ chữ. */
 .hhd-year-panel__grid {
   --hhd-year-cell-height: 40px;
+  /* BẮT BUỘC: lưới phải là `offsetParent` của các ô năm thì phép cuộn năm đang
+     xem vào giữa trong `YearPicker.tsx` mới đo đúng. Bỏ dòng này thì lưới cuộn
+     lố gần một hàng. */
+  position: relative;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--hhd-space-sm);
