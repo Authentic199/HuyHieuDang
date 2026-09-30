@@ -1,7 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
-import { formatNumber } from './format';
-
 /**
  * Cách đọc một bảng trên màn hình: dòng, ô, thanh phân trang, ô tìm, ô lọc mốc.
  * Định vị theo `aria-label` và vai trò, không theo chữ in trên nút — màn hình
@@ -30,9 +28,22 @@ export class TableView {
     return this.panel.locator('.ant-pagination');
   }
 
-  /** Dòng "1–20 / 320" bên trái thanh phân trang. */
+  /**
+   * Cụm đếm "1–20 / 320" bên trái thanh phân trang. Chủ dự án đã cho bỏ ở T49,
+   * nên ở mọi bảng nó phải KHÔNG tồn tại — xem `expectNoTotalText`.
+   */
   get totalText(): Locator {
     return this.panel.locator('.ant-pagination-total-text');
+  }
+
+  /** Chữ đang hiện trong ô "… / trang", ví dụ "20 / trang". */
+  get pageSizeText(): Locator {
+    return this.pagination.locator('.ant-pagination-options .ant-select-selection-item');
+  }
+
+  /** Số trang cuối trên thanh phân trang — Ant Design luôn in trang cuối. */
+  get lastPageItem(): Locator {
+    return this.pagination.locator('.ant-pagination-item').last();
   }
 
   get search(): Locator {
@@ -53,8 +64,32 @@ export class TableView {
     return this.rows.locator(`td:nth-child(${column + 1})`).allInnerTexts();
   }
 
+  /**
+   * Mọi tooltip đang hiện của Ant Design — cả bảng lẫn nơi khác. Tooltip nằm ở
+   * lớp phủ gắn vào `body` nên phải tìm từ trang, không tìm trong thẻ bảng.
+   */
+  private get openTooltips(): Locator {
+    return this.page.locator('.ant-tooltip:not(.ant-tooltip-hidden)');
+  }
+
+  /**
+   * Đưa chuột ra khỏi bảng rồi chờ tooltip ẩn hẳn.
+   *
+   * Danh sách thả xuống của ô lọc mốc đè lên hàng tiêu đề bảng, nên bấm chọn
+   * một mục xong là chuột nằm lại ngay trên một tiêu đề cột có sắp xếp. Ant
+   * Design hiện tooltip "Nhấp để sắp xếp tăng dần" đúng chỗ ô lọc, và vì chuột
+   * không tự rời đi nên tooltip đó chặn cú bấm tiếp theo cho tới khi hết giờ.
+   * Tooltip hiện kịp hay không tùy thời điểm — đó là lý do ca kiểm thử chập
+   * chờn. Gọi hàm này sau mỗi thao tác có thể để chuột nằm lại trên bảng.
+   */
+  private async leaveTable(): Promise<void> {
+    await this.page.mouse.move(0, 0);
+    await expect(this.openTooltips).toHaveCount(0);
+  }
+
   async goToPage(pageNumber: number): Promise<void> {
     await this.pagination.locator(`.ant-pagination-item-${pageNumber}`).click();
+    await this.leaveTable();
   }
 
   /**
@@ -71,21 +106,37 @@ export class TableView {
   async choosePageSize(size: number): Promise<void> {
     await this.pagination.locator('.ant-select').click();
     await this.openOption(`${size} / trang`).click();
+    await this.leaveTable();
   }
 
   async chooseMilestone(label: string): Promise<void> {
     await this.milestoneSelect.click();
     await this.openOption(label).click();
+    await this.leaveTable();
   }
 
   async clickSort(columnTitle: string): Promise<void> {
     await this.panel.getByRole('columnheader', { name: columnTitle }).click();
+    await this.leaveTable();
   }
 
-  /** Kiểm đúng câu "a–b / tổng" mà thanh phân trang đang hiện. */
-  async expectTotal(first: number, last: number, total: number): Promise<void> {
-    await expect(this.totalText).toHaveText(
-      `${formatNumber(first)}–${formatNumber(last)} / ${formatNumber(total)}`,
-    );
+  /**
+   * Thay cho cụm đếm đã bỏ: trang đang xem có đúng số dòng, và trang cuối đúng
+   * bằng tổng chia cỡ trang. Hai điều đó cùng nói lên tổng vẫn được đếm đúng mà
+   * không cần in con số nào ra chân bảng.
+   */
+  async expectPage(rowsOnPage: number, total: number, pageSize: number): Promise<void> {
+    await expect(this.rows).toHaveCount(rowsOnPage);
+    await expect(this.lastPageItem).toHaveText(String(Math.ceil(total / pageSize)));
+  }
+
+  /** Chân bảng KHÔNG được có cụm "1–20 / 1.342" (T49, hồi quy ở T58). */
+  async expectNoTotalText(): Promise<void> {
+    await expect(this.totalText).toHaveCount(0);
+  }
+
+  /** Ô "… / trang" đang ở cỡ nào — cỡ trang mặc định của bảng. */
+  async expectPageSize(size: number): Promise<void> {
+    await expect(this.pageSizeText).toHaveText(`${size} / trang`);
   }
 }

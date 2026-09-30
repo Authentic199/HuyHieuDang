@@ -13,15 +13,15 @@ import { formatNumber } from '../utils/format';
  * Màn Đảng viên thì khác — nó phân trang ở máy chủ và KHÔNG dùng hook này.
  *
  * Quy ước giữ trùng khít màn Đảng viên: 10/20/50/100 dòng mỗi trang, mặc định
- * 20, `showTotal` dạng `1–20 / 1.342`, và ba trạng thái sắp xếp của Ant Design
- * (tăng dần → giảm dần → bỏ sắp xếp) — lần nhấn thứ ba trả về đúng thứ tự máy
- * chủ đã sắp.
+ * 20 (thẻ nào cần khác thì truyền `defaultPageSize`), KHÔNG có cụm đếm
+ * `1–20 / 1.342` ở chân bảng, và ba trạng thái sắp xếp của Ant Design (tăng dần
+ * → giảm dần → bỏ sắp xếp) — lần nhấn thứ ba trả về đúng thứ tự máy chủ đã sắp.
  */
 
 /** Các lựa chọn cho ô "… / trang" ở chân bảng. */
 export const TABLE_PAGE_SIZES = [10, 20, 50, 100];
 
-/** Số dòng mỗi trang khi mới vào màn. */
+/** Số dòng mỗi trang khi mới vào màn, khi thẻ không đòi cỡ khác. */
 export const DEFAULT_TABLE_PAGE_SIZE = 20;
 
 /** Không sắp xếp theo cột nào — giữ nguyên thứ tự máy chủ trả về. */
@@ -45,6 +45,12 @@ export interface ClientTableOptions<T> {
   milestoneOf?: (row: T) => number;
   /** Các cột sắp xếp được */
   comparators: RowComparators<T>;
+  /**
+   * Số dòng mỗi trang khi mới vào màn; bỏ trống thì 20 như màn Đảng viên. Thẻ
+   * nằm trong một màn cùng với thẻ khác (bảng đủ điều kiện trên Dashboard) cần
+   * cỡ nhỏ hơn để vừa một màn, người dùng không phải cuộn.
+   */
+  defaultPageSize?: number;
 }
 
 export interface MilestoneOption {
@@ -121,13 +127,14 @@ export function useClientTable<T>({
   searchTextOf,
   milestoneOf,
   comparators,
+  defaultPageSize = DEFAULT_TABLE_PAGE_SIZE,
 }: ClientTableOptions<T>): ClientTableResult<T> {
   const [keyword, setKeywordState] = useState('');
   const [milestone, setMilestoneState] = useState<MilestoneFilter>(ALL_MILESTONES);
   const [sortKey, setSortKey] = useState<string>(NO_SORT_KEY);
   const [descending, setDescending] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(DEFAULT_TABLE_PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
 
   /**
    * Danh sách mốc đếm trên TRỌN dữ liệu đang xem, không đếm lại theo ô tìm: nếu
@@ -254,8 +261,11 @@ export function useClientTable<T>({
       total: filteredCount,
       showSizeChanger: true,
       pageSizeOptions: TABLE_PAGE_SIZES,
-      showTotal: (total, range) =>
-        `${formatNumber(range[0])}–${formatNumber(range[1])} / ${formatNumber(total)}`,
+      /**
+       * Cố ý KHÔNG đặt `showTotal`: tổng số đã nằm ở dòng mô tả dưới tiêu đề
+       * màn và ở chân thẻ, in thêm cụm `1–20 / 1.342` ở thanh phân trang là để
+       * hai chỗ. Quyết định của chủ dự án ở T49; đừng dựng lại.
+       */
     },
     onTableChange,
   };

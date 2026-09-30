@@ -25,6 +25,9 @@ const KEYWORD = 'Hoàng';
 /** Số dòng mỗi trang khi mới vào màn, theo quy ước của màn Đảng viên. */
 const PAGE_SIZE = 20;
 
+/** Bảng đủ điều kiện trên Dashboard mở 10 dòng để vừa một màn — xem T58. */
+const DASHBOARD_PAGE_SIZE = 10;
+
 /** Chỉ số cột của bảng "đủ điều kiện": STT, Họ tên, …, Mốc huy hiệu. */
 const ELIGIBLE_COLUMN = { index: 0, fullName: 1, milestone: 6 } as const;
 
@@ -51,38 +54,41 @@ async function checkEligibleTable(
   panel: Locator,
   rows: { fullName: string; milestone: number }[],
   shotName: string,
+  pageSize = PAGE_SIZE,
 ): Promise<void> {
   const table = new TableView(page, panel);
   const total = rows.length;
 
-  await test.step('Trang đầu: đủ 20 dòng, tổng đếm đúng, STT bắt đầu từ 1', async () => {
-    await expect(table.rows).toHaveCount(PAGE_SIZE);
-    await table.expectTotal(1, PAGE_SIZE, total);
+  await test.step(`Trang đầu: đủ ${pageSize} dòng, STT bắt đầu từ 1`, async () => {
+    await table.expectPage(pageSize, total, pageSize);
+    await table.expectPageSize(pageSize);
     await expect(table.cell(0, ELIGIBLE_COLUMN.index)).toHaveText('1');
     await expect(table.pagination).toBeVisible();
+    // Chân bảng không in tổng — tổng đã nằm ở dòng mô tả dưới tiêu đề màn.
+    await table.expectNoTotalText();
     await shoot(page, shotName);
   });
 
   await test.step('Đổi trang thì dòng đổi và STT chạy tiếp', async () => {
     const firstNameOnPageOne = await table.cell(0, ELIGIBLE_COLUMN.fullName).innerText();
     await table.goToPage(2);
-    await expect(table.cell(0, ELIGIBLE_COLUMN.index)).toHaveText(String(PAGE_SIZE + 1));
+    await expect(table.cell(0, ELIGIBLE_COLUMN.index)).toHaveText(String(pageSize + 1));
     await expect(table.cell(0, ELIGIBLE_COLUMN.fullName)).not.toHaveText(firstNameOnPageOne);
-    await table.expectTotal(PAGE_SIZE + 1, PAGE_SIZE * 2, total);
+    await table.expectPage(pageSize, total, pageSize);
   });
 
   await test.step('Gõ từ khóa thì tổng đổi và nhảy về trang 1', async () => {
     const expected = countNames(rows, KEYWORD);
-    expect(expected, 'bộ dữ liệu phải có người khớp từ khóa').toBeGreaterThan(PAGE_SIZE);
+    expect(expected, 'bộ dữ liệu phải có người khớp từ khóa').toBeGreaterThan(pageSize);
 
     await table.search.fill(KEYWORD);
-    await table.expectTotal(1, PAGE_SIZE, expected);
+    await table.expectPage(pageSize, expected, pageSize);
     await expect(table.cell(0, ELIGIBLE_COLUMN.index)).toHaveText('1');
     for (const name of await table.columnTexts(ELIGIBLE_COLUMN.fullName)) {
       expect(name).toContain(KEYWORD);
     }
     await table.search.fill('');
-    await table.expectTotal(1, PAGE_SIZE, total);
+    await table.expectPage(pageSize, total, pageSize);
   });
 
   await test.step('Chọn mốc thì chỉ còn mốc đó', async () => {
@@ -90,7 +96,7 @@ async function checkEligibleTable(
     const expected = countMilestone(rows, milestone);
 
     await table.chooseMilestone(milestoneLabel(rows, milestone));
-    await table.expectTotal(1, Math.min(PAGE_SIZE, expected), expected);
+    await table.expectPage(Math.min(pageSize, expected), expected, pageSize);
     for (const text of await table.columnTexts(ELIGIBLE_COLUMN.milestone)) {
       expect(text).toBe(`${milestone} năm`);
     }
@@ -154,7 +160,13 @@ test.describe('Dashboard — bảng đủ điều kiện', () => {
     await app.goto('/');
     const panel = app.locator('.hhd-dashboard__panel');
     await expect(panel).toBeVisible();
-    await checkEligibleTable(app, panel, mockData.eligible, '1-dashboard-du-dieu-kien');
+    await checkEligibleTable(
+      app,
+      panel,
+      mockData.eligible,
+      '1-dashboard-du-dieu-kien',
+      DASHBOARD_PAGE_SIZE,
+    );
   });
 
   test('100 dòng mỗi trang vẫn cuộn tới được dòng cuối', async ({ app }) => {
@@ -179,7 +191,7 @@ test.describe('Dashboard — bảng đủ điều kiện', () => {
     await shoot(app, '5-rong-do-loc');
 
     await panel.getByRole('button', { name: 'Xóa bộ lọc' }).click();
-    await table.expectTotal(1, PAGE_SIZE, mockData.eligible.length);
+    await table.expectPage(DASHBOARD_PAGE_SIZE, mockData.eligible.length, DASHBOARD_PAGE_SIZE);
   });
 });
 
@@ -214,8 +226,12 @@ test.describe('Chưa thuộc đợt nào', () => {
 });
 
 test.describe('Đợt trao huy hiệu', () => {
-  /** Bảng đợt không có cột mốc nên KHÔNG có ô lọc mốc; cột Tên đợt là cột đầu. */
-  const PERIOD_COLUMN = { name: 0, fromDay: 1 } as const;
+  /**
+   * Bảng đợt không có cột mốc nên KHÔNG có ô lọc mốc. Cột đầu là STT (thêm ở
+   * T49), nên Tên đợt là cột thứ hai — chỉ số cũ trỏ vào STT và ca "đổi trang
+   * thì dòng đổi" đọc mãi con số 1 nên không bao giờ đỏ được.
+   */
+  const PERIOD_COLUMN = { name: 1, fromDay: 2 } as const;
 
   test('phân trang, tìm theo tên đợt, sắp xếp theo Từ ngày', async ({ app }) => {
     await app.goto('/dot-trao-huy-hieu');
@@ -223,9 +239,10 @@ test.describe('Đợt trao huy hiệu', () => {
     const table = new TableView(app, panel);
     const total = mockData.periods.length;
 
-    await expect(table.rows).toHaveCount(PAGE_SIZE);
-    await table.expectTotal(1, PAGE_SIZE, total);
+    await table.expectPage(PAGE_SIZE, total, PAGE_SIZE);
+    await table.expectPageSize(PAGE_SIZE);
     await expect(table.pagination).toBeVisible();
+    await table.expectNoTotalText();
     // Màn này không có cột mốc huy hiệu nên cũng không có ô lọc mốc.
     await expect(table.milestoneSelect).toHaveCount(0);
     await app.screenshot({ path: path.join(SHOT_DIR, '2-dot-trao-huy-hieu.png') });
@@ -234,7 +251,7 @@ test.describe('Đợt trao huy hiệu', () => {
       const firstOnPageOne = await table.cell(0, PERIOD_COLUMN.name).innerText();
       await table.goToPage(2);
       await expect(table.cell(0, PERIOD_COLUMN.name)).not.toHaveText(firstOnPageOne);
-      await table.expectTotal(PAGE_SIZE + 1, total, total);
+      await table.expectPage(total - PAGE_SIZE, total, PAGE_SIZE);
     });
 
     await test.step('Gõ từ khóa thì tổng đổi và nhảy về trang 1', async () => {
@@ -245,12 +262,12 @@ test.describe('Đợt trao huy hiệu', () => {
       expect(expected).toBeGreaterThan(0);
 
       await table.search.fill(keyword);
-      await table.expectTotal(1, Math.min(PAGE_SIZE, expected), expected);
+      await table.expectPage(Math.min(PAGE_SIZE, expected), expected, PAGE_SIZE);
       for (const name of await table.columnTexts(PERIOD_COLUMN.name)) {
         expect(name).toContain('nhóm 1');
       }
       await table.search.fill('');
-      await table.expectTotal(1, PAGE_SIZE, total);
+      await table.expectPage(PAGE_SIZE, total, PAGE_SIZE);
     });
 
     await test.step('Sắp xếp Từ ngày: nhấn lần thứ ba trả về thứ tự máy chủ', async () => {

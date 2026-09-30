@@ -25,6 +25,9 @@ import { EligibleMilestoneTag } from '../periods/detail/EligibleMilestoneTag';
  * và phân trang làm ngay ở máy khách trên chính mảng đó, không gọi lại máy chủ.
  */
 
+/** Số dòng mỗi trang của riêng thẻ này — xem lý do ở chỗ gọi `useClientTable`. */
+export const DASHBOARD_PAGE_SIZE = 10;
+
 interface EligibleTableCardProps {
   period: UpcomingPeriod | null;
   members: EligibleMemberResponse[];
@@ -51,6 +54,9 @@ export function EligibleTableCard({
     searchTextOf: nameOfRow,
     milestoneOf: milestoneOfRow,
     comparators: ELIGIBLE_COMPARATORS,
+    // Thẻ này nằm dưới thẻ đợt sắp tới, 10 dòng vừa đúng một màn nên bác không
+    // phải cuộn. Ba bảng còn lại chiếm cả màn nên vẫn để 20 dòng mặc định.
+    defaultPageSize: DASHBOARD_PAGE_SIZE,
   });
 
   /**
