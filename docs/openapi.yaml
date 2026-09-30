@@ -1092,6 +1092,10 @@ components:
           description: |
             QT12 — thời điểm nội dung ghi chú thay đổi lần cuối, giờ Asia/Ho_Chi_Minh (độ lệch +07:00).
             Máy chủ tự đóng; không nhận trong thân yêu cầu.
+            Backend gán từ IDateTimeProvider.Now và phải GIỮ độ lệch +07:00 khi trả JSON:
+            DateTimeOffsetConverter đăng ký chung ở Program.cs ghi mọi DateTimeOffset về UTC Z,
+            nên trường này cần được loại khỏi bộ chuyển đổi đó.
+            Frontend lấy nguyên phần yyyy-MM-dd của chuỗi, không đổi theo múi giờ trình duyệt.
             Giữ nguyên khi nội dung ghi chú không đổi; về null cùng lúc với note khi xóa ghi chú.
           example: '2026-09-30T14:05:00+07:00'
         createdAt:
