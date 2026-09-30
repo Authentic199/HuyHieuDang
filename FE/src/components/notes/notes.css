@@ -1,0 +1,179 @@
+/* Ghi chú đảng viên (QT12) — viên ngày ghi, khối gọn, hộp xem đầy đủ và toàn
+   văn ghi chú. Một tệp cho cả bốn chỗ để câu chữ và màu sắc không lệch nhau. */
+
+/* ---------------------------------------------------------------- */
+/* Viên vàng "Ghi ngày dd/MM/yyyy" — kiểu duy nhất ở mọi nơi          */
+/* ---------------------------------------------------------------- */
+.hhd-note-pill {
+  display: inline-flex;
+  align-items: center;
+  height: var(--hhd-tag-height);
+  padding: 0 10px;
+  border: 1px solid #e0c98a;
+  border-radius: var(--hhd-radius-pill);
+  background: var(--hhd-gold-soft);
+  color: var(--hhd-warning);
+  white-space: nowrap;
+  font: 600 var(--hhd-fs-13)/var(--hhd-lh-13) var(--hhd-font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- */
+/* Toàn văn ghi chú — giữ xuống dòng của người viết, không tràn ngang */
+/* ---------------------------------------------------------------- */
+.hhd-note-text {
+  margin: 0;
+  white-space: pre-wrap;
+  /* Chuỗi dài không có dấu cách (đường dẫn file, số quyết định) vẫn tự ngắt. */
+  overflow-wrap: anywhere;
+  font-size: var(--hhd-fs-14);
+  line-height: var(--hhd-lh-16);
+}
+
+.hhd-note-mark {
+  padding: 0 1px;
+  border-radius: 3px;
+  background: var(--hhd-gold);
+  color: var(--hhd-ink);
+}
+
+/* ---------------------------------------------------------------- */
+/* Khối gọn ở hàng đầu thẻ danh sách                                  */
+/* ---------------------------------------------------------------- */
+/* Cao đúng bằng một nút nên hàng đầu thẻ không cao thêm. Hai dòng chữ nằm vừa
+   trong chiều cao đó: 14px + 16px nhịp chữ = 30px, còn dư cho cả thang gọn
+   (nút cao 32px) lẫn thang thường (40px). */
+.hhd-note-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+  /* Bề ngang mong muốn, được phép co lại. 420px chứ không phải 520px: thanh
+     công cụ của Chi tiết đợt còn bộ chọn năm, khoảng ngày và nhãn ngữ cảnh, và
+     nó xuống dòng theo bề ngang GỐC của từng ô chứ không theo bề ngang sau khi
+     co. Ở cận dưới 1280px, 520px làm nút Xuất Excel rơi xuống dòng thứ hai và
+     bảng mất một dòng. 420px còn dư chỗ cả khi menu trái đang mở rộng. */
+  flex: 0 1 420px;
+  min-width: 160px;
+  margin-left: auto;
+  height: var(--hhd-control-height);
+  padding: 0 6px 0 12px;
+  border: 1px solid #e0c98a;
+  border-radius: var(--hhd-radius-control);
+  background: var(--hhd-gold-soft);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.hhd-note-summary:hover,
+.hhd-note-summary:focus-visible {
+  border-color: #c9a53f;
+}
+
+.hhd-note-summary__icon {
+  flex: none;
+  color: var(--hhd-warning);
+  font-size: var(--hhd-fs-16);
+}
+
+.hhd-note-summary__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hhd-note-summary__count {
+  color: var(--hhd-warning);
+  font: 600 var(--hhd-fs-12)/14px var(--hhd-font-sans);
+  white-space: nowrap;
+}
+
+/* Dòng nối các ghi chú: một dòng duy nhất, phần thừa cắt bằng dấu "…". */
+.hhd-note-summary__line {
+  font: 600 var(--hhd-fs-13)/16px var(--hhd-font-sans);
+  color: var(--hhd-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hhd-note-summary__expand.ant-btn {
+  flex: none;
+  background: transparent;
+  border-color: #e0c98a;
+  color: var(--hhd-warning);
+}
+
+/* ---------------------------------------------------------------- */
+/* Hộp xem đầy đủ                                                     */
+/* ---------------------------------------------------------------- */
+/* Ô tìm nằm trên vùng cuộn nên đứng yên khi danh sách trôi. */
+.hhd-note-dialog__search {
+  padding-bottom: var(--hhd-space-md);
+  border-bottom: 1px solid var(--hhd-border);
+}
+
+.hhd-note-dialog__search .hhd-table-filters__search {
+  width: 100%;
+}
+
+.hhd-note-dialog__list {
+  max-height: min(52vh, 420px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: var(--hhd-space-sm);
+}
+
+.hhd-note-dialog__item {
+  padding: var(--hhd-space-md) 0;
+  border-bottom: 1px solid var(--hhd-border);
+}
+
+.hhd-note-dialog__item:last-child {
+  border-bottom: 0;
+}
+
+.hhd-note-dialog__head {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+  margin-bottom: 6px;
+}
+
+.hhd-note-dialog__name {
+  font: 700 var(--hhd-fs-15)/var(--hhd-lh-15) var(--hhd-font-sans);
+  overflow-wrap: anywhere;
+}
+
+.hhd-note-dialog__date {
+  margin-left: auto;
+  flex: none;
+}
+
+.hhd-note-dialog__empty {
+  font-size: var(--hhd-fs-15);
+  color: var(--hhd-text-secondary);
+}
+
+/* ---------------------------------------------------------------- */
+/* Hàng dưới ô nhập ghi chú: viên ngày ghi bên trái, bộ đếm bên phải   */
+/* ---------------------------------------------------------------- */
+.hhd-note-field {
+  display: flex;
+  align-items: center;
+  gap: var(--hhd-space-sm);
+  margin-top: 6px;
+  min-height: var(--hhd-tag-height);
+}
+
+.hhd-note-field__count {
+  margin-left: auto;
+  color: var(--hhd-text-tertiary);
+  font-size: var(--hhd-fs-13);
+  font-variant-numeric: tabular-nums;
+}
+
+.hhd-note-input.ant-input {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

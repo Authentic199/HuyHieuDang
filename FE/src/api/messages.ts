@@ -25,6 +25,7 @@ const MESSAGE_TEXTS: Record<string, string> = {
   'Mes.PartyMember.Invalid.DateOfBirth': 'Ngày sinh phải trước Ngày vào Đảng (dự bị)',
   'Mes.PartyMember.Invalid.Gender': 'Giới tính chỉ nhận Nam hoặc Nữ',
   'Mes.PartyMember.Invalid.NextMilestone': 'Mốc kế tiếp không hợp lệ',
+  'Mes.PartyMember.OverLength.Note': 'Ghi chú quá dài, tối đa 500 ký tự',
   'Mes.PartyMember.Required.Ids': 'Chưa chọn đảng viên nào',
 
   // Đợt trao huy hiệu

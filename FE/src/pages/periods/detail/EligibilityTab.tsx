@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { exportsApi } from '../../../api';
 import { FALLBACK_MESSAGE } from '../../../api/messages';
+import { NoteSummary } from '../../../components/notes/NoteSummary';
 import { MilestoneFilterSelect, TableSearchInput } from '../../../components/TableFilters';
 import { TableStates } from '../../../components/TableStates';
 import { YearPicker } from '../../../components/YearPicker';
@@ -181,6 +182,11 @@ export function EligibilityTab({
           </span>
         </div>
 
+        {/* Khối gọn tính trên TRỌN `members` của đợt và năm đang xem — đổi năm
+            thì khối đổi theo, còn ô tìm và ô lọc của bảng không đụng tới. */}
+        {ready && awardPeriod && year !== null ? (
+          <NoteSummary members={members} subject={`${awardPeriod.name} năm ${year}`} />
+        ) : null}
         <Button
           type="primary"
           icon={<DownloadOutlined />}

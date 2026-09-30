@@ -43,7 +43,8 @@ export const mockData: MockData = {
   periods: makePeriodRows(PERIOD_COUNT),
 };
 
-const UPCOMING_PERIOD = {
+/** Đợt sắp tới của Dashboard giả — ca kiểm thử lấy tên và năm từ đây. */
+export const UPCOMING_PERIOD = {
   id: 'period-upcoming',
   name: 'Đợt 7/11',
   year: SERVER_YEAR,
@@ -197,6 +198,8 @@ async function installApiMocks(page: Page): Promise<void> {
         nextMilestoneDate: row.milestoneDate,
         createdAt: `${SERVER_YEAR}-01-01T00:00:00Z`,
         updatedAt: `${SERVER_YEAR}-01-0${(index % 9) + 1}T00:00:00Z`,
+        note: row.note,
+        noteUpdatedAt: row.noteUpdatedAt,
       }));
       return route.fulfill(
         envelope({
@@ -207,6 +210,33 @@ async function installApiMocks(page: Page): Promise<void> {
             totalCount: all.length,
             totalPages: Math.ceil(all.length / pageSize),
           },
+        }),
+      );
+    }
+
+    // UC-26 — lưu ghi chú của một người (mục 3.6 hợp đồng v1.6). Bộ giả KHÔNG
+    // ghi vào `mockData`: các ca chạy song song dùng chung mảng đó, sửa nó là
+    // ca này làm hỏng ca kia. Ở đây chỉ trả lại đúng người kèm ghi chú vừa gửi,
+    // đủ để màn hình báo thành công và tải lại bảng.
+    if (/^\/PartyMembers\/[^/]+\/Note$/.test(path)) {
+      const id = path.split('/')[2];
+      const source = mockData.eligible.find((row) => row.partyMemberId === id);
+      const sent = (route.request().postDataJSON() ?? {}) as { note?: string | null };
+      const note = sent.note?.trim() ? sent.note.trim() : null;
+      return route.fulfill(
+        envelope({
+          id,
+          fullName: source?.fullName ?? '',
+          dateOfBirth: source?.dateOfBirth ?? null,
+          gender: source?.gender ?? null,
+          officialAdmissionDate: source?.officialAdmissionDate ?? SERVER_TODAY,
+          partyAgeYears: source?.milestone ?? 0,
+          nextMilestone: null,
+          nextMilestoneDate: null,
+          createdAt: `${SERVER_YEAR}-01-01T00:00:00Z`,
+          updatedAt: `${SERVER_TODAY}T00:00:00Z`,
+          note,
+          noteUpdatedAt: note === null ? null : `${SERVER_TODAY}T10:00:00+07:00`,
         }),
       );
     }

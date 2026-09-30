@@ -1,10 +1,11 @@
-import { Alert, DatePicker, Form, Input, Modal, Segmented } from 'antd';
+import { Alert, Col, DatePicker, Form, Input, Modal, Row, Segmented } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useState } from 'react';
 
 import { membersApi } from '../../api';
 import type { MemberPayload } from '../../api/members';
 import { FALLBACK_MESSAGE, messageText } from '../../api/messages';
+import { NoteField } from '../../components/notes/NoteField';
 import { RequiredFieldNote, requiredMark } from '../../components/RequiredMark';
 import { ApiError } from '../../types/api';
 import type { Gender, IsoDate, PartyMemberResponse } from '../../types/domain';
@@ -18,6 +19,7 @@ interface MemberFormValues {
   dateOfBirth: Dayjs | null;
   gender: GenderChoice;
   officialAdmissionDate: Dayjs | null;
+  note: string;
 }
 
 interface MemberFormModalProps {
@@ -62,6 +64,9 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
       gender: values.gender === 'Unknown' ? null : values.gender,
       // Form đã bắt buộc ô này nên tới đây chắc chắn có ngày.
       officialAdmissionDate: toIsoDate(values.officialAdmissionDate) as IsoDate,
+      // `PUT` thay trọn: phải gửi lại ghi chú, không gửi là xóa mất (mục 3.4).
+      // Gửi lại y hệt nội dung cũ thì máy chủ giữ nguyên ngày ghi (QT12).
+      note: values.note?.trim() ? values.note.trim() : null,
     };
 
     try {
@@ -86,6 +91,7 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
       okText={isEditing ? 'Lưu thay đổi' : 'Thêm vào danh sách'}
       cancelText="Đóng"
       width={560}
+      className="hhd-member-form"
       destroyOnHidden
       maskClosable={!submitting}
       onCancel={submitting ? undefined : onCancel}
@@ -125,6 +131,7 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
           dateOfBirth: fromIsoDate(member?.dateOfBirth),
           gender: member?.gender ?? 'Unknown',
           officialAdmissionDate: fromIsoDate(member?.officialAdmissionDate),
+          note: member?.note ?? '',
         }}
         requiredMark={requiredMark}
         onFinish={handleFinish}
@@ -161,7 +168,6 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
                     ),
             },
           ]}
-          extra="Ngày ghi trong quyết định kết nạp đảng viên (dự bị)."
         >
           <DatePicker
             size="large"
@@ -175,44 +181,58 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
           />
         </Form.Item>
 
-        <Form.Item
-          name="dateOfBirth"
-          label="Ngày sinh"
-          dependencies={['officialAdmissionDate']}
-          rules={[
-            ({ getFieldValue }) => ({
-              validator: (_rule, value: Dayjs | null) => {
-                const admission = getFieldValue('officialAdmissionDate') as Dayjs | null;
-                if (!value || !admission || value.isBefore(admission, 'day')) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error(messageText('Mes.PartyMember.Invalid.DateOfBirth')),
-                );
-              },
-            }),
-          ]}
-          extra="Để trống cũng được nếu chưa có trong hồ sơ."
-        >
-          <DatePicker
-            size="large"
-            style={{ width: '100%' }}
-            format={DATE_FORMAT}
-            placeholder="dd/mm/yyyy"
-            disabledDate={(current) => current.isAfter(serverToday, 'day')}
-            showNow={false}
-          />
-        </Form.Item>
+        {/* Ngày sinh và Giới tính chia đôi một hàng (chủ dự án chốt 30/09): form
+            ngắn lại một hàng và hiện trọn ở khung 1366x650, không phải cuộn. */}
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="dateOfBirth"
+              label="Ngày sinh"
+              dependencies={['officialAdmissionDate']}
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator: (_rule, value: Dayjs | null) => {
+                    const admission = getFieldValue('officialAdmissionDate') as Dayjs | null;
+                    if (!value || !admission || value.isBefore(admission, 'day')) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(messageText('Mes.PartyMember.Invalid.DateOfBirth')),
+                    );
+                  },
+                }),
+              ]}
+            >
+              <DatePicker
+                size="large"
+                style={{ width: '100%' }}
+                format={DATE_FORMAT}
+                placeholder="dd/mm/yyyy"
+                disabledDate={(current) => current.isAfter(serverToday, 'day')}
+                showNow={false}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="gender" label="Giới tính">
+              {/* `block` chia đều ba lựa chọn theo bề ngang nửa hàng, `size="large"`
+                  lấy đúng chiều cao ô nhập của Ant Design nên cao bằng ô ngày bên
+                  trái và hai nhãn thẳng hàng nhau. */}
+              <Segmented<GenderChoice>
+                block
+                size="large"
+                options={[
+                  { label: 'Nam', value: 'Male' },
+                  { label: 'Nữ', value: 'Female' },
+                  { label: 'Để trống', value: 'Unknown' },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item name="gender" label="Giới tính">
-          <Segmented<GenderChoice>
-            size="large"
-            options={[
-              { label: 'Nam', value: 'Male' },
-              { label: 'Nữ', value: 'Female' },
-              { label: 'Để trống', value: 'Unknown' },
-            ]}
-          />
+        <Form.Item name="note" label="Ghi chú" style={{ marginBottom: 0 }}>
+          <NoteField noteUpdatedAt={member?.noteUpdatedAt} rows={3} />
         </Form.Item>
       </Form>
     </Modal>
