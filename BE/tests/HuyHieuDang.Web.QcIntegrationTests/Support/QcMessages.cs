@@ -14,11 +14,20 @@ public static class QcMessages
     /// <summary>Không tìm thấy đảng viên.</summary>
     public const string MemberNotFound = "Mes.PartyMember.NotFound";
 
+    /// <summary>
+    /// Đã lưu thay đổi. Hợp đồng v1.6 dùng lại đúng khóa này cho <c>PUT /api/PartyMembers/{id}/Note</c>
+    /// thay vì thêm khóa thành công mới (mục 3.6).
+    /// </summary>
+    public const string MemberUpdateSuccessfully = "Mes.PartyMember.Update.Successfully";
+
     /// <summary>Chưa nhập Họ tên.</summary>
     public const string MemberRequiredFullName = "Mes.PartyMember.Required.FullName";
 
     /// <summary>Họ tên vượt 200 ký tự.</summary>
     public const string MemberOverLengthFullName = "Mes.PartyMember.OverLength.FullName";
+
+    /// <summary>Ghi chú vượt 500 ký tự, đếm sau khi cắt khoảng trắng hai đầu (QT12, hợp đồng v1.6).</summary>
+    public const string MemberOverLengthNote = "Mes.PartyMember.OverLength.Note";
 
     /// <summary>Gọi xóa nhiều mà danh sách id rỗng.</summary>
     public const string MemberRequiredIds = "Mes.PartyMember.Required.Ids";
@@ -115,12 +124,13 @@ public static class QcMessages
         "Mes.User.Required.Username",
         "Mes.User.Required.Password",
         "Mes.PartyMember.Create.Successfully",
-        "Mes.PartyMember.Update.Successfully",
+        MemberUpdateSuccessfully,
         "Mes.PartyMember.Delete.Successfully",
         "Mes.PartyMember.Import.Successfully",
         MemberNotFound,
         MemberRequiredFullName,
         MemberOverLengthFullName,
+        MemberOverLengthNote,
         MemberRequiredAdmissionDate,
         MemberInvalidAdmissionDate,
         MemberInvalidDateOfBirth,

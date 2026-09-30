@@ -110,19 +110,19 @@ test.describe('E9 · Chạy lại được và độc lập', () => {
    * bộ kiểm thử vừa chậm vừa chập chờn; mọi chỗ chờ phải là chờ theo điều kiện.
    */
   test('E-905 · Không ca nào dùng waitForTimeout', async () => {
-    // Quét sáu luồng, ca tiền đề và lớp fixture. Không quét chính tệp này: nó
+    // Quét tám luồng, ca tiền đề và lớp fixture. Không quét chính tệp này: nó
     // là cái thước đo nên đương nhiên có chữ đó.
     const scanned = [
       ...fs
         .readdirSync(SPEC_DIR)
-        .filter((name) => /^e[0-6]-.*\.spec\.ts$/.test(name))
+        .filter((name) => /^e[0-8]-.*\.spec\.ts$/.test(name))
         .map((name) => path.join(SPEC_DIR, name)),
       ...fs
         .readdirSync(FIXTURE_DIR)
         .filter((name) => name.endsWith('.ts'))
         .map((name) => path.join(FIXTURE_DIR, name)),
     ];
-    expect(scanned.length, 'Phải quét được ít nhất bảy tệp luồng và fixture').toBeGreaterThan(7);
+    expect(scanned.length, 'Phải quét được ít nhất chín tệp luồng và fixture').toBeGreaterThan(9);
 
     // Bắt đúng LỜI GỌI `page.waitForTimeout(...)`, không bắt chữ trong chú thích.
     const offenders = scanned.filter((file) =>
@@ -141,8 +141,8 @@ test.describe('E9 · Chạy lại được và độc lập', () => {
   test('E-906 · Mỗi luồng tự dựng trạng thái đầu ngay ở dòng đầu tiên', async () => {
     const flows = fs
       .readdirSync(SPEC_DIR)
-      .filter((name) => /^e[1-6]-/.test(name) && name.endsWith('.spec.ts'));
-    expect(flows, 'Phải có đủ sáu tệp luồng E2E-1 đến E2E-6').toHaveLength(6);
+      .filter((name) => /^e[1-8]-/.test(name) && name.endsWith('.spec.ts'));
+    expect(flows, 'Phải có đủ tám tệp luồng E2E-1 đến E2E-8').toHaveLength(8);
 
     for (const file of flows) {
       const source = fs.readFileSync(path.join(SPEC_DIR, file), 'utf8');

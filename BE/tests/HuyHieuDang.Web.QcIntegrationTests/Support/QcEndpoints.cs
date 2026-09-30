@@ -1,7 +1,7 @@
 namespace HuyHieuDang.Web.QcIntegrationTests.Support;
 
 /// <summary>
-/// 28 endpoint của <c>docs/api-contract.md</c>, chép theo đúng thứ tự mục 2 → mục 8. Bộ kiểm thử
+/// 29 endpoint của <c>docs/api-contract.md</c> (v1.6), chép theo đúng thứ tự mục 2 → mục 8. Bộ kiểm thử
 /// lấy đường dẫn từ đây để bảng đối chiếu "endpoint ↔ ca đã chạm" không bao giờ lệch với mã.
 /// </summary>
 public static class QcEndpoints
@@ -18,7 +18,7 @@ public static class QcEndpoints
     /// <summary>3.1 · Danh sách đảng viên có phân trang.</summary>
     public const string PartyMembers = "/api/PartyMembers";
 
-    /// <summary>3.6 · Xóa nhiều đảng viên.</summary>
+    /// <summary>3.5 · Xóa nhiều đảng viên.</summary>
     public const string PartyMembersDeleteMany = "/api/PartyMembers/DeleteMany";
 
     /// <summary>4.1 · Tải file mẫu import.</summary>
@@ -66,7 +66,7 @@ public static class QcEndpoints
     private static readonly Guid SampleId = new("00000000-0000-0000-0000-0000000000aa");
 
     /// <summary>
-    /// 26 endpoint nghiệp vụ — toàn bộ hợp đồng trừ <c>Auth/Login</c>. Những endpoint có
+    /// 27 endpoint nghiệp vụ — toàn bộ hợp đồng trừ <c>Auth/Login</c>. Những endpoint có
     /// <c>{id}</c> dùng một guid bất kỳ: ca A-001 chỉ quan tâm cổng xác thực chặn trước khi
     /// chạm tới nghiệp vụ.
     /// </summary>
@@ -78,6 +78,7 @@ public static class QcEndpoints
         ("GET", $"{PartyMembers}/{SampleId}"),
         ("POST", PartyMembers),
         ("PUT", $"{PartyMembers}/{SampleId}"),
+        ("PUT", $"{PartyMembers}/{SampleId}/Note"),
         ("POST", PartyMembersDeleteMany),
         ("GET", ImportTemplate),
         ("POST", ImportPreview),
@@ -99,4 +100,9 @@ public static class QcEndpoints
         ("GET", ExportDashboard),
         ("GET", ExportUnassigned),
     };
+
+    /// <summary>3.6 · Lưu ghi chú của một đảng viên (UC-26, QT12, hợp đồng v1.6).</summary>
+    /// <param name="id">Id đảng viên.</param>
+    /// <returns>Đường dẫn endpoint.</returns>
+    public static string PartyMemberNote(Guid id) => $"{PartyMembers}/{id}/Note";
 }
