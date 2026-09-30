@@ -13,7 +13,7 @@ import './TableFilters.css';
  *
  * Hình dáng lấy đúng thanh công cụ của màn Đảng viên (`Input size="large"` có
  * kính lúp và dấu xóa, `Select size="large"` có nhãn dính trước giá trị) để bốn
- * màn nhìn như một hệ, bác cán bộ không phải học lại từng màn.
+ * màn nhìn như một hệ, người dùng không phải học lại từng màn.
  */
 
 interface TableSearchInputProps {

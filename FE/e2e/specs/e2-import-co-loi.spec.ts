@@ -146,7 +146,7 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     // Không khớp gì thì câu chữ phải khác hẳn trạng thái tab vốn không có dòng nào.
     await search.fill('Không Có Ai Tên Này');
     await expect(pane.getByText('Không tìm thấy dòng nào khớp')).toBeVisible();
-    await expect(pane.getByText('Bác thử bớt chữ')).toBeVisible();
+    await expect(pane.getByText('Thử bớt chữ')).toBeVisible();
 
     await search.fill('');
     await expect(tableRows(page.locator('.ant-tabs-tabpane-active'))).toHaveCount(expectedValid);
@@ -176,7 +176,7 @@ test('E2E-2 · Import có lỗi: xem trước đúng, chỉ dòng hợp lệ đ�
     if (futureRowIsError) expectedRows.push(['11', 'Ngày vào Đảng (dự bị) ở tương lai']);
 
     expect(rows.map((row) => [row[0], row[5]])).toEqual(expectedRows);
-    // Ô gây lỗi giữ nguyên chữ thô đọc từ Excel để bác biết chỗ nào phải sửa.
+    // Ô gây lỗi giữ nguyên chữ thô đọc từ Excel để người dùng biết chỗ nào phải sửa.
     expect(rows[2][4]).toBe('1996-10-01');
     expect(rows[0][1]).toBe('—');
   });

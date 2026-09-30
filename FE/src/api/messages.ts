@@ -66,11 +66,10 @@ export const FALLBACK_MESSAGE = 'Thao tác không thực hiện được';
 /** Câu cho các trường hợp không có khóa (mất mạng, máy chủ lỗi). */
 export const NETWORK_MESSAGE =
   'Không kết nối được tới máy chủ. Kiểm tra lại đường truyền rồi thử lại.';
-export const SERVER_MESSAGE = 'Hệ thống gặp sự cố, vui lòng thử lại';
+export const SERVER_MESSAGE = 'Hệ thống gặp sự cố. Thử lại sau.';
 
 /** Câu báo khi phiên làm việc 8 giờ hết hạn giữa chừng (mục 1.2). */
-export const SESSION_EXPIRED_MESSAGE =
-  'Phiên làm việc đã hết hạn. Mời bác đăng nhập lại để dùng tiếp.';
+export const SESSION_EXPIRED_MESSAGE = 'Phiên làm việc đã hết hạn. Đăng nhập lại để dùng tiếp.';
 
 /** Tra chữ hiển thị của một khóa. */
 export function messageText(key: string | null | undefined, fallback = FALLBACK_MESSAGE): string {

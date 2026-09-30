@@ -136,8 +136,8 @@ export function StepChooseFile({
       </div>
 
       <div className="hhd-import__footer">
-        {/* Bước 1 là cửa vào màn này nên "Hủy" đưa bác trở ra danh sách đảng
-            viên; chọn nhầm file thì chỉ cần thả file khác vào ô bên trên. */}
+        {/* Bước 1 là cửa vào màn này nên "Hủy" đưa người dùng trở ra danh sách
+            đảng viên; chọn nhầm file thì chỉ cần thả file khác vào ô bên trên. */}
         <Button type="text" onClick={onCancel}>
           Hủy
         </Button>

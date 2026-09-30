@@ -240,8 +240,8 @@ export function EligibilityTab({
             }}
           >
             {table.isFiltered
-              ? 'Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.'
-              : 'Bác thử chọn năm khác ở trên, hoặc xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót.'}
+              ? 'Thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.'
+              : 'Thử chọn năm khác ở trên, hoặc xem mục “Chưa thuộc đợt nào” để biết ai đang bị sót.'}
           </span>
         }
         action={table.isFiltered ? <Button onClick={table.clearFilters}>Xóa bộ lọc</Button> : null}

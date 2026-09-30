@@ -113,7 +113,7 @@ test.describe('Cỡ trang của bảng đủ điều kiện trên Dashboard', ()
     await expect(table.pagination).toBeInViewport();
     await app.screenshot({ path: path.join(SHOT_DIR, 't58-dashboard-10-dong.png') });
 
-    // Lý do chọn 10: thân bảng ngắn hơn hẳn, bác cuộn ít hơn. Đo chiều cao thật
+    // Lý do chọn 10: thân bảng ngắn hơn hẳn, người dùng cuộn ít hơn. Đo chiều cao thật
     // thay vì đòi "không phải cuộn" — thẻ này nằm dưới thẻ đợt sắp tới nên phần
     // còn lại của màn hình luôn thấp hơn cả mười dòng.
     const heightOf = () => table.scroller.evaluate((element) => element.scrollHeight);

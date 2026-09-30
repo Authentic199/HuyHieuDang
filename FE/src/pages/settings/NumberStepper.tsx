@@ -4,7 +4,7 @@ import { Button, InputNumber, Space } from 'antd';
  * Ô số có nút trừ / cộng của artboard 7: ô cao 48px, số ở giữa bằng chữ có
  * chân 20px, hai nút vuông 44px hai bên.
  *
- * Hai nút to để bác cán bộ chỉnh bằng chuột không cần gõ bàn phím; vẫn gõ
+ * Hai nút to để người dùng chỉnh bằng chuột không cần gõ bàn phím; vẫn gõ
  * thẳng vào ô được. Giá trị `null` nghĩa là ô đang trống.
  */
 interface NumberStepperProps {
