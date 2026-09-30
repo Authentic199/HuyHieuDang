@@ -71,10 +71,10 @@ export default function LoginPage() {
     <div className="hhd-login">
       <div className="hhd-login__brand">
         <div className="hhd-login__watermark">
-          <Logo size={560} decorative />
+          <Logo size={276} decorative />
         </div>
         <div className="hhd-login__brand-row">
-          <BrandMark logoSize={36} fontSize={20} />
+          <BrandMark logoSize={32} fontSize={20} />
         </div>
         <div className="hhd-login__brand-row">
           <div className="hhd-login__headline">Hệ thống hỗ trợ xét trao Huy hiệu Đảng</div>

@@ -16,12 +16,14 @@
   overflow: hidden;
 }
 
+/* Cờ nằm ngang chứ không vuông: khung phải đúng 498x276 của tệp ảnh, ép vuông
+   thì ảnh co lại giữa hai vệt trống. Không phóng quá bề ngang gốc. */
 .hhd-login__watermark {
   position: absolute;
-  right: -150px;
-  bottom: -130px;
-  width: 560px;
-  height: 560px;
+  right: -72px;
+  bottom: -44px;
+  width: 498px;
+  height: 276px;
   opacity: 0.14;
   pointer-events: none;
 }
@@ -162,6 +164,39 @@
   color: var(--hhd-white);
   background: var(--hhd-gradient-primary);
   box-shadow: var(--hhd-shadow-primary);
+}
+
+/* Màn thấp (1280x600, 1366x650): hạ lề và cỡ chữ để nửa trái không tràn.
+   Từ 1440x900 trở lên giữ nguyên dáng cũ. */
+@media (max-height: 800px) {
+  .hhd-login__brand,
+  .hhd-login__form-side {
+    padding: 40px;
+  }
+
+  /* Hạ cỡ chữ mà giữ nguyên max-width 520px thì tiêu đề ngắt thành
+     "…xét trao Huy" / "hiệu Đảng", tách đôi tên huy hiệu. Ở 32px, "Hệ thống hỗ
+     trợ xét trao" rộng 384px còn thêm chữ "Huy" thành 457px — chặn 400px nên
+     ngắt đúng chỗ như ở 1440x900. */
+  .hhd-login__headline {
+    font-size: 32px;
+    line-height: 40px;
+    max-width: 400px;
+  }
+
+  .hhd-login__subline {
+    margin-top: 12px;
+    font-size: 15px;
+  }
+
+  .hhd-login__card {
+    padding: 24px;
+  }
+
+  .hhd-login__watermark {
+    right: -96px;
+    bottom: -60px;
+  }
 }
 
 @media (max-width: 1024px) {
