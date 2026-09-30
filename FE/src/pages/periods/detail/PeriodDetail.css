@@ -8,15 +8,6 @@
   min-height: 0;
 }
 
-/* Khoảng ngày đứng cùng dòng với tên đợt nhưng nhẹ hơn, đúng artboard. */
-.hhd-period-detail__range {
-  /* 38px không phải nhịp chữ mà là chiều cao để chữ này căn thẳng hàng với tên
-     đợt cỡ 32px bên cạnh; ở thang gọn tên đợt còn 24px nên số này thu theo. */
-  font: 500 var(--hhd-fs-16)/var(--hhd-lh-range) var(--hhd-font-sans);
-  color: var(--hhd-text-secondary);
-  white-space: nowrap;
-}
-
 /* Thẻ trắng bao danh sách đủ điều kiện — chiếm hết chiều cao còn lại để bảng
    cuộn bên trong thẻ, không cuộn cả trang. */
 .hhd-eligibility {

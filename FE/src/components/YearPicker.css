@@ -88,16 +88,19 @@
   padding: var(--hhd-space-md);
 }
 
+/* Đầu bảng chỉ còn nút "Năm nay": neo nó ở góc trái, không giãn, không căn
+   giữa dù chỉ có một phần tử. */
 .hhd-year-panel__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--hhd-space-md);
   padding: 0 var(--hhd-space-xs) var(--hhd-space-md);
 }
 
 /* Nút chữ "Năm nay" — vai trò của chữ "Today" trong ảnh mẫu của chủ dự án. */
 .hhd-year-panel__today {
+  flex: 0 0 auto;
   padding: 0;
   border: 0;
   background: transparent;
@@ -108,12 +111,6 @@
 
 .hhd-year-panel__today:hover {
   text-decoration: underline;
-}
-
-.hhd-year-panel__range {
-  color: var(--hhd-text-tertiary);
-  font-size: var(--hhd-fs-13);
-  white-space: nowrap;
 }
 
 /* Lưới 5 cột, cuộn dọc, thấy khoảng 5 hàng. Chiều cao tính theo ô và khe nên

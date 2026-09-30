@@ -150,9 +150,10 @@ interface YearPanelProps {
 }
 
 /**
- * Bảng chọn năm: đầu bảng có nút "Năm nay" và câu ghi rõ khoảng chọn được, thân
- * bảng là lưới 5 cột cuộn dọc. Khi mở, lưới cuộn sẵn để hàng chứa năm đang xem
- * nằm giữa — không phải tự đi tìm.
+ * Bảng chọn năm: đầu bảng chỉ có nút "Năm nay" ở góc trái, thân bảng là lưới 5
+ * cột cuộn dọc. Khi mở, lưới cuộn sẵn để hàng chứa năm đang xem nằm giữa —
+ * không phải tự đi tìm. Giới hạn năm vẫn là năm máy chủ ± 100 kẹp trong
+ * 1900 – 2200, chỉ không viết ra thành chữ nữa.
  */
 function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProps) {
   const { minYear, maxYear } = bounds;
@@ -292,9 +293,6 @@ function YearPanel({ value, serverYear, bounds, onPick, onClose }: YearPanelProp
         <button type="button" className="hhd-year-panel__today" onClick={() => onPick(serverYear)}>
           Năm nay
         </button>
-        <span className="hhd-year-panel__range">
-          Chọn trong {minYear} – {maxYear}
-        </span>
       </div>
 
       {/* `tabIndex={-1}`: lưới tự nhận tiêu điểm khi bảng mở, để phím mũi tên đi

@@ -17,10 +17,10 @@ import './PeriodsPage.css';
 /**
  * Màn 5 — Chi tiết đợt (UC-34), theo artboard "Màn 5 — Chi tiết đợt".
  *
- * Từ quyết định 30/09, trang không còn tab. Tiêu đề đã nói đủ phần Thông tin —
- * tên đợt và khoảng ngày hằng năm (QT6) — nên ngay dưới nó là thẻ danh sách đủ
- * điều kiện: chọn năm, bảng người tròn mốc, xuất Excel. Đợt chỉ lưu ngày/tháng
- * nên khoảng ngày có năm chỉ xuất hiện trong thẻ, theo năm đang chọn.
+ * Từ quyết định 30/09, trang không còn tab. Tiêu đề chỉ có tên đợt, nên ngay
+ * dưới nó là thẻ danh sách đủ điều kiện: chọn năm, bảng người tròn mốc, xuất
+ * Excel. Đợt chỉ lưu ngày/tháng (QT6) nên khoảng ngày chỉ xuất hiện trong thanh
+ * công cụ của thẻ, dạng đã gắn năm theo năm đang chọn — chỗ duy nhất của trang.
  */
 export default function PeriodDetailPage() {
   const { id = '' } = useParams<{ id: string }>();
