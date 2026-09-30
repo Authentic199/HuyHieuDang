@@ -248,6 +248,8 @@ public class EligibilityService : IEligibilityService
                 OfficialAdmissionDate = member.OfficialAdmissionDate,
                 Milestone = milestone.Value,
                 MilestoneDate = milestoneCalculator.GetAnniversary(member.OfficialAdmissionDate, milestone.Value),
+                Note = member.Note,
+                NoteUpdatedAt = member.NoteUpdatedAt,
             });
         }
 
@@ -287,6 +289,8 @@ public class EligibilityService : IEligibilityService
                 OfficialAdmissionDate = member.OfficialAdmissionDate,
                 Milestone = missed.Milestone,
                 MilestoneDate = missed.Anniversary,
+                Note = member.Note,
+                NoteUpdatedAt = member.NoteUpdatedAt,
                 Gap = BuildGap(missed.Gap, ordered),
             });
         }

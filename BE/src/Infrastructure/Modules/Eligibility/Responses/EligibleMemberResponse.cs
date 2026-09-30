@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using HuyHieuDang.Infrastructure.Facades.Common.Converters;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Enums;
 
 namespace HuyHieuDang.Infrastructure.Modules.Eligibility.Responses;
@@ -43,6 +45,17 @@ public class EligibleMemberResponse
     /// Mốc huy hiệu được trao (QT4).
     /// </summary>
     public int Milestone { get; set; }
+
+    /// <summary>
+    /// Ghi chú của đảng viên (QT12); <see langword="null"/> khi chưa có ghi chú.
+    /// </summary>
+    public string? Note { get; set; }
+
+    /// <summary>
+    /// Ngày ghi của ghi chú (QT12), trả kèm độ lệch <c>+07:00</c> theo mục 1.6 hợp đồng API.
+    /// </summary>
+    [JsonConverter(typeof(VietnamDateTimeOffsetConverter))]
+    public DateTimeOffset? NoteUpdatedAt { get; set; }
 }
 
 /// <summary>
