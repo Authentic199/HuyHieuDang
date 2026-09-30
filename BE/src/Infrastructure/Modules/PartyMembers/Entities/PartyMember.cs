@@ -1,6 +1,7 @@
 using HuyHieuDang.Core.Bases;
 using HuyHieuDang.Infrastructure.Facades.Common.Extensions;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Enums;
+using HuyHieuDang.Infrastructure.Modules.PartyMembers.Notes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -32,6 +33,18 @@ public class PartyMember : BaseEntity, IHasUpdatedAt
     public DateOnly OfficialAdmissionDate { get; set; }
 
     /// <summary>
+    /// Ghi chú tự do của đảng viên (QT12); <see langword="null"/> khi chưa có ghi chú.
+    /// Máy chủ luôn lưu bản đã cắt khoảng trắng hai đầu.
+    /// </summary>
+    public string? Note { get; set; }
+
+    /// <summary>
+    /// Ngày ghi: thời điểm <b>nội dung</b> ghi chú đổi lần cuối (QT12). Về
+    /// <see langword="null"/> cùng lúc với <see cref="Note"/>.
+    /// </summary>
+    public DateTimeOffset? NoteUpdatedAt { get; set; }
+
+    /// <summary>
     /// Lần sửa gần nhất.
     /// </summary>
     public DateTimeOffset UpdatedAt { get; set; }
@@ -54,6 +67,9 @@ public class PartyMemberConfiguration : IEntityTypeConfiguration<PartyMember>
 
         builder.Property(x => x.DateOfBirth).HasColumnType("date");
         builder.Property(x => x.OfficialAdmissionDate).HasColumnType("date");
+
+        builder.Property(x => x.Note).HasMaxLength(PartyMemberNote.MaxLength);
+        builder.Property(x => x.NoteUpdatedAt).HasColumnType("timestamptz");
 
         builder.HasIndex(x => x.OfficialAdmissionDate);
     }
