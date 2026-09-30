@@ -289,6 +289,10 @@ test('E2E-1 · Lần dùng đầu tiên: đăng nhập → cài đặt → tạo
     const list = eligibility('core_default_T0', CASE.upcomingPeriod!.code, 2026);
     const panel = page.locator('.hhd-dashboard__panel');
 
+    // Bảng này mở 10 dòng mỗi trang (T58), nên phép đếm dưới đây chỉ đúng khi bộ
+    // dữ liệu mốc có tối đa 10 người đủ điều kiện — hiện là 6. Bộ dữ liệu nào
+    // vượt 10 thì phải đổi cỡ trang trước khi đếm.
+    expect(list.total).toBeLessThanOrEqual(10);
     await expect(tableRows(panel)).toHaveCount(list.total);
     const rows = await readTable(panel);
     expect(rows.map((row) => row[ELIGIBLE_COLUMN.fullName])).toEqual(

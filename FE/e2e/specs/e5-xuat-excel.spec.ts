@@ -100,6 +100,8 @@ test('E2E-5 · Xuất Excel từ Dashboard, chi tiết đợt và Chưa thuộc 
   await test.step('E5-03 · Nội dung tệp khớp từng ô với bảng đang hiện trên Dashboard', async () => {
     const list = eligibility('core_default_T0', UPCOMING.code, 2026);
     const panel = page.locator('.hhd-dashboard__panel');
+    // Bảng Dashboard mở 10 dòng mỗi trang (T58) — xem ghi chú ở E1-16.
+    expect(list.total).toBeLessThanOrEqual(10);
     await expect(tableRows(panel)).toHaveCount(list.total);
 
     const screenRows = await readTable(panel);
