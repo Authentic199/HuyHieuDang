@@ -1,5 +1,5 @@
 import { DownloadOutlined } from '@ant-design/icons';
-import { App as AntApp, Button, Segmented, Table } from 'antd';
+import { App as AntApp, Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { gapLabel } from '../../api/uncovered';
 import { PageHeading } from '../../components/PageHeading';
 import { MilestoneFilterSelect, TableSearchInput } from '../../components/TableFilters';
 import { TableStates } from '../../components/TableStates';
+import { YearPicker } from '../../components/YearPicker';
 import { compareText, useClientTable, type RowComparators } from '../../hooks/useClientTable';
 import { paths } from '../../routes/paths';
 import { ApiError } from '../../types/api';
@@ -17,9 +18,8 @@ import type { Gender, IsoDate, UnassignedGap, UnassignedMemberResponse } from '.
 import { saveFile } from '../../utils/download';
 import { ELIGIBLE_COMPARATORS, milestoneOfRow, nameOfRow } from '../../utils/eligibleTable';
 import { formatDate, formatGender, formatNumber } from '../../utils/format';
-// Viên thuốc mốc dùng chung với tab Danh sách đủ điều kiện của màn chi tiết đợt.
+// Viên thuốc mốc dùng chung với thẻ Danh sách đủ điều kiện của màn chi tiết đợt.
 import { EligibleMilestoneTag } from '../periods/detail/EligibleMilestoneTag';
-import { yearsAround } from '../periods/detail/yearContext';
 import { UncoveredCountTag } from './UncoveredCountTag';
 import { UncoveredHint } from './UncoveredHint';
 import './UncoveredPage.css';
@@ -168,15 +168,7 @@ export default function UncoveredPage() {
             khoảng ngày các đợt để phủ kín.
           </div>
         }
-        extra={
-          <Segmented<number>
-            size="large"
-            value={year ?? undefined}
-            options={serverYear === null ? [] : yearsAround(serverYear)}
-            onChange={selectYear}
-            disabled={serverYear === null}
-          />
-        }
+        extra={<YearPicker value={year} serverYear={serverYear} onChange={selectYear} />}
       />
 
       {ready && totalCount > 0 ? (

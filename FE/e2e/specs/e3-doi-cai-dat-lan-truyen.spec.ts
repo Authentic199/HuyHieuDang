@@ -26,10 +26,9 @@ const BEFORE = scenario('core_default_T0');
 const AFTER = scenario('core_step10_T0');
 const UPCOMING = BEFORE.upcomingPeriod!;
 
-/** Mở tab "Danh sách đủ điều kiện" của trang chi tiết một đợt. */
+/** Mở trang chi tiết một đợt — từ 30/09 danh sách hiện ngay, không còn tab. */
 async function openEligibilityTab(page: import('@playwright/test').Page, periodId: string) {
   await page.goto(`/dot-trao-huy-hieu/${periodId}`);
-  await page.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
 }
 
 test('E2E-3 · Đổi Bước từ 5 sang 10 lan truyền ngay sang mọi màn', async ({ page, api }) => {

@@ -9,8 +9,9 @@ import type { AwardPeriodResponse } from '../../../types/domain';
  * Đầu trang chi tiết đợt theo artboard "Màn 5 — Chi tiết đợt": breadcrumb, tên
  * đợt cỡ lớn kèm khoảng ngày hằng năm, nút Sửa đợt và Xóa ở bên phải.
  *
- * Đợt vắt qua 31/12 phải đọc "năm sau" đúng như tab Thông tin ngay bên dưới
- * (QT6, UC-34) — một màn hình không được nói hai kiểu về cùng một khoảng ngày.
+ * Từ 30/09 trang không còn tab Thông tin, nên đây là nơi DUY NHẤT của trang nói
+ * khoảng ngày hằng năm. Đợt vắt qua 31/12 phải đọc "năm sau" (QT6, UC-34), khớp
+ * với cột Đến ngày bên bảng đợt — một đợt không được nói hai kiểu ở hai màn.
  */
 
 interface PeriodDetailHeaderProps {
