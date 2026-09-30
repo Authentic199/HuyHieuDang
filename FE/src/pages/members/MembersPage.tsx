@@ -1,4 +1,10 @@
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  FileTextFilled,
+  FileTextOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { App as AntApp, Button, ConfigProvider, Input, Select, Table, Tooltip } from 'antd';
 import type { ColumnsType, SorterResult, TablePaginationConfig } from 'antd/es/table/interface';
 import { useCallback, useEffect, useState } from 'react';
@@ -14,8 +20,10 @@ import { color } from '../../theme/tokens';
 import { ApiError } from '../../types/api';
 import type { Gender, PartyMemberResponse } from '../../types/domain';
 import { formatDate, formatGender, formatNumber } from '../../utils/format';
+import { noteDateLabel } from '../../utils/note';
 import { saveFile } from '../../utils/download';
 import { MemberFormModal } from './MemberFormModal';
+import { MemberNoteModal } from './MemberNoteModal';
 import { MilestoneTag } from './MilestoneTag';
 import './MembersPage.css';
 import {
@@ -43,6 +51,8 @@ export default function MembersPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<PartyMemberResponse | null>(null);
+  /** Người đang mở hộp ghi chú (UC-26); null là đang đóng. */
+  const [noting, setNoting] = useState<PartyMemberResponse | null>(null);
   const [downloadingTemplate, setDownloadingTemplate] = useState(false);
   // Dãy mốc của QT1 lấy từ Cài đặt — Frontend không tự suy ra dãy này bao giờ.
   // Chưa lấy được thì ô lọc chỉ còn "Tất cả" và "Đã vượt mốc lớn nhất", không đoán bừa.
@@ -105,6 +115,13 @@ export default function MembersPage() {
   function handleSaved(savedMessage: string) {
     setFormOpen(false);
     setEditing(null);
+    message.success(savedMessage);
+    reload();
+  }
+
+  /** Lưu ghi chú xong: báo thành công rồi tải lại bảng để nút đổi trạng thái. */
+  function handleNoteSaved(savedMessage: string) {
+    setNoting(null);
     message.success(savedMessage);
     reload();
   }
@@ -251,20 +268,41 @@ export default function MembersPage() {
     {
       key: 'actions',
       title: 'Thao tác',
-      // Cột chỉ còn nút Sửa — mọi thao tác xóa đi qua nút thùng rác ở đầu trang.
-      width: 88,
+      // Hai nút: ghi chú rồi Sửa. Mọi thao tác xóa vẫn đi qua nút thùng rác ở
+      // đầu trang, nên cột không có nút xóa.
+      width: 132,
       align: 'right',
-      render: (_value, record) => (
-        <span className="hhd-members__row-actions">
-          <Tooltip title="Sửa">
-            <Button
-              icon={<EditOutlined />}
-              aria-label={`Sửa ${record.fullName}`}
-              onClick={() => openEdit(record)}
-            />
-          </Tooltip>
-        </span>
-      ),
+      render: (_value, record) => {
+        const writtenOn = noteDateLabel(record.noteUpdatedAt);
+        const hasNote = Boolean(record.note?.trim());
+        return (
+          <span className="hhd-members__row-actions">
+            <Tooltip
+              title={
+                hasNote && writtenOn
+                  ? `Ghi chú · ${writtenOn.replace('Ghi ngày', 'ghi ngày')}`
+                  : hasNote
+                    ? 'Ghi chú'
+                    : 'Thêm ghi chú'
+              }
+            >
+              <Button
+                className={`hhd-members__note${hasNote ? ' hhd-members__note--has' : ''}`}
+                icon={hasNote ? <FileTextFilled /> : <FileTextOutlined />}
+                aria-label={`Ghi chú ${record.fullName}`}
+                onClick={() => setNoting(record)}
+              />
+            </Tooltip>
+            <Tooltip title="Sửa">
+              <Button
+                icon={<EditOutlined />}
+                aria-label={`Sửa ${record.fullName}`}
+                onClick={() => openEdit(record)}
+              />
+            </Tooltip>
+          </span>
+        );
+      },
     },
   ];
 
@@ -447,6 +485,14 @@ export default function MembersPage() {
           </TableStates>
         </div>
       </div>
+
+      {noting ? (
+        <MemberNoteModal
+          member={noting}
+          onCancel={() => setNoting(null)}
+          onSaved={handleNoteSaved}
+        />
+      ) : null}
 
       {formOpen ? (
         <MemberFormModal
