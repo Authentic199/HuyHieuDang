@@ -138,4 +138,25 @@ test.describe('khung thiết kế 1440x900', () => {
     await expect(app.locator('.hhd-note-dialog__item').first()).toBeVisible();
     await shoot(app, '12-1440-hop-day-du');
   });
+
+  // Nhãn "Để trống" từng bị cắt ở đúng thang chữ 16px này, nên form Thêm cũng
+  // cần một ảnh riêng ở khung cao.
+  test('form Thêm ở khung cao', async ({ app }) => {
+    await installTwoMembers(app);
+    await app.goto('/dang-vien');
+    await app.getByRole('button', { name: '+ Thêm', exact: true }).click();
+    await expect(app.locator('.ant-modal-title')).toHaveText('Thêm đảng viên');
+    await shoot(app, '13-1440-form-them-trong');
+  });
+});
+
+// Khối gọn từng đẩy nút Xuất Excel xuống dòng thứ hai ở đúng cận dưới này.
+test.describe('cận dưới 1280x600', () => {
+  test.use({ viewport: { width: 1280, height: 600 } });
+
+  test('Chi tiết đợt có khối gọn', async ({ app }) => {
+    await app.goto(`/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`);
+    await expect(app.getByTestId('note-summary')).toBeVisible();
+    await shoot(app, '14-1280-chi-tiet-dot-khoi-gon');
+  });
 });

@@ -60,6 +60,16 @@ Khối cao đúng `var(--hhd-control-height)` nên hàng đầu thẻ không cao
 
 Hộp đầy đủ: tiêu đề `Ghi chú — <Tên đợt> năm <năm>`, **không** có dòng đếm người; ô tìm đứng ngoài vùng cuộn; lọc bằng chính `matchesKeyword` của `hooks/useClientTable` nên khớp y như ô tìm của bảng; tô sáng bằng cùng một phép so khớp. Hộp chỉ được dựng khi thật sự mở, nên đóng rồi mở lại là ô tìm tự trống.
 
+### Sửa sau lượt gác cổng đầu (CEO trả lại ngày 30/09)
+
+**Nhãn "Để trống" bị cắt ở thang chữ 16px.** Ba ô chia đều nửa hàng nên mỗi ô chỉ còn 81 px; đệm mặc định 11 px mỗi bên của `.ant-segmented-item-label` ăn mất 22 px, để lại 59 px cho chữ trong khi nhãn dài nhất cần 67 px ở cỡ 16px — Ant Design cắt thành "Để tr…". Ở thang gọn (chữ 14px) vừa khít 81 = 81 nên không lộ.
+
+Thu đệm còn 4 px, khai trong `MembersPage.css` và buộc vào hộp bằng `className="hhd-member-form"`. **Không đổi dáng**: ba ô đã chia đều bằng `block` và chữ căn giữa, nên đệm chỉ là lề bên trong ô; giữ nguyên bề ngang hộp 560 px của artboard, giữ nguyên hai ô cùng hàng, ô Giới tính vẫn cao bằng ô ngày (đo được 40 px ở thang gọn và 48 px ở thang thường, bằng đúng ô ngày ở cùng khung).
+
+**Khối gọn đẩy nút Xuất Excel xuống dòng ở 1280×600.** Thanh công cụ của Chi tiết đợt là `flex-wrap: wrap`, và flexbox chọn chỗ xuống dòng theo bề ngang **gốc** của từng ô chứ không theo bề ngang sau khi co. Ở 1280 px, phần lòng thanh rộng 1146 px trong khi tổng bề ngang gốc là 146 + 327 + 520 + 116 + 48 px khoảng cách = 1157 px — dư 11 px nên nút rơi xuống dòng hai, thanh cao 109 px thay vì 61 px và bảng mất một dòng.
+
+Hạ bề ngang mong muốn của khối từ 520 px xuống **420 px** (`flex: 0 1 420px`, `min-width: 160px`). Tổng còn 1057 px, dư 89 px — đủ chỗ cả khi menu trái đang mở rộng. Dashboard không bị lỗi này (thanh không `wrap`) nhưng dùng chung một lớp nên cũng theo cỡ mới.
+
 ### Chống tràn
 
 `.hhd-note-text` dùng `white-space: pre-wrap` và `overflow-wrap: anywhere`; khối gọn cắt bằng `text-overflow: ellipsis`.
@@ -96,7 +106,7 @@ Thêm `NOTED_COUNT`, `noteDateTextOf`, `notedRowsOf` để ca kiểm thử tính
 
 `FE/ui-tests/fixtures/app.ts` — `/PartyMembers` trả kèm `note` và `noteUpdatedAt`; thêm route giả cho `PUT /PartyMembers/{id}/Note`. Route đó cố ý **không** ghi vào `mockData`: các ca chạy song song dùng chung mảng đó.
 
-### Ca mới `FE/ui-tests/specs/t74-ghi-chu.spec.ts` — 16 ca
+### Ca mới `FE/ui-tests/specs/t74-ghi-chu.spec.ts` đơn + 2 ca chạy ở bốn khung (24 lần chạy)
 
 | Ca | Kiểm |
 |---|---|
@@ -116,13 +126,21 @@ Thêm `NOTED_COUNT`, `noteDateTextOf`, `notedRowsOf` để ca kiểm thử tính
 | 14 | Lọc bảng về một người, khối gọn và hộp đầy đủ vẫn nói về cả đợt |
 | 15 | Ghi chú viết lúc 01:00 giờ Việt Nam vẫn hiện đúng ngày máy chủ, không lùi một ngày |
 | 16 | 1366×650 — hàng đầu thẻ không cao thêm và số dòng bảng nhìn thấy không đổi khi có khối gọn |
+| 17 | **Chạy ở cả bốn khung T60** — ở form Thêm **và** form Sửa: ba nhãn Giới tính đúng chữ và `scrollWidth ≤ clientWidth`; ba ô vẫn chia đều; ô Giới tính vẫn cao bằng và thẳng hàng với ô Ngày sinh |
+| 18 | **Chạy ở cả bốn khung T60** — Dashboard và Chi tiết đợt: hàng đầu thẻ cao bằng nhau khi có và khi không có khối; khối vẫn cùng hàng và sát bên trái nút Xuất Excel |
 
 ### Ảnh chụp
 
-`FE/ui-tests/scripts/chup-anh-t74.spec.ts` + `FE/ui-tests/playwright.anh.config.ts` — chụp 12 ảnh làm bằng chứng, không kiểm hành vi. Tách khỏi bộ `playwright.ui.config.ts` để lần chạy kiểm thử thường không phải chụp ảnh.
+`FE/ui-tests/scripts/chup-anh-t74.spec.ts` + `FE/ui-tests/playwright.anh.config.ts` — chụp 14 ảnh làm bằng chứng, không kiểm hành vi. Tách khỏi bộ `playwright.ui.config.ts` để lần chạy kiểm thử thường không phải chụp ảnh.
 
 Chạy: `T50_PORT=4185 npx playwright test -c ui-tests/playwright.anh.config.ts`
 
 ## Lệnh đã chạy
 
 Xem phần "Định nghĩa hoàn thành" trong comment kết thúc của HUYH-85 — mỗi lệnh kèm dòng tổng kết nguyên văn.
+
+## Vì sao ca 5 và ca 16 không bắt được hai lỗi trên
+
+Cả hai chỉ chạy ở **một** khung 1366×650. Ở khung đó chữ là 14px nên nhãn Giới tính vừa khít, và thanh công cụ còn đủ chỗ nên không xuống dòng. Ca 17 và ca 18 lấy thẳng `RESPONSIVE_VIEWPORTS` từ `playwright.ui.config.ts` nên chạy đủ bốn khung T60 và không bao giờ lệch với bộ T60.
+
+Đã kiểm ngược: hoàn nguyên hai đoạn CSS vừa sửa rồi chạy lại hai ca này thì **ca 17 đỏ ở 1440×900 và 3440×1440, ca 18 đỏ ở 1280×600**, xanh ở các khung còn lại — trùng khít chỗ CEO đo được.

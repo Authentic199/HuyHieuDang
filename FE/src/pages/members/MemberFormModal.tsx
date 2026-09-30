@@ -91,6 +91,7 @@ export function MemberFormModal({ member, today, onCancel, onSaved }: MemberForm
       okText={isEditing ? 'Lưu thay đổi' : 'Thêm vào danh sách'}
       cancelText="Đóng"
       width={560}
+      className="hhd-member-form"
       destroyOnHidden
       maskClosable={!submitting}
       onCancel={submitting ? undefined : onCancel}

@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { DETAIL_PERIOD, expect, mockData, test, UPCOMING_PERIOD } from '../fixtures/app';
+import { RESPONSIVE_VIEWPORTS } from '../playwright.ui.config';
 import {
   NOTED_COUNT,
   noteDateTextOf,
@@ -83,11 +84,26 @@ async function installTwoMembers(page: Page): Promise<void> {
   });
 }
 
-/** Dashboard mà KHÔNG ai có ghi chú — để kiểm khối gọn biến mất hẳn. */
+/** Dashboard và Chi tiết đợt mà KHÔNG ai có ghi chú — khối gọn phải biến mất. */
 async function installNoNotes(page: Page): Promise<void> {
   const bare = mockData.eligible.map((row) => ({ ...row, note: null, noteUpdatedAt: null }));
   await page.route('**/api/**', async (route) => {
-    const path = new URL(route.request().url()).pathname.replace(/^.*\/api/, '');
+    const url = new URL(route.request().url());
+    const path = url.pathname.replace(/^.*\/api/, '');
+
+    if (path === '/Eligibility') {
+      const year = Number(url.searchParams.get('year') ?? SERVER_YEAR);
+      return route.fulfill(
+        envelope({
+          awardPeriod: { ...DETAIL_PERIOD, year },
+          year,
+          totalCount: bare.length,
+          milestoneBreakdown: [],
+          members: bare,
+        }),
+      );
+    }
+
     if (path !== '/Dashboard') return route.fallback();
 
     return route.fulfill(
@@ -579,3 +595,138 @@ test.describe('hàng đầu thẻ ở khung laptop 1366x650', () => {
     expect(rowsWithNotes).toBe(rowsWithout);
   });
 });
+
+/**
+ * Hai ca cuối chạy ở CẢ BỐN khung nhìn của T60, lấy thẳng danh sách khung từ
+ * `playwright.ui.config.ts` để không bao giờ lệch với bộ T60.
+ *
+ * Ca 5 và ca 16 chỉ chạy ở 1366x650 nên đã để lọt hai lỗi CEO bắt được ở lượt
+ * gác cổng đầu: nhãn "Để trống" bị cắt ở thang chữ 16px (1440x900 trở lên), và
+ * khối gọn đẩy nút Xuất Excel xuống dòng thứ hai ở cận dưới 1280x600.
+ */
+for (const viewport of RESPONSIVE_VIEWPORTS) {
+  const frame = `${viewport.width}x${viewport.height}`;
+
+  test.describe(`bốn khung T60 — ${frame}`, () => {
+    test.use({ viewport });
+
+    test(`ca 17 · ${frame} · ba nhãn Giới tính hiện trọn ở cả form Thêm và form Sửa`, async ({
+      app,
+    }) => {
+      await installTwoMembers(app);
+      await app.goto('/dang-vien');
+
+      /** Nhãn nào có `scrollWidth` vượt `clientWidth` là đang bị cắt bằng "…". */
+      async function expectLabelsFit(title: string) {
+        const modal = app.locator('.ant-modal').filter({ hasText: title });
+        await expect(modal.locator('.ant-segmented')).toBeVisible();
+
+        const labels = await modal.locator('.ant-segmented-item-label').evaluateAll((nodes) =>
+          nodes.map((node) => ({
+            text: node.textContent ?? '',
+            clientWidth: node.clientWidth,
+            scrollWidth: node.scrollWidth,
+          })),
+        );
+
+        expect(labels.map((label) => label.text)).toEqual(['Nam', 'Nữ', 'Để trống']);
+        for (const label of labels) {
+          expect(
+            label.scrollWidth,
+            `${title} · nhãn "${label.text}" bị cắt ở ${frame}`,
+          ).toBeLessThanOrEqual(label.clientWidth);
+        }
+
+        // Những điều đã duyệt vẫn giữ: ba ô chia đều, ô Giới tính cao bằng ô
+        // ngày và nằm cùng hàng với nó.
+        //
+        // Đo bằng `offsetWidth`/`offsetTop` chứ không bằng `boundingBox()`: hộp
+        // của Ant Design mở bằng hiệu ứng phóng to, nên hình chữ nhật trên màn
+        // trong lúc hiệu ứng chạy còn đang bị thu nhỏ. Hai số này là số của bố
+        // cục nên không dính hiệu ứng.
+        const shape = await modal.evaluate((node) => {
+          const items = [...node.querySelectorAll('.ant-segmented-item')] as HTMLElement[];
+          const birthPicker = node.querySelectorAll('.ant-picker')[1] as HTMLElement;
+          const segmented = node.querySelector('.ant-segmented') as HTMLElement;
+          return {
+            itemWidths: items.map((item) => item.offsetWidth),
+            pickerHeight: birthPicker.offsetHeight,
+            segmentedHeight: segmented.offsetHeight,
+            pickerTop: birthPicker.getBoundingClientRect().top - node.getBoundingClientRect().top,
+            segmentedTop: segmented.getBoundingClientRect().top - node.getBoundingClientRect().top,
+          };
+        });
+
+        expect(Math.max(...shape.itemWidths) - Math.min(...shape.itemWidths)).toBeLessThanOrEqual(
+          1,
+        );
+        expect(shape.segmentedHeight).toBe(shape.pickerHeight);
+        expect(Math.abs(shape.segmentedTop - shape.pickerTop)).toBeLessThanOrEqual(1);
+      }
+
+      await app.getByRole('button', { name: '+ Thêm', exact: true }).click();
+      await expectLabelsFit('Thêm đảng viên');
+      await app
+        .locator('.ant-modal')
+        .filter({ hasText: 'Thêm đảng viên' })
+        .getByRole('button', { name: 'Đóng' })
+        .click();
+
+      await app.getByLabel(`Sửa ${WITH_NOTE.fullName}`, { exact: true }).click();
+      await expectLabelsFit('Sửa đảng viên');
+    });
+
+    test(`ca 18 · ${frame} · khối gọn không làm hàng đầu thẻ cao thêm`, async ({ app }) => {
+      const SCREENS = [
+        { ten: 'Dashboard', url: '/', head: '.hhd-dashboard__panel-head' },
+        {
+          ten: 'Chi tiết đợt',
+          url: `/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`,
+          head: '.hhd-eligibility__toolbar',
+        },
+      ];
+
+      /** Chiều cao hàng đầu thẻ, đo theo bố cục chứ không theo hình trên màn. */
+      function headHeight(head: string) {
+        return app.locator(head).evaluate((node: HTMLElement) => node.offsetHeight);
+      }
+
+      // Lượt 1 — CÓ khối ghi chú. Đo cả hai màn trước, rồi mới thay tầng dữ
+      // liệu giả: `page.unrouteAll` sẽ gỡ luôn route của fixture nên không dùng.
+      const withNotes = new Map<string, number>();
+      for (const screen of SCREENS) {
+        await app.goto(screen.url);
+        const summary = app.getByTestId('note-summary');
+        await expect(summary).toBeVisible();
+        withNotes.set(screen.ten, await headHeight(screen.head));
+
+        const summaryBox = (await summary.boundingBox())!;
+        const exportBox = (await app.getByRole('button', { name: 'Xuất Excel' }).boundingBox())!;
+        // Khối kết thúc trước khi nút bắt đầu — tức nằm sát bên trái nút.
+        expect(
+          summaryBox.x + summaryBox.width,
+          `${screen.ten} ở ${frame}: khối không nằm bên trái nút Xuất Excel`,
+        ).toBeLessThanOrEqual(exportBox.x + 1);
+        // Cùng một hàng: hai ô chồng nhau theo chiều dọc.
+        expect(
+          summaryBox.y < exportBox.y + exportBox.height &&
+            exportBox.y < summaryBox.y + summaryBox.height,
+          `${screen.ten} ở ${frame}: nút Xuất Excel rơi xuống dòng khác`,
+        ).toBe(true);
+      }
+
+      // Lượt 2 — KHÔNG ai có ghi chú, tức đúng dáng của `main` trước việc này.
+      await installNoNotes(app);
+      for (const screen of SCREENS) {
+        await app.goto(screen.url);
+        await expect(app.getByRole('button', { name: 'Xuất Excel' })).toBeVisible();
+        await expect(app.getByTestId('note-summary')).toHaveCount(0);
+
+        expect(
+          withNotes.get(screen.ten),
+          `${screen.ten} ở ${frame}: hàng đầu thẻ cao thêm khi có khối ghi chú`,
+        ).toBe(await headHeight(screen.head));
+      }
+    });
+  });
+}

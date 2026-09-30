@@ -47,8 +47,13 @@
   display: flex;
   align-items: center;
   gap: var(--hhd-space-sm);
-  flex: 0 1 520px;
-  min-width: 200px;
+  /* Bề ngang mong muốn, được phép co lại. 420px chứ không phải 520px: thanh
+     công cụ của Chi tiết đợt còn bộ chọn năm, khoảng ngày và nhãn ngữ cảnh, và
+     nó xuống dòng theo bề ngang GỐC của từng ô chứ không theo bề ngang sau khi
+     co. Ở cận dưới 1280px, 520px làm nút Xuất Excel rơi xuống dòng thứ hai và
+     bảng mất một dòng. 420px còn dư chỗ cả khi menu trái đang mở rộng. */
+  flex: 0 1 420px;
+  min-width: 160px;
   margin-left: auto;
   height: var(--hhd-control-height);
   padding: 0 6px 0 12px;

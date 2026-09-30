@@ -115,3 +115,12 @@
 .hhd-members td.hhd-members__index {
   color: var(--hhd-text-tertiary);
 }
+
+/* Ô Giới tính trong form Thêm/Sửa — ba lựa chọn chia đều nửa hàng, nên ô hẹp
+   nhất chỉ còn 81px ở khung 560px của hộp. Đệm mặc định 11px mỗi bên của Ant
+   Design ăn mất 22px, đủ để nhãn dài nhất ("Để trống" — 67px ở cỡ chữ 16px)
+   bị cắt thành "Để tr…" ở màn cao. Thu đệm còn 4px KHÔNG đổi dáng: ba ô đã
+   chia đều bằng `block` và chữ căn giữa, nên đệm chỉ là lề bên trong. */
+.hhd-member-form .ant-segmented .ant-segmented-item .ant-segmented-item-label {
+  padding-inline: 4px;
+}
