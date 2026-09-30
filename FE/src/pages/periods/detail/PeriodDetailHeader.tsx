@@ -1,8 +1,8 @@
 import { Breadcrumb, Button, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
 
+import '../../../components/PageHeading.css';
 import { paths } from '../../../routes/paths';
-import { font, typography } from '../../../theme/tokens';
 import type { AwardPeriodResponse } from '../../../types/domain';
 
 /**
@@ -29,22 +29,10 @@ export function PeriodDetailHeader({ period, onEdit, onDelete }: PeriodDetailHea
         ]}
       />
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          gap: 16,
-          marginTop: 2,
-        }}
-      >
-        <h1
-          style={{
-            margin: 0,
-            font: `${typography.headingXl.weight} ${typography.headingXl.size}px/${typography.headingXl.line}px ${font.serif}`,
-            letterSpacing: '-0.005em',
-          }}
-        >
+      {/* Dùng lớp của PageHeading để tên đợt và tiêu đề các màn khác cùng một
+          thang chữ, kể cả khi thang gọn bật lên ở khung nhìn thấp. */}
+      <div className="hhd-page-heading" style={{ marginTop: 2 }}>
+        <h1 className="hhd-page-heading__title">
           {period ? (
             <>
               {period.name}{' '}
@@ -58,7 +46,7 @@ export function PeriodDetailHeader({ period, onEdit, onDelete }: PeriodDetailHea
           )}
         </h1>
 
-        <div style={{ display: 'flex', gap: 8, flex: 'none' }}>
+        <div className="hhd-page-heading__extra">
           <Button disabled={!period} onClick={onEdit}>
             Sửa đợt
           </Button>

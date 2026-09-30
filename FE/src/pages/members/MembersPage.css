@@ -7,7 +7,12 @@
   min-height: 0;
 }
 
+/* Bề ngang tối thiểu của bảng = tổng bề rộng các cột khai báo trong `MembersPage.tsx`,
+   cộng 220 px cho cột Họ tên (cột duy nhất không khai bề rộng). Dưới 1440 px,
+   `theme/responsive.css` dùng biến này để bảng cuộn ngang trong thẻ thay vì nén
+   cột làm chữ gãy dòng. */
 .hhd-members__panel {
+  --hhd-table-min-width: 1210px;
   background: var(--hhd-white);
   border: 1px solid var(--hhd-border);
   border-radius: var(--hhd-radius-card);
@@ -48,7 +53,7 @@
 .hhd-members__selected {
   margin-left: auto;
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-members__selected b {
@@ -76,9 +81,9 @@
 
 /* Nút thùng rác đỏ ở đầu trang — cán bộ lớn tuổi nên để ô bấm rộng rãi. */
 .hhd-members__delete.ant-btn {
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
+  width: var(--hhd-control-height);
+  height: var(--hhd-control-height);
+  font-size: var(--hhd-fs-18);
 }
 
 /* Nút biểu tượng Sửa ở cột Thao tác. */

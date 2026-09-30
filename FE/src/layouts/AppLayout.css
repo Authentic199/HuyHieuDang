@@ -3,7 +3,9 @@
 /* Cao đúng bằng màn hình, KHÔNG phải min-height: cả chuỗi `flex: 1; min-height: 0`
    của từng màn chỉ có tác dụng khi khung ngoài cùng bị chặn chiều cao. Để
    min-height thì thẻ bảng cứ dài ra theo số dòng, thanh phân trang trôi khỏi
-   màn hình và phần dòng dư nằm ngoài tầm nhìn. */
+   màn hình và phần dòng dư nằm ngoài tầm nhìn.
+   Cửa sổ thấp hơn 900 px thì cách xếp này làm thân bảng co về 0 px, nên
+   `theme/responsive.css` chuyển vùng nội dung sang cuộn như trang thường. */
 .hhd-shell {
   height: 100vh;
   display: grid;
@@ -25,7 +27,8 @@
   /* Cho ô lưới co lại đúng chiều cao còn lại thay vì phình theo nội dung. */
   min-height: 0;
   /* Màn nào cao hơn màn hình (Cài đặt, Import) thì cuộn trong vùng này, còn các
-     màn có bảng thì bảng tự cuộn bên trong thẻ nên vùng này không cuộn. */
+     màn có bảng thì bảng tự cuộn bên trong thẻ nên vùng này không cuộn. Trên
+     cửa sổ thấp, mọi màn đều cuộn ở đây — xem `theme/responsive.css`. */
   overflow: auto;
   display: flex;
   flex-direction: column;

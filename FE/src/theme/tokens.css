@@ -33,6 +33,42 @@
   --hhd-font-sans: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --hhd-font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
+  /* Thang cỡ chữ. Tên biến là cỡ ở màn CAO (khung nhìn từ 900 px) nên màn lớn
+     đọc đúng như bộ thiết kế. Màn thấp lùi mỗi bậc một nấc trong
+     `theme/responsive.css` — vì vậy mọi nơi phải dùng biến, không viết số. */
+  --hhd-fs-11: 11px;
+  --hhd-lh-11: 16px;
+  --hhd-fs-12: 12px;
+  --hhd-lh-12: 16px;
+  --hhd-fs-13: 13px;
+  --hhd-lh-13: 18px;
+  --hhd-fs-14: 14px;
+  --hhd-lh-14: 20px;
+  --hhd-fs-15: 15px;
+  --hhd-lh-15: 22px;
+  --hhd-fs-16: 16px;
+  --hhd-lh-16: 24px;
+  --hhd-fs-18: 18px;
+  --hhd-fs-20: 20px;
+  --hhd-fs-22: 22px;
+  --hhd-lh-22: 30px;
+  --hhd-fs-24: 24px;
+  --hhd-lh-24: 32px;
+  --hhd-fs-28: 28px;
+  --hhd-fs-32: 32px;
+  --hhd-lh-32: 42px;
+  --hhd-fs-34: 34px;
+  --hhd-lh-34: 42px;
+  --hhd-lh-range: 38px;
+  --hhd-fs-38: 38px;
+  --hhd-lh-38: 44px;
+
+  /* Chiều cao nút, ô nhập và thẻ nhãn — cũng lùi một nấc ở màn thấp, nhưng
+     không bao giờ xuống dưới 32px để còn dễ bấm. */
+  --hhd-control-height: 40px;
+  --hhd-control-height-lg: 48px;
+  --hhd-tag-height: 24px;
+
   --hhd-radius-control: 6px;
   --hhd-radius-card: 10px;
   --hhd-radius-shell: 12px;
@@ -49,6 +85,7 @@
   --hhd-header-height: 56px;
   --hhd-sider-width: 104px;
   --hhd-sider-width-collapsed: 64px;
+  --hhd-sider-item-height: 64px;
   --hhd-shell-padding: 16px;
 
   --hhd-gradient-header: linear-gradient(135deg, #8f1619 0%, #6c0f12 55%, #530b0e 100%);

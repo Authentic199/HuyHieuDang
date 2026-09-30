@@ -29,14 +29,14 @@
 
 .hhd-dashboard__alert-icon {
   color: #7d5414;
-  font-size: 20px;
+  font-size: var(--hhd-fs-20);
   flex: none;
 }
 
 .hhd-dashboard__alert-text {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   line-height: 22px;
 }
 
@@ -86,14 +86,14 @@
 }
 
 .hhd-dashboard__overline {
-  font: 600 11px/16px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-11)/var(--hhd-lh-11) var(--hhd-font-sans);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--hhd-text-secondary);
 }
 
 .hhd-dashboard__period-name {
-  font: 700 24px/32px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-24)/var(--hhd-lh-24) var(--hhd-font-serif);
 }
 
 .hhd-dashboard__period-range {
@@ -106,14 +106,14 @@
 }
 
 .hhd-dashboard__count-value {
-  font: 700 38px/44px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-38)/var(--hhd-lh-38) var(--hhd-font-serif);
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   color: var(--hhd-red-link);
 }
 
 .hhd-dashboard__count-label {
-  font: 500 13px/18px var(--hhd-font-sans);
+  font: 500 var(--hhd-fs-13)/var(--hhd-lh-13) var(--hhd-font-sans);
   color: var(--hhd-text-secondary);
 }
 
@@ -126,7 +126,7 @@
   padding: 0 10px;
   border-radius: var(--hhd-radius-pill);
   white-space: nowrap;
-  font: 600 14px/20px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-14)/var(--hhd-lh-14) var(--hhd-font-sans);
 }
 
 .hhd-dashboard__status i {
@@ -167,7 +167,7 @@
   background: var(--hhd-fill);
   font-weight: 700;
   /* Artboard để 14px trong viên thuốc này — giữ nguyên, không nhỏ hơn. */
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 .hhd-dashboard__pill-count {
@@ -175,14 +175,19 @@
   height: 24px;
   padding: 0 7px;
   border-radius: var(--hhd-radius-pill);
-  font: 600 14px/24px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-14)/24px var(--hhd-font-sans);
   text-align: center;
 }
 
 /* ---------------------------------------------------------------- */
 /* Thẻ bảng đủ điều kiện (UC-11)                                     */
 /* ---------------------------------------------------------------- */
+/* Bề ngang tối thiểu của bảng = tổng bề rộng các cột khai báo trong `EligibleTableCard.tsx`,
+   cộng 220 px cho cột Họ tên (cột duy nhất không khai bề rộng). Dưới 1440 px,
+   `theme/responsive.css` dùng biến này để bảng cuộn ngang trong thẻ thay vì nén
+   cột làm chữ gãy dòng. */
 .hhd-dashboard__panel {
+  --hhd-table-min-width: 1147px;
   background: var(--hhd-white);
   border: 1px solid var(--hhd-border);
   border-radius: var(--hhd-radius-card);
@@ -215,7 +220,7 @@
 }
 
 .hhd-dashboard__panel-title > span:first-child {
-  font: 700 16px/24px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-16)/var(--hhd-lh-16) var(--hhd-font-serif);
 }
 
 /* Ô tìm nằm giữa tên đợt và nút Xuất Excel, cùng hàng đầu thẻ. */
@@ -252,8 +257,8 @@
   display: block;
   max-width: 560px;
   margin: 8px auto 0;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: var(--hhd-fs-16);
+  line-height: var(--hhd-lh-16);
 }
 
 .hhd-dashboard__footnote {
@@ -261,7 +266,7 @@
   padding: 12px 20px;
   border-top: 1px solid var(--hhd-border);
   color: var(--hhd-text-tertiary);
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   display: flex;
   justify-content: space-between;
   gap: var(--hhd-space-lg);
@@ -269,7 +274,7 @@
 
 .hhd-dashboard__filename {
   font-family: var(--hhd-font-mono);
-  font-size: 13px;
+  font-size: var(--hhd-fs-13);
 }
 
 /* ---------------------------------------------------------------- */
@@ -292,7 +297,7 @@
 }
 
 .hhd-dashboard__guide-title {
-  font: 700 32px/42px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-32)/var(--hhd-lh-32) var(--hhd-font-serif);
   letter-spacing: -0.005em;
 }
 
@@ -326,7 +331,7 @@
   border-radius: 50%;
   background: var(--hhd-gold-soft);
   color: #7a5a00;
-  font: 600 13px/28px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-13)/28px var(--hhd-font-sans);
   text-align: center;
   flex: none;
 }
@@ -337,11 +342,11 @@
 }
 
 .hhd-dashboard__step-title {
-  font: 700 16px/24px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-16)/var(--hhd-lh-16) var(--hhd-font-serif);
 }
 
 .hhd-dashboard__step-arrow {
   align-self: center;
   color: var(--hhd-text-disabled);
-  font-size: 20px;
+  font-size: var(--hhd-fs-20);
 }

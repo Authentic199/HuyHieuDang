@@ -1,0 +1,130 @@
+/* ------------------------------------------------------------------ */
+/* Responsive mức 1 — máy tính để bàn và laptop, từ 1280x600 trở lên   */
+/* ------------------------------------------------------------------ */
+/* Bộ thiết kế vẽ trên khung 1440x900 và khung ngoài cùng chặn chiều cao đúng
+   bằng cửa sổ (`.hhd-shell { height: 100vh }`) để thanh phân trang luôn nằm
+   trong tầm nhìn. Trên laptop 1366x768 (khung nhìn khoảng 1366x650), các phần
+   cố định — header, tiêu đề màn, thẻ đợt sắp tới, đầu thẻ, ô tìm, hàng tiêu đề
+   cột, thanh phân trang, chân thẻ — ăn hết chiều cao nên thân bảng co về 0 px:
+   người dùng thấy bảng chỉ còn hàng tiêu đề, tưởng là mất người.
+
+   Cách chữa gồm hai lớp, theo đúng thứ tự:
+
+   1. THANG GỌN. Khung nhìn thấp thì cả thang cỡ chữ, chiều cao nút và khoảng
+      đệm lùi một nấc, nên màn nhỏ giữ đúng dáng của màn lớn, chỉ nhỏ hơn một
+      cỡ. Sàn an toàn: chữ thân và chữ trong bảng >= 13px, chữ phụ >= 12px, nút
+      và ô nhập cao >= 32px. Làm bằng biến ở đây và token Ant Design ở
+      `antdTheme.ts`, KHÔNG dùng `zoom` hay `transform: scale` — hai cách đó
+      làm lệch vị trí dropdown, popover và modal của Ant Design.
+   2. CUỘN VÙNG NỘI DUNG. Gọn rồi mà vẫn không đủ chỗ (Dashboard có thêm thẻ
+      đợt sắp tới nên thiếu nhất), thì vùng nội dung cuộn như một trang thường.
+      Header và menu trái nằm ngoài `.hhd-main` nên vẫn đứng yên. */
+
+/* ------------------------------------------------------------------ */
+/* 1. Thang gọn — chỉ bật khi cửa sổ thấp hơn 900 px                   */
+/* ------------------------------------------------------------------ */
+/* Ngưỡng 900 px khớp `COMPACT_VIEWPORT_QUERY` trong `theme/breakpoints.ts`:
+   cùng một ngưỡng cho phần CSS ở đây và phần token Ant Design bên JavaScript.
+   Sửa một nơi thì sửa cả hai. */
+@media (max-height: 899px) {
+  /* Đặt trên `:root` chứ không trên `.hhd-shell`: chữ của `body` và của mọi
+     lớp nổi Ant Design dựng ngoài khung (modal, dropdown, tooltip, ô chọn) đều
+     phải theo cùng một thang. Header và trang Đăng nhập không bị kéo theo —
+     `AppHeader.css` và `LoginPage.css` viết cỡ chữ bằng số, không qua biến. */
+  :root {
+    /* Cỡ chữ: mỗi bậc lùi một nấc. Ba nấc nhỏ nhất (11, 12, 13) giữ nguyên —
+       chúng đã ở sàn. */
+    --hhd-fs-14: 13px;
+    --hhd-lh-14: 18px;
+    --hhd-fs-15: 14px;
+    --hhd-lh-15: 20px;
+    --hhd-fs-16: 15px;
+    --hhd-lh-16: 22px;
+    --hhd-fs-18: 16px;
+    --hhd-fs-20: 18px;
+    --hhd-fs-22: 19px;
+    --hhd-lh-22: 26px;
+    --hhd-fs-24: 20px;
+    --hhd-lh-24: 28px;
+    --hhd-fs-28: 24px;
+    --hhd-fs-32: 24px;
+    --hhd-lh-32: 32px;
+    --hhd-fs-34: 26px;
+    --hhd-lh-34: 34px;
+    --hhd-lh-range: 30px;
+    --hhd-fs-38: 28px;
+    --hhd-lh-38: 34px;
+
+    /* Nút và ô nhập: 40 -> 32 là đúng sàn, không thấp hơn. */
+    --hhd-control-height: 32px;
+    --hhd-control-height-lg: 40px;
+    --hhd-tag-height: 22px;
+
+    /* Khung và khoảng đệm cũng lùi một nấc trong thang có sẵn của thiết kế. */
+    --hhd-header-height: 48px;
+    --hhd-shell-padding: 12px;
+    --hhd-sider-item-height: 56px;
+    --hhd-space-xl: 16px;
+    --hhd-space-xxl: 24px;
+  }
+
+  /* Modal phải vừa trong 1280x600: đầu và chân modal đứng yên, phần thân dài
+     thì cuộn bên trong, nút Lưu luôn bấm tới được. */
+  .ant-modal {
+    top: var(--hhd-space-lg);
+    padding-bottom: var(--hhd-space-lg);
+  }
+
+  .ant-modal .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 2 * var(--hhd-space-lg));
+  }
+
+  .ant-modal .ant-modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Cuộn vùng nội dung — cũng từ dưới 900 px                         */
+/* ------------------------------------------------------------------ */
+/* `display: block` cho vùng nội dung là đủ: màn bên trong thôi làm ô flex bị
+   chặn chiều cao, nên nó cao bằng nội dung thật và các chuỗi
+   `flex: 1; min-height: 0` bên trong không còn chia nhau "phần còn thừa" —
+   bảng hiện đủ số dòng của trang.
+
+   `min-height: 100%` giữ lại dáng của màn lớn: còn chỗ thì thẻ bảng vẫn giãn
+   kín vùng nội dung và không có gì phải cuộn; hết chỗ thì màn dài ra và vùng
+   nội dung cuộn. Nghĩa là thang gọn được dùng trước, cuộn chỉ là phần bù. */
+@media (max-height: 899px) {
+  /* Viết kèm `.hhd-shell` để chắc trọng số hơn khối `.hhd-main` ở
+     `layouts/AppLayout.css`, khỏi phụ thuộc thứ tự nạp tệp CSS. */
+  .hhd-shell > .hhd-main {
+    display: block;
+  }
+
+  .hhd-shell > .hhd-main > * {
+    min-height: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Cửa sổ hẹp (dưới 1440 px) — bảng cuộn ngang bên trong thẻ        */
+/* ------------------------------------------------------------------ */
+/* Không có quy tắc này thì Ant Design nén các cột cho vừa bề ngang, chữ trong
+   ô gãy thành nhiều dòng và bảng đọc rất mệt. Đặt bề ngang tối thiểu bằng tổng
+   bề rộng cột đã khai báo ở tệp của từng màn (biến `--hhd-table-min-width`) thì
+   bảng nào không đủ chỗ sẽ cuộn ngang ngay trong thẻ, còn cửa sổ không bao giờ
+   sinh thanh cuộn ngang vì thẻ bảng đã `overflow: hidden`.
+
+   Chặn trong `max-width: 1439px` để khung 1440x900 của bộ thiết kế giữ nguyên
+   hình như cũ, không bỗng dưng mọc thêm thanh cuộn ngang. Menu trái tự thu về
+   dải biểu tượng ở cùng ngưỡng này — xem `hooks/useSiderCollapsed.ts`. */
+@media (max-width: 1439px) {
+  :is(.hhd-table-scroll, .hhd-members__body) .ant-table-content > table {
+    min-width: var(--hhd-table-min-width, auto);
+  }
+}

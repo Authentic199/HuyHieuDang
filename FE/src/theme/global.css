@@ -27,8 +27,8 @@ body {
   background: var(--hhd-canvas);
   color: var(--hhd-ink);
   font-family: var(--hhd-font-sans);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--hhd-fs-14);
+  line-height: var(--hhd-lh-14);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -60,7 +60,7 @@ kbd,
 
 /* Nhãn chữ nhỏ in hoa dùng ở đầu mỗi khối */
 .hhd-overline {
-  font: 600 11px/16px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-11)/var(--hhd-lh-11) var(--hhd-font-sans);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--hhd-text-secondary);
@@ -118,11 +118,10 @@ kbd,
   row-gap: var(--hhd-space-sm);
 }
 
-/* Cỡ chữ của thanh phân trang và ô "… / trang" — tối thiểu 14px cho dễ đọc. */
-:is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-total-text,
+/* Cỡ chữ của thanh phân trang và ô "… / trang" — đi theo thang chữ thân. */
 :is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-item,
 :is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-options {
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
 }
 
 /* Nút chính dùng gradient đỏ của thiết kế thay vì màu phẳng */

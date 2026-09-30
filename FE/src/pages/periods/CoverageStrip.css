@@ -14,13 +14,13 @@
 }
 
 .hhd-coverage__title {
-  font: 700 16px/24px var(--hhd-font-serif);
+  font: 700 var(--hhd-fs-16)/var(--hhd-lh-16) var(--hhd-font-serif);
 }
 
 .hhd-coverage__legend {
   display: flex;
   gap: 16px;
-  font-size: 14px;
+  font-size: var(--hhd-fs-14);
   color: var(--hhd-text-secondary);
 }
 
@@ -106,7 +106,7 @@
   place-items: center;
   overflow: hidden;
   color: #fff;
-  font: 600 13px/1 var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-13)/1 var(--hhd-font-sans);
   white-space: nowrap;
 }
 
@@ -151,7 +151,7 @@
   border-radius: 9999px;
   background: var(--hhd-ink);
   color: #fff;
-  font: 600 12px/16px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-12)/var(--hhd-lh-12) var(--hhd-font-sans);
   white-space: nowrap;
 }
 
@@ -159,7 +159,7 @@
 .hhd-coverage__months {
   display: flex;
   margin-top: 10px;
-  font: 600 12px/16px var(--hhd-font-sans);
+  font: 600 var(--hhd-fs-12)/var(--hhd-lh-12) var(--hhd-font-sans);
   letter-spacing: 0.04em;
   color: var(--hhd-text-tertiary);
   text-transform: uppercase;
