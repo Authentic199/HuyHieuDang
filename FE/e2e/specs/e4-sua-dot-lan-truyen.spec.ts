@@ -173,8 +173,11 @@ test('E2E-4 · Nới Đến ngày của một đợt lan truyền ngay sang mọ
     await editToDate(page, WIDENED, 7, 11);
 
     const banner = page.locator('.hhd-periods__banner');
-    await expect(banner).toContainText('Có đợt chồng lấn nhau');
-    await expect(banner).toContainText(`${WIDENED} và ${BEFORE.upcomingPeriod!.name}`);
+    await expect(banner).toContainText(
+      `Có đợt chồng lấn nhau — ${WIDENED}, ${BEFORE.upcomingPeriod!.name}`,
+    );
+    // T70 đã rút cảnh báo còn một câu: không còn câu hệ quả dài như trước.
+    await expect(banner).not.toContainText('nằm trong cả hai đợt');
 
     const server = await api.periods(2026);
     expect(server.warnings.overlaps.length).toBeGreaterThan(0);
