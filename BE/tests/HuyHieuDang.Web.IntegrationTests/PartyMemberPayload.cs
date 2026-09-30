@@ -32,6 +32,12 @@ public sealed class PartyMemberPayload
     [JsonPropertyName("nextMilestoneDate")]
     public DateOnly? NextMilestoneDate { get; set; }
 
+    [JsonPropertyName("note")]
+    public string? Note { get; set; }
+
+    [JsonPropertyName("noteUpdatedAt")]
+    public DateTimeOffset? NoteUpdatedAt { get; set; }
+
     [JsonPropertyName("createdAt")]
     public DateTimeOffset CreatedAt { get; set; }
 
