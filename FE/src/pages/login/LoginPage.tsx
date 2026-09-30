@@ -76,13 +76,12 @@ export default function LoginPage() {
         <div className="hhd-login__brand-row">
           <BrandMark logoSize={32} fontSize={20} />
         </div>
-        <div className="hhd-login__brand-row">
+        <div className="hhd-login__brand-row hhd-login__brand-text">
           <div className="hhd-login__headline">Hệ thống hỗ trợ xét trao Huy hiệu Đảng</div>
           <div className="hhd-login__subline">
             Tự động tính đảng viên tròn mốc tuổi Đảng theo từng đợt, xuất Excel làm tờ trình.
           </div>
         </div>
-        <div className="hhd-login__version">v1.0 · chạy cục bộ</div>
       </div>
 
       <div className="hhd-login__form-side">
