@@ -64,8 +64,32 @@ export class TableView {
     return this.rows.locator(`td:nth-child(${column + 1})`).allInnerTexts();
   }
 
+  /**
+   * Mọi tooltip đang hiện của Ant Design — cả bảng lẫn nơi khác. Tooltip nằm ở
+   * lớp phủ gắn vào `body` nên phải tìm từ trang, không tìm trong thẻ bảng.
+   */
+  private get openTooltips(): Locator {
+    return this.page.locator('.ant-tooltip:not(.ant-tooltip-hidden)');
+  }
+
+  /**
+   * Đưa chuột ra khỏi bảng rồi chờ tooltip ẩn hẳn.
+   *
+   * Danh sách thả xuống của ô lọc mốc đè lên hàng tiêu đề bảng, nên bấm chọn
+   * một mục xong là chuột nằm lại ngay trên một tiêu đề cột có sắp xếp. Ant
+   * Design hiện tooltip "Nhấp để sắp xếp tăng dần" đúng chỗ ô lọc, và vì chuột
+   * không tự rời đi nên tooltip đó chặn cú bấm tiếp theo cho tới khi hết giờ.
+   * Tooltip hiện kịp hay không tùy thời điểm — đó là lý do ca kiểm thử chập
+   * chờn. Gọi hàm này sau mỗi thao tác có thể để chuột nằm lại trên bảng.
+   */
+  private async leaveTable(): Promise<void> {
+    await this.page.mouse.move(0, 0);
+    await expect(this.openTooltips).toHaveCount(0);
+  }
+
   async goToPage(pageNumber: number): Promise<void> {
     await this.pagination.locator(`.ant-pagination-item-${pageNumber}`).click();
+    await this.leaveTable();
   }
 
   /**
@@ -82,15 +106,18 @@ export class TableView {
   async choosePageSize(size: number): Promise<void> {
     await this.pagination.locator('.ant-select').click();
     await this.openOption(`${size} / trang`).click();
+    await this.leaveTable();
   }
 
   async chooseMilestone(label: string): Promise<void> {
     await this.milestoneSelect.click();
     await this.openOption(label).click();
+    await this.leaveTable();
   }
 
   async clickSort(columnTitle: string): Promise<void> {
     await this.panel.getByRole('columnheader', { name: columnTitle }).click();
+    await this.leaveTable();
   }
 
   /**

@@ -75,6 +75,48 @@ Sinh ra ở `FE/ui-tests/.artifacts/anh/` khi chạy `npm run test:ui`, đính k
 - `t58-dashboard-10-dong.png` — Dashboard, ô `10 / trang`, chân bảng không còn cụm đếm.
 - `1-dashboard-du-dieu-kien.png`, `2-dot-trao-huy-hieu.png`, `3-chi-tiet-dot-du-dieu-kien.png`, `4-chua-thuoc-dot-nao.png` — bốn bảng, ô `… / trang` và số trang còn nguyên, không còn `1–20 / 1.342`.
 
-## 8. Còn tồn, không thuộc phạm vi T58
+## 8. Ca chập chờn trong `t50-bon-bang.spec.ts` — đã gỡ nguyên nhân
+
+Gác cổng HUYH-67 bắt được bước `Sắp xếp: nhấn lần thứ ba trả về thứ tự máy chủ` thỉnh thoảng hỏng với `locator.click: Test timeout of 60000ms exceeded`, mỗi lần ở một bảng khác. Đã dựng lại được ngay trên nhánh này:
+
+```
+$ T50_PORT=4191 npx playwright test -c ui-tests/playwright.ui.config.ts specs/t50-bon-bang.spec.ts --repeat-each=5
+    Test timeout of 60000ms exceeded.
+    Error: locator.click: Test timeout of 60000ms exceeded.
+  1 failed
+  44 passed (1.0m)
+```
+
+**Nguyên nhân.** Danh sách thả xuống của ô lọc mốc đè lên hàng tiêu đề bảng. Bấm chọn một mục xong, danh sách đóng lại và chuột nằm lại ngay trên một tiêu đề cột có sắp xếp. Ant Design hiện tooltip `Nhấp để sắp xếp tăng dần` đúng chỗ ô lọc mốc, và vì chuột không tự rời đi nên tooltip đó chặn cú bấm tiếp theo. Playwright thử lại suốt 60 giây rồi hết giờ. Tooltip hiện kịp hay không tùy thời điểm — nên ca này lúc đỏ lúc xanh.
+
+**Cách gỡ.** Thêm `leaveTable()` vào `ui-tests/fixtures/table.ts`: đưa chuột về `(0, 0)` rồi chờ `.ant-tooltip:not(.ant-tooltip-hidden)` về 0, gọi sau `goToPage`, `choosePageSize`, `chooseMilestone` và `clickSort`. Không tắt tooltip của bảng, không nới thời gian chờ, không `force: true` — ba cách đó giấu lỗi chứ không gỡ nguyên nhân. Chỉ sửa tệp kiểm thử, mã sản phẩm không đụng tới.
+
+**Bằng chứng sau khi sửa:**
+
+```
+$ T50_PORT=4177 npx playwright test -c ui-tests/playwright.ui.config.ts specs/t50-bon-bang.spec.ts --repeat-each=10
+  90 passed (53.1s)
+
+$ T50_PORT=4178 npx playwright test -c ui-tests/playwright.ui.config.ts specs/t58-quyet-dinh-giao-dien.spec.ts --repeat-each=10
+  80 passed (31.6s)
+
+$ T50_PORT=4177 npm run test:ui
+  20 passed (9.9s)
+
+$ npm run build
+✓ built in 614ms
+
+$ npm run lint
+(eslint không in gì — không lỗi)
+
+$ npm run typecheck:e2e
+(tsc --noEmit không in gì — không lỗi)
+
+$ npm run format:check
+Checking formatting...
+All matched files use Prettier code style!
+```
+
+## 9. Còn tồn, không thuộc phạm vi T58
 
 Cột STT của bảng Đợt trao huy hiệu (`FE/src/pages/periods/PeriodsPage.tsx`) dựng số bằng `index + 1` chứ không cộng độ lệch trang, nên trang 2 đánh số lại từ 1. Tệp đó không nằm trong danh sách tệp của việc này nên để nguyên, chỉ ghi lại đây.
