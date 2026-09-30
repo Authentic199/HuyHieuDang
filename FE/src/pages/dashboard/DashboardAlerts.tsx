@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import type { DashboardWarnings } from '../../api/dashboard';
 import { paths } from '../../routes/paths';
 import { formatNumber } from '../../utils/format';
+import { overlappingPeriodNames } from '../../utils/overlapWarning';
 
 /**
  * Cảnh báo nhanh (UC-12) — artboard 2 và 2 trống: lưới hai cột, mỗi cảnh báo là
@@ -15,6 +16,9 @@ import { formatNumber } from '../../utils/format';
  * Bốn loại cảnh báo, xếp theo mức cấp bách: chưa có đảng viên, chưa có đợt,
  * người chưa thuộc đợt nào, rồi các đợt chồng lấn / chưa phủ kín. Không có
  * cảnh báo nào thì không dựng gì cả.
+ *
+ * Thẻ chồng lấn chỉ nêu tên các đợt, mỗi đợt một lần (T70), dùng chung hàm với
+ * banner màn Đợt để câu ở hai màn luôn giống hệt nhau.
  */
 
 interface DashboardAlertsProps {
@@ -74,8 +78,7 @@ export function DashboardAlerts({ warnings }: DashboardAlertsProps) {
       key: 'overlaps',
       title: (
         <>
-          <b>Có đợt chồng lấn nhau</b> — {joinRanges(warnings.overlaps)}. Người tròn mốc trong các
-          khoảng này nằm trong cả hai đợt.
+          <b>Có đợt chồng lấn nhau</b> — {overlappingPeriodNames(warnings.overlaps)}
         </>
       ),
       actionLabel: 'Điều chỉnh →',

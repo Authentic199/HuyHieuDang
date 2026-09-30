@@ -105,13 +105,6 @@ export default function PeriodsPage() {
     modal.confirm({
       width: 520,
       title: `Xóa đợt “${period.name}”?`,
-      content: (
-        <>
-          “{period.name}” ({period.fromDisplay} – {period.toDisplay}) sẽ bị xóa khỏi mọi năm, không
-          lấy lại được. Danh sách đảng viên vẫn giữ nguyên, nhưng người tròn mốc trong khoảng này sẽ
-          chuyển sang mục “Chưa thuộc đợt nào”.
-        </>
-      ),
       okText: 'Xóa đợt này',
       cancelText: 'Để lại',
       okButtonProps: { danger: true },

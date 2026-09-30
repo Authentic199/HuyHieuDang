@@ -2,12 +2,16 @@ import { WarningFilled } from '@ant-design/icons';
 import { Alert } from 'antd';
 
 import type { CoverageWarnings } from '../../types/domain';
+import { overlappingPeriodNames } from '../../utils/overlapWarning';
 
 /**
  * Banner cảnh báo chồng lấn / chưa phủ kín (UC-33) — artboard 5.
  *
  * Cảnh báo KHÔNG chặn lưu (QT6): chỉ nói cho cán bộ biết hệ quả, bằng câu chữ
  * đời thường. Không có cảnh báo nào thì không dựng gì cả.
+ *
+ * Dòng chồng lấn chỉ nêu tên các đợt, mỗi đợt một lần (T70) — ngày cụ thể của
+ * vạch sọc vẫn xem được khi rê chuột lên dải độ phủ.
  */
 
 /** Liệt kê các khoảng theo đúng lối viết "04/02–28/02 · 20/05–30/06" của artboard. */
@@ -29,12 +33,7 @@ export function CoverageWarningBanner({ warnings }: { warnings: CoverageWarnings
         <div style={{ display: 'grid', gap: 6, fontSize: 14, lineHeight: '22px' }}>
           {overlaps.length > 0 ? (
             <div>
-              <b>Có đợt chồng lấn nhau</b> — {joinRanges(overlaps)}
-              {' ('}
-              {overlaps
-                .map((item) => `${item.firstPeriodName} và ${item.secondPeriodName}`)
-                .join(' · ')}
-              {') '}— người tròn mốc trong các khoảng này nằm trong cả hai đợt.
+              <b>Có đợt chồng lấn nhau</b> — {overlappingPeriodNames(overlaps)}
             </div>
           ) : null}
           {gaps.length > 0 ? (
