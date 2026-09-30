@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { test as anonymous, type Page } from '@playwright/test';
+import { test as anonymous, type Locator, type Page } from '@playwright/test';
 
 import { expect, test } from '../fixtures/app';
 
@@ -23,11 +23,19 @@ const SMALL_VIEWPORTS = [
   { width: 1366, height: 650 },
 ] as const;
 
-/** Ảnh đã tải xong và có kích thước thật — thẻ <img> hỏng sẽ trả 0. */
-async function isLoaded(image: ReturnType<Page['locator']>): Promise<boolean> {
-  return image.evaluate(
-    (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
-  );
+/**
+ * Chờ tới khi ảnh tải xong và có kích thước thật — thẻ <img> hỏng sẽ trả 0.
+ * Phải chờ chứ không hỏi một lần: lúc phần tử vừa hiện ra thì trình duyệt
+ * thường còn đang tải tệp ảnh.
+ */
+async function expectLoaded(image: Locator, what: string): Promise<void> {
+  await expect
+    .poll(
+      () =>
+        image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0),
+      { message: `${what} phải tải được` },
+    )
+    .toBe(true);
 }
 
 /** Không có phần tử nào tràn khỏi bề ngang của khung nhìn. */
@@ -63,7 +71,7 @@ test('thanh đầu trang hiện ảnh lá cờ mới', async ({ app }) => {
   await expect(flag).toHaveCount(1);
   await expect(flag).toHaveAttribute('src', FLAG_FILE);
   await expect(flag).toHaveAttribute('alt', 'Cờ Đảng và cờ Tổ quốc');
-  expect(await isLoaded(flag), 'ảnh cờ phải tải được').toBe(true);
+  await expectLoaded(flag, 'ảnh cờ trên thanh đầu trang');
 
   // Cờ nằm ngang: rộng hơn cao. Logo cũ vuông nên đây là thứ phân biệt chắc chắn.
   const box = await flag.boundingBox();
@@ -72,6 +80,8 @@ test('thanh đầu trang hiện ảnh lá cờ mới', async ({ app }) => {
 });
 
 test('không còn thẻ ảnh nào trỏ tới logo cũ', async ({ app }) => {
+  // Nói ngược lại cho chắc: mọi thẻ <img> của ứng dụng đều phải là tệp ảnh cờ
+  // mới. Như vậy thì bất cứ ảnh cũ nào còn sót cũng lộ ra, kể cả ảnh đổi tên.
   for (const route of ['/', '/dang-vien', '/dot-trao-huy-hieu', '/cai-dat']) {
     await app.goto(route);
     await expect(app.locator('.hhd-header img')).toHaveCount(1);
@@ -80,8 +90,9 @@ test('không còn thẻ ảnh nào trỏ tới logo cũ', async ({ app }) => {
       .evaluateAll((nodes) =>
         nodes.map((node) => (node as HTMLImageElement).getAttribute('src') ?? ''),
       );
+    expect(sources.length, route).toBeGreaterThan(0);
     expect(
-      sources.filter((src) => src.includes('logo-huyhieudang')),
+      sources.filter((src) => !FLAG_FILE.test(src)),
       route,
     ).toEqual([]);
   }
@@ -124,14 +135,14 @@ anonymous.describe('trang Đăng nhập', () => {
     const brand = page.locator('.hhd-login__brand > div:nth-child(2) img');
     await expect(brand).toHaveAttribute('src', FLAG_FILE);
     await expect(brand).toHaveAttribute('alt', 'Cờ Đảng và cờ Tổ quốc');
-    expect(await isLoaded(brand)).toBe(true);
+    await expectLoaded(brand, 'cờ ở hàng thương hiệu');
 
     const watermark = page.locator('.hhd-login__watermark img');
     await expect(watermark).toHaveAttribute('src', FLAG_FILE);
     // Hình mờ chỉ để trang trí nên trình đọc màn hình phải bỏ qua.
     await expect(watermark).toHaveAttribute('alt', '');
     await expect(watermark).toHaveAttribute('aria-hidden', 'true');
-    expect(await isLoaded(watermark)).toBe(true);
+    await expectLoaded(watermark, 'cờ ở hình mờ');
 
     // Không phóng quá bề ngang tệp gốc.
     const box = await watermark.boundingBox();
