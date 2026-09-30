@@ -7,11 +7,11 @@ import type { AwardPeriodResponse } from '../../../types/domain';
 
 /**
  * Đầu trang chi tiết đợt theo artboard "Màn 5 — Chi tiết đợt": breadcrumb, tên
- * đợt cỡ lớn kèm khoảng ngày hằng năm, nút Sửa đợt và Xóa ở bên phải.
+ * đợt cỡ lớn, nút Sửa đợt và Xóa ở bên phải.
  *
- * Từ 30/09 trang không còn tab Thông tin, nên đây là nơi DUY NHẤT của trang nói
- * khoảng ngày hằng năm. Đợt vắt qua 31/12 phải đọc "năm sau" (QT6, UC-34), khớp
- * với cột Đến ngày bên bảng đợt — một đợt không được nói hai kiểu ở hai màn.
+ * Tiêu đề chỉ có tên đợt. Khoảng ngày có năm nằm ở thanh công cụ của thẻ danh
+ * sách (`.hhd-eligibility__dates`) — đó là chỗ duy nhất trên trang cho biết
+ * khoảng ngày của đợt, kể cả đợt vắt qua 31/12 (QT6, UC-34).
  */
 
 interface PeriodDetailHeaderProps {
@@ -34,17 +34,7 @@ export function PeriodDetailHeader({ period, onEdit, onDelete }: PeriodDetailHea
           thang chữ, kể cả khi thang gọn bật lên ở khung nhìn thấp. */}
       <div className="hhd-page-heading" style={{ marginTop: 2 }}>
         <h1 className="hhd-page-heading__title">
-          {period ? (
-            <>
-              {period.name}{' '}
-              <span className="hhd-period-detail__range">
-                {period.fromDisplay} – {period.toDisplay}
-                {period.spansNextYear ? ' năm sau, hằng năm' : ' hằng năm'}
-              </span>
-            </>
-          ) : (
-            <Skeleton.Input active size="large" style={{ width: 320 }} />
-          )}
+          {period ? period.name : <Skeleton.Input active size="large" style={{ width: 320 }} />}
         </h1>
 
         <div className="hhd-page-heading__extra">

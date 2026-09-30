@@ -358,19 +358,21 @@ function yearPanelShape(app: Page) {
     const root = document.querySelector('.hhd-year-panel') as HTMLElement;
     const grid = root.querySelector('.hhd-year-panel__grid') as HTMLElement;
     const today = root.querySelector('.hhd-year-panel__today') as HTMLElement;
-    const range = root.querySelector('.hhd-year-panel__range') as HTMLElement;
+    const head = root.querySelector('.hhd-year-panel__head') as HTMLElement;
     const style = window.getComputedStyle(root);
+    const headBox = head.getBoundingClientRect();
+    const todayBox = today.getBoundingClientRect();
 
     return {
       role: root.getAttribute('role'),
       ariaLabel: root.getAttribute('aria-label'),
       width: Math.round(root.getBoundingClientRect().width),
       padding: style.padding,
-      // Nút "Năm nay" phải ở GÓC TRÁI đầu bảng, câu khoảng chọn ở bên phải.
+      // Từ T76 đầu bảng chỉ còn nút "Năm nay". Nó vẫn phải neo ở NỬA TRÁI,
+      // không giãn ra và không bị căn giữa.
       todayText: today.textContent,
-      todayLeftOfRange:
-        today.getBoundingClientRect().right <= range.getBoundingClientRect().left + 1,
-      rangeText: range.textContent,
+      todayInLeftHalf: todayBox.right <= headBox.left + headBox.width / 2 + 1,
+      headChildren: head.children.length,
       columns: window.getComputedStyle(grid).gridTemplateColumns.split(' ').length,
       gridRole: grid.getAttribute('role'),
     };
@@ -401,11 +403,9 @@ test.describe('T66 · Chi tiết đợt và Chưa thuộc đợt nào dùng cùn
     const uncovered = await yearPanelShape(app);
 
     expect(uncovered, 'hai màn phải dùng chung một bảng chọn năm').toEqual(detail);
-    expect(detail.rangeText, 'đầu bảng phải ghi đúng khoảng chọn thật').toBe(
-      `Chọn trong ${MIN_YEAR} – ${MAX_YEAR}`,
-    );
     expect(detail.todayText).toBe('Năm nay');
-    expect(detail.todayLeftOfRange, '"Năm nay" phải nằm ở góc trái đầu bảng').toBe(true);
+    expect(detail.headChildren, 'đầu bảng chỉ còn nút "Năm nay"').toBe(1);
+    expect(detail.todayInLeftHalf, '"Năm nay" phải nằm ở nửa trái đầu bảng').toBe(true);
     expect(detail.columns, 'lưới năm phải có 5 cột').toBe(5);
   });
 
@@ -601,8 +601,6 @@ test.describe('T66 · giới hạn năm máy chủ ± 100', () => {
       await app.goto(url);
       await expectYear(app, SERVER_YEAR);
       await openPanel(app);
-
-      await expect(panel(app)).toContainText(`Chọn trong ${MIN_YEAR} – ${MAX_YEAR}`);
 
       // Lưới căn theo bội số của 5 nên hàng đầu và hàng cuối thừa ra vài ô.
       // Mọi ô thừa đó phải khóa, và hai ô sát mép trong khoảng phải bấm được.

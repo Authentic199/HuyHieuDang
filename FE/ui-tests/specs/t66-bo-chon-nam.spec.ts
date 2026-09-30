@@ -96,20 +96,18 @@ async function centerOffsetInRows(app: Page): Promise<number> {
 }
 
 test.describe('Chi tiết đợt — một trang, không còn tab', () => {
-  test('không còn dải tab; tiêu đề có tên đợt và khoảng ngày hằng năm; bảng hiện ngay', async ({
-    app,
-  }) => {
+  test('không còn dải tab; tiêu đề chỉ có tên đợt; bảng hiện ngay', async ({ app }) => {
     await app.goto(DETAIL_URL);
 
     await expect(app.getByRole('tablist')).toHaveCount(0);
     await expect(app.getByRole('tab')).toHaveCount(0);
     await expect(app.locator('.hhd-period-info')).toHaveCount(0);
 
+    // Từ T76 tiêu đề chỉ còn tên đợt: khoảng ngày chuyển hẳn về thanh công cụ
+    // của thẻ danh sách, nơi nó đã gắn năm.
     const heading = app.locator('.hhd-page-heading__title');
-    await expect(heading).toContainText(DETAIL_PERIOD.name);
-    await expect(app.locator('.hhd-period-detail__range')).toHaveText(
-      `${DETAIL_PERIOD.fromDisplay} – ${DETAIL_PERIOD.toDisplay} hằng năm`,
-    );
+    await expect(heading).toHaveText(DETAIL_PERIOD.name);
+    await expect(app.locator('.hhd-period-detail__range')).toHaveCount(0);
 
     await expect(app.locator('.hhd-eligibility .ant-table-row').first()).toBeVisible();
   });
@@ -165,7 +163,7 @@ test.describe('Giới hạn 100 năm mỗi phía', () => {
     await expect(backButton(app)).toBeEnabled();
 
     await openPanel(app);
-    await expect(panel(app)).toContainText(`Chọn trong ${MIN_YEAR} – ${MAX_YEAR}`);
+    await expect(panel(app)).not.toContainText('Chọn trong');
     for (let year = MAX_YEAR + 1; year <= MAX_YEAR + 3; year += 1) {
       await expect(panelYear(app, year)).toBeDisabled();
     }
@@ -332,7 +330,7 @@ test.describe('Màn Chưa thuộc đợt nào dùng cùng bộ chọn năm', () 
   test('giới hạn giống hệt màn Chi tiết đợt', async ({ app }) => {
     await app.goto(UNCOVERED_URL);
     await openPanel(app);
-    await expect(panel(app)).toContainText(`Chọn trong ${MIN_YEAR} – ${MAX_YEAR}`);
+    await expect(panel(app)).not.toContainText('Chọn trong');
     await panelYear(app, MAX_YEAR).click();
     await expectYear(app, MAX_YEAR);
     await expect(forwardButton(app)).toBeDisabled();

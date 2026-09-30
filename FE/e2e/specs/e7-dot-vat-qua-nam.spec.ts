@@ -141,11 +141,17 @@ async function openDetail(page: Page, api: Api): Promise<void> {
 }
 
 /**
- * Khoảng ngày hằng năm trên TIÊU ĐỀ trang chi tiết đợt. Trước 30/09 câu này
- * nằm ở tab "Thông tin"; tab đã bỏ, tiêu đề là nơi duy nhất còn nói câu đó.
+ * Khoảng ngày đã gắn năm ở thanh công cụ của thẻ danh sách. Từ T76 đây là chỗ
+ * DUY NHẤT trên trang chi tiết đợt cho biết khoảng ngày của đợt — tiêu đề chỉ
+ * còn tên đợt.
  */
-function headerRange(page: Page): Locator {
-  return page.locator('.hhd-period-detail__range');
+function toolbarDates(page: Page): Locator {
+  return page.locator('.hhd-eligibility__dates');
+}
+
+/** Tiêu đề lớn của trang chi tiết đợt. */
+function headerTitle(page: Page): Locator {
+  return page.locator('.hhd-page-heading__title');
 }
 
 /**
@@ -263,9 +269,12 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
     expect(`${gaps[0].fromDisplay}–${gaps[0].toDisplay}`).toBe('01/03–30/11');
   });
 
-  await test.step('E7-06 · Tiêu đề trang chi tiết đợt đọc "01/12 – 28/02 năm sau, hằng năm"', async () => {
+  await test.step('E7-06 · Tiêu đề chi tiết đợt chỉ có tên đợt; khoảng ngày nằm ở thanh công cụ và gắn đủ hai năm', async () => {
     await openDetail(page, api);
-    await expect(headerRange(page)).toHaveText('01/12 – 28/02 năm sau, hằng năm');
+    await expect(headerTitle(page)).toHaveText(PERIOD);
+    await expect(toolbarDates(page)).toHaveText(
+      `${display(`${year}-12-01`)} – ${display(`${year + 1}-02-28`)}`,
+    );
   });
 
   await test.step('E7-07 · Danh sách đủ điều kiện, năm giữa: khoảng ngày gắn đúng hai năm và có người tròn mốc tháng 02 năm sau', async () => {
@@ -353,8 +362,11 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
     await expect(banner).toContainText('08/11–31/12');
 
     await openDetail(page, api);
-    await expect(headerRange(page)).toHaveText('01/10 – 07/11 hằng năm');
-    await expect(headerRange(page)).not.toContainText('năm sau');
+    await expect(headerTitle(page)).toHaveText(PERIOD);
+    // Đợt không còn vắt năm: hai đầu khoảng ngày cùng một năm, không có năm sau.
+    await expect(toolbarDates(page)).toHaveText(
+      `${display(`${year}-10-01`)} – ${display(`${year}-11-07`)}`,
+    );
 
     // Bốn người tròn mốc trong năm nay đều rơi ra ngoài đợt, kể cả người 20/01.
     await openUncovered(page, year);
@@ -394,18 +406,18 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
 });
 
 /**
- * QC-T54-01 · Tiêu đề trang chi tiết đợt bỏ mất chữ "năm sau" của đợt vắt năm.
+ * QC-T54-01 · Không chỗ nào trên trang chi tiết đợt nói khoảng ngày của đợt vắt
+ * năm mà thiếu năm.
  *
- * Cùng một màn hình đang nói hai kiểu: dòng tiêu đề lớn đọc
- * "Đợt Giao thừa 01/12 – 28/02 hằng năm" — nghe như hai đầu nằm trong cùng một
- * năm — trong khi khoảng ngày hằng năm phải đọc "01/12 – 28/02 năm sau,
- * hằng năm". Bảng đợt đã gắn chữ "năm sau" theo QT6, chỉ
- * `PeriodDetailHeader` còn sót.
+ * Lỗi gốc: tiêu đề đọc "Đợt Giao thừa 01/12 – 28/02 hằng năm" — nghe như hai
+ * đầu nằm trong cùng một năm — trong khi bảng đợt đã gắn "năm sau" theo QT6.
  *
- * Đã sửa ở T55 (`PeriodDetailHeader.tsx` xét `spansNextYear`), nên ca này bỏ
- * `test.fail()` và trở thành ca canh hồi quy bình thường.
+ * Từ T76 tiêu đề bỏ hẳn khoảng ngày, nên câu hỏi của ca này đổi chỗ: trang chỉ
+ * còn MỘT nơi nói khoảng ngày là thanh công cụ của thẻ danh sách, và nơi đó gắn
+ * đủ cả hai năm. Ca vẫn canh đúng hồi quy cũ: đọc khoảng ngày ở đâu trên trang
+ * cũng không thể nhầm đợt này nằm gọn trong một năm.
  */
-test('QC-T54-01 · Tiêu đề trang chi tiết đợt phải nói rõ Đến ngày thuộc năm sau', async ({
+test('QC-T54-01 · Khoảng ngày của đợt vắt năm luôn có năm, không nơi nào nói thiếu', async ({
   page,
   api,
 }) => {
@@ -413,6 +425,16 @@ test('QC-T54-01 · Tiêu đề trang chi tiết đợt phải nói rõ Đến ng
   await api.post('/AwardPeriods', { name: PERIOD, ...SPANNING });
   await signIn(page, api);
 
+  const year = Number((await api.dashboard()).today.slice(0, 4));
+
   await page.goto(`/dot-trao-huy-hieu/${await api.periodIdByName(PERIOD)}`);
-  await expect(page.locator('.hhd-period-detail__range')).toContainText('năm sau');
+
+  // Tiêu đề chỉ có tên đợt — không khoảng ngày, nên không thể nói thiếu năm.
+  await expect(headerTitle(page)).toHaveText(PERIOD);
+  await expect(page.locator('.hhd-period-detail__range')).toHaveCount(0);
+
+  // Thanh công cụ gắn đúng hai năm liền nhau.
+  await expect(toolbarDates(page)).toHaveText(
+    `${display(`${year}-12-01`)} – ${display(`${year + 1}-02-28`)}`,
+  );
 });
