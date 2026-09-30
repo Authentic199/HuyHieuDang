@@ -19,6 +19,8 @@ export interface EligibleRow {
   officialAdmissionDate: string;
   milestoneDate: string;
   milestone: number;
+  note: string | null;
+  noteUpdatedAt: string | null;
 }
 
 export interface UnassignedRow extends EligibleRow {
@@ -70,6 +72,51 @@ export function fullNameOf(index: number): string {
   return `${HO[index % HO.length]} ${DEM[(index * 3) % DEM.length]} ${TEN[(index * 7) % TEN.length]}`;
 }
 
+/**
+ * Ghi chú đảng viên (QT12) cho vài người trong bộ dữ liệu giả — khóa là chỉ số
+ * TRƯỚC khi sắp, nên chạy lại bao nhiêu lần cũng đúng những người đó.
+ *
+ * Bốn nội dung cố ý khác nhau để các ca kiểm thử có đủ tình huống: một ghi chú
+ * nhiều dòng, một chuỗi dài không có dấu cách (đường dẫn file), một ghi chú của
+ * NĂM TRƯỚC, và một ghi chú ngắn.
+ */
+const NOTES: Record<number, { note: string; noteUpdatedAt: string }> = {
+  0: {
+    note: [
+      'Đã chuyển sinh hoạt về Chi bộ Khu phố 3 từ tháng 8.',
+      'Cần xin xác nhận của chi bộ mới trước khi lập tờ trình.',
+      'Liên hệ: con trai, gọi sau 17 giờ.',
+    ].join('\n'),
+    noteUpdatedAt: `${SERVER_YEAR}-09-12T14:05:00+07:00`,
+  },
+  1: {
+    note: 'Biên bản họp chi bộ lưu tại D:\\HoSo\\ChiBo3\\2026\\BienBanHopChiBo_Thang09_DeNghiTraoHuyHieu60Nam_BanChinhThuc_KemPhuLuc.pdf',
+    noteUpdatedAt: `${SERVER_YEAR}-09-25T09:30:00+07:00`,
+  },
+  2: {
+    note: 'Năm trước đã đề nghị nhưng hồ sơ chưa đủ nên chưa trao.',
+    noteUpdatedAt: `${SERVER_YEAR - 1}-11-03T08:15:00+07:00`,
+  },
+  3: {
+    note: 'Hồ sơ gốc thiếu bản sao quyết định kết nạp.',
+    noteUpdatedAt: `${SERVER_YEAR}-09-18T16:40:00+07:00`,
+  },
+};
+
+/** Số người có ghi chú trong bộ dữ liệu giả — ca kiểm thử tính từ đây. */
+export const NOTED_COUNT = Object.keys(NOTES).length;
+
+/** Ngày ghi đọc ra màn hình: lấy nguyên phần `yyyy-MM-dd`, không đổi múi giờ. */
+export function noteDateTextOf(noteUpdatedAt: string): string {
+  const [year, month, day] = noteUpdatedAt.slice(0, 10).split('-');
+  return `Ghi ngày ${day}/${month}/${year}`;
+}
+
+/** Những dòng có ghi chú, đã sắp Mốc rồi Họ tên đúng như bảng và như hộp. */
+export function notedRowsOf(rows: EligibleRow[]): EligibleRow[] {
+  return sortLikeServer(rows.filter((row) => row.note !== null));
+}
+
 /** Danh sách đủ điều kiện, đã sắp theo Mốc rồi Họ tên đúng như máy chủ trả. */
 export function makeEligibleRows(count: number): EligibleRow[] {
   const rows: EligibleRow[] = [];
@@ -86,6 +133,8 @@ export function makeEligibleRows(count: number): EligibleRow[] {
       officialAdmissionDate: `${admissionYear}-${pad(month)}-${pad(day)}`,
       milestoneDate: `${SERVER_YEAR}-${pad(month)}-${pad(day)}`,
       milestone,
+      note: NOTES[index]?.note ?? null,
+      noteUpdatedAt: NOTES[index]?.noteUpdatedAt ?? null,
     });
   }
   return sortLikeServer(rows);

@@ -16,12 +16,18 @@ export interface MemberSearchQuery extends PagedQuery {
   nextMilestone?: NextMilestoneValue;
 }
 
-/** UC-21, UC-22 — 4 trường của modal thêm/sửa. Sửa phải gửi đủ cả 4. */
+/**
+ * UC-21, UC-22 — các trường của modal thêm/sửa. Sửa phải gửi đủ, kể cả `note`:
+ * `PUT` thay trọn, không gửi `note` nghĩa là XÓA ghi chú chứ không phải giữ lại
+ * (mục 3.4 hợp đồng v1.6).
+ */
 export interface MemberPayload {
   fullName: string;
   dateOfBirth: IsoDate | null;
   gender: Gender | null;
   officialAdmissionDate: IsoDate;
+  /** QT12 — tối đa 500 ký tự; rỗng sau khi cắt khoảng trắng thì gửi null */
+  note: string | null;
 }
 
 /**
@@ -67,6 +73,17 @@ export function createMember(payload: MemberPayload): Promise<PartyMemberRespons
 
 export function updateMember(id: string, payload: MemberPayload): Promise<PartyMemberResponse> {
   return apiClient.put<PartyMemberResponse>(`/PartyMembers/${id}`, payload);
+}
+
+/**
+ * UC-26 — lưu riêng ghi chú của một người (mục 3.6 hợp đồng v1.6).
+ *
+ * Có endpoint riêng vì hộp `Ghi chú — <Họ tên>` không bày Họ tên, Ngày sinh,
+ * Giới tính hay Ngày vào Đảng: gọi `PUT /PartyMembers/{id}` ở đó sẽ phải gửi lại
+ * bốn trường người dùng không nhìn thấy. `null` nghĩa là xóa ghi chú.
+ */
+export function updateMemberNote(id: string, note: string | null): Promise<PartyMemberResponse> {
+  return apiClient.put<PartyMemberResponse>(`/PartyMembers/${id}/Note`, { note });
 }
 
 /**

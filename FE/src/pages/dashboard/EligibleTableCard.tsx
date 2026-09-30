@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { exportsApi } from '../../api';
 import type { UpcomingPeriod } from '../../api/dashboard';
 import { FALLBACK_MESSAGE } from '../../api/messages';
+import { NoteSummary } from '../../components/notes/NoteSummary';
 import { MilestoneFilterSelect, TableSearchInput } from '../../components/TableFilters';
 import { TableStates } from '../../components/TableStates';
 import { useClientTable } from '../../hooks/useClientTable';
@@ -157,6 +158,11 @@ export function EligibleTableCard({
               : 'Danh sách đủ điều kiện'}
           </span>
         </div>
+        {/* Khối gọn tính trên TRỌN `members` của đợt sắp tới, không theo ô tìm
+            hay ô lọc của bảng — nó nói về cả đợt (QT12). */}
+        {ready && period ? (
+          <NoteSummary members={members} subject={`${period.name} năm ${period.year}`} />
+        ) : null}
         <Button
           type="primary"
           icon={<DownloadOutlined />}

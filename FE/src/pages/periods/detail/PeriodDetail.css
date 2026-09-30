@@ -44,6 +44,12 @@
   margin-left: auto;
 }
 
+/* Có khối ghi chú thì chính nó nhận khoảng trống, còn nút Xuất Excel đứng sát
+   ngay bên phải khối — đúng vị trí trong ảnh 6 đã duyệt. */
+.hhd-eligibility__toolbar > .hhd-note-summary + .ant-btn {
+  margin-left: 0;
+}
+
 .hhd-eligibility__range {
   display: flex;
   align-items: center;

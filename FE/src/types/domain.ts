@@ -29,6 +29,14 @@ export interface PartyMemberResponse {
   nextMilestoneDate: IsoDate | null;
   createdAt: IsoDateTime;
   updatedAt: IsoDateTime;
+  /** QT12 — ghi chú của người này, tối đa 500 ký tự. null khi chưa ghi gì */
+  note: string | null;
+  /**
+   * QT12 — lúc NỘI DUNG ghi chú đổi lần cuối, giờ Việt Nam kèm độ lệch +07:00.
+   * Đây là ngoại lệ múi giờ duy nhất của hợp đồng (mục 1.6 v1.6): lấy nguyên
+   * phần `yyyy-MM-dd` để hiện, không quy đổi theo đồng hồ trình duyệt.
+   */
+  noteUpdatedAt: IsoDateTime | null;
 }
 
 /**
@@ -44,6 +52,10 @@ export interface EligibleMemberResponse {
   officialAdmissionDate: IsoDate;
   milestoneDate: IsoDate;
   milestone: number;
+  /** QT12 — giống `note` của PartyMemberResponse */
+  note: string | null;
+  /** QT12 — giống `noteUpdatedAt` của PartyMemberResponse */
+  noteUpdatedAt: IsoDateTime | null;
 }
 
 /** Vị trí khoảng trống mà người bị sót rơi vào (UC-40). */

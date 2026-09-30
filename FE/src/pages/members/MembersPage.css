@@ -12,7 +12,8 @@
    `theme/responsive.css` dùng biến này để bảng cuộn ngang trong thẻ thay vì nén
    cột làm chữ gãy dòng. */
 .hhd-members__panel {
-  --hhd-table-min-width: 1210px;
+  /* 1254 = 1210 cũ + 44 px cột Thao tác nới ra cho nút ghi chú. */
+  --hhd-table-min-width: 1254px;
   background: var(--hhd-white);
   border: 1px solid var(--hhd-border);
   border-radius: var(--hhd-radius-card);
@@ -86,10 +87,23 @@
   font-size: var(--hhd-fs-18);
 }
 
-/* Nút biểu tượng Sửa ở cột Thao tác. */
+/* Hai nút biểu tượng ở cột Thao tác: ghi chú rồi Sửa. */
 .hhd-members__row-actions {
   display: inline-flex;
   gap: var(--hhd-space-xs);
+}
+
+/* Người đã có ghi chú: nút nền vàng nhạt, viền vàng, biểu tượng đặc — nhìn lướt
+   qua cột là thấy ngay ai có ghi chú (artboard ảnh 1 của HUYH-82). */
+.hhd-members__note.ant-btn.hhd-members__note--has {
+  background: var(--hhd-gold-soft);
+  border-color: #e0c98a;
+  color: var(--hhd-warning);
+}
+
+.hhd-members__note.ant-btn.hhd-members__note--has:hover {
+  border-color: #c9a53f;
+  color: var(--hhd-warning);
 }
 
 /* Tên cột luôn nằm trên một dòng, đúng hàng tiêu đề của artboard. */
