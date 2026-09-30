@@ -64,18 +64,8 @@ function nameOfPeriod(period: AwardPeriodResponse): string {
 export default function PeriodsPage() {
   const { message, modal } = AntApp.useApp();
   const navigate = useNavigate();
-  const {
-    periods,
-    year,
-    today,
-    totalCount,
-    segments,
-    warnings,
-    loading,
-    error,
-    reload,
-    applyWarnings,
-  } = usePeriods();
+  const { periods, year, today, segments, warnings, loading, error, reload, applyWarnings } =
+    usePeriods();
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<AwardPeriodResponse | null>(null);
@@ -248,17 +238,10 @@ export default function PeriodsPage() {
     },
   ];
 
-  const headingDescription = loading
-    ? 'Đang tải danh sách…'
-    : error || noData
-      ? null
-      : `${formatNumber(totalCount)} đợt · dùng chung cho mọi năm, chỉ lưu ngày/tháng`;
-
   return (
     <div className="hhd-periods">
       <PageHeading
         title="Đợt trao huy hiệu"
-        description={headingDescription}
         extra={
           <Button type="primary" onClick={openCreate}>
             + Thêm đợt
@@ -339,8 +322,6 @@ export default function PeriodsPage() {
               dataSource={table.pageRows}
               pagination={table.pagination}
               onChange={table.onTableChange}
-              // Đợt đang diễn ra hoặc sắp tới được tô nền vàng nhạt như artboard 5.
-              rowClassName={(record) => (record.status === 'Past' ? '' : 'hhd-periods__row--next')}
             />
           </div>
         </TableStates>

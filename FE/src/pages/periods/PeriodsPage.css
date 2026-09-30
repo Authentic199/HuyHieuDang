@@ -74,10 +74,6 @@
   white-space: nowrap;
 }
 
-.hhd-periods__row--next > td {
-  background: var(--hhd-gold-soft);
-}
-
 .hhd-periods__row-actions {
   display: inline-flex;
   gap: var(--hhd-space-xs);
