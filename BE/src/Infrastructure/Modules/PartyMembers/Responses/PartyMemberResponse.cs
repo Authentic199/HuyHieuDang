@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using HuyHieuDang.Infrastructure.Facades.Common.Converters;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Entities;
 using HuyHieuDang.Infrastructure.Modules.PartyMembers.Enums;
 
@@ -50,6 +52,17 @@ public class PartyMemberResponse
     public DateOnly? NextMilestoneDate { get; set; }
 
     /// <summary>
+    /// Ghi chú của đảng viên (QT12); <see langword="null"/> khi chưa có ghi chú.
+    /// </summary>
+    public string? Note { get; set; }
+
+    /// <summary>
+    /// Ngày ghi của ghi chú (QT12), trả kèm độ lệch <c>+07:00</c> theo mục 1.6 hợp đồng API.
+    /// </summary>
+    [JsonConverter(typeof(VietnamDateTimeOffsetConverter))]
+    public DateTimeOffset? NoteUpdatedAt { get; set; }
+
+    /// <summary>
     /// Thời điểm tạo bản ghi.
     /// </summary>
     public DateTimeOffset CreatedAt { get; set; }
@@ -79,6 +92,8 @@ public class PartyMemberResponse
             PartyAgeYears = partyAgeYears,
             NextMilestone = nextMilestone,
             NextMilestoneDate = nextMilestoneDate,
+            Note = entity.Note,
+            NoteUpdatedAt = entity.NoteUpdatedAt,
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt,
         };

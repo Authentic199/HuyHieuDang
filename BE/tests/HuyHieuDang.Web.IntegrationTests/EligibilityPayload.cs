@@ -27,6 +27,12 @@ public class EligibleMemberPayload
 
     [JsonPropertyName("milestone")]
     public int Milestone { get; set; }
+
+    [JsonPropertyName("note")]
+    public string? Note { get; set; }
+
+    [JsonPropertyName("noteUpdatedAt")]
+    public DateTimeOffset? NoteUpdatedAt { get; set; }
 }
 
 /// <summary>
