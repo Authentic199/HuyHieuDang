@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 import { DETAIL_PERIOD, expect, mockData, test, UPCOMING_PERIOD } from '../fixtures/app';
 import { RESPONSIVE_VIEWPORTS } from '../playwright.ui.config';
@@ -165,6 +165,50 @@ async function installManyNotes(page: Page): Promise<void> {
 
 const NOTED_ROWS = notedRowsOf(mockData.eligible);
 
+/**
+ * Chờ một hộp thoại của Ant Design mở XONG rồi mới đo.
+ *
+ * Hộp thoại mở bằng hoạt ảnh phóng to: trong lúc hoạt ảnh còn chạy, hộp vẫn
+ * đang mờ và đang bị thu nhỏ, nên `boundingBox()` trả về một hình chữ nhật nhỏ
+ * hơn hình thật và mọi phép đo theo tọa độ màn đều lệch vài điểm ảnh — đỏ chập
+ * chờn chứ không phải sản phẩm sai.
+ *
+ * Chờ theo điều kiện, không theo quãng thời gian cố định: hộp phải đục hẳn
+ * (`opacity: 1`), hết biến hình (`transform` là ma trận đơn vị), không còn lớp
+ * hoạt ảnh của Ant Design, và hình chữ nhật phải đứng yên qua hai khung hình
+ * liên tiếp.
+ */
+async function waitForModalOpen(modal: Locator): Promise<void> {
+  await expect(modal).toBeVisible();
+  await modal.evaluate(
+    (node: HTMLElement) =>
+      new Promise<void>((resolve) => {
+        let previous: DOMRect | null = null;
+        const tick = () => {
+          const style = getComputedStyle(node);
+          const settled =
+            style.opacity === '1' &&
+            (style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)') &&
+            ![...node.classList].some((name) => /-(enter|appear|leave)(-|$)/.test(name));
+          const rect = node.getBoundingClientRect();
+          const same =
+            previous !== null &&
+            Math.abs(previous.x - rect.x) < 0.01 &&
+            Math.abs(previous.y - rect.y) < 0.01 &&
+            Math.abs(previous.width - rect.width) < 0.01 &&
+            Math.abs(previous.height - rect.height) < 0.01;
+          if (settled && same) {
+            resolve();
+            return;
+          }
+          previous = settled ? rect : null;
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }),
+  );
+}
+
 test('ca 1 · nút ghi chú ở cột Thao tác, hai trạng thái hai tooltip', async ({ app }) => {
   await installTwoMembers(app);
   await app.goto('/dang-vien');
@@ -279,6 +323,7 @@ test.describe('form Thêm/Sửa ở khung laptop 1366x650', () => {
 
     const modal = app.locator('.ant-modal').filter({ hasText: 'Sửa đảng viên' });
     await expect(modal.locator('.ant-modal-title')).toHaveText('Sửa đảng viên');
+    await waitForModalOpen(modal);
 
     // Hai dòng chữ cũ dưới ô ngày đã bỏ hẳn.
     await expect(modal).not.toContainText('Ngày ghi trong quyết định kết nạp');
@@ -333,6 +378,7 @@ test.describe('form Thêm/Sửa ở khung laptop 1366x650', () => {
     await app.getByRole('button', { name: '+ Thêm', exact: true }).click();
 
     const modal = app.locator('.ant-modal').filter({ hasText: 'Thêm đảng viên' });
+    await waitForModalOpen(modal);
     await expect(modal.getByTestId('note-counter')).toHaveText(`0 / ${NOTE_MAX}`);
     // Chưa ghi gì thì chưa có ngày ghi.
     await expect(modal.getByTestId('note-date-pill')).toHaveCount(0);
@@ -469,6 +515,7 @@ test('ca 12 · ô tìm đứng yên khi danh sách trong hộp cuộn', async ({
   const dialog = app.locator('.hhd-note-dialog');
   const list = dialog.getByTestId('note-dialog-list');
   await expect(dialog.locator('.hhd-note-dialog__item')).toHaveCount(MANY_NOTES);
+  await waitForModalOpen(dialog);
 
   // Ô tìm nằm NGOÀI vùng cuộn — đó mới là lý do nó đứng yên.
   await expect(list.getByLabel('Tìm trong ghi chú')).toHaveCount(0);
@@ -497,6 +544,7 @@ test('ca 13 · chống tràn ngang: chuỗi dài không dấu cách vẫn tự n
   await app.getByTestId('note-summary').click();
 
   const dialog = app.locator('.hhd-note-dialog');
+  await waitForModalOpen(dialog);
   const overflow = await dialog
     .locator('.hhd-note-text')
     .evaluateAll((nodes) => nodes.map((node) => node.scrollWidth - node.clientWidth));
@@ -620,6 +668,7 @@ for (const viewport of RESPONSIVE_VIEWPORTS) {
       async function expectLabelsFit(title: string) {
         const modal = app.locator('.ant-modal').filter({ hasText: title });
         await expect(modal.locator('.ant-segmented')).toBeVisible();
+        await waitForModalOpen(modal);
 
         const labels = await modal.locator('.ant-segmented-item-label').evaluateAll((nodes) =>
           nodes.map((node) => ({
