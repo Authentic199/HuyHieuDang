@@ -153,10 +153,15 @@ export function modal(page: Page): Locator {
  * quả cũ. Chờ đúng dòng mong đợi hiện ra thay vì chờ một quãng cố định — ca
  * E-905 cấm dùng `waitForTimeout`.
  *
- * Gõ xong phải KIỂM LẠI ô có giữ được chữ không rồi mới chờ bảng: chuyển menu
- * sang màn Đảng viên xong là màn này còn dựng lại một nhịp nữa, và chữ gõ trúng
- * vào nhịp đó bị lần dựng lại xóa sạch — ô rỗng thì bảng không bao giờ lọc và
- * ca kiểm thử đứng chờ tới hết giờ (QC-T56-01). Gõ lại cho tới khi chữ bám được.
+ * Chuyển menu sang màn Đảng viên xong là màn này còn dựng lại một nhịp nữa, và
+ * chữ gõ trúng vào nhịp đó bị lần dựng lại nuốt mất — ô nhìn thì có chữ mà
+ * trạng thái bên trong vẫn rỗng, nên bảng không bao giờ lọc (QC-T56-01).
+ *
+ * Vì vậy **cả ba việc** — gõ, kiểm ô giữ được chữ, và kiểm bảng đã lọc — nằm
+ * trong cùng một vòng thử lại: chỉ kiểm ô rồi đi tiếp là chưa đủ, vì lần dựng
+ * lại có thể xảy ra ngay SAU lúc kiểm ô, và lúc đó không còn ai gõ lại nữa
+ * (QC-T75-01: E3-09 đỏ một lần trong lượt chạy cả bộ ngày 30/09/2026, chạy
+ * riêng lại xanh 3/3).
  */
 export async function searchMember(
   page: Page,
@@ -167,8 +172,8 @@ export async function searchMember(
   await expect(async () => {
     await box.fill(keyword);
     await expect(box).toHaveValue(keyword, { timeout: 1_000 });
-  }).toPass({ timeout: 15_000 });
-  await expect(tableRows(page).first()).toContainText(expectedName);
+    await expect(tableRows(page).first()).toContainText(expectedName, { timeout: 5_000 });
+  }).toPass({ timeout: 30_000 });
 }
 
 /**

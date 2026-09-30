@@ -2,9 +2,9 @@
 |---|---|
 | Dự án | HuyHieuDang — Hệ thống hỗ trợ xét trao Huy hiệu Đảng |
 | Tài liệu | Kế hoạch kiểm thử (T25) |
-| Phiên bản | 1.0 — 19/09/2026 |
+| Phiên bản | 1.1 — 30/09/2026 (bổ sung QT12 Ghi chú đảng viên, ca A-801 → A-841 và luồng E2E-8) |
 | Chủ sở hữu | QC |
-| Nguồn sự thật | `docs/2026-09-17-huyhieudang-business-design.md` v1.1 — mục 3 (QT1–QT11), mục 4 (UC-xx) |
+| Nguồn sự thật | `docs/2026-09-17-huyhieudang-business-design.md` v1.3 — mục 3 (QT1–QT12), mục 4 (UC-xx); hợp đồng API `docs/api-contract.md` v1.6 |
 | Bộ dữ liệu | `tests/fixtures/` — xem `tests/fixtures/README.md` |
 
 Tài liệu này viết **trước khi có mã nguồn**. Backend và Frontend đọc nó để biết mình
@@ -21,7 +21,7 @@ không truy vết được thì không nằm trong kế hoạch này.
 |---|---|---|---|---|
 | Logic thuần | `U-xxx` | xUnit, không DB, không HTTP | service tính mốc | T26 |
 | Tích hợp API | `A-xxx` | xUnit + `WebApplicationFactory` + PostgreSQL thật | API đã lên | T27 |
-| Giao diện & E2E | `E1`–`E6` | Playwright, trình duyệt thật | FE nối API thật | T28 |
+| Giao diện & E2E | `E1`–`E8` | Playwright, trình duyệt thật | FE nối API thật | T28, T54, T75 |
 
 Ba tầng không thay thế nhau. Một quy tắc QT được phủ ở tầng logic **không** miễn cho
 nó khỏi tầng API: tính đúng trong service mà truy vấn sai điều kiện hoặc phân trang
@@ -531,9 +531,40 @@ Khối T54 — đợt vắt qua 31/12. Mã bắt đầu từ A-221 vì A-210 →
 | A-904 | Đủ điều kiện 1 đợt / 1 năm với 10.000 đảng viên trong DB: **< 1 giây** (mục 7 tài liệu nghiệp vụ) |
 | A-905 | Mọi thông báo lỗi trả cho người dùng là **tiếng Việt**, không có stack trace, không có tên bảng/cột |
 
+### 5.10 Ghi chú đảng viên (QT12, UC-26; hợp đồng API v1.6 mục 1.10, 3.3, 3.4, 3.6)
+
+Ghi chú có **ba** đường ghi — `POST /api/PartyMembers`, `PUT /api/PartyMembers/{id}` và
+`PUT /api/PartyMembers/{id}/Note` — nên mọi quy tắc biên đều phải kiểm trên cả ba, không
+chỉ trên endpoint mới. Ngày ghi đối chiếu bằng **chuỗi tuyệt đối** suy từ ba mốc T0/T1/T2
+của mục 2, không so "gần bằng bây giờ".
+
+| Ca | Vào | Mong đợi |
+|---|---|---|
+| A-801 | Ghi chú đúng **500** ký tự | Lưu trọn vẹn; ngày ghi = mốc đang ép |
+| A-802 | Ghi chú **501** ký tự, gửi qua cả ba đường ghi | 400 `Mes.PartyMember.OverLength.Note`; bản ghi cũ nguyên vẹn, không tạo người mới |
+| A-803 | Ghi chú toàn khoảng trắng (`"   "`, tab, xuống dòng) | Lưu `null`; ngày ghi `null` |
+| A-804 | Ghi chú có khoảng trắng hai đầu | Cắt hai đầu, **giữ** xuống dòng bên trong |
+| A-805 | 500 ký tự kèm khoảng trắng hai đầu (chuỗi thô 520) | Hợp lệ — trần đếm **sau khi** cắt |
+| A-810 | Từ không có ghi chú sang có | Ngày ghi = thời điểm máy chủ, trả kèm `+07:00` chứ không phải `Z`; đọc lại từ DB vẫn ra đúng chuỗi đó |
+| A-811 | Đổi nội dung ghi chú ở mốc T1 | Ngày ghi nhảy sang T1 |
+| A-812 | Lưu lại **y hệt** nội dung cũ ở mốc T2 (kể cả bản chỉ khác khoảng trắng hai đầu) | Ngày ghi **giữ nguyên** mốc T0 |
+| A-813 | Sửa Họ tên ở mốc T1, gửi lại đúng ghi chú cũ | Họ tên đổi; ngày ghi **giữ nguyên** mốc T0 |
+| A-814 | Xóa ghi chú rồi ghi lại ở mốc T1 | Xóa: `note` và `noteUpdatedAt` cùng `null`; ghi lại: ngày ghi = T1 |
+| A-815 | `PUT /api/PartyMembers/{id}` **không** gửi `note` | Ghi chú bị **xóa** — `PUT` thay trọn, không phải giữ nguyên |
+| A-816 | `POST /api/PartyMembers` kèm / không kèm `note` | Kèm: ngày ghi đóng ngay; không kèm: cả hai trường `null` |
+| A-820 | `PUT /{id}/Note` gửi kèm cả `fullName`, `gender`, hai ngày | Bốn trường đó **không đổi**; tuổi đảng và mốc kế tiếp không đổi |
+| A-821 | `PUT /{id}/Note` với id không tồn tại | 400 `Mes.PartyMember.NotFound`, không 500 |
+| A-822 | `PUT /{id}/Note` khi chưa đăng nhập | **401**; kho không đổi. Cũng nằm trong vòng quét A-001 |
+| A-823 | Thân rỗng `{}`; và khóa báo thành công | `{}` là xóa ghi chú; báo thành công bằng khóa có sẵn `Mes.PartyMember.Update.Successfully` |
+| A-830 | `GET /api/Dashboard` và `GET /api/Eligibility` sau khi ghi chú cho đúng một người | Đúng người mang ghi chú, những người còn lại `null`; `UnassignedMemberResponse` vẫn có đủ hai trường |
+| A-831 | Thêm, sửa, xóa ghi chú rồi chụp lại toàn bộ con số nghiệp vụ | Tuổi đảng, mốc kế tiếp, danh sách đủ điều kiện, badge, cảnh báo **y nguyên** — ghi chú không tham gia QT1–QT11 |
+| A-840 | Nạp `core-hop-le.xlsx`; tải file mẫu | Người mới có `note` và `noteUpdatedAt` `null`; file mẫu không có cột ghi chú |
+| A-841 | Ba file Excel xuất ra, sau khi **mọi** đảng viên đều có ghi chú | Không file nào có ô tiêu đề "Ghi chú" và không ô nào mang nội dung ghi chú |
+| A-906 | Bảng khóa của QC trùng khít mục 1.5 hợp đồng API | Bắt được ngay khi hợp đồng thêm `Mes.PartyMember.OverLength.Note` mà bộ kiểm thử quên chép |
+
 ---
 
-## 6. Tầng 3 — Kiểm thử end-to-end (T28, `E1`–`E6`; T54, `E7`)
+## 6. Tầng 3 — Kiểm thử end-to-end (T28, `E1`–`E6`; T54, `E7`; T75, `E8`)
 
 Playwright, trình duyệt thật, BE + DB thật. Cấu hình bắt buộc theo T-FIX-5:
 `timezoneId: 'Asia/Ho_Chi_Minh'`, `locale: 'vi-VN'`, `page.clock.install` ở mốc T0, và
@@ -707,6 +738,30 @@ Ca ép ngày `E2E_TODAY=2027-01-15` (bảng đợt đọc "Đang diễn ra", Das
 khởi đầu từ 01/12/2026) chờ T53 gỡ nút `HUYHIEUDANG_TEST_TODAY`; phần nghiệp vụ đã nghiệm thu
 ở tầng API bằng A-223.
 
+### E2E-8 · Ghi chú đảng viên (T75 — QT12; UC-20, UC-21, UC-22, UC-26, UC-11, UC-34)
+
+Trạng thái đầu: đã đăng nhập, 4 đợt, cài đặt 30/90/5 kèm tên đơn vị, bộ lõi 32 người, mốc T0.
+Người mang ghi chú là **dòng đầu** danh sách đủ điều kiện của đợt sắp tới, lấy từ
+`expected.json` chứ không viết cứng tên.
+
+| Bước | Thao tác | Kết quả mong đợi |
+|---|---|---|
+| E8-01 | Bấm nút ghi chú ở cột Thao tác, ghi một ghi chú hai dòng rồi Lưu | Trước khi ghi: nút để viền, tooltip `Thêm ghi chú`. Sau khi ghi: nút nền vàng, tooltip `Ghi chú · ghi ngày dd/MM/yyyy` đúng ngày máy chủ |
+| E8-02 | Mở Dashboard | Khối `Ghi chú · 1 người`, dòng hai là `Họ tên: nội dung`; khối nằm sát bên trái nút Xuất Excel, cùng hàng; bảng **không** mất dòng nào |
+| E8-03 | Bấm khối để mở hộp đầy đủ | Tiêu đề `Ghi chú — <Tên đợt> năm <năm>`, có viên ngày ghi vàng, toàn văn giữ xuống dòng. Ô tìm: gõ chữ trong nội dung thì còn 1 mục; gõ chuỗi không có thì hiện `Không tìm thấy ghi chú nào khớp.`; đóng rồi mở lại thì ô tìm trống |
+| E8-04 | Sửa **nội dung** ghi chú trong form Sửa | Lưu được; ngày ghi trên máy chủ **đổi** (QT12.3) |
+| E8-05 | Sửa **họ tên**, không đụng ô ghi chú | Họ tên đổi; ghi chú và ngày ghi **không đổi**; khối gọn theo tên mới |
+| E8-06 | Xóa hết chữ trong hộp ghi chú rồi Lưu | Nút về dạng viền; `note` và `noteUpdatedAt` cùng `null`; khối gọn trên Dashboard **biến mất** |
+| E8-07 | So lại toàn bộ con số nghiệp vụ với lúc đầu luồng | Tổng người, đợt sắp tới, số đủ điều kiện, phân bổ theo mốc, badge — **y nguyên** (QT12 chỉ để đọc) |
+
+**Không phụ thuộc ngày chạy.** Mốc T0 ép cả hai đồng hồ nên `Ghi ngày` luôn đọc ra ngày
+máy chủ đang báo. Phần NGÀY của ngày ghi vì vậy đứng yên suốt lần chạy — màn hình không
+nói được "ngày ghi có đổi hay không", nên E8-04 và E8-05 đối chiếu giá trị đầy đủ lấy từ
+máy chủ. Hợp đồng trả ngày ghi ở độ chính xác **giây**, nên trước hai bước đó luồng đợi
+đồng hồ máy chủ sang giây mới bằng cách ghi thử lên một người đứng ngoài danh sách đủ
+điều kiện — chờ theo điều kiện trên trạng thái thật, không phải chờ một quãng cố định
+(ca E-905).
+
 ### E2E — ca chạy lại và độc lập
 
 | Ca | Mong đợi |
@@ -720,7 +775,7 @@ khởi đầu từ 01/12/2026) chờ T53 gỡ nút `HUYHIEUDANG_TEST_TODAY`; ph�
 
 ---
 
-## 7. Bảng truy vết QT1–QT11
+## 7. Bảng truy vết QT1–QT12
 
 | Quy tắc | Logic | API | E2E |
 |---|---|---|---|
@@ -736,13 +791,15 @@ khởi đầu từ 01/12/2026) chờ T53 gỡ nút `HUYHIEUDANG_TEST_TODAY`; ph�
 | **QT9** Import Excel | U-901 → U-921 | A-601 → A-620 | E2-01 → E2-15 |
 | **QT10** Xóa hẳn | U-1001, U-1002 | A-121 → A-124, A-213 | E6-15, E6-16, E4-12 |
 | **QT11** Trạng thái đợt | U-1101 → U-1107, U-626 | A-202, A-203, A-223 | E1-09, E-903, E7-03 |
+| **QT12** Ghi chú đảng viên | — (luật nằm ở `PartyMemberNote`, phủ bằng A-801 → A-841) | A-801 → A-841, A-001, A-906 | E8-01 → E8-07 |
 
 Use case: UC-00/01 → A-005, A-006, E1-01 → E1-03, E1-19 · UC-10 → A-301, E1-15 ·
-UC-11 → A-214, E1-16, E5-01 · UC-12 → A-305 → A-308, E1-04, E1-18 · UC-13 → A-306, E1-04 ·
+UC-11 → A-214, A-830, A-841, E1-16, E5-01, E8-02, E8-03 · UC-12 → A-305 → A-308, E1-04, E1-18 · UC-13 → A-306, E1-04 ·
 UC-20 → A-101 → A-115, E6-01, E6-12 → E6-14 · UC-21/22 → A-116 → A-120, E6-02, E6-05 → E6-09 ·
 UC-23 → A-121 → A-124, E6-15, E6-16 · UC-24 → A-601 → A-618, E2-01 → E2-15 ·
+UC-26 (mới, v1.6) → A-820 → A-823, A-801 → A-816, E8-01, E8-03, E8-06 ·
 UC-25 → A-619, E2-02, E2-03 · UC-30 → A-201 → A-204, E1-09 · UC-31/32/33 → A-205 → A-213, E4-04 ·
-UC-34 → A-214 → A-219, E5-04, E5-05 · UC-36 → E1-10 · UC-40 → A-401 → A-406, E4-01, E5-06 ·
+UC-34 → A-214 → A-219, A-830, A-841, E5-04, E5-05 · UC-36 → E1-10 · UC-40 → A-401 → A-406, E4-01, E5-06 ·
 UC-50 → A-501 → A-506, E1-06, E3-02 · UC-51 → A-507, A-508, E1-08, E5-02, E5-08.
 
 ---

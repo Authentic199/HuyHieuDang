@@ -120,6 +120,37 @@ export class Api {
     return this.get(`/PartyMembers?current=${current}&pageSize=${pageSize}`);
   }
 
+  /**
+   * Trọn bảng đảng viên kèm ghi chú và ngày ghi (QT12).
+   *
+   * Ngày ghi chỉ hiện trên màn hình ở mức NGÀY (`Ghi ngày dd/MM/yyyy`), mà mốc
+   * đóng băng của bộ kiểm thử giữ nguyên phần ngày cho cả lần chạy — nên "ngày
+   * ghi có đổi hay không" là điều màn hình không nói được. Lớp này đọc giá trị
+   * đầy đủ từ máy chủ để E2E-8 khẳng định được đúng quy tắc QT12.3.
+   */
+  notedMembers(): Promise<{ pagedData: MemberNoteState[]; pageInfo: PageInfo }> {
+    return this.get('/PartyMembers?current=1&pageSize=500');
+  }
+
+  /** Một đảng viên theo họ tên, kèm ghi chú và ngày ghi. */
+  async memberByName(fullName: string): Promise<MemberNoteState> {
+    const page = await this.notedMembers();
+    const found = page.pagedData.find((row) => row.fullName === fullName);
+    if (!found) throw new Error(`Không tìm thấy đảng viên tên "${fullName}" trên máy chủ`);
+    return found;
+  }
+
+  /**
+   * Lưu ghi chú qua endpoint riêng của mục 3.6 hợp đồng API.
+   *
+   * Việc nghiệp vụ của E2E-8 làm qua giao diện; hàm này chỉ dùng cho người
+   * "mồi" đứng ngoài danh sách đủ điều kiện, để đợi đồng hồ máy chủ sang giây
+   * mới mà không phải chờ một quãng cố định (ca E-905).
+   */
+  saveNote(id: string, note: string | null): Promise<MemberNoteState> {
+    return this.put(`/PartyMembers/${id}/Note`, { note });
+  }
+
   // ----- Dựng trạng thái -----
 
   /** Xóa hết đảng viên. Lặp theo trang vì một lần xóa chỉ nhận danh sách id. */
@@ -206,6 +237,14 @@ export class Api {
   }
 }
 
+/** Một đảng viên với riêng phần ghi chú của QT12. */
+export interface MemberNoteState {
+  id: string;
+  fullName: string;
+  note: string | null;
+  noteUpdatedAt: string | null;
+}
+
 export interface DashboardData {
   today: string;
   currentYear: number;
@@ -223,7 +262,13 @@ export interface DashboardData {
     isNextYear: boolean;
     milestoneBreakdown: { milestone: number; count: number }[];
   } | null;
-  eligibleMembers: { fullName: string; milestone: number; milestoneDate: string }[];
+  eligibleMembers: {
+    fullName: string;
+    milestone: number;
+    milestoneDate: string;
+    note: string | null;
+    noteUpdatedAt: string | null;
+  }[];
   warnings: {
     noMembers: boolean;
     noPeriods: boolean;
