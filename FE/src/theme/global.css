@@ -118,8 +118,7 @@ kbd,
   row-gap: var(--hhd-space-sm);
 }
 
-/* Cỡ chữ của thanh phân trang và ô "… / trang" — tối thiểu 14px cho dễ đọc. */
-:is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-total-text,
+/* Cỡ chữ của thanh phân trang và ô "… / trang" — đi theo thang chữ thân. */
 :is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-item,
 :is(.hhd-table-scroll, .hhd-members__body) .ant-pagination-options {
   font-size: var(--hhd-fs-14);

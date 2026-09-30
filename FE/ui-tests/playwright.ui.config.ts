@@ -60,7 +60,10 @@ export default defineConfig({
   webServer: {
     command: `npm run preview -- --port ${PORT} --strictPort`,
     url: BASE_URL,
-    reuseExistingServer: !process.env.CI,
+    // Ba việc chạy song song trên cùng một máy: nếu cổng đã có máy chủ của
+    // thư mục khác thì phải báo lỗi to, chứ dùng lại nó là kiểm nhầm bản build.
+    // Mỗi việc chạy cổng riêng: T50_PORT=4179 npm run test:ui cho HUYH-68.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });

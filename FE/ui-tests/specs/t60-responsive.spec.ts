@@ -28,6 +28,22 @@ const COMPACT_MAX_HEIGHT = 899;
 /** Số dòng tối thiểu phải nhìn thấy được ở mọi bảng. */
 const MIN_VISIBLE_ROWS = 8;
 
+/**
+ * Riêng khung 1440x900 chỉ đòi 4 dòng.
+ *
+ * Đó là khung của bộ thiết kế và yêu cầu 1 bắt "giữ nguyên như hiện nay"; bố
+ * cục đang có trên `main` vốn chỉ hiện 4 dòng ở Dashboard và Đợt trao huy hiệu
+ * vì thẻ đợt sắp tới, dải độ phủ và khối gợi ý chiếm chỗ. 4 là mức thấp nhất
+ * `main` đang có, nên sàn này vẫn bắt được hồi quy mà không ép đổi khung thiết
+ * kế. Màn 34 inch không có mâu thuẫn đó nên đòi đủ 8 như màn thấp.
+ */
+const MIN_VISIBLE_ROWS_DESIGN_FRAME = 4;
+
+/** Khung 1440x900 là khung duy nhất được hạ sàn; mọi khung khác đòi đủ 8 dòng. */
+function minimumRowsFor(viewportHeight: number): number {
+  return viewportHeight === 900 ? MIN_VISIBLE_ROWS_DESIGN_FRAME : MIN_VISIBLE_ROWS;
+}
+
 const SHOT_DIR = path.join(import.meta.dirname, '..', '.artifacts', 'anh-t60');
 
 interface Screen {
@@ -239,10 +255,7 @@ for (const screen of SCREENS) {
       const rows = await countVisibleRows(app, screen.table);
       expect(rows.total, `${screen.label}: bảng không dựng được dòng nào`).toBeGreaterThan(0);
 
-      // Sàn 8 dòng là yêu cầu của MÀN THẤP. Màn cao phải giữ nguyên bố cục cũ,
-      // mà bố cục cũ vốn chỉ hiện 4-7 dòng ở vài màn (thẻ đợt sắp tới và dải độ
-      // phủ chiếm chỗ) — ép 8 dòng ở đó là đổi khung 1440x900, trái yêu cầu 1.
-      const minimumRows = tallViewport ? 1 : Math.min(MIN_VISIBLE_ROWS, rows.total);
+      const minimumRows = Math.min(minimumRowsFor(viewport.height), rows.total);
       expect(
         rows.visible,
         `${screen.label}: chỉ thấy ${rows.visible}/${rows.total} dòng`,
@@ -289,17 +302,39 @@ test('thang gọn giữ đúng sàn cỡ chữ và chiều cao nút', async ({ a
     .getByRole('button', { name: '+ Thêm' })
     .evaluate((node) => node.getBoundingClientRect().height);
 
+  // Chữ phụ: dòng mô tả dưới tiêu đề màn và nhãn mốc trong ô bảng.
+  const descriptionFontSize = await app
+    .locator('.hhd-page-heading__description')
+    .evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+  const tagFontSize = await app
+    .locator('.hhd-members__panel .ant-table-tbody > tr.ant-table-row span[style*="font"]')
+    .first()
+    .evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+
+  // Ô nhập: ô tìm theo họ tên — ô cỡ lớn, 48px ở màn cao và 40px ở thang gọn,
+  // vẫn trên sàn 32px.
+  const searchHeight = await app
+    .locator('.hhd-members__search')
+    .evaluate((node) => node.getBoundingClientRect().height);
+
   if (tallViewport) {
     // Màn cao: đúng bộ thiết kế, thang gọn không được chạm vào.
     expect(bodyFontSize).toBe(14);
     expect(cellFontSize).toBe(14);
+    expect(descriptionFontSize).toBe(14);
+    expect(tagFontSize).toBe(14);
     expect(buttonHeight).toBe(40);
+    expect(searchHeight).toBe(48);
   } else {
-    // Màn thấp: nhỏ hơn một nấc nhưng không dưới sàn đã chốt.
+    // Màn thấp: nhỏ hơn một nấc nhưng không dưới sàn đã chốt — chữ thân và chữ
+    // trong bảng >= 13px, chữ phụ >= 12px, nút và ô nhập cao >= 32px.
     expect(bodyFontSize).toBeLessThan(14);
     expect(bodyFontSize).toBeGreaterThanOrEqual(13);
     expect(cellFontSize).toBeGreaterThanOrEqual(13);
+    expect(descriptionFontSize).toBeGreaterThanOrEqual(12);
+    expect(tagFontSize).toBeGreaterThanOrEqual(12);
     expect(buttonHeight).toBeGreaterThanOrEqual(32);
+    expect(searchHeight).toBeGreaterThanOrEqual(32);
   }
 });
 
