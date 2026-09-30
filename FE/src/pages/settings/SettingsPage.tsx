@@ -73,7 +73,7 @@ export default function SettingsPage() {
 
   /**
    * Đổ giá trị máy chủ vào form. Tên đơn vị chỉ đổ lại khi chính máy chủ đổi
-   * nó — Khôi phục mặc định không được cướp chữ bác đang gõ dở (mục 7.3).
+   * nó — Khôi phục mặc định không được cướp chữ người dùng đang gõ dở (mục 7.3).
    */
   const syncedRef = useRef<SettingsResponse | null>(null);
   useEffect(() => {
@@ -197,7 +197,7 @@ export default function SettingsPage() {
         requiredMark={requiredMark}
         disabled={busy}
         initialValues={EMPTY_FORM}
-        // Bác sửa lại ô nào thì bỏ câu lỗi máy chủ đang treo ở đó.
+        // Người dùng sửa lại ô nào thì bỏ câu lỗi máy chủ đang treo ở đó.
         onValuesChange={() => setServerErrors({})}
       >
         <div className="hhd-settings__card">

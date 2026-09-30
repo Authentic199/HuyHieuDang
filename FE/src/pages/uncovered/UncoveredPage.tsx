@@ -249,7 +249,7 @@ export default function UncoveredPage() {
                   lineHeight: '24px',
                 }}
               >
-                Bác thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.
+                Thử xóa bớt chữ trong ô tìm, hoặc chọn lại Mốc: Tất cả.
               </span>
             ) : null
           }

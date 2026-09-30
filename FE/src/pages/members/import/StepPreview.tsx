@@ -68,7 +68,7 @@ const VALID_COLUMNS: ColumnsType<ImportValidRow> = [
 
 /**
  * Bảng dòng lỗi — giữ nguyên chữ thô đọc từ ô Excel vì chính chúng đang sai,
- * chuẩn hóa lại là giấu mất chỗ bác cần sửa. Ô gây lỗi tô đỏ, cột "Lý do" ghép
+ * chuẩn hóa lại là giấu mất chỗ người dùng cần sửa. Ô gây lỗi tô đỏ, cột "Lý do" ghép
  * mọi lý do của dòng đó.
  */
 function errorColumns(): ColumnsType<ImportErrorRow> {
@@ -191,7 +191,7 @@ export function StepPreview({
     [preview.validRows, needle, filtering],
   );
 
-  // Tab Lỗi tìm thêm trong cột "Lý do" để bác lọc ra mọi dòng "Thiếu họ tên".
+  // Tab Lỗi tìm thêm trong cột "Lý do" để người dùng lọc ra mọi dòng "Thiếu họ tên".
   const errorRows = useMemo(
     () =>
       filtering
@@ -226,7 +226,7 @@ export function StepPreview({
     filtering
       ? {
           description: 'Không tìm thấy dòng nào khớp',
-          hint: 'Bác thử bớt chữ, hoặc xóa ô tìm để xem lại cả danh sách.',
+          hint: 'Thử bớt chữ, hoặc xóa ô tìm để xem lại cả danh sách.',
         }
       : { description, hint };
 
@@ -298,7 +298,7 @@ export function StepPreview({
                   isEmpty={validRows.length === 0}
                   {...emptyState(
                     'Không có dòng nào hợp lệ',
-                    'Cả file đều vướng lỗi. Bác sửa trong file gốc rồi nạp lại giúp.',
+                    'Cả file đều vướng lỗi. Sửa trong file gốc rồi nạp lại.',
                   )}
                 >
                   <Table<ImportValidRow>
@@ -318,10 +318,7 @@ export function StepPreview({
                   loading={false}
                   error={null}
                   isEmpty={errorRows.length === 0}
-                  {...emptyState(
-                    'Không có dòng lỗi nào',
-                    'Cả file đều đọc được. Bác bấm nạp là xong.',
-                  )}
+                  {...emptyState('Không có dòng lỗi nào', 'Cả file đều đọc được. Bấm nạp là xong.')}
                 >
                   <Table<ImportErrorRow>
                     rowKey="rowNumber"
@@ -340,7 +337,7 @@ export function StepPreview({
             Các dòng lỗi sẽ không được nạp. Sửa trong file gốc rồi import lại nếu cần.
           </span>
           {/* "Hủy" bỏ hẳn việc import và về thẳng danh sách đảng viên; "Quay
-              lại" giữ file để bác xem lại phần mô tả 4 cột rồi tiếp tục. */}
+              lại" giữ file để người dùng xem lại phần mô tả 4 cột rồi tiếp tục. */}
           <Button type="text" onClick={onCancel}>
             Hủy
           </Button>
