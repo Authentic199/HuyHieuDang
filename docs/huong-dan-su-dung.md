@@ -134,7 +134,7 @@ Một đợt **được phép vắt qua ngày 31/12**. Nếu Đến ngày đứn
 | Đủ điều kiện năm nay | Số người đủ điều kiện của đợt đó trong năm nay |
 | Thao tác | Ba nút: **Xem chi tiết**, **Sửa**, **Xóa** |
 
-Bảng sắp theo **Từ ngày**. Dòng của đợt đang diễn ra hoặc sắp tới được tô nền vàng nhạt.
+Bảng sắp theo **Từ ngày**.
 
 **Dải độ phủ** phía trên bảng là một thanh ngang 12 tháng. Mỗi đợt là một vạch màu, chỗ nào **xám** là chưa có đợt nào phủ. Có vạch đánh dấu **Hôm nay**. Nhìn thanh này là thấy ngay đơn vị còn hở tháng nào.
 
@@ -335,13 +335,16 @@ Có hai đường, chọn đường nào cũng ra cùng một danh sách.
 **Đường 2 — qua màn hình đợt.** Dùng khi cần **một đợt cụ thể**, hoặc cần **năm khác**.
 
 1. Bấm **Đợt trao huy hiệu**.
-2. Bấm nút **Xem chi tiết** ở cột Thao tác của đợt cần xem. Trang chi tiết đợt có hai tab: **Thông tin** và **Danh sách đủ điều kiện**.
-3. Mở tab **Danh sách đủ điều kiện**.
-4. Trên tab có **bộ chọn năm** gồm ba năm liền nhau, ví dụ **2025 · 2026 · 2027**. Mặc định là năm nay. Chọn năm sau để chuẩn bị trước; phần mềm gắn nhãn **Năm sau** cạnh khoảng ngày và ghi *"N người · chuẩn bị trước"* để không nhầm.
+2. Bấm nút **Xem chi tiết** ở cột Thao tác của đợt cần xem. Trang chi tiết đợt là **một trang**: trên cùng là tên đợt cùng khoảng ngày hằng năm và hai nút **Sửa đợt**, **Xóa**; ngay dưới là danh sách đủ điều kiện.
+3. Trên thanh công cụ của danh sách có **bộ chọn năm**: một ô năm duy nhất, hai bên là mũi tên `‹` và `›`. Mặc định là năm nay.
+   - Bấm `‹` để lùi một năm, bấm `›` để tiến một năm.
+   - Cần nhảy xa thì **bấm vào ô năm**. Một bảng chọn năm mở ra, mỗi hàng 5 năm, cuộn lên xuống được. Bấm một năm là chọn xong. Góc trái bảng có nút **Năm nay** để về năm nay ngay.
+   - Đi được trong khoảng **100 năm trước và 100 năm sau năm nay** — năm nay 2026 thì từ 1926 đến 2126. Hết khoảng thì mũi tên mờ đi, không bấm được.
+4. Cạnh khoảng ngày có nhãn cho biết đang xem năm nào so với năm nay: **Năm nay**, **Năm sau**, **Năm trước**, hoặc **"3 năm nữa"**, **"3 năm trước"**. Xem năm tương lai thì số người ghi thêm *"· chuẩn bị trước"* để không nhầm.
 5. Bấm **Xuất Excel**.
 
-<!-- ảnh: trang chi tiết đợt, tab "Danh sách đủ điều kiện" đang mở, bộ chọn năm 2025·2026·2027 với 2026 đang chọn, bảng danh sách và nút Xuất Excel -->
-> **[Ảnh 16]** Trang chi tiết đợt: tab Danh sách đủ điều kiện và bộ chọn năm — `docs/images/16-chi-tiet-dot.png`
+<!-- ảnh: trang chi tiết đợt (một trang, không có tab): tiêu đề có tên đợt và khoảng ngày, bộ chọn năm một ô `‹ 2026 ›`, bảng danh sách và nút Xuất Excel -->
+> **[Ảnh 16]** Trang chi tiết đợt: bộ chọn năm và danh sách đủ điều kiện — `docs/images/16-chi-tiet-dot.png`
 
 **Nên đối chiếu trước khi in:** số người ghi ở chân bảng có khớp số dòng không, các mốc có hợp lý không. Thấy thiếu người thì sang **B3**.
 
@@ -354,10 +357,10 @@ Có hai đường, chọn đường nào cũng ra cùng một danh sách.
 
 1. Nhìn menu trái. Mục **Chưa thuộc đợt nào** có con số đỏ không? Có nghĩa là đang có người bị sót.
 2. Bấm vào mục đó.
-3. Chọn năm ở bộ chọn năm phía trên bên phải (mặc định năm nay).
+3. Chọn năm ở **bộ chọn năm** phía trên bên phải — cùng loại với trang chi tiết đợt: một ô năm, hai mũi tên `‹` `›`, bấm vào ô năm thì mở bảng chọn năm có nút **Năm nay**, đi được trong khoảng 100 năm trước và 100 năm sau năm nay. Mặc định là năm nay.
 4. Bảng **Bị sót trong năm <năm>** hiện danh sách, giống bảng đủ điều kiện nhưng có thêm cột **Khoảng trống** cho biết người đó rơi vào chỗ hở nào: *"Giữa Đợt A và Đợt B"*, *"Trước đợt đầu tiên"*, hoặc *"Sau đợt cuối cùng"*. Bảng sắp theo **Ngày tròn mốc** rồi **Họ tên**.
 
-<!-- ảnh: màn Chưa thuộc đợt nào với 3–4 người, thấy bộ chọn năm, khối gợi ý nới đợt, và cột Khoảng trống -->
+<!-- ảnh: màn Chưa thuộc đợt nào với 3–4 người, thấy bộ chọn năm một ô `‹ 2026 ›`, khối gợi ý nới đợt, và cột Khoảng trống -->
 > **[Ảnh 17]** Màn hình Chưa thuộc đợt nào, có cột Khoảng trống — `docs/images/17-chua-thuoc-dot-nao.png`
 
 **Xử lý thế nào:** phần mềm gợi ý ngay trên màn hình — **nới Đến ngày của đợt trước, hoặc nới Từ ngày của đợt sau**, sao cho khoảng trống được phủ. Có nút đi thẳng sang màn hình **Đợt trao huy hiệu**.
@@ -472,8 +475,8 @@ Giữ lại dòng `<!-- ảnh: … -->` để lần sau chụp lại cho đúng 
 | 13 | Màn Đảng viên đang tích chọn 3 người: 3 dòng nền vàng, chữ "Đang chọn 3 dòng", nút thùng rác đỏ ở đầu trang, hộp xác nhận xóa đang mở | `13-xoa-nhieu.png` |
 | 14 | Dashboard đầy đủ: thẻ "Đợt sắp tới" có số người và Phân bổ theo mốc, bảng Danh sách đủ điều kiện, nút Xuất Excel | `14-dashboard-day-du.png` |
 | 15 | File `DuDieuKien_Dot7-11_2026.xlsx` mở bằng Excel: 3 dòng tiêu đề, dòng trống, dòng tên cột, vài dòng dữ liệu | `15-file-excel.png` |
-| 16 | Trang chi tiết đợt, tab "Danh sách đủ điều kiện": bộ chọn năm ba năm, bảng danh sách, nút Xuất Excel | `16-chi-tiet-dot.png` |
-| 17 | Màn Chưa thuộc đợt nào với 3–4 người: bộ chọn năm, khối gợi ý nới đợt, cột Khoảng trống | `17-chua-thuoc-dot-nao.png` |
+| 16 | Trang chi tiết đợt (một trang, không có tab): tiêu đề có tên đợt và khoảng ngày hằng năm, bộ chọn năm một ô `‹ 2026 ›`, bảng danh sách, nút Xuất Excel | `16-chi-tiet-dot.png` |
+| 17 | Màn Chưa thuộc đợt nào với 3–4 người: bộ chọn năm một ô `‹ 2026 ›` giống trang chi tiết đợt, khối gợi ý nới đợt, cột Khoảng trống | `17-chua-thuoc-dot-nao.png` |
 
 **Khi chụp ảnh, nhớ:**
 
