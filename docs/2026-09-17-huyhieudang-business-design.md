@@ -3,12 +3,13 @@
 | | |
 |---|---|
 | Dự án | HuyHieuDang — Hệ thống hỗ trợ xét trao Huy hiệu Đảng |
-| Phiên bản tài liệu | 1.1 — 19/09/2026 (đối chiếu với bản thiết kế UI 10 artboard) |
+| Phiên bản tài liệu | 1.2 — 30/09/2026 (ghi các quyết định 30/09 về màn Đợt, Chi tiết đợt, bộ chọn năm) |
 | Loại tài liệu | Tài liệu nghiệp vụ (BRD/SRS rút gọn), đầu vào cho thiết kế UI và chia task |
 | Trạng thái | Đã thống nhất với chủ dự án |
 | Tài liệu liên quan | `2026-09-17-ui-design-prompt.md`, `design-system/Huy Hieu Dang - 9 man hinh.html` |
 
 **Nhật ký thay đổi**
+- v1.2 (30/09/2026): ghi các quyết định 30/09 của chủ dự án. UC-30: màn Đợt bỏ dòng tóm tắt dưới tiêu đề, bảng bỏ tô nền dòng theo trạng thái. UC-34: trang chi tiết đợt gộp thành một trang, không còn tab; bộ chọn năm đổi sang một ô năm `‹ 2026 ›` có bảng chọn năm, giới hạn năm hiện tại ± 100 năm. UC-40 dùng cùng bộ chọn năm đó. Cập nhật sơ đồ màn hình và Phụ lục C.2 cho khớp.
 - v1.1 (19/09/2026): đối chiếu với bản thiết kế UI; bổ sung QT3a, QT11; bổ sung UC-13, UC-36, UC-51; thêm trường Tên đơn vị; chi tiết hóa ràng buộc file import; thêm Phụ lục C (đối chiếu UI ↔ use case).
 - v1.0 (17/09/2026): bản đầu tiên, thống nhất qua brainstorm.
 
@@ -142,17 +143,17 @@ Mỗi use case ghi: mục đích, dữ liệu trên màn hình, thao tác, kết
 ### M3 – Đợt trao huy hiệu
 | UC | Tên | Mô tả |
 |---|---|---|
-| UC-30 | Danh sách đợt | Dòng tóm tắt "N đợt · dùng chung cho mọi năm, chỉ lưu ngày/tháng". Bảng sắp theo Từ ngày: Tên, Từ ngày (dd/MM), Đến ngày (dd/MM), **Trạng thái năm nay** (QT11), Số người đủ điều kiện **năm nay**, Thao tác. Banner cảnh báo chồng lấn / chưa phủ kín kèm liệt kê khoảng trống (QT6). Không có bộ chọn năm. |
+| UC-30 | Danh sách đợt | **Không có dòng tóm tắt dưới tiêu đề** (quyết định 30/09/2026 — lệch so với artboard 5, đừng dựng lại). Bảng sắp theo Từ ngày: Tên, Từ ngày (dd/MM), Đến ngày (dd/MM), **Trạng thái năm nay** (QT11), Số người đủ điều kiện **năm nay**, Thao tác. **Bảng không tô nền dòng theo trạng thái** — trạng thái chỉ hiện ở nhãn cột **Trạng thái năm nay** (quyết định 30/09/2026 — lệch so với artboard 5, đừng dựng lại). Banner cảnh báo chồng lấn / chưa phủ kín kèm liệt kê khoảng trống (QT6). Không có bộ chọn năm. |
 | UC-36 | Dải độ phủ trong năm | Biểu đồ dải ngang 12 tháng phía trên bảng: mỗi đợt là một vạch màu, khoảng trống tô xám, có vạch đánh dấu "Hôm nay". Giúp nhìn ra ngay chỗ chưa phủ kín. |
 | UC-31 | Thêm đợt | Modal: Tên, Từ ngày (dd/MM), Đến ngày (dd/MM). |
 | UC-32 | Sửa đợt | Như UC-31. Dòng nhắc: "Thay đổi áp dụng ngay cho năm hiện tại và các năm sau". |
 | UC-33 | Xóa đợt | Hộp xác nhận. |
-| UC-34 | Đủ điều kiện của đợt | Trang chi tiết đợt có breadcrumb + 2 tab: **Thông tin** (tên, khoảng ngày "01/10 – 07/11 hằng năm", nút Sửa/Xóa) và **Danh sách đủ điều kiện**. Tab thứ hai có bộ chọn năm dạng segmented (năm trước · năm nay · năm sau), hiển thị khoảng ngày đã gắn năm và nhãn ngữ cảnh ("Năm sau · chuẩn bị trước"). Bảng như UC-11 + **Xuất Excel**. |
+| UC-34 | Đủ điều kiện của đợt | Trang chi tiết đợt là **một trang, không có tab** (quyết định 30/09/2026). Thứ tự trên trang: đường dẫn (breadcrumb); tiêu đề gồm tên đợt, khoảng ngày hằng năm ("01/10 – 07/11 hằng năm"; đợt vắt qua 31/12 ghi "01/12 – 28/02 năm sau, hằng năm") và hai nút **Sửa đợt**, **Xóa**; ngay dưới là thẻ danh sách đủ điều kiện. **Không còn khối "Thông tin"** — tiêu đề đã có đủ tên đợt và khoảng ngày. Thanh công cụ của thẻ: bộ chọn năm · khoảng ngày đã gắn năm · nhãn ngữ cảnh · số người · **Xuất Excel**. Bảng như UC-11.<br>**Bộ chọn năm** là một ô năm duy nhất `‹ 2026 ›`. Bấm `‹` `›` để lùi hoặc tiến một năm. Bấm vào ô năm thì mở **bảng chọn năm**: lưới 5 cột cuộn dọc, có nút **"Năm nay"** ở góc trái. Chỉ đi được trong khoảng **năm hiện tại ± 100 năm** (năm 2026 thì 1926 – 2126). Mặc định là **năm hiện tại của máy chủ**.<br>**Nhãn ngữ cảnh** cạnh khoảng ngày ghi đúng khoảng cách: **Năm nay** · **Năm sau** · **Năm trước** · **"N năm nữa"** (N ≥ 2) · **"N năm trước"** (N ≥ 2). Mọi năm tương lai ghi thêm "· chuẩn bị trước" ở số người. |
 
 ### M4 – Chưa thuộc đợt nào
 | UC | Tên | Mô tả |
 |---|---|---|
-| UC-40 | Danh sách theo năm | Bộ chọn năm dạng segmented (mặc định năm hiện tại). Bảng như UC-11, thêm cột "Khoảng trống" ("Giữa Đợt A và Đợt B", "Trước đợt đầu tiên", "Sau đợt cuối cùng"). Khối gợi ý hành động: "Nới Đến ngày của đợt trước hoặc Từ ngày của đợt sau" + nút đi tới M3. Nút **Xuất Excel**. Trạng thái trống: "Không có ai bị sót trong năm YYYY." |
+| UC-40 | Danh sách theo năm | Dùng **cùng bộ chọn năm như UC-34**: một ô năm `‹ 2026 ›`, bảng chọn năm khi bấm vào ô năm, giới hạn năm hiện tại ± 100 năm, mặc định năm hiện tại của máy chủ. Bảng như UC-11, thêm cột "Khoảng trống" ("Giữa Đợt A và Đợt B", "Trước đợt đầu tiên", "Sau đợt cuối cùng"). Khối gợi ý hành động: "Nới Đến ngày của đợt trước hoặc Từ ngày của đợt sau" + nút đi tới M3. Nút **Xuất Excel**. Trạng thái trống: "Không có ai bị sót trong năm YYYY." |
 
 ### M5 – Cài đặt
 | UC | Tên | Mô tả |
@@ -206,7 +207,7 @@ Chỉ 4 thực thể nghiệp vụ + 1 thực thể tài khoản.
   │     └─ Import Excel (wizard 3 bước)
   ├─ Đợt trao huy hiệu ─── bảng đợt + cảnh báo phủ kín
   │     ├─ Thêm / Sửa (modal)
-  │     └─ [Tab] Đủ điều kiện ── chọn năm + bảng + Xuất Excel
+  │     └─ Chi tiết đợt ─────── chọn năm + bảng + Xuất Excel
   ├─ Chưa thuộc đợt nào ── chọn năm + bảng + Xuất Excel
   └─ Cài đặt ───────────── 3 ô số + xem trước dãy mốc
 ```
@@ -220,7 +221,7 @@ Chỉ 4 thực thể nghiệp vụ + 1 thực thể tài khoản.
 
 ### 6.3 Luồng định kỳ (mỗi đợt)
 1. Có đảng viên mới → Import hoặc thêm tay.
-2. Mở Dashboard (hoặc tab Đủ điều kiện của đợt) → kiểm tra → Xuất Excel.
+2. Mở Dashboard (hoặc trang chi tiết đợt) → kiểm tra → Xuất Excel.
 3. Thỉnh thoảng xem "Chưa thuộc đợt nào" để chắc không sót ai.
 
 ### 6.4 Rủi ro nghiệp vụ cần thể hiện trên UI
@@ -276,7 +277,7 @@ UC-00, UC-10, UC-11, UC-12, UC-20, UC-24, UC-25, UC-30, UC-34, UC-40, UC-50 — 
 | Khối hướng dẫn 3 bước ở Dashboard trống | UC-13 |
 | Cột Trạng thái (Đã qua / Đang diễn ra / Sắp tới · N ngày) | QT11, UC-30 |
 | Dải độ phủ 12 tháng | UC-36 |
-| Tab "Thông tin" ở trang chi tiết đợt | UC-34 |
+| Tab "Thông tin" ở trang chi tiết đợt | UC-34 — **bỏ ngày 30/09/2026**, gộp vào tiêu đề trang |
 | Nút "Khôi phục mặc định 30 / 90 / 5" | UC-50 |
 | Ràng buộc `.xlsx` ≤ 10 MB, dòng ví dụ trong B1 | QT9 |
 | Hiển thị `—` cho ô trống, cho người hết mốc | QT3a, UC-20 |

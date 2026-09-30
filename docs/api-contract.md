@@ -903,7 +903,7 @@ Không phân trang (mục 1.7). Danh sách sắp theo mục 1.8.
 
 **Lỗi:** `Mes.AwardPeriod.NotFound`, `Mes.Query.Invalid.Year`.
 
-Bộ chọn năm segmented (năm trước · năm nay · năm sau) chỉ là ba lần gọi endpoint này với `year` khác nhau.
+Mỗi lần đổi năm ở bộ chọn năm (năm hiện tại ± 100) là một lần gọi endpoint này với `year` mới.
 
 ### 6.3 `GET /api/Eligibility/Unassigned` — Chưa thuộc đợt nào (UC-40)
 
