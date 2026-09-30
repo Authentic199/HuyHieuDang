@@ -24,8 +24,8 @@ import { pickDayMonth } from '../fixtures/pickers';
  * E2E-7 · Đợt trao huy hiệu vắt qua 31/12 (T54 — QT4, QT6, QT7, QT8, QT11).
  *
  * Luồng chạy trên stack thật: tạo đợt `01/12 – 28/02` qua modal rồi đi hết các
- * màn mà đợt vắt năm chạm tới — bảng đợt, dải độ phủ, banner khoảng trống, tab
- * Thông tin, tab Đủ điều kiện, màn Chưa thuộc đợt nào, tệp Excel — và cuối cùng
+ * màn mà đợt vắt năm chạm tới — bảng đợt, dải độ phủ, banner khoảng trống,
+ * chi tiết đợt, màn Chưa thuộc đợt nào, tệp Excel — và cuối cùng
  * sửa qua lại giữa đợt vắt năm và đợt thường để chứng minh đổi chiều được.
  *
  * Không con số nào viết cứng theo năm chạy: mọi ngày suy từ NĂM MÁY CHỦ đang
@@ -135,14 +135,17 @@ async function editPeriod(
   await dismissToasts(page);
 }
 
-async function openTab(page: Page, api: Api, tab: string): Promise<void> {
+/** Mở trang chi tiết đợt — từ 30/09 trang không còn tab, danh sách hiện ngay. */
+async function openDetail(page: Page, api: Api): Promise<void> {
   await page.goto(`/dot-trao-huy-hieu/${await api.periodIdByName(PERIOD)}`);
-  await page.getByRole('tab', { name: tab }).click();
 }
 
-/** Vùng tab "Thông tin" của trang chi tiết đợt — tiêu đề trang không tính. */
-function infoTab(page: Page): Locator {
-  return page.getByRole('tabpanel', { name: 'Thông tin' });
+/**
+ * Khoảng ngày hằng năm trên TIÊU ĐỀ trang chi tiết đợt. Trước 30/09 câu này
+ * nằm ở tab "Thông tin"; tab đã bỏ, tiêu đề là nơi duy nhất còn nói câu đó.
+ */
+function headerRange(page: Page): Locator {
+  return page.locator('.hhd-period-detail__range');
 }
 
 /**
@@ -260,13 +263,13 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
     expect(`${gaps[0].fromDisplay}–${gaps[0].toDisplay}`).toBe('01/03–30/11');
   });
 
-  await test.step('E7-06 · Tab Thông tin đọc "01/12 – 28/02 năm sau, hằng năm"', async () => {
-    await openTab(page, api, 'Thông tin');
-    await expect(infoTab(page).getByText('01/12 – 28/02 năm sau, hằng năm')).toBeVisible();
+  await test.step('E7-06 · Tiêu đề trang chi tiết đợt đọc "01/12 – 28/02 năm sau, hằng năm"', async () => {
+    await openDetail(page, api);
+    await expect(headerRange(page)).toHaveText('01/12 – 28/02 năm sau, hằng năm');
   });
 
-  await test.step('E7-07 · Tab Đủ điều kiện, năm giữa: khoảng ngày gắn đúng hai năm và có người tròn mốc tháng 02 năm sau', async () => {
-    await openTab(page, api, 'Danh sách đủ điều kiện');
+  await test.step('E7-07 · Danh sách đủ điều kiện, năm giữa: khoảng ngày gắn đúng hai năm và có người tròn mốc tháng 02 năm sau', async () => {
+    await openDetail(page, api);
     await selectYear(page, year);
 
     await expect(page.locator('.hhd-eligibility__dates')).toHaveText(
@@ -314,8 +317,8 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
     expect((await api.unassignedCount(year)).count).toBe(1);
   });
 
-  await test.step('E7-09 · Xuất Excel từ tab Đủ điều kiện: tải về được, đủ dòng, tiêu đề ghi đúng khoảng ngày', async () => {
-    await openTab(page, api, 'Danh sách đủ điều kiện');
+  await test.step('E7-09 · Xuất Excel từ danh sách đủ điều kiện: tải về được, đủ dòng, tiêu đề ghi đúng khoảng ngày', async () => {
+    await openDetail(page, api);
     await selectYear(page, year);
     await expect(tableRows(page)).toHaveCount(4);
 
@@ -349,9 +352,9 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
     await expect(banner).toContainText('01/01–30/09');
     await expect(banner).toContainText('08/11–31/12');
 
-    await openTab(page, api, 'Thông tin');
-    await expect(infoTab(page).getByText('01/10 – 07/11 hằng năm')).toBeVisible();
-    await expect(infoTab(page).getByText('năm sau, hằng năm')).toBeHidden();
+    await openDetail(page, api);
+    await expect(headerRange(page)).toHaveText('01/10 – 07/11 hằng năm');
+    await expect(headerRange(page)).not.toContainText('năm sau');
 
     // Bốn người tròn mốc trong năm nay đều rơi ra ngoài đợt, kể cả người 20/01.
     await openUncovered(page, year);
@@ -395,8 +398,8 @@ test('E2E-7 · Đợt trao huy hiệu vắt qua 31/12 chạy đúng trên mọi 
  *
  * Cùng một màn hình đang nói hai kiểu: dòng tiêu đề lớn đọc
  * "Đợt Giao thừa 01/12 – 28/02 hằng năm" — nghe như hai đầu nằm trong cùng một
- * năm — trong khi tab Thông tin ngay bên dưới đọc "01/12 – 28/02 năm sau,
- * hằng năm". Bảng đợt và tab Thông tin đều đã gắn chữ "năm sau" theo QT6, chỉ
+ * năm — trong khi khoảng ngày hằng năm phải đọc "01/12 – 28/02 năm sau,
+ * hằng năm". Bảng đợt đã gắn chữ "năm sau" theo QT6, chỉ
  * `PeriodDetailHeader` còn sót.
  *
  * Đã sửa ở T55 (`PeriodDetailHeader.tsx` xét `spansNextYear`), nên ca này bỏ

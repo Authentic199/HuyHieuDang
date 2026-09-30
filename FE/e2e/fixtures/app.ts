@@ -172,16 +172,19 @@ export async function searchMember(
 }
 
 /**
- * Bấm một năm trên bộ chọn năm (Segmented của Ant Design).
+ * Chọn một năm qua bộ chọn năm dùng chung (`components/YearPicker.tsx`).
  *
- * Segmented dựng ô radio ẩn bên dưới nhãn, nên phải bấm vào chính nhãn — bấm
- * vào ô radio ẩn thì Playwright báo phần tử không nhìn thấy.
+ * Từ 30/09 bộ chọn chỉ còn một ô năm: bấm vào ô đó để mở bảng chọn, rồi bấm
+ * đúng năm cần tới. Bảng chọn là lớp phủ của Ant Design gắn vào `body`, nên
+ * phải tìm từ trang chứ không tìm trong `scope`.
  */
 export async function selectYear(scope: Page | Locator, year: number): Promise<void> {
-  await scope
-    .locator('.ant-segmented-item-label')
-    .filter({ hasText: new RegExp(`^${year}$`) })
-    .click();
+  const page = 'page' in scope ? scope.page() : scope;
+  await scope.getByRole('button', { name: /^Chọn năm khác, đang xem/ }).click();
+  const panel = page.locator('.hhd-year-panel');
+  await expect(panel).toBeVisible();
+  await panel.getByRole('button', { name: String(year), exact: true }).click();
+  await expect(panel).toBeHidden();
 }
 
 /** Chờ cho lời nhắn nổi của Ant Design biến mất để khỏi che nút bên dưới. */

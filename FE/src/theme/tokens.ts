@@ -159,6 +159,10 @@ export const shadow = {
   primaryButton: 'inset 0 1px 0 #ffffff4d, 0 2px 6px -2px #6c0f1259',
   card: '0 1px 2px #1c1c1e0a',
   pill: 'inset 0 1px 0 #ffffff8c, 0 1px 2px #0a332b26',
+  /** Ô năm nổi trên rãnh xám của bộ chọn năm, và mỗi ô trong bảng chọn năm */
+  yearCell: '0 1px 2px #1c1c1e1f, 0 1px 3px -1px #1c1c1e14',
+  /** Ô năm đang được chọn — viên đỏ đặc, bóng cùng ngôn ngữ với nút chính */
+  yearCellActive: 'inset 0 1px 0 #ffffff40, 0 2px 6px -2px #6c0f1259',
 } as const;
 
 /**

@@ -195,10 +195,9 @@ test.describe('Dashboard — bảng đủ điều kiện', () => {
   });
 });
 
-test.describe('Chi tiết đợt — tab Đủ điều kiện', () => {
+test.describe('Chi tiết đợt — danh sách đủ điều kiện', () => {
   test('phân trang, tìm, lọc mốc, sắp xếp', async ({ app }) => {
     await app.goto(`/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`);
-    await app.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
     const panel = app.locator('.hhd-eligibility');
     await expect(panel).toBeVisible();
     await checkEligibleTable(app, panel, mockData.eligible, '3-chi-tiet-dot-du-dieu-kien');
@@ -206,7 +205,6 @@ test.describe('Chi tiết đợt — tab Đủ điều kiện', () => {
 
   test('100 dòng mỗi trang vẫn cuộn tới được dòng cuối', async ({ app }) => {
     await app.goto(`/dot-trao-huy-hieu/${DETAIL_PERIOD.id}`);
-    await app.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
     await checkScrollReachesLastRow(app, app.locator('.hhd-eligibility'));
   });
 });

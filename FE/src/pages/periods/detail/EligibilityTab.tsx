@@ -1,5 +1,5 @@
 import { DownloadOutlined } from '@ant-design/icons';
-import { App as AntApp, Button, Segmented, Skeleton, Table } from 'antd';
+import { App as AntApp, Button, Skeleton, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
@@ -7,6 +7,7 @@ import { exportsApi } from '../../../api';
 import { FALLBACK_MESSAGE } from '../../../api/messages';
 import { MilestoneFilterSelect, TableSearchInput } from '../../../components/TableFilters';
 import { TableStates } from '../../../components/TableStates';
+import { YearPicker } from '../../../components/YearPicker';
 import { useClientTable } from '../../../hooks/useClientTable';
 import { ApiError } from '../../../types/api';
 import type { EligibleMemberResponse, Gender, IsoDate } from '../../../types/domain';
@@ -15,13 +16,16 @@ import { ELIGIBLE_COMPARATORS, milestoneOfRow, nameOfRow } from '../../../utils/
 import { formatDate, formatGender, formatNumber } from '../../../utils/format';
 import { EligibleMilestoneTag } from './EligibleMilestoneTag';
 import { useEligibility } from './useEligibility';
-import { yearContextOf, yearsAround } from './yearContext';
+import { yearContextOf, yearDistanceOf } from './yearContext';
 import { YearContextTag } from './YearContextTag';
 
 /**
- * Tab "Danh sách đủ điều kiện" của trang chi tiết đợt (UC-34), theo artboard
+ * Thẻ danh sách đủ điều kiện của trang chi tiết đợt (UC-34), theo artboard
  * "Màn 5 — Chi tiết đợt": thanh công cụ (bộ chọn năm, khoảng ngày đã gắn năm,
  * nhãn ngữ cảnh, nút Xuất Excel), thanh tìm — lọc, rồi bảng và dòng chân thẻ.
+ *
+ * Từ 30/09 đây là nội dung duy nhất của trang: không còn tab nào. Tên tệp và
+ * lớp `.hhd-eligibility` giữ nguyên để hai việc chạy song song không giẫm nhau.
  *
  * Máy chủ trả trọn danh sách đã sắp theo Mốc rồi Họ tên; đó là thứ tự mặc định.
  * Tìm, lọc theo mốc, sắp xếp và phân trang làm ngay ở máy khách.
@@ -29,7 +33,7 @@ import { YearContextTag } from './YearContextTag';
 
 interface EligibilityTabProps {
   awardPeriodId: string;
-  /** Năm hiện tại của MÁY CHỦ — mốc giữa của bộ chọn năm */
+  /** Năm hiện tại của MÁY CHỦ — gốc của bộ chọn năm và của nhãn ngữ cảnh */
   serverYear: number | null;
   year: number | null;
   onYearChange: (year: number) => void;
@@ -61,7 +65,9 @@ export function EligibilityTab({
     comparators: ELIGIBLE_COMPARATORS,
   });
 
-  const context = year !== null && serverYear !== null ? yearContextOf(year, serverYear) : null;
+  const known = year !== null && serverYear !== null;
+  const context = known ? yearContextOf(year, serverYear) : null;
+  const distance = known ? yearDistanceOf(year, serverYear) : 0;
 
   /**
    * Xuất TRỌN danh sách của đúng năm đang chọn; tên file do máy chủ đặt (mục 4).
@@ -154,13 +160,7 @@ export function EligibilityTab({
   return (
     <div className="hhd-eligibility">
       <div className="hhd-eligibility__toolbar">
-        <Segmented<number>
-          size="large"
-          value={year ?? undefined}
-          options={serverYear === null ? [] : yearsAround(serverYear)}
-          onChange={onYearChange}
-          disabled={serverYear === null}
-        />
+        <YearPicker value={year} serverYear={serverYear} onChange={onYearChange} />
 
         <div className="hhd-eligibility__range">
           {/* Khoảng ngày đã gắn năm do máy chủ trả, không tự ghép ở giao diện. */}
@@ -171,7 +171,7 @@ export function EligibilityTab({
           ) : (
             <Skeleton.Input active size="small" style={{ width: 190, minWidth: 190 }} />
           )}
-          {context ? <YearContextTag context={context} /> : null}
+          {context ? <YearContextTag context={context} distance={distance} /> : null}
           <span className="hhd-eligibility__count">
             {loading || error
               ? ''

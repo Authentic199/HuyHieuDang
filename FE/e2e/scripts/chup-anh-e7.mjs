@@ -122,12 +122,12 @@ async function main() {
     .locator('.hhd-coverage')
     .screenshot({ path: path.join(OUT_DIR, '3-dai-do-phu-hai-vach.png') });
 
-  // Ảnh 4 — tab Thông tin của trang chi tiết đợt.
+  // Ảnh 4 — tiêu đề trang chi tiết đợt. Từ 30/09 trang không còn tab, khoảng
+  // ngày hằng năm chỉ còn ở tiêu đề.
   const periodId = (await call(token, 'GET', '/AwardPeriods')).periods[0].id;
   await page.goto(`${BASE_URL}/dot-trao-huy-hieu/${periodId}`);
-  await page.getByRole('tab', { name: 'Thông tin' }).click();
-  await page.getByText('năm sau, hằng năm').waitFor();
-  await page.screenshot({ path: path.join(OUT_DIR, '4-tab-thong-tin.png') });
+  await page.locator('.hhd-period-detail__range').getByText('năm sau, hằng năm').waitFor();
+  await page.screenshot({ path: path.join(OUT_DIR, '4-tieu-de-chi-tiet-dot.png') });
 
   await browser.close();
   console.log(`Đã chụp 4 ảnh vào ${OUT_DIR}`);

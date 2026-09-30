@@ -38,9 +38,9 @@ const FILE_HEADERS = [
   'Mốc huy hiệu',
 ];
 
+/** Mở trang chi tiết một đợt — từ 30/09 danh sách hiện ngay, không còn tab. */
 async function openEligibilityTab(page: Page, periodId: string) {
   await page.goto(`/dot-trao-huy-hieu/${periodId}`);
-  await page.getByRole('tab', { name: 'Danh sách đủ điều kiện' }).click();
 }
 
 /** Viên thuốc "30 năm" trên màn hình ứng với ô "30" trong tệp. */
