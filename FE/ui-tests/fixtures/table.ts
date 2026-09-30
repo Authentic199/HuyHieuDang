@@ -1,7 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
-import { formatNumber } from './format';
-
 /**
  * Cách đọc một bảng trên màn hình: dòng, ô, thanh phân trang, ô tìm, ô lọc mốc.
  * Định vị theo `aria-label` và vai trò, không theo chữ in trên nút — màn hình
@@ -30,9 +28,22 @@ export class TableView {
     return this.panel.locator('.ant-pagination');
   }
 
-  /** Dòng "1–20 / 320" bên trái thanh phân trang. */
+  /**
+   * Cụm đếm "1–20 / 320" bên trái thanh phân trang. Chủ dự án đã cho bỏ ở T49,
+   * nên ở mọi bảng nó phải KHÔNG tồn tại — xem `expectNoTotalText`.
+   */
   get totalText(): Locator {
     return this.panel.locator('.ant-pagination-total-text');
+  }
+
+  /** Chữ đang hiện trong ô "… / trang", ví dụ "20 / trang". */
+  get pageSizeText(): Locator {
+    return this.pagination.locator('.ant-pagination-options .ant-select-selection-item');
+  }
+
+  /** Số trang cuối trên thanh phân trang — Ant Design luôn in trang cuối. */
+  get lastPageItem(): Locator {
+    return this.pagination.locator('.ant-pagination-item').last();
   }
 
   get search(): Locator {
@@ -82,10 +93,23 @@ export class TableView {
     await this.panel.getByRole('columnheader', { name: columnTitle }).click();
   }
 
-  /** Kiểm đúng câu "a–b / tổng" mà thanh phân trang đang hiện. */
-  async expectTotal(first: number, last: number, total: number): Promise<void> {
-    await expect(this.totalText).toHaveText(
-      `${formatNumber(first)}–${formatNumber(last)} / ${formatNumber(total)}`,
-    );
+  /**
+   * Thay cho cụm đếm đã bỏ: trang đang xem có đúng số dòng, và trang cuối đúng
+   * bằng tổng chia cỡ trang. Hai điều đó cùng nói lên tổng vẫn được đếm đúng mà
+   * không cần in con số nào ra chân bảng.
+   */
+  async expectPage(rowsOnPage: number, total: number, pageSize: number): Promise<void> {
+    await expect(this.rows).toHaveCount(rowsOnPage);
+    await expect(this.lastPageItem).toHaveText(String(Math.ceil(total / pageSize)));
+  }
+
+  /** Chân bảng KHÔNG được có cụm "1–20 / 1.342" (T49, hồi quy ở T58). */
+  async expectNoTotalText(): Promise<void> {
+    await expect(this.totalText).toHaveCount(0);
+  }
+
+  /** Ô "… / trang" đang ở cỡ nào — cỡ trang mặc định của bảng. */
+  async expectPageSize(size: number): Promise<void> {
+    await expect(this.pageSizeText).toHaveText(`${size} / trang`);
   }
 }
