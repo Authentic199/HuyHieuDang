@@ -234,7 +234,7 @@ anonymous.describe('trang Đăng nhập', () => {
 
       // Nửa trái và nửa phải đều phải hiện đủ, không cái nào bị đẩy khỏi màn hình.
       await expect(page.locator('.hhd-login__headline')).toBeInViewport();
-      await expect(page.locator('.hhd-login__version')).toBeInViewport();
+      await expect(page.locator('.hhd-login__subline')).toBeInViewport();
       await expect(page.getByRole('button', { name: 'Đăng nhập' })).toBeInViewport();
 
       await expectHeadlineWrap(page);

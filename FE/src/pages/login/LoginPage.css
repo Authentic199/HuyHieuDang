@@ -48,10 +48,10 @@
   line-height: 24px;
 }
 
-.hhd-login__version {
-  font: 12px/16px var(--hhd-font-mono);
-  color: #f2c4c2;
-  position: relative;
+/* Hàng logo ở trên cùng, hộp không còn hàng thứ ba để space-between cân lại:
+   lề tự động hai đầu đẩy khối tiêu đề về giữa chiều dọc nửa trái. */
+.hhd-login__brand-text {
+  margin-block: auto;
 }
 
 /* Nửa phải: hộp đăng nhập trên nền xám nhạt. */
